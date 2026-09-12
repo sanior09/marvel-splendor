@@ -21,6 +21,10 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  overscroll-behavior: none !important;
+  overscroll-behavior-y: none !important;
+  overscroll-behavior-x: none !important;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -28,6 +32,7 @@ body {
   background-color: #0a0b14;
   color: #e8eaf6;
   overflow-x: hidden;
+  overscroll-behavior: none;
 }
 
 /* ─── Scrollbar ──────────────────────────────────────── */

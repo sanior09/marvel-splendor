@@ -1,14 +1,22 @@
 // ============================================================
-//  ResponsiveScaler.tsx — Viewport Scaler for Mobile Landscape & Tablets
+//  ResponsiveScaler.tsx — Viewport Scaler with In-App Zoom & Pan
+//  Features:
+//   - Edge-to-edge dynamic aspect ratio scaling (zero black bars)
+//   - In-app interactive Zoom In / Out (75% to 150%)
+//   - Native 2-finger pinch gesture interception (prevents mobile page reload!)
+//   - Smooth pan drag when zoomed in
+//   - Floating interactive Zoom Controller HUD ([-][100%][+])
 // ============================================================
 
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect, useRef, useCallback } from 'react';
 
 interface ResponsiveScalerProps {
   baseWidth?: number;
   baseHeight?: number;
   children: React.ReactNode;
 }
+
+const STORAGE_KEY = 'marvel_splendor_user_zoom';
 
 export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
   baseWidth = 1120,
@@ -19,22 +27,70 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
   const [contentWidth, setContentWidth] = useState<number>(baseWidth);
   const [isScaled, setIsScaled] = useState<boolean>(false);
 
+  // User interactive zoom level (1.0 = default fit, 0.75x = 75%, 1.5x = 150%)
+  const [userZoom, setUserZoom] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const val = parseFloat(saved);
+        if (!isNaN(val) && val >= 0.75 && val <= 1.5) return val;
+      }
+    } catch {
+      // ignore
+    }
+    return 1.0;
+  });
+
+  // Pan offset when zoomed in
+  const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const touchStateRef = useRef<{
+    initialDist: number;
+    initialZoom: number;
+    startX: number;
+    startY: number;
+    initialPan: { x: number; y: number };
+    isPinching: boolean;
+    isPanning: boolean;
+  }>({
+    initialDist: 0,
+    initialZoom: 1,
+    startX: 0,
+    startY: 0,
+    initialPan: { x: 0, y: 0 },
+    isPinching: false,
+    isPanning: false,
+  });
+
+  // Persist zoom preference
+  const updateUserZoom = useCallback((newZoomOrFn: number | ((prev: number) => number)) => {
+    setUserZoom((prev) => {
+      const next = typeof newZoomOrFn === 'function' ? newZoomOrFn(prev) : newZoomOrFn;
+      const clamped = Math.min(1.5, Math.max(0.75, Math.round(next * 20) / 20));
+      try {
+        localStorage.setItem(STORAGE_KEY, clamped.toString());
+      } catch {
+        // ignore
+      }
+      if (clamped <= 1.01) {
+        setPan({ x: 0, y: 0 });
+      }
+      return clamped;
+    });
+  }, []);
+
+  // Compute base scaling to fit window
   useLayoutEffect(() => {
     const handleResize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
 
-      // When screen is smaller than base size OR on landscape mobile/tablets
       if (w < baseWidth || h < baseHeight || h <= 680) {
-        // 1. Scale primarily based on viewport height to guarantee zero vertical overflow
-        // and maximize card/text size (up to 35-45% larger than fixed 750px scale!)
         let newScale = h / baseHeight;
-
-        // 2. Compute dynamic virtual width so (contentWidth * newScale) matches full viewport width w
-        // This completely eliminates pillarboxing (black bars on the left and right!)
         let dynamicWidth = Math.max(baseWidth, Math.round(w / newScale));
 
-        // 3. Fallback: if viewport is narrower than baseWidth * newScale, scale to fit width instead
         if (baseWidth * newScale > w) {
           newScale = w / baseWidth;
           dynamicWidth = baseWidth;
@@ -44,7 +100,6 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
         setContentWidth(dynamicWidth);
         setIsScaled(true);
       } else {
-        // Large desktop displays: fluid full-bleed layout
         setScale(1);
         setContentWidth(w);
         setIsScaled(false);
@@ -61,27 +116,200 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
     };
   }, [baseWidth, baseHeight]);
 
-  // Desktop fluid mode
-  if (!isScaled) {
-    return <div className="w-screen h-screen overflow-hidden select-none">{children}</div>;
-  }
+  // Touch handlers attached with { passive: false } to intercept browser pinch & pull-to-refresh reload!
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-  // Mobile Landscape & Tablet Edge-to-Edge scaled container
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        // 2-finger pinch gesture detected
+        const touch1 = e.touches[0]!;
+        const touch2 = e.touches[1]!;
+        const dist = Math.hypot(touch1.clientX - touch2.clientX, touch1.clientY - touch2.clientY);
+
+        touchStateRef.current.initialDist = dist;
+        touchStateRef.current.initialZoom = userZoom;
+        touchStateRef.current.isPinching = true;
+        touchStateRef.current.isPanning = false;
+
+        // CRITICAL: Prevent browser native viewport pinch and pull-to-refresh reload
+        e.preventDefault();
+      } else if (e.touches.length === 1 && userZoom > 1.05) {
+        // 1-finger pan gesture when zoomed in
+        const touch = e.touches[0]!;
+        touchStateRef.current.startX = touch.clientX;
+        touchStateRef.current.startY = touch.clientY;
+        touchStateRef.current.initialPan = { ...pan };
+        touchStateRef.current.isPanning = true;
+        touchStateRef.current.isPinching = false;
+      }
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && touchStateRef.current.isPinching) {
+        // Prevent browser reload & rubberband
+        e.preventDefault();
+
+        const touch1 = e.touches[0]!;
+        const touch2 = e.touches[1]!;
+        const dist = Math.hypot(touch1.clientX - touch2.clientX, touch1.clientY - touch2.clientY);
+        const ratio = dist / (touchStateRef.current.initialDist || 1);
+
+        const targetZoom = Math.min(1.5, Math.max(0.75, touchStateRef.current.initialZoom * ratio));
+        setUserZoom(targetZoom);
+      } else if (e.touches.length === 1 && touchStateRef.current.isPanning && userZoom > 1.05) {
+        const touch = e.touches[0]!;
+        const dx = touch.clientX - touchStateRef.current.startX;
+        const dy = touch.clientY - touchStateRef.current.startY;
+
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+          e.preventDefault();
+          setIsDragging(true);
+
+          const w = window.innerWidth;
+          const h = window.innerHeight;
+          const totalScale = scale * userZoom;
+          const maxPanX = Math.max(0, (contentWidth * totalScale - w) / 2);
+          const maxPanY = Math.max(0, (baseHeight * totalScale - h) / 2);
+
+          const nextX = Math.min(maxPanX, Math.max(-maxPanX, touchStateRef.current.initialPan.x + dx));
+          const nextY = Math.min(maxPanY, Math.max(-maxPanY, touchStateRef.current.initialPan.y + dy));
+
+          setPan({ x: nextX, y: nextY });
+        }
+      }
+    };
+
+    const onTouchEnd = () => {
+      touchStateRef.current.isPinching = false;
+      touchStateRef.current.isPanning = false;
+      setIsDragging(false);
+
+      if (userZoom <= 1.01) {
+        setPan({ x: 0, y: 0 });
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY, userZoom.toString());
+      } catch {
+        // ignore
+      }
+    };
+
+    container.addEventListener('touchstart', onTouchStart, { passive: false });
+    container.addEventListener('touchmove', onTouchMove, { passive: false });
+    container.addEventListener('touchend', onTouchEnd);
+    container.addEventListener('touchcancel', onTouchEnd);
+
+    return () => {
+      container.removeEventListener('touchstart', onTouchStart);
+      container.removeEventListener('touchmove', onTouchMove);
+      container.removeEventListener('touchend', onTouchEnd);
+      container.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [userZoom, scale, contentWidth, baseHeight, pan]);
+
+  // Handle Ctrl+Wheel or trackpad pinch on desktop
+  const handleWheel = (e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      const delta = e.deltaY * -0.005;
+      updateUserZoom((z) => Math.min(1.5, Math.max(0.75, z + delta)));
+    }
+  };
+
+  const effectiveScale = (isScaled ? scale : 1) * userZoom;
+
   return (
-    <div className="w-screen h-screen overflow-hidden flex items-center justify-center bg-[#07080f] select-none">
+    <div
+      ref={containerRef}
+      onWheel={handleWheel}
+      className="w-screen h-screen overflow-hidden flex items-center justify-center bg-[#07080f] select-none touch-none overscroll-none relative"
+      style={{
+        overscrollBehavior: 'none',
+        touchAction: 'none',
+      }}
+    >
+      {/* Scaled & Panned Board Container */}
       <div
         style={{
-          width: `${contentWidth}px`,
-          height: `${baseHeight}px`,
-          transform: `scale(${scale})`,
+          width: isScaled ? `${contentWidth}px` : '100vw',
+          height: isScaled ? `${baseHeight}px` : '100vh',
+          transform: isScaled
+            ? `translate(${pan.x}px, ${pan.y}px) scale(${effectiveScale})`
+            : userZoom !== 1
+            ? `translate(${pan.x}px, ${pan.y}px) scale(${userZoom})`
+            : undefined,
           transformOrigin: 'center center',
           flexShrink: 0,
+          transition: isDragging ? 'none' : 'transform 0.12s ease-out',
         }}
         className="relative overflow-hidden shadow-2xl"
       >
         {children}
       </div>
+
+      {/* ── Floating Zoom Controller HUD ──────────────────────────── */}
+      <div className="fixed bottom-2 right-2 z-50 pointer-events-auto flex items-center gap-1 select-none">
+        {/* Toggle button / Collapsed Icon */}
+        <div
+          className={`flex items-center gap-1 bg-black/80 hover:bg-black/95 backdrop-blur-md border border-white/20 hover:border-yellow-400/50 rounded-full px-2 py-1 shadow-2xl transition-all ${
+            userZoom !== 1.0 ? 'ring-1 ring-yellow-400/60' : ''
+          }`}
+        >
+          {/* Zoom Out Button */}
+          <button
+            type="button"
+            onClick={() => updateUserZoom((z) => Math.max(0.75, z - 0.1))}
+            disabled={userZoom <= 0.75}
+            className="w-5 h-5 rounded-full bg-white/10 hover:bg-white/25 disabled:opacity-30 disabled:hover:bg-white/10 text-white font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90"
+            title="ซูมออก (Zoom Out) — หรือใช้ 2 นิ้วบีบเข้า"
+          >
+            −
+          </button>
+
+          {/* Current Zoom Percentage (Click to reset to 100%) */}
+          <button
+            type="button"
+            onClick={() => {
+              updateUserZoom(1.0);
+              setPan({ x: 0, y: 0 });
+            }}
+            className="px-1 text-[10px] font-mono font-black text-yellow-300 hover:text-white transition-colors cursor-pointer"
+            title="คลิกเพื่อรีเซ็ตขนาดเป็น 100% (Reset Zoom)"
+          >
+            {Math.round(userZoom * 100)}%
+          </button>
+
+          {/* Zoom In Button */}
+          <button
+            type="button"
+            onClick={() => updateUserZoom((z) => Math.min(1.5, z + 0.1))}
+            disabled={userZoom >= 1.5}
+            className="w-5 h-5 rounded-full bg-white/10 hover:bg-white/25 disabled:opacity-30 disabled:hover:bg-white/10 text-white font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90"
+            title="ซูมเข้า (Zoom In) — หรือใช้ 2 นิ้วกางออก"
+          >
+            +
+          </button>
+
+          {/* Reset Icon when zoomed */}
+          {userZoom !== 1.0 && (
+            <button
+              type="button"
+              onClick={() => {
+                updateUserZoom(1.0);
+                setPan({ x: 0, y: 0 });
+              }}
+              className="text-[9px] text-white/50 hover:text-yellow-400 ml-0.5 transition-colors cursor-pointer"
+              title="รีเซ็ตกลับเป็นขนาดปกติ (Reset to default fit)"
+            >
+              ⟲
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
+
 
