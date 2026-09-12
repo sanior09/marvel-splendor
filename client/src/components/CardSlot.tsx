@@ -63,7 +63,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
   // Empty slot
   if (!card) {
     return (
-      <div className="w-28 h-32 rounded-xl border-2 border-dashed border-white/10 flex items-center justify-center bg-black/20">
+      <div className="w-28 h-[136px] rounded-xl border-2 border-dashed border-white/10 flex items-center justify-center bg-black/20">
         <span className="text-white/20 text-2xl">✦</span>
       </div>
     );
@@ -72,7 +72,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
   // Opponent's hidden reserved card
   if (isHidden) {
     return (
-      <div className={`w-28 h-32 rounded-xl bg-gradient-to-b border ${TIER_BORDER[card.tier]} ${TIER_BG[card.tier]} flex items-center justify-center`}>
+      <div className={`w-28 h-[136px] rounded-xl bg-gradient-to-b border ${TIER_BORDER[card.tier]} ${TIER_BG[card.tier]} flex items-center justify-center`}>
         <div className="text-center space-y-1">
           <div className="text-3xl opacity-40">🔒</div>
           <div className="text-[10px] text-white/60 font-semibold tracking-wider uppercase">Tier {card.tier} (จองไว้)</div>
@@ -88,7 +88,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
   return (
     <div
       className={[
-        'relative artifact-card w-28 h-32 rounded-xl border-2 flex flex-col overflow-hidden group select-none transition-all duration-200',
+        'relative artifact-card w-28 h-[136px] rounded-xl border-2 flex flex-col overflow-hidden group select-none transition-all duration-200',
         TIER_BORDER[card.tier],
         canAfford && isMyTurn ? 'ring-2 ring-emerald-400 ring-offset-1 ring-offset-black' : '',
       ].join(' ')}
@@ -111,11 +111,11 @@ export const CardSlot: React.FC<CardSlotProps> = ({
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-black/60 z-0 pointer-events-none" />
 
       {/* Top HUD: Points, Avengers Badge, Bonus Stone */}
-      <div className="relative z-10 p-1.5 flex items-start justify-between pointer-events-none">
+      <div className="relative z-10 p-1 flex items-start justify-between pointer-events-none">
         {/* Left: Points & Avengers Symbol */}
         <div className="flex items-center gap-1">
           {card.points > 0 && (
-            <div className="bg-black/70 backdrop-blur-sm border border-yellow-400/50 text-yellow-300 font-black text-base px-1.5 py-0.5 rounded shadow leading-none">
+            <div className="bg-black/70 backdrop-blur-sm border border-yellow-400/50 text-yellow-300 font-black text-sm px-1.5 py-0.5 rounded shadow leading-none">
               {card.points}
             </div>
           )}
@@ -131,7 +131,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
 
         {/* Right: Permanent Stone Bonus */}
         <div
-          className="w-7 h-7 rounded-full flex items-center justify-center filter drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]"
+          className="w-6 h-6 rounded-full flex items-center justify-center filter drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]"
           title={`Permanent ${STONE_NAMES[card.bonusColor]} Stone Bonus`}
         >
           <img
@@ -143,9 +143,9 @@ export const CardSlot: React.FC<CardSlotProps> = ({
       </div>
 
       {/* Bottom HUD: Cost list on left, Hero name banner at bottom */}
-      <div className="relative z-10 flex-1 flex flex-col justify-end p-1.5 pointer-events-none">
-        {/* Cost Tokens Stack (Vertical single column, tight pill wrapping) */}
-        <div className="flex flex-col items-start gap-0.5 mb-1">
+      <div className="relative z-10 flex-1 flex flex-col justify-end p-1 pointer-events-none">
+        {/* Cost Tokens Stack: 2-column grid when 3+ costs to keep vertical height compact */}
+        <div className={`grid ${nonZeroCosts.length >= 3 ? 'grid-cols-2 gap-x-1' : 'grid-cols-1'} gap-y-0.5 mb-1 w-fit`}>
           {nonZeroCosts.map((color) => {
             const costAmt = card.cost[color] ?? 0;
             const have = (currentPlayer.crystals[color] ?? 0) + (currentPlayer.bonuses[color] ?? 0);
@@ -153,7 +153,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
             return (
               <div
                 key={color}
-                className="w-fit flex items-center gap-1 bg-black/85 backdrop-blur-sm rounded-full pl-0.5 pr-1.5 py-0.5 border border-white/15 shadow"
+                className="w-fit flex items-center gap-0.5 bg-black/85 backdrop-blur-sm rounded-full pl-0.5 pr-1.5 py-0.5 border border-white/15 shadow"
                 title={`${STONE_NAMES[color]} Stone cost: ${costAmt} (You have: ${have})`}
               >
                 <img
@@ -162,8 +162,9 @@ export const CardSlot: React.FC<CardSlotProps> = ({
                   className="w-3.5 h-3.5 object-contain pointer-events-none flex-shrink-0"
                 />
                 <span
-                  className={`text-[10px] font-black leading-none ${short > 0 ? 'text-red-300' : 'text-white'
-                    }`}
+                  className={`text-[9.5px] font-black leading-none ${
+                    short > 0 ? 'text-red-300' : 'text-white'
+                  }`}
                 >
                   {costAmt}
                 </span>
@@ -172,9 +173,9 @@ export const CardSlot: React.FC<CardSlotProps> = ({
           })}
         </div>
 
-        {/* Hero Character Name Banner (Always visible when not hovering) */}
-        <div className="bg-black/85 backdrop-blur-md rounded border border-white/20 px-1 py-0.5 text-center shadow-md">
-          <span className="text-white font-extrabold text-[10px] tracking-wide truncate block text-shadow" title={card.name}>
+        {/* Hero Character Name Banner (Always 100% visible and un-sunken) */}
+        <div className="bg-black/90 backdrop-blur-md rounded border border-white/20 px-1 py-0.5 text-center shadow-md w-full">
+          <span className="text-white font-extrabold text-[9.5px] tracking-wide truncate block text-shadow" title={card.name}>
             {card.name}
           </span>
         </div>
