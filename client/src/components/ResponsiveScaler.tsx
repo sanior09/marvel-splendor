@@ -8,7 +8,7 @@
 //   - Floating interactive Zoom Controller HUD ([-][100%][+])
 // ============================================================
 
-import React, { useState, useLayoutEffect, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useLayoutEffect, useEffect, useRef } from 'react';
 
 interface ResponsiveScalerProps {
   baseWidth?: number;
@@ -63,23 +63,6 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
     isPinching: false,
     isPanning: false,
   });
-
-  // Persist zoom preference
-  const updateUserZoom = useCallback((newZoomOrFn: number | ((prev: number) => number)) => {
-    setUserZoom((prev) => {
-      const next = typeof newZoomOrFn === 'function' ? newZoomOrFn(prev) : newZoomOrFn;
-      const clamped = Math.min(1.5, Math.max(0.75, Math.round(next * 20) / 20));
-      try {
-        localStorage.setItem(STORAGE_KEY, clamped.toString());
-      } catch {
-        // ignore
-      }
-      if (clamped <= 1.01) {
-        setPan({ x: 0, y: 0 });
-      }
-      return clamped;
-    });
-  }, []);
 
   // Compute base scaling to fit window
   useLayoutEffect(() => {
@@ -214,7 +197,7 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
       const delta = e.deltaY * -0.005;
-      updateUserZoom((z) => Math.min(1.5, Math.max(0.75, z + delta)));
+      setUserZoom((z) => Math.min(1.5, Math.max(0.75, z + delta)));
     }
   };
 
@@ -247,66 +230,6 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
         className="relative overflow-hidden shadow-2xl"
       >
         {children}
-      </div>
-
-      {/* ── Floating Zoom Controller HUD ──────────────────────────── */}
-      <div className="fixed bottom-2 right-2 z-50 pointer-events-auto flex items-center gap-1 select-none">
-        {/* Toggle button / Collapsed Icon */}
-        <div
-          className={`flex items-center gap-1 bg-black/80 hover:bg-black/95 backdrop-blur-md border border-white/20 hover:border-yellow-400/50 rounded-full px-2 py-1 shadow-2xl transition-all ${
-            userZoom !== 1.0 ? 'ring-1 ring-yellow-400/60' : ''
-          }`}
-        >
-          {/* Zoom Out Button */}
-          <button
-            type="button"
-            onClick={() => updateUserZoom((z) => Math.max(0.75, z - 0.1))}
-            disabled={userZoom <= 0.75}
-            className="w-5 h-5 rounded-full bg-white/10 hover:bg-white/25 disabled:opacity-30 disabled:hover:bg-white/10 text-white font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90"
-            title="ซูมออก (Zoom Out) — หรือใช้ 2 นิ้วบีบเข้า"
-          >
-            −
-          </button>
-
-          {/* Current Zoom Percentage (Click to reset to 100%) */}
-          <button
-            type="button"
-            onClick={() => {
-              updateUserZoom(1.0);
-              setPan({ x: 0, y: 0 });
-            }}
-            className="px-1 text-[10px] font-mono font-black text-yellow-300 hover:text-white transition-colors cursor-pointer"
-            title="คลิกเพื่อรีเซ็ตขนาดเป็น 100% (Reset Zoom)"
-          >
-            {Math.round(userZoom * 100)}%
-          </button>
-
-          {/* Zoom In Button */}
-          <button
-            type="button"
-            onClick={() => updateUserZoom((z) => Math.min(1.5, z + 0.1))}
-            disabled={userZoom >= 1.5}
-            className="w-5 h-5 rounded-full bg-white/10 hover:bg-white/25 disabled:opacity-30 disabled:hover:bg-white/10 text-white font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90"
-            title="ซูมเข้า (Zoom In) — หรือใช้ 2 นิ้วกางออก"
-          >
-            +
-          </button>
-
-          {/* Reset Icon when zoomed */}
-          {userZoom !== 1.0 && (
-            <button
-              type="button"
-              onClick={() => {
-                updateUserZoom(1.0);
-                setPan({ x: 0, y: 0 });
-              }}
-              className="text-[9px] text-white/50 hover:text-yellow-400 ml-0.5 transition-colors cursor-pointer"
-              title="รีเซ็ตกลับเป็นขนาดปกติ (Reset to default fit)"
-            >
-              ⟲
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );
