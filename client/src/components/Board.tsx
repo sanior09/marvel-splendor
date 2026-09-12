@@ -143,6 +143,17 @@ export const Board: React.FC<BoardProps> = ({
               SPLENDOR
             </span>
           </div>
+
+          {/* Nachapol Industries Logo */}
+          <div className="h-4 w-px bg-white/20 mx-0.5 hidden sm:block" />
+          <div className="hidden sm:flex items-center" title="Nachapol Industries — Powered by Stark Tech">
+            <img
+              src="/images/nachapol_industries.png"
+              alt="Nachapol Industries"
+              className="h-5.5 sm:h-6 object-contain opacity-90 hover:opacity-100 transition-opacity drop-shadow-[0_0_8px_rgba(255,255,255,0.25)]"
+            />
+          </div>
+
           <span className="text-[10px] text-white/50 bg-white/5 px-2 py-0.5 rounded-full font-semibold border border-white/5">
             รอบที่ (Round) {state.turnNumber}
           </span>
