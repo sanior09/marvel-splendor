@@ -1,10 +1,7 @@
-// ============================================================
-//  GameOver.tsx — Marvel Splendor Win Screen
-// ============================================================
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { Player } from '@shared/types/game.types';
+import { soundManager } from '../utils/soundManager';
 
 interface GameOverProps {
   winners: string[];
@@ -17,6 +14,10 @@ export const GameOver: React.FC<GameOverProps> = ({ winners, players, myPlayerId
   const winnerPlayers = players.filter((p) => winners.includes(p.id));
   const isIWon = winners.includes(myPlayerId);
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+
+  useEffect(() => {
+    soundManager.playVictory();
+  }, []);
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -102,7 +103,10 @@ export const GameOver: React.FC<GameOverProps> = ({ winners, players, myPlayerId
         {/* Actions */}
         <button
           type="button"
-          onClick={onLeave}
+          onClick={() => {
+            soundManager.playButtonClick();
+            onLeave();
+          }}
           className="w-full py-4 rounded-xl font-black font-display text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
         >
           กลับสู่ล็อบบี้หลัก (Return to Lobby)

@@ -6,6 +6,8 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { RoomInfo } from '@shared/types/game.types';
 import { ResponsiveScaler } from './ResponsiveScaler';
+import { SoundToggle } from './SoundToggle';
+import { soundManager } from '../utils/soundManager';
 
 interface LobbyProps {
   onCreateRoom: (playerName: string, callback: (room: RoomInfo) => void) => void;
@@ -88,9 +90,11 @@ export const Lobby: React.FC<LobbyProps> = ({
 
   const handleCreate = (): void => {
     if (!playerName.trim()) {
+      soundManager.playError();
       setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
       return;
     }
+    soundManager.playButtonClick();
     setIsLoading(true);
     setError('');
     onCreateRoom(playerName.trim(), () => setIsLoading(false));
@@ -98,9 +102,11 @@ export const Lobby: React.FC<LobbyProps> = ({
 
   const handleSolo = (): void => {
     if (!playerName.trim()) {
+      soundManager.playError();
       setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
       return;
     }
+    soundManager.playCardBuy(3);
     setIsLoading(true);
     setError('');
     const selectedBotNames = botNames.slice(0, botCount).map((name, idx) => {
@@ -112,18 +118,24 @@ export const Lobby: React.FC<LobbyProps> = ({
   const handleJoin = (roomId?: string): void => {
     const code = (roomId ?? joinCode).trim().toUpperCase();
     if (!playerName.trim()) {
+      soundManager.playError();
       setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
       return;
     }
     if (!code) {
+      soundManager.playError();
       setError('กรุณากรอกรหัสห้อง (Please enter room code)');
       return;
     }
+    soundManager.playButtonClick();
     setIsLoading(true);
     setError('');
     onJoinRoom(code, playerName.trim(), (success, err) => {
       setIsLoading(false);
-      if (!success) setError(err ?? 'ไม่สามารถเข้าร่วมห้องได้ (Failed to join room)');
+      if (!success) {
+        soundManager.playError();
+        setError(err ?? 'ไม่สามารถเข้าร่วมห้องได้ (Failed to join room)');
+      }
     });
   };
 
@@ -135,9 +147,12 @@ export const Lobby: React.FC<LobbyProps> = ({
 
   const handleConfirmAddBot = () => {
     const nameToAdd = newBotName.trim() || 'Marvel AI';
+    soundManager.playButtonClick();
     onAddBot(nameToAdd, newBotPersonality, (success) => {
       if (success) {
         setShowAddBotModal(false);
+      } else {
+        soundManager.playError();
       }
     });
   };
@@ -148,6 +163,10 @@ export const Lobby: React.FC<LobbyProps> = ({
       <ResponsiveScaler baseWidth={880} baseHeight={580}>
         <div className="w-full h-full max-h-full overflow-hidden board-bg flex items-center justify-center p-3 sm:p-4">
           <div className="glass-strong rounded-2xl p-5 max-w-md w-full space-y-4 border border-white/15 shadow-2xl relative">
+            <div className="absolute top-3 right-3">
+              <SoundToggle compact />
+            </div>
+
             <div className="text-center space-y-1.5">
               <div className="flex items-center justify-center gap-2">
                 <span className="marvel-badge px-2 py-0.5 rounded text-xs tracking-wider">MARVEL</span>
@@ -244,7 +263,10 @@ export const Lobby: React.FC<LobbyProps> = ({
             {isHost && (
               <button
                 type="button"
-                onClick={onStartGame}
+                onClick={() => {
+                  soundManager.playCardBuy(3);
+                  onStartGame();
+                }}
                 disabled={!canStart}
                 className={[
                   'w-full py-3 rounded-xl font-black font-display text-sm transition-all duration-200 uppercase tracking-wider',
@@ -302,6 +324,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                           key={bot.name}
                           type="button"
                           onClick={() => {
+                            soundManager.playButtonClick();
                             setNewBotName(bot.name);
                             setNewBotPersonality(bot.personality);
                           }}
@@ -323,7 +346,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowAddBotModal(false)}
-                      className="flex-1 py-2.5 rounded-xl border border-white/10 text-white/50 hover:bg-white/5 font-semibold text-xs transition-colors cursor-pointer"
+                      className="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition-colors cursor-pointer"
                     >
                       ยกเลิก (Cancel)
                     </button>
@@ -362,15 +385,18 @@ export const Lobby: React.FC<LobbyProps> = ({
           <p className="text-white/70 text-xs sm:text-sm max-w-lg mx-auto truncate">
             แย่งชิงถุงมืออินฟินิตี้ • เกณฑ์ฮีโร่มาร์เวล • พิชิตจักรวาล (Infinity Gauntlet • Splendor)
           </p>
-          <div className="flex items-center justify-center gap-2 pt-0.5">
-            <div
-              className={`w-2 h-2 rounded-full ${
-                connectionStatus === 'connected' ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'
-              }`}
-            />
-            <span className="text-xs text-white/50">
-              {connectionStatus === 'connected' ? '🟢 เซิร์ฟเวอร์พร้อมใช้งาน (Server Connected)' : connectionStatus}
-            </span>
+          <div className="flex items-center justify-center gap-3 pt-0.5">
+            <div className="flex items-center gap-1.5">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  connectionStatus === 'connected' ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'
+                }`}
+              />
+              <span className="text-xs text-white/50">
+                {connectionStatus === 'connected' ? '🟢 เซิร์ฟเวอร์พร้อมใช้งาน (Server Connected)' : connectionStatus}
+              </span>
+            </div>
+            <SoundToggle compact />
           </div>
         </div>
 
@@ -399,7 +425,10 @@ export const Lobby: React.FC<LobbyProps> = ({
               <button
                 key={tab}
                 type="button"
-                onClick={() => setActiveTab(tab)}
+                onClick={() => {
+                  soundManager.playButtonClick();
+                  setActiveTab(tab);
+                }}
                 className={[
                   'flex-1 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all capitalize cursor-pointer',
                   activeTab === tab

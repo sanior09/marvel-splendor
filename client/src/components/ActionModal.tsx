@@ -2,11 +2,12 @@
 //  ActionModal.tsx — Force Gem Drop Modal (> 10 gems)
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { CrystalColor, CrystalPool, Player } from '@shared/types/game.types';
 import { BANK_STONE_COLORS } from '@shared/types/game.types';
 import { GemToken, STONE_NAMES } from './GemToken';
+import { soundManager } from '../utils/soundManager';
 
 interface ActionModalProps {
   player: Player;
@@ -19,6 +20,10 @@ function totalPool(pool: Partial<Record<CrystalColor, number>>): number {
 
 export const ActionModal: React.FC<ActionModalProps> = ({ player, onDropGems }) => {
   const [toDrop, setToDrop] = useState<Partial<Record<CrystalColor, number>>>({});
+
+  useEffect(() => {
+    soundManager.playModalOpen();
+  }, []);
 
   // 5 standard bank stones + S.H.I.E.L.D. can be dropped. Green Time Stone CANNOT be dropped!
   const droppableColors: CrystalColor[] = [...BANK_STONE_COLORS, 'gold'];
@@ -33,6 +38,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({ player, onDropGems }) 
     if (color === 'emerald') return; // Cannot drop Time Stone!
     const current = toDrop[color] ?? 0;
     if (current < (player.crystals[color] ?? 0)) {
+      soundManager.playGemClick(color);
       setToDrop({ ...toDrop, [color]: current + 1 });
     }
   };
@@ -40,12 +46,14 @@ export const ActionModal: React.FC<ActionModalProps> = ({ player, onDropGems }) 
   const decrement = (color: CrystalColor): void => {
     const current = toDrop[color] ?? 0;
     if (current > 0) {
+      soundManager.playGemDeselect();
       setToDrop({ ...toDrop, [color]: current - 1 });
     }
   };
 
   const handleConfirm = (): void => {
     if (isValid) {
+      soundManager.playButtonClick();
       onDropGems(toDrop as Partial<CrystalPool>);
     }
   };

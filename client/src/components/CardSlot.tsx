@@ -5,6 +5,7 @@
 import React from 'react';
 import type { Card, Player, CrystalColor } from '@shared/types/game.types';
 import { ALL_CRYSTAL_COLORS } from '@shared/types/game.types';
+import { soundManager } from '../utils/soundManager';
 
 interface CardSlotProps {
   card: Card | null;
@@ -193,6 +194,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
+                  soundManager.playCardBuy(card.tier);
                   onBuy(card.id);
                 }}
                 disabled={!canAfford}
@@ -216,6 +218,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
+                  soundManager.playCardReserve();
                   onReserve(card.id);
                 }}
                 disabled={!canReserve}

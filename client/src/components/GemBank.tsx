@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import type { CrystalColor, CrystalPool, Player } from '@shared/types/game.types';
 import { ALL_CRYSTAL_COLORS, BANK_STONE_COLORS } from '@shared/types/game.types';
 import { GemToken } from './GemToken';
+import { soundManager } from '../utils/soundManager';
 
 interface GemBankProps {
   bank: CrystalPool;
@@ -43,6 +44,7 @@ export const GemBank: React.FC<GemBankProps> = ({
     if (!isMyTurn || color === 'gold' || !BANK_STONE_COLORS.includes(color)) return;
 
     if (mode === 'idle') {
+      soundManager.playGemClick(color);
       if (bank[color] >= 4 && selected.length === 0) {
         setMode('take2');
         setSelected([color]);
@@ -55,9 +57,11 @@ export const GemBank: React.FC<GemBankProps> = ({
 
     if (mode === 'take2') {
       if (selected[0] === color && bank[color] >= 4) {
+        soundManager.playGemCollect();
         onTake2Gems(color);
         reset();
       } else {
+        soundManager.playGemClick(color);
         setMode('take3');
         setSelected([color]);
       }
@@ -66,6 +70,7 @@ export const GemBank: React.FC<GemBankProps> = ({
 
     if (mode === 'take3') {
       if (selected.includes(color)) {
+        soundManager.playGemDeselect();
         setSelected(selected.filter((c) => c !== color));
         if (selected.length === 1) setMode('idle');
         return;
@@ -74,14 +79,20 @@ export const GemBank: React.FC<GemBankProps> = ({
         const newSelected = [...selected, color] as CrystalColor[];
         setSelected(newSelected);
         if (newSelected.length === 3) {
+          soundManager.playGemCollect();
           onTake3Gems(newSelected as [CrystalColor, CrystalColor, CrystalColor]);
           reset();
+        } else {
+          soundManager.playGemClick(color);
         }
       }
     }
   };
 
   const reset = (): void => {
+    if (selected.length > 0) {
+      soundManager.playButtonClick();
+    }
     setSelected([]);
     setMode('idle');
   };

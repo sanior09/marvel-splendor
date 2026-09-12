@@ -2,7 +2,7 @@
 //  Board.tsx — Marvel Splendor Game Board Layout
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { GameState, GameAction, CrystalColor, CardTier, Player } from '@shared/types/game.types';
 import { CardSlot } from './CardSlot';
 import { CardDeck } from './CardDeck';
@@ -14,6 +14,8 @@ import { ActionModal } from './ActionModal';
 import { GameOver } from './GameOver';
 import { HeroModal } from './HeroModal';
 import { ResponsiveScaler } from './ResponsiveScaler';
+import { SoundToggle } from './SoundToggle';
+import { soundManager } from '../utils/soundManager';
 
 interface BoardProps {
   state: GameState;
@@ -47,6 +49,22 @@ export const Board: React.FC<BoardProps> = ({
 
   const [heroModalPlayer, setHeroModalPlayer] = useState<Player | null>(null);
 
+  // Play audio alert when turn transitions to this player
+  const prevIsMyTurnRef = useRef<boolean>(isMyTurn);
+  useEffect(() => {
+    if (isMyTurn && !prevIsMyTurnRef.current) {
+      soundManager.playTurnAlert();
+    }
+    prevIsMyTurnRef.current = isMyTurn;
+  }, [isMyTurn]);
+
+  // Play error sound when error occurs
+  useEffect(() => {
+    if (error) {
+      soundManager.playError();
+    }
+  }, [error]);
+
   if (!myPlayer || !currentPlayer) return null;
 
   // ── Callbacks to emit actions ─────────────────────────────
@@ -72,6 +90,7 @@ export const Board: React.FC<BoardProps> = ({
   };
 
   const handleDropGems = (toDrop: Partial<Record<CrystalColor, number>>): void => {
+    soundManager.playButtonClick();
     onSendAction({ type: 'DROP_GEMS', toDrop: toDrop as any });
   };
 
@@ -130,10 +149,16 @@ export const Board: React.FC<BoardProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Audio SFX Toggle Button */}
+          <SoundToggle />
+
           {/* Quick Action: View My Recruited Marvel Heroes in large modal */}
           <button
             type="button"
-            onClick={() => setHeroModalPlayer(myPlayer)}
+            onClick={() => {
+              soundManager.playModalOpen();
+              setHeroModalPlayer(myPlayer);
+            }}
             className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-red-600/40 via-purple-600/30 to-amber-600/40 hover:from-red-600/60 hover:to-amber-600/60 border border-yellow-400/50 text-yellow-300 font-bold text-[11px] flex items-center gap-1.5 transition-all cursor-pointer shadow hover:scale-105"
             title="เปิดดูการ์ดฮีโร่ทั้งหมดที่คุณครอบครองแบบขยายใหญ่ (View Recruited Heroes)"
           >
@@ -158,7 +183,10 @@ export const Board: React.FC<BoardProps> = ({
 
           <button
             type="button"
-            onClick={onLeave}
+            onClick={() => {
+              soundManager.playButtonClick();
+              onLeave();
+            }}
             className="text-[11px] text-white/50 hover:text-white transition-colors border border-white/10 hover:border-white/30 px-2.5 py-0.5 rounded-lg cursor-pointer"
           >
             ออกจากห้อง (Leave)
@@ -387,7 +415,10 @@ export const Board: React.FC<BoardProps> = ({
             isMyTurn={isMyTurn}
             onBuyCard={handleBuyCard}
             onSendAction={onSendAction}
-            onViewCards={() => setHeroModalPlayer(myPlayer)}
+            onViewCards={() => {
+              soundManager.playModalOpen();
+              setHeroModalPlayer(myPlayer);
+            }}
           />
         </aside>
       </div>
@@ -396,7 +427,10 @@ export const Board: React.FC<BoardProps> = ({
       {heroModalPlayer && (
         <HeroModal
           isOpen={!!heroModalPlayer}
-          onClose={() => setHeroModalPlayer(null)}
+          onClose={() => {
+            soundManager.playModalClose();
+            setHeroModalPlayer(null);
+          }}
           player={heroModalPlayer}
         />
       )}

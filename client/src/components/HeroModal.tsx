@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom';
 import type { Player, CrystalColor } from '@shared/types/game.types';
 import { BANK_STONE_COLORS } from '@shared/types/game.types';
 import { STONE_NAMES } from './GemToken';
+import { soundManager } from '../utils/soundManager';
 
 interface HeroModalProps {
   isOpen: boolean;
@@ -42,12 +43,27 @@ export const HeroModal: React.FC<HeroModalProps> = ({ isOpen, onClose, player })
   const totalPoints = cards.reduce((sum, c) => sum + c.points, 0);
   const avengersCount = cards.filter((c) => c.avengersSymbol).length;
 
+  const handleClose = () => {
+    soundManager.playModalClose();
+    onClose();
+  };
+
+  const handleTierClick = (tier: 'all' | 1 | 2 | 3) => {
+    soundManager.playButtonClick();
+    setFilterTier(tier);
+  };
+
+  const handleColorClick = (color: CrystalColor | 'all') => {
+    soundManager.playButtonClick();
+    setFilterColor(color);
+  };
+
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-1 sm:p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/85 backdrop-blur-md transition-opacity"
-        onClick={onClose}
+        onClick={handleClose}
       />
 
       {/* Modal Container */}
@@ -78,7 +94,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({ isOpen, onClose, player })
 
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center text-base sm:text-lg transition-colors cursor-pointer border border-white/10 shrink-0"
             aria-label="Close modal"
           >
@@ -108,24 +124,20 @@ export const HeroModal: React.FC<HeroModalProps> = ({ isOpen, onClose, player })
 
           {/* Stone Discounts Breakdown */}
           <div className="flex items-center gap-1.5">
-            <span className="text-[10px] sm:text-[11px] text-white/50 uppercase font-semibold hidden sm:inline">ส่วนลดถาวร:</span>
-            <div className="flex items-center gap-1 bg-black/50 px-2 py-0.5 rounded-lg border border-white/10">
+            <span className="text-[9px] sm:text-xs text-white/50 hidden sm:inline">ส่วนลดถาวร:</span>
+            <div className="flex items-center gap-1">
               {BANK_STONE_COLORS.map((c) => {
                 const count = player.bonuses[c] ?? 0;
                 return (
                   <div
                     key={c}
-                    className={`flex items-center gap-0.5 px-1 py-0.2 rounded transition-all ${
-                      count > 0 ? 'bg-white/10 border border-white/20' : 'opacity-25'
+                    className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-md border text-[9px] sm:text-[11px] font-bold ${
+                      count > 0 ? 'bg-white/10 border-white/30 text-white' : 'bg-white/5 border-white/5 text-white/30'
                     }`}
-                    title={`${STONE_NAMES[c]}: +${count} discount`}
+                    title={`${STONE_NAMES[c]} bonus: +${count}`}
                   >
-                    <img
-                      src={`/images/tokens/${c}.png`}
-                      alt={c}
-                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain"
-                    />
-                    <span className="text-[10px] sm:text-xs font-black text-white">+{count}</span>
+                    <img src={`/images/tokens/${c}.png`} alt={c} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
+                    <span>+{count}</span>
                   </div>
                 );
               })}
@@ -139,7 +151,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({ isOpen, onClose, player })
           <div className="flex items-center gap-1">
             <button
               type="button"
-              onClick={() => setFilterTier('all')}
+              onClick={() => handleTierClick('all')}
               className={`text-[10px] sm:text-xs px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md sm:rounded-lg font-bold transition-all cursor-pointer ${
                 filterTier === 'all'
                   ? 'bg-yellow-400 text-black shadow-md'
@@ -150,7 +162,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({ isOpen, onClose, player })
             </button>
             <button
               type="button"
-              onClick={() => setFilterTier(3)}
+              onClick={() => handleTierClick(3)}
               className={`text-[10px] sm:text-xs px-2 py-0.5 sm:px-3 sm:py-1 rounded-md sm:rounded-lg font-bold transition-all cursor-pointer ${
                 filterTier === 3
                   ? 'bg-amber-500 text-black shadow-md'
@@ -161,7 +173,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({ isOpen, onClose, player })
             </button>
             <button
               type="button"
-              onClick={() => setFilterTier(2)}
+              onClick={() => handleTierClick(2)}
               className={`text-[10px] sm:text-xs px-2 py-0.5 sm:px-3 sm:py-1 rounded-md sm:rounded-lg font-bold transition-all cursor-pointer ${
                 filterTier === 2
                   ? 'bg-purple-500 text-white shadow-md'
@@ -172,7 +184,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({ isOpen, onClose, player })
             </button>
             <button
               type="button"
-              onClick={() => setFilterTier(1)}
+              onClick={() => handleTierClick(1)}
               className={`text-[10px] sm:text-xs px-2 py-0.5 sm:px-3 sm:py-1 rounded-md sm:rounded-lg font-bold transition-all cursor-pointer ${
                 filterTier === 1
                   ? 'bg-slate-500 text-white shadow-md'
@@ -187,7 +199,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({ isOpen, onClose, player })
           <div className="flex items-center gap-1">
             <button
               type="button"
-              onClick={() => setFilterColor('all')}
+              onClick={() => handleColorClick('all')}
               className={`text-[10px] sm:text-xs px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg font-bold transition-all cursor-pointer ${
                 filterColor === 'all' ? 'bg-white/30 text-white' : 'bg-white/5 text-white/40 hover:bg-white/10'
               }`}
@@ -198,7 +210,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({ isOpen, onClose, player })
               <button
                 key={c}
                 type="button"
-                onClick={() => setFilterColor(filterColor === c ? 'all' : c)}
+                onClick={() => handleColorClick(filterColor === c ? 'all' : c)}
                 className={`w-6 h-6 sm:w-7 sm:h-7 rounded-md flex items-center justify-center transition-all cursor-pointer p-0.5 ${
                   filterColor === c
                     ? 'ring-2 ring-yellow-400 bg-white/20 scale-105'
@@ -304,7 +316,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({ isOpen, onClose, player })
           </span>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="w-full sm:w-auto px-4 py-1 sm:py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all cursor-pointer text-center"
           >
             ปิดหน้าต่าง (Close)

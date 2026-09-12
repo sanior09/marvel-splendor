@@ -4,6 +4,7 @@
 
 import React from 'react';
 import type { CardTier } from '@shared/types/game.types';
+import { soundManager } from '../utils/soundManager';
 
 interface CardDeckProps {
   tier: CardTier;
@@ -29,6 +30,15 @@ export const CardDeck: React.FC<CardDeckProps> = ({
   const styles = TIER_STYLES[tier];
   const canReserve = isMyTurn && count > 0 && reservedCount < 3;
 
+  const handleClick = () => {
+    if (canReserve) {
+      soundManager.playCardReserve();
+      onReserveFromDeck(tier);
+    } else if (isMyTurn && reservedCount >= 3) {
+      soundManager.playError();
+    }
+  };
+
   return (
     <div
       className={[
@@ -37,7 +47,7 @@ export const CardDeck: React.FC<CardDeckProps> = ({
         count === 0 ? 'opacity-30' : '',
         canReserve ? `cursor-pointer ${styles.glow}` : '',
       ].join(' ')}
-      onClick={() => canReserve && onReserveFromDeck(tier)}
+      onClick={handleClick}
       role={canReserve ? 'button' : undefined}
       aria-label={`${styles.label} deck — ${count} cards remaining${canReserve ? ', click to reserve' : ''}`}
     >
