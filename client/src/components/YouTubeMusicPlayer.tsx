@@ -54,11 +54,22 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
   const [showPlaylist, setShowPlaylist] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
-    if (typeof window !== 'undefined' && window.innerHeight <= 550) {
+    if (typeof window !== 'undefined' && window.innerHeight <= 600) {
       return true;
     }
     return false;
   });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerHeight <= 600) {
+        setIsCollapsed(true);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const playerRef = useRef<any>(null);
   const timerRef = useRef<any>(null);

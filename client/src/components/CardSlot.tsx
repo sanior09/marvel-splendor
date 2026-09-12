@@ -63,7 +63,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
   // Empty slot
   if (!card) {
     return (
-      <div className="w-28 h-42 rounded-xl border-2 border-dashed border-white/10 flex items-center justify-center bg-black/20">
+      <div className="w-28 h-32 rounded-xl border-2 border-dashed border-white/10 flex items-center justify-center bg-black/20">
         <span className="text-white/20 text-2xl">✦</span>
       </div>
     );
@@ -72,7 +72,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
   // Opponent's hidden reserved card
   if (isHidden) {
     return (
-      <div className={`w-28 h-42 rounded-xl bg-gradient-to-b border ${TIER_BORDER[card.tier]} ${TIER_BG[card.tier]} flex items-center justify-center`}>
+      <div className={`w-28 h-32 rounded-xl bg-gradient-to-b border ${TIER_BORDER[card.tier]} ${TIER_BG[card.tier]} flex items-center justify-center`}>
         <div className="text-center space-y-1">
           <div className="text-3xl opacity-40">🔒</div>
           <div className="text-[10px] text-white/60 font-semibold tracking-wider uppercase">Tier {card.tier} (จองไว้)</div>
@@ -88,7 +88,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
   return (
     <div
       className={[
-        'relative artifact-card w-28 h-36 rounded-xl border-2 flex flex-col overflow-hidden group select-none transition-all duration-200',
+        'relative artifact-card w-28 h-32 rounded-xl border-2 flex flex-col overflow-hidden group select-none transition-all duration-200',
         TIER_BORDER[card.tier],
         canAfford && isMyTurn ? 'ring-2 ring-emerald-400 ring-offset-1 ring-offset-black' : '',
       ].join(' ')}

@@ -1,5 +1,5 @@
 // ============================================================
-//  ResponsiveScaler.tsx — Viewport Scaler for iPad & Mobile Landscape
+//  ResponsiveScaler.tsx — Viewport Scaler for Mobile Landscape & Tablets
 // ============================================================
 
 import React, { useState, useLayoutEffect } from 'react';
@@ -11,11 +11,12 @@ interface ResponsiveScalerProps {
 }
 
 export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
-  baseWidth = 1320,
-  baseHeight = 760,
+  baseWidth = 1120,
+  baseHeight = 580,
   children,
 }) => {
   const [scale, setScale] = useState<number>(1);
+  const [contentWidth, setContentWidth] = useState<number>(baseWidth);
   const [isScaled, setIsScaled] = useState<boolean>(false);
 
   useLayoutEffect(() => {
@@ -23,15 +24,29 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
       const w = window.innerWidth;
       const h = window.innerHeight;
 
-      // If screen is smaller than the base design in either width or height (iPad, Tablet, Phone Landscape)
-      if (w < baseWidth || h < baseHeight) {
-        const scaleX = w / baseWidth;
-        const scaleY = h / baseHeight;
-        const computedScale = Math.min(scaleX, scaleY);
-        setScale(computedScale);
+      // When screen is smaller than base size OR on landscape mobile/tablets
+      if (w < baseWidth || h < baseHeight || h <= 680) {
+        // 1. Scale primarily based on viewport height to guarantee zero vertical overflow
+        // and maximize card/text size (up to 35-45% larger than fixed 750px scale!)
+        let newScale = h / baseHeight;
+
+        // 2. Compute dynamic virtual width so (contentWidth * newScale) matches full viewport width w
+        // This completely eliminates pillarboxing (black bars on the left and right!)
+        let dynamicWidth = Math.max(baseWidth, Math.round(w / newScale));
+
+        // 3. Fallback: if viewport is narrower than baseWidth * newScale, scale to fit width instead
+        if (baseWidth * newScale > w) {
+          newScale = w / baseWidth;
+          dynamicWidth = baseWidth;
+        }
+
+        setScale(newScale);
+        setContentWidth(dynamicWidth);
         setIsScaled(true);
       } else {
+        // Large desktop displays: fluid full-bleed layout
         setScale(1);
+        setContentWidth(w);
         setIsScaled(false);
       }
     };
@@ -46,18 +61,18 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
     };
   }, [baseWidth, baseHeight]);
 
-  // If on large desktop, render children directly in normal fluid mode
+  // Desktop fluid mode
   if (!isScaled) {
     return <div className="w-screen h-screen overflow-hidden select-none">{children}</div>;
   }
 
-  // If on iPad, Tablet, or Mobile Landscape: Scale-to-Fit container
+  // Mobile Landscape & Tablet Edge-to-Edge scaled container
   return (
     <div className="w-screen h-screen overflow-hidden flex items-center justify-center bg-[#07080f] select-none">
       <div
         style={{
-          width: baseWidth,
-          height: baseHeight,
+          width: `${contentWidth}px`,
+          height: `${baseHeight}px`,
           transform: `scale(${scale})`,
           transformOrigin: 'center center',
           flexShrink: 0,
@@ -69,3 +84,4 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
     </div>
   );
 };
+

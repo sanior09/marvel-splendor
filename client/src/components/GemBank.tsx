@@ -95,18 +95,18 @@ export const GemBank: React.FC<GemBankProps> = ({
     : `เลือกมณีเพิ่มอีก ${3 - selected.length} สี (Select ${3 - selected.length} more)`;
 
   return (
-    <div className="glass rounded-2xl p-2.5 flex flex-col h-full justify-between border border-white/10 shadow-2xl bg-black/40 overflow-hidden">
+    <div className="glass rounded-xl p-2 flex flex-col h-full justify-between border border-white/10 shadow-2xl bg-black/40 overflow-hidden">
       {/* Bank Header */}
       <div>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-1">
           <div>
-            <h3 className="font-display text-xs font-black text-white uppercase tracking-wider flex items-center gap-1.5">
+            <h3 className="font-display text-[11px] font-black text-white uppercase tracking-wider flex items-center gap-1">
               <span>⚡ คลังมณี (Infinity Bank)</span>
             </h3>
-            <p className="text-[9px] text-white/50 font-medium">หยิบ 3 สีต่าง หรือ 2 สีเหมือน</p>
+            <p className="text-[8px] text-white/50 font-medium">หยิบ 3 สีต่าง หรือ 2 สีเหมือน</p>
           </div>
           <span
-            className={`text-[10px] px-2 py-0.5 rounded-full font-black border ${
+            className={`text-[9px] px-1.5 py-0.2 rounded-full font-black border ${
               totalInHand >= 10
                 ? 'bg-red-500/20 text-red-400 border-red-500/40 animate-pulse'
                 : 'bg-white/10 text-white/80 border-white/10'
@@ -118,11 +118,11 @@ export const GemBank: React.FC<GemBankProps> = ({
         </div>
 
         {/* 2-Column Grid for the 5 Standard Stones + S.H.I.E.L.D. */}
-        <div className="grid grid-cols-2 gap-2 justify-items-center py-1">
+        <div className="grid grid-cols-2 gap-1 justify-items-center py-0.5">
           {BANK_STONE_COLORS.map((color) => (
             <div
               key={color}
-              className="flex flex-col items-center gap-0.5 p-1 rounded-xl hover:bg-white/5 transition-colors w-full"
+              className="flex flex-col items-center gap-0.5 p-0.5 rounded-lg hover:bg-white/5 transition-colors w-full"
             >
               <GemToken
                 color={color}
@@ -132,15 +132,15 @@ export const GemBank: React.FC<GemBankProps> = ({
                 selected={selected.includes(color)}
                 disabled={!isMyTurn || (bank[color] ?? 0) === 0}
               />
-              <span className="text-[10px] text-white/90 font-bold tracking-tight text-center leading-tight">
-                {SHORT_NAMES[color].en} <span className="text-white/50 text-[9px]">({SHORT_NAMES[color].th})</span>
+              <span className="text-[9.5px] text-white/90 font-bold tracking-tight text-center leading-tight">
+                {SHORT_NAMES[color].en} <span className="text-white/50 text-[8px]">({SHORT_NAMES[color].th})</span>
               </span>
             </div>
           ))}
 
           {/* S.H.I.E.L.D. wildcard token — gained when reserving a card */}
           <div
-            className="flex flex-col items-center gap-0.5 p-1 rounded-xl w-full opacity-80"
+            className="flex flex-col items-center gap-0.5 p-0.5 rounded-lg w-full opacity-80"
             title="S.H.I.E.L.D. Wild Token: ได้รับอัตโนมัติ 1 เหรียญเมื่อทำการจองการ์ดฮีโร่"
           >
             <GemToken
@@ -149,22 +149,22 @@ export const GemBank: React.FC<GemBankProps> = ({
               size="md"
               disabled
             />
-            <span className="text-[10px] text-white/60 font-bold tracking-tight text-center leading-tight">
-              S.H.I.E.L.D. <span className="text-white/40 text-[9px]">(ชิลด์)</span>
+            <span className="text-[9.5px] text-white/60 font-bold tracking-tight text-center leading-tight">
+              S.H.I.E.L.D. <span className="text-white/40 text-[8px]">(ชิลด์)</span>
             </span>
           </div>
         </div>
       </div>
 
       {/* Selection Hint & Controls */}
-      <div className="text-center pt-2 border-t border-white/10 mt-auto">
-        <div className="bg-black/60 rounded-xl p-2 border border-white/5">
-          <p className="text-[10.5px] text-yellow-300 font-semibold leading-tight">{hint}</p>
+      <div className="text-center pt-1 border-t border-white/10 mt-auto">
+        <div className="bg-black/60 rounded-lg p-1.5 border border-white/5">
+          <p className="text-[9.5px] text-yellow-300 font-semibold leading-tight">{hint}</p>
           {selected.length > 0 && (
             <button
               type="button"
               onClick={reset}
-              className="mt-2 w-full py-1 text-xs text-red-400 hover:text-red-300 font-bold bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-lg transition-all cursor-pointer"
+              className="mt-1 w-full py-0.5 text-[10px] text-red-400 hover:text-red-300 font-bold bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded transition-all cursor-pointer"
             >
               ✕ ยกเลิกการเลือก (Cancel)
             </button>

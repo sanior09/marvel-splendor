@@ -32,7 +32,7 @@ export const CardDeck: React.FC<CardDeckProps> = ({
   return (
     <div
       className={[
-        'w-28 h-36 rounded-xl bg-gradient-to-b border border-white/10 flex flex-col items-center justify-center gap-1.5 transition-all duration-200',
+        'w-28 h-32 rounded-xl bg-gradient-to-b border border-white/10 flex flex-col items-center justify-center gap-1.5 transition-all duration-200',
         styles.bg,
         count === 0 ? 'opacity-30' : '',
         canReserve ? `cursor-pointer ${styles.glow}` : '',
