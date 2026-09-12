@@ -168,6 +168,17 @@ export const Lobby: React.FC<LobbyProps> = ({
             </div>
 
             <div className="text-center space-y-1.5">
+              <div className="flex items-center justify-center gap-2 mb-0.5 opacity-90">
+                <span className="text-[9px] font-black font-display tracking-[0.2em] uppercase italic text-[#adc0d1]">
+                  POWERED BY
+                </span>
+                <img
+                  src="/images/nachapol_industries.png"
+                  alt="Nachapol Industries"
+                  className="h-4.5 object-contain drop-shadow"
+                />
+              </div>
+
               <div className="flex items-center justify-center gap-2">
                 <span className="marvel-badge px-2 py-0.5 rounded text-xs tracking-wider">MARVEL</span>
                 <span className="font-display font-black text-lg text-white tracking-widest">SPLENDOR</span>
@@ -374,6 +385,18 @@ export const Lobby: React.FC<LobbyProps> = ({
       <div className="w-full h-full max-h-full overflow-hidden board-bg flex flex-col items-center justify-center p-3 sm:p-5">
         {/* Hero Header */}
         <div className="text-center space-y-1.5 mb-3">
+          {/* Nachapol Industries Brand Logo */}
+          <div className="flex items-center justify-center gap-2 mb-1.5 opacity-90 hover:opacity-100 transition-all hover:scale-105">
+            <span className="text-[10px] sm:text-xs font-black font-display tracking-[0.22em] uppercase italic text-[#adc0d1]">
+              POWERED BY
+            </span>
+            <img
+              src="/images/nachapol_industries.png"
+              alt="Nachapol Industries"
+              className="h-6 sm:h-7 object-contain drop-shadow-[0_0_12px_rgba(255,255,255,0.35)]"
+            />
+          </div>
+
           <div className="flex items-center justify-center gap-2.5">
             <span className="marvel-badge px-3 py-0.5 rounded text-2xl sm:text-3xl font-black tracking-wider shadow-2xl">
               MARVEL
