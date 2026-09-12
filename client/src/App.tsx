@@ -5,7 +5,7 @@
 import React, { useState, useCallback } from 'react';
 import { Lobby } from './components/Lobby';
 import { Board } from './components/Board';
-import { YouTubeMusicPlayer } from './components/YouTubeMusicPlayer';
+// import { YouTubeMusicPlayer } from './components/YouTubeMusicPlayer';
 import { OrientationGuard } from './components/OrientationGuard';
 import { useGameState } from './hooks/useGameState';
 import type { RoomInfo } from '@shared/types/game.types';
@@ -100,10 +100,10 @@ export default function App(): React.ReactElement {
           />
         )}
 
-        {/* Persistent YouTube-styled Marvel BGM Music Player */}
-        <div className="fixed top-1 right-2 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 pointer-events-auto">
+        {/* Persistent YouTube-styled Marvel BGM Music Player (ปิดไว้ชั่วคราว นำคอมเมนต์ออกเพื่อเปิดใช้งานใหม่ได้) */}
+        {/* <div className="fixed top-1 right-2 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 pointer-events-auto">
           <YouTubeMusicPlayer />
-        </div>
+        </div> */}
       </div>
     </OrientationGuard>
   );
