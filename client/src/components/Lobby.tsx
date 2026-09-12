@@ -168,14 +168,11 @@ export const Lobby: React.FC<LobbyProps> = ({
             </div>
 
             <div className="text-center space-y-1.5">
-              <div className="flex items-center justify-center gap-2 mb-0.5 opacity-90">
-                <span className="text-[9px] font-black font-display tracking-[0.2em] uppercase italic text-[#adc0d1]">
-                  POWERED BY
-                </span>
+              <div className="flex items-center justify-center mb-1">
                 <img
-                  src="/images/nachapol_industries.png"
-                  alt="Nachapol Industries"
-                  className="h-4.5 object-contain drop-shadow"
+                  src="/images/nachapol_powered_by.png"
+                  alt="Powered by Nachapol Industries"
+                  className="h-4.5 sm:h-5 object-contain opacity-90"
                 />
               </div>
 
@@ -385,15 +382,12 @@ export const Lobby: React.FC<LobbyProps> = ({
       <div className="w-full h-full max-h-full overflow-hidden board-bg flex flex-col items-center justify-center p-3 sm:p-5">
         {/* Hero Header */}
         <div className="text-center space-y-1.5 mb-3">
-          {/* Nachapol Industries Brand Logo */}
-          <div className="flex items-center justify-center gap-2 mb-1.5 opacity-90 hover:opacity-100 transition-all hover:scale-105">
-            <span className="text-[10px] sm:text-xs font-black font-display tracking-[0.22em] uppercase italic text-[#adc0d1]">
-              POWERED BY
-            </span>
+          {/* Nachapol Industries Unified Brand Banner */}
+          <div className="flex items-center justify-center mb-2">
             <img
-              src="/images/nachapol_industries.png"
-              alt="Nachapol Industries"
-              className="h-6 sm:h-7 object-contain drop-shadow-[0_0_12px_rgba(255,255,255,0.35)]"
+              src="/images/nachapol_powered_by.png"
+              alt="Powered by Nachapol Industries"
+              className="h-6 sm:h-7 object-contain opacity-95 hover:opacity-100 transition-transform hover:scale-105"
             />
           </div>
 
@@ -411,9 +405,8 @@ export const Lobby: React.FC<LobbyProps> = ({
           <div className="flex items-center justify-center gap-3 pt-0.5">
             <div className="flex items-center gap-1.5">
               <div
-                className={`w-2 h-2 rounded-full ${
-                  connectionStatus === 'connected' ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'
-                }`}
+                className={`w-2 h-2 rounded-full ${connectionStatus === 'connected' ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'
+                  }`}
               />
               <span className="text-xs text-white/50">
                 {connectionStatus === 'connected' ? '🟢 เซิร์ฟเวอร์พร้อมใช้งาน (Server Connected)' : connectionStatus}
@@ -462,10 +455,10 @@ export const Lobby: React.FC<LobbyProps> = ({
                 {tab === 'solo'
                   ? '🤖 เล่นกับบอท'
                   : tab === 'create'
-                  ? '✦ สร้างห้อง'
-                  : tab === 'join'
-                  ? '🔗 เข้าร่วม'
-                  : '🌐 ค้นหาห้อง'}
+                    ? '✦ สร้างห้อง'
+                    : tab === 'join'
+                      ? '🔗 เข้าร่วม'
+                      : '🌐 ค้นหาห้อง'}
               </button>
             ))}
           </div>
