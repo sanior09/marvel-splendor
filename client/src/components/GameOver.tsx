@@ -116,7 +116,7 @@ export const GameOver: React.FC<GameOverProps> = ({ winners, players, myPlayerId
         <div className="flex items-center justify-center pt-3 border-t border-white/10">
           <img
             src="/images/nachapol_powered_by.png"
-            alt="Powered by Nachapol Industries"
+            alt="Powered by Nachapol Industries × J.A.R.V.I.S."
             className="h-6 sm:h-7 object-contain opacity-90 hover:opacity-100 transition-opacity"
           />
         </div>

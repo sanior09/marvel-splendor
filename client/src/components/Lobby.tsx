@@ -171,7 +171,7 @@ export const Lobby: React.FC<LobbyProps> = ({
               <div className="flex items-center justify-center mb-1">
                 <img
                   src="/images/nachapol_powered_by.png"
-                  alt="Powered by Nachapol Industries"
+                  alt="Powered by Nachapol Industries × J.A.R.V.I.S."
                   className="h-4.5 sm:h-5 object-contain opacity-90"
                 />
               </div>
@@ -386,7 +386,7 @@ export const Lobby: React.FC<LobbyProps> = ({
           <div className="flex items-center justify-center mb-2">
             <img
               src="/images/nachapol_powered_by.png"
-              alt="Powered by Nachapol Industries"
+              alt="Powered by Nachapol Industries × J.A.R.V.I.S."
               className="h-6 sm:h-7 object-contain opacity-95 hover:opacity-100 transition-transform hover:scale-105"
             />
           </div>
