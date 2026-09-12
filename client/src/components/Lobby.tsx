@@ -168,12 +168,19 @@ export const Lobby: React.FC<LobbyProps> = ({
             </div>
 
             <div className="text-center space-y-1.5">
-              <div className="flex items-center justify-center mb-1">
-                <img
-                  src="/images/nachapol_powered_by.png"
-                  alt="Powered by Nachapol Industries × J.A.R.V.I.S."
-                  className="h-4.5 sm:h-5 object-contain opacity-90"
-                />
+              <div className="flex items-center justify-center gap-1.5 mb-1.5 select-none">
+                <span className="text-[9px] sm:text-[10px] font-semibold tracking-widest text-white/45 uppercase">
+                  POWERED BY
+                </span>
+                <span className="text-[11px] sm:text-xs font-black tracking-wider text-white uppercase drop-shadow-sm">
+                  NACHAPOL INDUSTRIES
+                </span>
+                <span className="text-cyan-400 font-black text-[11px] sm:text-xs">
+                  X
+                </span>
+                <span className="text-[11px] sm:text-xs font-black tracking-widest text-cyan-300 uppercase drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">
+                  J.A.R.V.I.S.
+                </span>
               </div>
 
               <div className="flex items-center justify-center gap-2">
@@ -382,13 +389,20 @@ export const Lobby: React.FC<LobbyProps> = ({
       <div className="w-full h-full max-h-full overflow-hidden board-bg flex flex-col items-center justify-center p-3 sm:p-5">
         {/* Hero Header */}
         <div className="text-center space-y-1.5 mb-3">
-          {/* Nachapol Industries Unified Brand Banner */}
-          <div className="flex items-center justify-center mb-2">
-            <img
-              src="/images/nachapol_powered_by.png"
-              alt="Powered by Nachapol Industries × J.A.R.V.I.S."
-              className="h-6 sm:h-7 object-contain opacity-95 hover:opacity-100 transition-transform hover:scale-105"
-            />
+          {/* Nachapol Industries Brand Text */}
+          <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-2 select-none">
+            <span className="text-[10px] sm:text-xs font-semibold tracking-widest text-white/45 uppercase">
+              POWERED BY
+            </span>
+            <span className="text-xs sm:text-sm font-black tracking-wider text-white uppercase drop-shadow-sm">
+              NACHAPOL INDUSTRIES
+            </span>
+            <span className="text-cyan-400 font-black text-xs sm:text-sm">
+              X
+            </span>
+            <span className="text-xs sm:text-sm font-black tracking-widest text-cyan-300 uppercase drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">
+              J.A.R.V.I.S.
+            </span>
           </div>
 
           <div className="flex items-center justify-center gap-2.5">

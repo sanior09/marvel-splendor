@@ -113,12 +113,19 @@ export const GameOver: React.FC<GameOverProps> = ({ winners, players, myPlayerId
         </button>
 
         {/* Sponsor / Tournament Branding */}
-        <div className="flex items-center justify-center pt-3 border-t border-white/10">
-          <img
-            src="/images/nachapol_powered_by.png"
-            alt="Powered by Nachapol Industries × J.A.R.V.I.S."
-            className="h-6 sm:h-7 object-contain opacity-90 hover:opacity-100 transition-opacity"
-          />
+        <div className="flex items-center justify-center gap-1.5 sm:gap-2 pt-3 border-t border-white/10 select-none">
+          <span className="text-[10px] sm:text-xs font-semibold tracking-widest text-white/45 uppercase">
+            POWERED BY
+          </span>
+          <span className="text-xs sm:text-sm font-black tracking-wider text-white uppercase drop-shadow-sm">
+            NACHAPOL INDUSTRIES
+          </span>
+          <span className="text-cyan-400 font-black text-xs sm:text-sm">
+            X
+          </span>
+          <span className="text-xs sm:text-sm font-black tracking-widest text-cyan-300 uppercase drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">
+            J.A.R.V.I.S.
+          </span>
         </div>
       </div>
     </div>,
