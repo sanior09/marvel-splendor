@@ -1,0 +1,424 @@
+// ============================================================
+//  Board.tsx — Marvel Splendor Game Board Layout
+// ============================================================
+
+import React, { useState } from 'react';
+import type { GameState, GameAction, CrystalColor, CardTier, Player } from '@shared/types/game.types';
+import { CardSlot } from './CardSlot';
+import { CardDeck } from './CardDeck';
+import { GemBank } from './GemBank';
+import { GuardianRow } from './GuardianRow';
+import { PlayerPanel } from './PlayerPanel';
+import { PlayerList } from './PlayerList';
+import { ActionModal } from './ActionModal';
+import { GameOver } from './GameOver';
+import { HeroModal } from './HeroModal';
+import { ResponsiveScaler } from './ResponsiveScaler';
+
+interface BoardProps {
+  state: GameState;
+  myPlayerId: string;
+  onSendAction: (action: GameAction) => void;
+  onLeave: () => void;
+  error: string | null;
+  onClearError: () => void;
+}
+
+const GAUNTLET_5_BONUS_STONES: CrystalColor[] = [
+  'topaz',     // Mind (Yellow)
+  'sapphire',  // Space (Blue)
+  'obsidian',  // Soul (Orange)
+  'amethyst',  // Power (Purple)
+  'ruby',      // Reality (Red)
+];
+
+export const Board: React.FC<BoardProps> = ({
+  state,
+  myPlayerId,
+  onSendAction,
+  onLeave,
+  error,
+  onClearError,
+}) => {
+  const { board, players, currentPlayerIndex, phase } = state;
+  const currentPlayer = players[currentPlayerIndex];
+  const myPlayer = players.find((p) => p.id === myPlayerId);
+  const isMyTurn = currentPlayer?.id === myPlayerId;
+
+  const [heroModalPlayer, setHeroModalPlayer] = useState<Player | null>(null);
+
+  if (!myPlayer || !currentPlayer) return null;
+
+  // ── Callbacks to emit actions ─────────────────────────────
+
+  const handleBuyCard = (cardId: string): void => {
+    onSendAction({ type: 'BUY_CARD', cardId });
+  };
+
+  const handleReserveCard = (cardId: string): void => {
+    onSendAction({ type: 'RESERVE_CARD', cardId });
+  };
+
+  const handleReserveFromDeck = (tier: CardTier): void => {
+    onSendAction({ type: 'RESERVE_CARD', cardId: null, deckTier: tier });
+  };
+
+  const handleTake3Gems = (colors: [CrystalColor, CrystalColor, CrystalColor]): void => {
+    onSendAction({ type: 'TAKE_3_GEMS', colors });
+  };
+
+  const handleTake2Gems = (color: CrystalColor): void => {
+    onSendAction({ type: 'TAKE_2_GEMS', color });
+  };
+
+  const handleDropGems = (toDrop: Partial<Record<CrystalColor, number>>): void => {
+    onSendAction({ type: 'DROP_GEMS', toDrop: toDrop as any });
+  };
+
+  // ── Tier renderer helper ──────────────────────────────────
+
+  const renderTier = (
+    slots: (import('@shared/types/game.types').Card | null)[],
+    deckCount: number,
+    tier: CardTier,
+  ): React.ReactNode => (
+    <div className="flex items-center gap-2.5 justify-center">
+      {/* Deck */}
+      <CardDeck
+        tier={tier}
+        count={deckCount}
+        isMyTurn={isMyTurn}
+        reservedCount={myPlayer.reservedCards.length}
+        onReserveFromDeck={handleReserveFromDeck}
+      />
+      {/* Board slots */}
+      {slots.map((card, i) => (
+        <CardSlot
+          key={card?.id ?? `empty-t${tier}-${i}`}
+          card={card}
+          isMyTurn={isMyTurn}
+          currentPlayer={myPlayer}
+          onBuy={handleBuyCard}
+          onReserve={handleReserveCard}
+        />
+      ))}
+    </div>
+  );
+
+  // ── Render ────────────────────────────────────────────────
+
+  const avengersHolder = players.find((p) => p.id === board.avengersAssembleHolder);
+  const timeStoneHolderPlayer = players.find((p) => p.id === board.timeStoneHolder);
+
+  return (
+    <ResponsiveScaler baseWidth={1320} baseHeight={750}>
+      <div className="h-full w-full board-bg flex flex-col overflow-hidden">
+        {/* Top bar */}
+      <header className="glass border-b border-white/10 px-5 flex items-center justify-between h-12 flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <span className="marvel-badge px-2.5 py-0.5 rounded text-sm tracking-wider">
+              MARVEL
+            </span>
+            <span className="font-display text-lg font-black tracking-widest text-white">
+              SPLENDOR
+            </span>
+          </div>
+          <span className="text-[11px] text-white/50 bg-white/5 px-2.5 py-0.5 rounded-full font-semibold border border-white/5">
+            รอบที่ (Round) {state.turnNumber}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Quick Action: View My Recruited Marvel Heroes in large modal */}
+          <button
+            type="button"
+            onClick={() => setHeroModalPlayer(myPlayer)}
+            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-red-600/40 via-purple-600/30 to-amber-600/40 hover:from-red-600/60 hover:to-amber-600/60 border border-yellow-400/50 text-yellow-300 font-bold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg hover:scale-105"
+            title="เปิดดูการ์ดฮีโร่ทั้งหมดที่คุณครอบครองแบบขยายใหญ่ (View Recruited Heroes)"
+          >
+            <span>🦸‍♂️ ดูฮีโร่ของฉัน (My Heroes)</span>
+            <span className="bg-yellow-400 text-black text-[10px] font-black px-1.5 py-0.2 rounded-full shadow">
+              {myPlayer.ownedCards.length}
+            </span>
+          </button>
+
+          <span className="text-xs">
+            {isMyTurn ? (
+              <span className="text-yellow-400 font-extrabold tracking-wide animate-pulse bg-yellow-400/10 border border-yellow-400/30 px-3 py-1 rounded-full">
+                ⚡ ถึงตาคุณแล้ว (YOUR TURN)
+              </span>
+            ) : (
+              <span className="text-white/60 bg-white/5 px-3 py-1 rounded-full border border-white/5">
+                รอตาของ (Waiting): <strong className="text-white font-bold">{currentPlayer?.name}</strong>
+                {currentPlayer?.isBot && ' (AI)'}
+              </span>
+            )}
+          </span>
+
+          <button
+            type="button"
+            onClick={onLeave}
+            className="text-xs text-white/50 hover:text-white transition-colors border border-white/10 hover:border-white/30 px-3 py-1 rounded-lg cursor-pointer"
+          >
+            ออกจากห้อง (Leave)
+          </button>
+        </div>
+      </header>
+
+      {/* Error banner */}
+      {error && (
+        <div
+          className="bg-red-500/20 border-b border-red-500/30 px-6 py-2 text-xs text-red-300 font-medium flex items-center justify-between"
+          role="alert"
+        >
+          <span>⚠️ {error}</span>
+          <button
+            type="button"
+            onClick={onClearError}
+            className="text-red-300 hover:text-white text-lg leading-none cursor-pointer"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {/* Main layout: 3-column no-scroll setup */}
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        {/* Left Column: Infinity Stones & S.H.I.E.L.D. Bank (Dedicated dock, NO vertical scroll needed) */}
+        <aside className="w-56 p-2 flex flex-col flex-shrink-0 border-r border-white/10 bg-black/40 min-h-0 overflow-hidden">
+          <GemBank
+            bank={board.crystalBank}
+            isMyTurn={isMyTurn}
+            currentPlayer={myPlayer}
+            onTake3Gems={handleTake3Gems}
+            onTake2Gems={handleTake2Gems}
+          />
+        </aside>
+
+        {/* Center: Board (Special Tiles & 3 Tiers, fully visible at a glance without scrolling) */}
+        <main className="flex-1 min-h-0 px-4 py-1 flex flex-col justify-between overflow-hidden">
+          {/* Top Row: Special Tiles & Locations */}
+          <div className="flex items-center justify-center gap-3">
+            {/* Special Tiles (Gauntlet + Time Stone + Avengers) */}
+            <div className="flex gap-2">
+              {/* Infinity Gauntlet Victory Tile */}
+              <div
+                className="w-40 h-20 rounded-xl bg-gradient-to-br from-amber-600 via-yellow-600 to-amber-700 shadow-[0_0_15px_rgba(245,158,11,0.25)] border-2 border-yellow-300/80 flex flex-col items-center justify-between p-1 relative overflow-hidden"
+                title="Infinity Gauntlet Victory: รวมแต้ม 16+ PTS + โบนัสการ์ดครบ 5 สี + มณีกาลเวลา Time Stone"
+              >
+                <div className="flex items-center gap-1">
+                  <span className="text-sm">🧤</span>
+                  <span className="text-[8.5px] uppercase font-black text-yellow-100 tracking-wider">
+                    ถุงมืออินฟินิตี้ (Gauntlet)
+                  </span>
+                </div>
+
+                {/* Sockets: 5 Hero Bonuses + 1 Time Stone */}
+                <div className="flex items-center gap-1 bg-black/60 px-1.5 py-0.5 rounded-full border border-white/20">
+                  {GAUNTLET_5_BONUS_STONES.map((c) => {
+                    const hasStone = (myPlayer.bonuses[c] ?? 0) > 0;
+                    return (
+                      <div
+                        key={c}
+                        className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                          hasStone
+                            ? 'ring-1 ring-yellow-300 shadow-[0_0_6px_rgba(250,204,21,0.8)] scale-110'
+                            : 'opacity-25 grayscale'
+                        }`}
+                        title={`${c}: ${hasStone ? 'โบนัสพร้อมใช้งาน (Active)' : 'ยังขาดโบนัสการ์ดสีนี้'}`}
+                      >
+                        <img
+                          src={`/images/tokens/${c}.png`}
+                          alt={c}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    );
+                  })}
+                  {/* Plus Time Stone socket */}
+                  <div
+                    className={`w-3 h-3 rounded-full ml-0.5 transition-all duration-200 ${
+                      (myPlayer.crystals.emerald ?? 0) > 0
+                        ? 'ring-1 ring-emerald-300 shadow-[0_0_6px_rgba(52,211,153,0.9)] scale-110'
+                        : 'opacity-25 grayscale'
+                    }`}
+                    title={`Time Stone: ${(myPlayer.crystals.emerald ?? 0) > 0 ? 'ครอบครองแล้ว (Possessed)' : 'ยังขาดโทเคนมณีเขียว'}`}
+                  >
+                    <img
+                      src="/images/tokens/emerald.png"
+                      alt="Time Stone"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <span className="font-black text-xs text-white drop-shadow leading-none">
+                    ชนะ (WIN): 16 PTS
+                  </span>
+                  <div className="text-[7px] text-yellow-100/90 font-bold uppercase tracking-tight">
+                    โบนัส 5 สี + 🟢 Time Stone
+                  </div>
+                </div>
+              </div>
+
+              {/* Time Stone Pedestal */}
+              <div
+                className={`w-20 h-20 rounded-xl bg-gradient-to-br ${
+                  board.timeStoneAvailable
+                    ? 'from-emerald-900/90 via-teal-950 to-emerald-950 border-emerald-400/80 shadow-[0_0_15px_rgba(16,185,129,0.3)]'
+                    : 'from-slate-900 to-black border-slate-700 opacity-90'
+                } border-2 flex flex-col items-center justify-between p-1 relative overflow-hidden`}
+                title="Time Stone: มอบให้ผู้เล่นคนแรกที่เกณฑ์การ์ดระดับ Tier-3 สำเร็จ"
+              >
+                <div className="text-[7.5px] uppercase font-black text-emerald-300 tracking-wider flex items-center gap-0.5">
+                  <span>🟢 Time Stone</span>
+                </div>
+
+                <div className="relative">
+                  <div
+                    className={`w-7 h-7 rounded-full transition-all duration-300 flex items-center justify-center ${
+                      board.timeStoneAvailable
+                        ? 'ring-2 ring-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)] animate-pulse'
+                        : 'opacity-40 grayscale'
+                    }`}
+                  >
+                    <img
+                      src="/images/tokens/emerald.png"
+                      alt="Time Stone"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
+
+                <div className="text-center w-full">
+                  {board.timeStoneAvailable ? (
+                    <div className="text-[7px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-0.5 py-0.2 rounded font-black tracking-tight uppercase">
+                      เกณฑ์ Tier-3 (Recruit)
+                    </div>
+                  ) : (
+                    <div className="text-[7px] bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-0.5 py-0.2 rounded font-bold truncate max-w-[75px] mx-auto">
+                      ครองโดย: {timeStoneHolderPlayer?.name ?? 'Player'}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Avengers Assemble Tile (+3 PTS) */}
+              <div
+                className={`w-18 h-20 rounded-xl bg-gradient-to-br ${
+                  board.avengersAssembleHolder
+                    ? 'from-slate-800 to-slate-900 border-slate-600'
+                    : 'from-red-600 via-rose-700 to-red-800 border-red-400'
+                } shadow-xl border-2 flex flex-col items-center justify-between p-1 relative overflow-hidden`}
+                title="Avengers Assemble: มอบ +3 แต้มให้ผู้ที่มีสัญลักษณ์ Avengers มากที่สุด (3 สัญลักษณ์ขึ้นไป)"
+              >
+                <div className="text-[7.5px] uppercase font-bold text-white/70 tracking-wider">
+                  Avengers
+                </div>
+                <div className="bg-red-600 w-7 h-7 rounded-full flex items-center justify-center border-2 border-yellow-300 shadow-md">
+                  <span className="text-yellow-300 font-black text-base leading-none">A</span>
+                </div>
+                <div className="text-center">
+                  <span className="text-[9px] font-black text-yellow-300 bg-black/50 px-1 py-0.2 rounded-full border border-yellow-300/30">
+                    +3 PTS
+                  </span>
+                  {avengersHolder && (
+                    <div className="text-[7px] text-yellow-300 font-bold truncate max-w-[65px] mt-0.5">
+                      {avengersHolder.name}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Marvel Locations Row */}
+            <GuardianRow
+              guardians={board.availableGuardians}
+              currentPlayer={myPlayer}
+            />
+          </div>
+
+          {/* Tier 3 Characters */}
+          <div>
+            <div className="text-[10px] text-amber-400 uppercase tracking-widest mb-0.5 font-bold text-center flex items-center justify-center gap-2">
+              <span className="w-8 h-[1px] bg-amber-400/30" />
+              <span>ระดับ 3 (Tier III) — เอนทิตีคอสมิกและฮีโร่ระดับสูง Cosmic Entities (4-6 PTS)</span>
+              <span className="w-8 h-[1px] bg-amber-400/30" />
+            </div>
+            {renderTier(board.tier3, board.tier3DeckCount, 3)}
+          </div>
+
+          {/* Tier 2 Characters */}
+          <div>
+            <div className="text-[10px] text-purple-400 uppercase tracking-widest mb-0.5 font-bold text-center flex items-center justify-center gap-2">
+              <span className="w-8 h-[1px] bg-purple-400/30" />
+              <span>ระดับ 2 (Tier II) — ฮีโร่และเหล่าวายร้ายมาร์เวล Heroes & Villains (1-3 PTS)</span>
+              <span className="w-8 h-[1px] bg-purple-400/30" />
+            </div>
+            {renderTier(board.tier2, board.tier2DeckCount, 2)}
+          </div>
+
+          {/* Tier 1 Characters */}
+          <div>
+            <div className="text-[10px] text-slate-400 uppercase tracking-widest mb-0.5 font-bold text-center flex items-center justify-center gap-2">
+              <span className="w-8 h-[1px] bg-slate-400/30" />
+              <span>ระดับ 1 (Tier I) — พันธมิตรข้างถนนและสมาชิกใหม่ Street Allies & Recruits (0-1 PTS)</span>
+              <span className="w-8 h-[1px] bg-slate-400/30" />
+            </div>
+            {renderTier(board.tier1, board.tier1DeckCount, 1)}
+          </div>
+        </main>
+
+        {/* Right sidebar */}
+        <aside className="w-80 border-l border-white/10 p-2.5 overflow-y-auto space-y-2.5 flex-shrink-0 bg-black/30 min-h-0">
+          {/* Player scoreboard */}
+          <PlayerList
+            players={players}
+            currentPlayerIndex={currentPlayerIndex}
+            myPlayerId={myPlayerId}
+            onSelectPlayer={(p) => setHeroModalPlayer(p)}
+          />
+
+          {/* My hand & Infinity Gauntlet */}
+          <PlayerPanel
+            player={myPlayer}
+            isMyTurn={isMyTurn}
+            onBuyCard={handleBuyCard}
+            onSendAction={onSendAction}
+            onViewCards={() => setHeroModalPlayer(myPlayer)}
+          />
+        </aside>
+      </div>
+
+      {/* Hero cards roster modal */}
+      {heroModalPlayer && (
+        <HeroModal
+          isOpen={!!heroModalPlayer}
+          onClose={() => setHeroModalPlayer(null)}
+          player={heroModalPlayer}
+        />
+      )}
+
+      {/* Gem drop modal — forced when > 10 */}
+      {phase === 'dropGems' && isMyTurn && (
+        <ActionModal
+          player={myPlayer}
+          onDropGems={handleDropGems}
+        />
+      )}
+
+      {/* Game over overlay */}
+      {phase === 'finished' && (
+        <GameOver
+          winners={state.winners}
+          players={players}
+          myPlayerId={myPlayerId}
+          onLeave={onLeave}
+        />
+      )}
+      </div>
+    </ResponsiveScaler>
+  );
+};
