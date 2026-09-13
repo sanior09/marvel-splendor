@@ -58,6 +58,36 @@ export const Board: React.FC<BoardProps> = ({
     prevIsMyTurnRef.current = isMyTurn;
   }, [isMyTurn]);
 
+  // Play audio SFX when an opponent / bot executes an action
+  const prevStateRef = useRef<GameState>(state);
+  useEffect(() => {
+    const prevState = prevStateRef.current;
+    if (prevState && prevState !== state) {
+      const prevPlayer = prevState.players[prevState.currentPlayerIndex];
+      const currPlayerInNewState = state.players.find((p) => p.id === prevPlayer?.id);
+
+      if (prevPlayer && currPlayerInNewState && prevPlayer.id !== myPlayerId) {
+        // Did bot/opponent buy a card?
+        if (currPlayerInNewState.ownedCards.length > prevPlayer.ownedCards.length) {
+          soundManager.playCardBuy(2);
+        }
+        // Did bot/opponent reserve a card?
+        else if (currPlayerInNewState.reservedCards.length > prevPlayer.reservedCards.length) {
+          soundManager.playCardReserve();
+        }
+        // Did bot/opponent take gems?
+        else {
+          const prevTotalGems = Object.values(prevPlayer.crystals).reduce((a, b) => a + b, 0);
+          const currTotalGems = Object.values(currPlayerInNewState.crystals).reduce((a, b) => a + b, 0);
+          if (currTotalGems > prevTotalGems) {
+            soundManager.playGemCollect();
+          }
+        }
+      }
+    }
+    prevStateRef.current = state;
+  }, [state, myPlayerId]);
+
   // Play error sound when error occurs
   useEffect(() => {
     if (error) {
@@ -184,10 +214,17 @@ export const Board: React.FC<BoardProps> = ({
                 <span className="text-yellow-400 font-extrabold tracking-wide animate-pulse bg-yellow-400/10 border border-yellow-400/30 px-2.5 py-0.5 rounded-full">
                   ⚡ ถึงตาคุณแล้ว (YOUR TURN)
                 </span>
+              ) : currentPlayer?.isBot ? (
+                <span className="bg-purple-950/50 border border-purple-500/40 px-2.5 py-0.5 rounded-full text-purple-200 font-semibold inline-flex items-center gap-1.5 shadow-sm">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+                  </span>
+                  <span>🤖 <strong className="text-white font-bold">{currentPlayer.name}</strong> กำลังคิด... (Thinking)</span>
+                </span>
               ) : (
                 <span className="text-white/60 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/5">
                   รอตาของ (Waiting): <strong className="text-white font-bold">{currentPlayer?.name}</strong>
-                  {currentPlayer?.isBot && ' (AI)'}
                 </span>
               )}
             </span>

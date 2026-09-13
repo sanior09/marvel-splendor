@@ -320,7 +320,12 @@ export class RoomManager {
     const currentPlayer = room.gameState.players[room.gameState.currentPlayerIndex];
     if (!currentPlayer?.isBot) return;
 
-    // Realistic bot reaction time delay
+    // Realistic human-like bot reaction & thinking delay (2.8s to 4.2s)
+    const isDropPhase = room.gameState.phase === 'dropGems';
+    const baseDelay = isDropPhase ? 1800 : 3200; // 3.2s for normal moves, 1.8s for discards
+    const variance = (Math.random() - 0.5) * 1400; // +/- 700ms (2.5s - 3.9s)
+    const thinkingDelay = Math.max(1600, Math.round(baseDelay + variance));
+
     setTimeout(() => {
       const currentRoom = this.rooms.get(roomId);
       if (!currentRoom?.gameState || currentRoom.gameState.phase === 'finished') return;
@@ -357,7 +362,7 @@ export class RoomManager {
       } catch (err) {
         console.error(`[RoomManager] Bot turn execution error in room ${roomId}:`, err);
       }
-    }, 1100);
+    }, thinkingDelay);
   }
 
   // ─── Handle Game Action ─────────────────────────────────────

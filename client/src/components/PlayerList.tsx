@@ -97,8 +97,14 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                     </span>
                   )}
                   {player.isBot && (
-                    <span className="text-[9px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-1 rounded font-bold">
-                      บอท (BOT)
+                    <span
+                      className={`text-[9px] px-1.5 py-0.5 rounded font-bold transition-all ${
+                        isActive
+                          ? 'bg-purple-500/30 text-purple-200 border border-purple-400/50 animate-pulse inline-flex items-center gap-1'
+                          : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                      }`}
+                    >
+                      {isActive ? '🤖 กำลังคิด...' : 'บอท (BOT)'}
                     </span>
                   )}
                 </div>
