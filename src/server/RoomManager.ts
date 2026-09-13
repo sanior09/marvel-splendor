@@ -320,11 +320,11 @@ export class RoomManager {
     const currentPlayer = room.gameState.players[room.gameState.currentPlayerIndex];
     if (!currentPlayer?.isBot) return;
 
-    // Realistic human-like bot reaction & thinking delay (2.8s to 4.2s)
+    // Realistic human-like bot thinking delay (4.5s to 5.8s)
     const isDropPhase = room.gameState.phase === 'dropGems';
-    const baseDelay = isDropPhase ? 1800 : 3200; // 3.2s for normal moves, 1.8s for discards
-    const variance = (Math.random() - 0.5) * 1400; // +/- 700ms (2.5s - 3.9s)
-    const thinkingDelay = Math.max(1600, Math.round(baseDelay + variance));
+    const thinkingDelay = isDropPhase
+      ? Math.floor(Math.random() * 1000) + 2500 // 2.5s - 3.5s for dropping gems
+      : Math.floor(Math.random() * 1300) + 4500; // 4.5s - 5.8s for regular turns
 
     setTimeout(() => {
       const currentRoom = this.rooms.get(roomId);
