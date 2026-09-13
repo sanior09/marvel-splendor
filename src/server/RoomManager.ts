@@ -47,6 +47,7 @@ interface Room {
     tier2: Card[];
     tier3: Card[];
   };
+  lastActivity: number;
 }
 
 // ─── RoomManager Class ────────────────────────────────────────
@@ -58,7 +59,30 @@ export class RoomManager {
   /** Maps socket.id → playerId */
   private socketToPlayer: Map<string, string> = new Map();
 
-  constructor(private readonly io: Server<ClientToServerEvents, ServerToClientEvents>) {}
+  constructor(private readonly io: Server<ClientToServerEvents, ServerToClientEvents>) {
+    // Periodic cleanup of abandoned rooms (> 5.5 minutes of complete inactivity)
+    setInterval(() => {
+      this.cleanupInactiveRooms();
+    }, 60 * 1000);
+  }
+
+  private cleanupInactiveRooms(): void {
+    const now = Date.now();
+    const INACTIVITY_LIMIT_MS = 5.5 * 60 * 1000;
+
+    for (const [roomId, room] of this.rooms.entries()) {
+      if (now - (room.lastActivity ?? now) > INACTIVITY_LIMIT_MS) {
+        console.log(`[RoomManager] Closing abandoned room ${roomId} due to 5.5min inactivity`);
+        for (const session of room.sessions) {
+          if (!session.isBot) {
+            this.socketToRoom.delete(session.socketId);
+            this.socketToPlayer.delete(session.socketId);
+          }
+        }
+        this.rooms.delete(roomId);
+      }
+    }
+  }
 
   // ─── Room Creation ──────────────────────────────────────────
 
@@ -80,6 +104,7 @@ export class RoomManager {
       status: 'waiting',
       gameState: null,
       decks: { tier1: [], tier2: [], tier3: [] },
+      lastActivity: Date.now(),
     };
 
     this.rooms.set(roomId, room);
@@ -113,6 +138,7 @@ export class RoomManager {
     };
 
     room.sessions.push(session);
+    room.lastActivity = Date.now();
     this.socketToRoom.set(socket.id, roomId);
     this.socketToPlayer.set(socket.id, playerId);
 
@@ -201,6 +227,7 @@ export class RoomManager {
 
       room.gameState = rawState;
       room.status = 'playing';
+      room.lastActivity = Date.now();
 
       this.broadcastGameState(roomId);
       console.log(`[RoomManager] Game started in room ${roomId}`);
@@ -249,6 +276,7 @@ export class RoomManager {
       botPersonality: personality ?? nextDefault.personality,
     });
 
+    room.lastActivity = Date.now();
     const roomInfo = this.toRoomInfo(room);
     this.io.to(roomId).emit('room:updated', roomInfo);
     console.log(`[RoomManager] Added bot ${botName ?? nextDefault.name} to room ${roomId}`);
@@ -268,6 +296,7 @@ export class RoomManager {
     if (room.hostId !== playerId) return { success: false, error: 'Only host can remove bots' };
 
     room.sessions = room.sessions.filter((s) => s.id !== botId);
+    room.lastActivity = Date.now();
     const roomInfo = this.toRoomInfo(room);
     this.io.to(roomId).emit('room:updated', roomInfo);
     return { success: true, room: roomInfo };
@@ -351,6 +380,7 @@ export class RoomManager {
 
         currentRoom.gameState = newState;
         currentRoom.decks = newDecks;
+        currentRoom.lastActivity = Date.now();
 
         if (newState.phase === 'finished') {
           currentRoom.status = 'finished';
@@ -400,6 +430,7 @@ export class RoomManager {
 
       room.gameState = newState;
       room.decks = newDecks;
+      room.lastActivity = Date.now();
 
       if (newState.phase === 'finished') {
         room.status = 'finished';

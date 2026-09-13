@@ -7,11 +7,14 @@ import { Lobby } from './components/Lobby';
 import { Board } from './components/Board';
 // import { YouTubeMusicPlayer } from './components/YouTubeMusicPlayer';
 import { OrientationGuard } from './components/OrientationGuard';
+import { InactivityWarningModal } from './components/InactivityWarningModal';
 import { useGameState } from './hooks/useGameState';
+import { useInactivityTimeout } from './hooks/useInactivityTimeout';
 import type { RoomInfo } from '@shared/types/game.types';
 
 export default function App(): React.ReactElement {
   const [myPlayerId, setMyPlayerId] = useState<string | null>(null);
+  const [afkNotice, setAfkNotice] = useState<string | null>(null);
 
   const {
     gameState,
@@ -30,9 +33,26 @@ export default function App(): React.ReactElement {
     clearError,
   } = useGameState(myPlayerId);
 
+  const isInRoomOrGame = Boolean(myPlayerId && (gameState || roomInfo));
+
+  // Auto-kick when idle for 5 minutes without any activity/moves
+  const handleInactivityTimeout = useCallback(() => {
+    leaveRoom();
+    setMyPlayerId(null);
+    setAfkNotice('คุณถูกออกจากห้องอัตโนมัติ เนื่องจากไม่มีการเคลื่อนไหวหรือไม่ได้เล่นเกิน 5 นาที (Auto-kicked due to 5 minutes of inactivity)');
+  }, [leaveRoom]);
+
+  const { remainingSeconds, isWarning, resetTimer } = useInactivityTimeout({
+    timeoutMs: 5 * 60 * 1000, // 5 minutes
+    warningThresholdMs: 60 * 1000, // 60 seconds warning grace period
+    enabled: isInRoomOrGame,
+    onTimeout: handleInactivityTimeout,
+  });
+
   // On room create — capture host player ID
   const handleCreateRoom = useCallback(
     (playerName: string, callback: (room: RoomInfo) => void) => {
+      setAfkNotice(null);
       createRoom(playerName, (room) => {
         setMyPlayerId(room.hostId);
         callback(room);
@@ -44,6 +64,7 @@ export default function App(): React.ReactElement {
   // On Solo Game Create
   const handleCreateSolo = useCallback(
     (playerName: string, botCount: number, botNames?: string[]) => {
+      setAfkNotice(null);
       createSolo(playerName, botCount, botNames, (room) => {
         setMyPlayerId(room.hostId);
       });
@@ -53,6 +74,7 @@ export default function App(): React.ReactElement {
 
   const handleJoinRoom = useCallback(
     (roomId: string, playerName: string, callback: (success: boolean, err?: string) => void) => {
+      setAfkNotice(null);
       joinRoom(roomId, playerName, (success, err, room) => {
         if (success && room) {
           const lastPlayer = room.players[room.players.length - 1];
@@ -97,6 +119,16 @@ export default function App(): React.ReactElement {
             currentRoom={roomInfo}
             myPlayerId={myPlayerId}
             connectionStatus={connectionStatus}
+            afkNotice={afkNotice}
+            onClearAfkNotice={() => setAfkNotice(null)}
+          />
+        )}
+
+        {/* 60s Inactivity Grace Warning Modal */}
+        {isWarning && isInRoomOrGame && (
+          <InactivityWarningModal
+            remainingSeconds={remainingSeconds}
+            onStay={resetTimer}
           />
         )}
 

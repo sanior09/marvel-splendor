@@ -20,6 +20,8 @@ interface LobbyProps {
   currentRoom: RoomInfo | null;
   myPlayerId: string | null;
   connectionStatus: string;
+  afkNotice?: string | null;
+  onClearAfkNotice?: () => void;
 }
 
 interface MarvelBotPreset {
@@ -53,6 +55,8 @@ export const Lobby: React.FC<LobbyProps> = ({
   currentRoom,
   myPlayerId,
   connectionStatus,
+  afkNotice,
+  onClearAfkNotice,
 }) => {
   const [playerName, setPlayerName] = useState('');
   const [joinCode, setJoinCode] = useState('');
@@ -429,6 +433,25 @@ export const Lobby: React.FC<LobbyProps> = ({
             <SoundToggle compact />
           </div>
         </div>
+
+        {/* AFK / Inactivity notification banner */}
+        {afkNotice && (
+          <div className="max-w-lg w-full mb-3 p-3 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-lg animate-slide-up">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-xl shrink-0">⏳</span>
+              <span className="font-medium">{afkNotice}</span>
+            </div>
+            {onClearAfkNotice && (
+              <button
+                type="button"
+                onClick={onClearAfkNotice}
+                className="text-amber-300 hover:text-white text-base leading-none px-1 cursor-pointer shrink-0"
+              >
+                ×
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Main card */}
         <div className="glass-strong rounded-2xl p-5 sm:p-6 max-w-lg w-full space-y-3.5 border border-white/10 shadow-2xl">
