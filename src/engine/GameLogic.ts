@@ -30,6 +30,7 @@ import {
   TIER_3_CARDS,
   ALL_GUARDIANS,
   GEM_COUNT_BY_PLAYERS,
+  TIME_STONE_COUNT_BY_PLAYERS,
   GOLD_GEM_COUNT,
   BOARD_CARDS_PER_TIER,
   MAX_GEMS_IN_HAND,
@@ -284,7 +285,8 @@ export function initGame(
     throw new Error('Game requires 2–4 players');
   }
 
-  const gemCount = GEM_COUNT_BY_PLAYERS[playerCount] ?? 4;
+  const gemCount = GEM_COUNT_BY_PLAYERS[playerCount] ?? (playerCount === 2 ? 4 : playerCount === 3 ? 5 : 7);
+  const timeStoneCount = TIME_STONE_COUNT_BY_PLAYERS[playerCount] ?? playerCount;
 
   // Randomize card costs per Tier for each new game
   const tier1CardsWithCosts = randomizeCosts ? randomizeDeckCosts(TIER_1_CARDS) : TIER_1_CARDS;
@@ -308,12 +310,12 @@ export function initGame(
   // Select Locations (Guardians) — equal to playerCount (Splendor Marvel rule)
   const shuffledGuardians = shuffle(ALL_GUARDIANS).slice(0, playerCount);
 
-  // Crystal bank — only the 5 standard Infinity Stones + 5 S.H.I.E.L.D. tokens
-  // (Time Stone is NOT in the bank — sits beside the Infinity Gauntlet)
+  // Crystal bank — 5 standard Infinity Stones + 5 S.H.I.E.L.D. tokens + green Time Stones
+  // (4 players: 7 standard, 4 Time Stones; 3 players: 5 standard, 3 Time Stones; 2 players: 4 standard, 2 Time Stones)
   const crystalBank: CrystalPool = {
     ruby: gemCount,
     sapphire: gemCount,
-    emerald: 0,
+    emerald: timeStoneCount,
     obsidian: gemCount,
     topaz: gemCount,
     amethyst: gemCount,
@@ -330,8 +332,10 @@ export function initGame(
     crystalBank: { ...crystalBank },
     availableGuardians: shuffledGuardians,
     avengersAssembleHolder: null,
-    timeStoneAvailable: true,
+    timeStoneCount,
+    timeStoneAvailable: timeStoneCount > 0,
     timeStoneHolder: null,
+    timeStoneHolders: [],
   };
 
   // Build players
@@ -809,11 +813,27 @@ function applyBuyCard(
   // Grant the card
   player.ownedCards.push(card);
 
-  // Time Stone Rule: Award green Time Stone token immediately upon recruiting 1st Tier-3 card
-  if (card.tier === 3 && newState.board.timeStoneAvailable) {
-    newState.board.timeStoneAvailable = false;
-    newState.board.timeStoneHolder = player.id;
+  // Time Stone Rule: Award 1 green Time Stone token immediately upon recruiting 1st Tier-3 card
+  // (Each player can only hold 1 Time Stone. Supply matches player count: 4 for 4p, 3 for 3p, 2 for 2p)
+  if (
+    card.tier === 3 &&
+    (player.crystals.emerald ?? 0) === 0 &&
+    ((newState.board.timeStoneCount ?? 0) > 0 || newState.board.timeStoneAvailable)
+  ) {
     player.crystals.emerald = 1;
+    const remaining = Math.max(0, (newState.board.timeStoneCount ?? 1) - 1);
+    newState.board.timeStoneCount = remaining;
+    newState.board.crystalBank.emerald = remaining;
+    newState.board.timeStoneAvailable = remaining > 0;
+    if (!newState.board.timeStoneHolder) {
+      newState.board.timeStoneHolder = player.id;
+    }
+    if (!newState.board.timeStoneHolders) {
+      newState.board.timeStoneHolders = [];
+    }
+    if (!newState.board.timeStoneHolders.includes(player.id)) {
+      newState.board.timeStoneHolders.push(player.id);
+    }
   }
 
   return { newState, newDecks };

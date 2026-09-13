@@ -115,10 +115,14 @@ export interface BoardState {
   availableGuardians: Guardian[];
   /** Player ID who holds the Avengers Assemble tile */
   avengersAssembleHolder: string | null;
-  /** Whether the green Time Stone is available beside the Infinity Gauntlet (awarded on 1st Tier-3 card) */
+  /** Number of green Time Stones remaining beside the Infinity Gauntlet */
+  timeStoneCount: number;
+  /** Whether any green Time Stone is available beside the Infinity Gauntlet (awarded on 1st Tier-3 card) */
   timeStoneAvailable: boolean;
-  /** Player ID who currently holds the Green Time Stone */
+  /** Player ID who claimed the first Green Time Stone */
   timeStoneHolder: string | null;
+  /** Player IDs who currently hold a Green Time Stone */
+  timeStoneHolders?: string[];
 }
 
 // ─── Game Phase ───────────────────────────────────────────────

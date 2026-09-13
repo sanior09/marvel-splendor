@@ -157,7 +157,6 @@ export const Board: React.FC<BoardProps> = ({
   // ── Render ────────────────────────────────────────────────
 
   const avengersHolder = players.find((p) => p.id === board.avengersAssembleHolder);
-  const timeStoneHolderPlayer = players.find((p) => p.id === board.timeStoneHolder);
 
   return (
     <ResponsiveScaler baseWidth={1120} baseHeight={580}>
@@ -343,7 +342,7 @@ export const Board: React.FC<BoardProps> = ({
                       ? 'from-emerald-900/90 via-teal-950 to-emerald-950 border-emerald-400/80 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
                       : 'from-slate-900 to-black border-slate-700 opacity-90'
                     } border-2 flex flex-col items-center justify-between p-1 relative overflow-hidden`}
-                  title="Time Stone: มอบให้ผู้เล่นคนแรกที่เกณฑ์การ์ดระดับ Tier-3 สำเร็จ"
+                  title={`Time Stone: มอบให้ผู้เล่นคนละ 1 ก้อนเมื่อเกณฑ์การ์ด Tier-3 ใบแรก (เหลือ ${board.timeStoneCount ?? (board.timeStoneAvailable ? 1 : 0)} ก้อน)`}
                 >
                   <div className="text-[7px] uppercase font-black text-emerald-300 tracking-wider flex items-center gap-0.5">
                     <span>🟢 Time Stone</span>
@@ -362,16 +361,26 @@ export const Board: React.FC<BoardProps> = ({
                         className="w-full h-full object-contain"
                       />
                     </div>
+                    {/* Remaining count badge */}
+                    <span
+                      className={`absolute -top-1 -right-2 text-[8px] font-mono font-black px-1 rounded-full border leading-tight ${
+                        board.timeStoneAvailable
+                          ? 'bg-emerald-500 text-black border-emerald-300 shadow'
+                          : 'bg-slate-700 text-white/50 border-slate-600'
+                      }`}
+                    >
+                      x{board.timeStoneCount ?? (board.timeStoneAvailable ? 1 : 0)}
+                    </span>
                   </div>
 
                   <div className="text-center w-full">
                     {board.timeStoneAvailable ? (
                       <div className="text-[6.5px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-0.5 py-0.2 rounded font-black tracking-tight uppercase">
-                        เกณฑ์ Tier-3 (Recruit)
+                        เหลือ {board.timeStoneCount ?? 1} ก้อน
                       </div>
                     ) : (
                       <div className="text-[6.5px] bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-0.5 py-0.2 rounded font-bold truncate max-w-[65px] mx-auto">
-                        ครองโดย: {timeStoneHolderPlayer?.name ?? 'Player'}
+                        หมดแล้ว (0 ก้อน)
                       </div>
                     )}
                   </div>

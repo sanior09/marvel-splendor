@@ -76,8 +76,10 @@ function evaluateCardValue(card: Card, player: Player, state: GameState): number
 
   // Crucial: Tier 3 requirement & Time Stone acquisition
   if (card.tier === 3) {
-    if (state.board.timeStoneAvailable) {
-      value += 90; // Top priority: claim the green Time Stone first!
+    const timeStoneLeft = (state.board.timeStoneCount ?? 0) > 0 || state.board.timeStoneAvailable;
+    const needTimeStone = (player.crystals.emerald ?? 0) === 0;
+    if (timeStoneLeft && needTimeStone) {
+      value += 90; // Top priority: claim a green Time Stone!
     } else {
       value += 20;
     }

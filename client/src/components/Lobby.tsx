@@ -271,6 +271,27 @@ export const Lobby: React.FC<LobbyProps> = ({
               </button>
             )}
 
+            {/* Token Pool Info according to player count */}
+            {currentRoom && currentRoom.players.length >= 2 && (
+              <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-2 text-center text-[10px] text-emerald-200">
+                <div className="font-bold flex items-center justify-center gap-1">
+                  <span>⚡ กองกลางตามจำนวนผู้เล่น ({currentRoom.players.length} คน):</span>
+                </div>
+                <div className="text-white/80 mt-0.5">
+                  5 สีหลักละ{' '}
+                  <span className="font-black text-amber-300">
+                    {currentRoom.players.length === 2 ? 4 : currentRoom.players.length === 3 ? 5 : 7}
+                  </span>{' '}
+                  ก้อน • 🟢 Time Stone{' '}
+                  <span className="font-black text-emerald-300">
+                    {currentRoom.players.length}
+                  </span>{' '}
+                  ก้อน • 🛡️ S.H.I.E.L.D.{' '}
+                  <span className="font-black text-slate-200">5</span> ก้อน
+                </div>
+              </div>
+            )}
+
             {/* Status message */}
             {!isHost && (
               <p className="text-center text-white/60 text-xs animate-pulse">
@@ -524,6 +545,20 @@ export const Lobby: React.FC<LobbyProps> = ({
                       {num} บอท ({num + 1}P)
                     </button>
                   ))}
+                </div>
+
+                {/* Dynamic Token Pool info for solo */}
+                <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-xl px-2.5 py-1.5 text-center text-[10px] text-emerald-200 mt-1.5">
+                  <span className="font-bold">⚡ กองกลางเกม {botCount + 1} คน: </span>
+                  <span className="text-white/80">
+                    5 สีหลักละ{' '}
+                    <span className="font-black text-amber-300">
+                      {botCount === 1 ? 4 : botCount === 2 ? 5 : 7}
+                    </span>{' '}
+                    ก้อน • 🟢 Time Stone{' '}
+                    <span className="font-black text-emerald-300">{botCount + 1}</span> ก้อน • 🛡️ S.H.I.E.L.D.{' '}
+                    <span className="font-black text-slate-200">5</span> ก้อน
+                  </span>
                 </div>
               </div>
 

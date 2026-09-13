@@ -216,12 +216,22 @@ export const ALL_GUARDIANS: Guardian[] = [
 ];
 
 // ─── Gem distribution by player count ────────────────────────
-// 2 players = 4 tokens each, 3 players = 5 tokens each, 4 players = 7 tokens each
+// Splendor Marvel official rules:
+// 4 players: 7 standard stones each, 4 Time Stones
+// 3 players: 5 standard stones each, 3 Time Stones
+// 2 players: 4 standard stones each, 2 Time Stones
+// S.H.I.E.L.D. wildcard tokens = 5 always
 
 export const GEM_COUNT_BY_PLAYERS: Record<number, number> = {
   2: 4,
   3: 5,
   4: 7,
+};
+
+export const TIME_STONE_COUNT_BY_PLAYERS: Record<number, number> = {
+  2: 2,
+  3: 3,
+  4: 4,
 };
 
 export const GOLD_GEM_COUNT = 5; // S.H.I.E.L.D. tokens
