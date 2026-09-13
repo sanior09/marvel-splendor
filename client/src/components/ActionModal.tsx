@@ -59,91 +59,112 @@ export const ActionModal: React.FC<ActionModalProps> = ({ player, onDropGems }) 
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-md" />
-
-      {/* Modal */}
-      <div className="relative glass-strong rounded-3xl p-8 max-w-md w-full mx-4 border border-red-500/30 shadow-[0_0_60px_rgba(230,57,70,0.2)] animate-slide-up">
-        {/* Header */}
-        <div className="text-center space-y-2 mb-6">
-          <div className="text-4xl">⚠️</div>
-          <h2 className="font-display text-2xl font-bold text-red-400">Token Limit Overflow!</h2>
-          <p className="text-white/60 text-sm">
-            You have <span className="text-red-400 font-bold">{totalInHand}</span> tokens.{' '}
-            You must discard at least{' '}
-            <span className="text-red-400 font-bold">{mustDrop}</span> to reach 10 or fewer.
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-md">
+      {/* Modal Container */}
+      <div className="relative glass-strong rounded-2xl sm:rounded-3xl p-3 sm:p-5 max-w-lg w-full border border-red-500/40 shadow-[0_0_60px_rgba(230,57,70,0.25)] animate-slide-up max-h-[95vh] flex flex-col overflow-hidden bg-slate-950/95">
+        {/* Header - Compact */}
+        <div className="text-center space-y-1 pb-2 border-b border-white/10 shrink-0">
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-xl sm:text-2xl animate-bounce">⚠️</span>
+            <h2 className="font-display text-base sm:text-xl font-black text-red-400 uppercase tracking-wide">
+              เหรียญเกินขีดจำกัด (Token Limit Exceeded)
+            </h2>
+          </div>
+          <p className="text-white/80 text-xs sm:text-sm">
+            คุณมีเหรียญในมือ <span className="text-red-400 font-bold">{totalInHand}</span> เหรียญ — ต้องเลือกคืนอย่างน้อย{' '}
+            <span className="text-red-400 font-black text-sm sm:text-base underline">{mustDrop}</span> เหรียญ (ให้เหลือไม่เกิน 10)
           </p>
           {(player.crystals.emerald ?? 0) > 0 && (
-            <p className="text-[11px] text-emerald-400/90 font-semibold bg-emerald-950/40 border border-emerald-500/30 px-3 py-1 rounded-full inline-block">
-              🛡️ Time Stone is protected and cannot be returned to bank
+            <p className="text-[10px] sm:text-[11px] text-emerald-300 font-medium bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 rounded-full inline-block">
+              🛡️ มณีเวลา (Time Stone) ได้รับการคุ้มครอง ไม่สามารถคืนเข้าคลังได้
             </p>
           )}
         </div>
 
-        {/* Gem selectors */}
-        <div className="space-y-3 mb-6">
-          {droppableColors.map((color) => {
-            const have = player.crystals[color] ?? 0;
-            if (have === 0) return null;
-            const dropping = toDrop[color] ?? 0;
-            return (
-              <div key={color} className="flex items-center gap-3">
-                <GemToken color={color} size="sm" showCount={false} />
-                <span className="text-sm text-white/80 font-medium flex-1">{STONE_NAMES[color]}</span>
-                <span className="text-xs text-white/40 w-12 text-right">Have: {have}</span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => decrement(color)}
-                    disabled={dropping === 0}
-                    className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 font-bold text-white transition-colors"
-                  >
-                    −
-                  </button>
-                  <span className={`w-6 text-center font-bold text-sm ${dropping > 0 ? 'text-red-400' : 'text-white/40'}`}>
-                    {dropping}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => increment(color)}
-                    disabled={dropping >= have}
-                    className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 font-bold text-white transition-colors"
-                  >
-                    +
-                  </button>
+        {/* Gem Selectors - Scrollable & Compact 2-column grid */}
+        <div className="flex-1 overflow-y-auto min-h-0 py-2 sm:py-3 pr-1 space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+            {droppableColors.map((color) => {
+              const have = player.crystals[color] ?? 0;
+              if (have === 0) return null;
+              const dropping = toDrop[color] ?? 0;
+              return (
+                <div
+                  key={color}
+                  className={`flex items-center justify-between p-2 rounded-xl border transition-colors ${
+                    dropping > 0
+                      ? 'bg-red-950/30 border-red-500/40 shadow-inner'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <GemToken color={color} size="sm" showCount={false} />
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-white truncate">{STONE_NAMES[color]}</div>
+                      <div className="text-[10px] text-white/50">มีอยู่ (Have): {have}</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => decrement(color)}
+                      disabled={dropping === 0}
+                      className="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 active:bg-white/30 disabled:opacity-20 font-bold text-white text-sm transition-all flex items-center justify-center cursor-pointer disabled:cursor-not-allowed"
+                    >
+                      −
+                    </button>
+                    <span
+                      className={`w-6 text-center font-mono font-black text-sm ${
+                        dropping > 0 ? 'text-red-400' : 'text-white/40'
+                      }`}
+                    >
+                      {dropping}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => increment(color)}
+                      disabled={dropping >= have}
+                      className="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 active:bg-white/30 disabled:opacity-20 font-bold text-white text-sm transition-all flex items-center justify-center cursor-pointer disabled:cursor-not-allowed"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Status bar */}
-        <div className="glass rounded-xl p-3 mb-4 text-center">
-          <div className={`text-sm font-semibold ${afterDrop <= 10 ? 'text-emerald' : 'text-red-400'}`}>
-            After discard: {afterDrop} / 10 gems
+              );
+            })}
           </div>
-          {afterDrop > 10 && (
-            <div className="text-xs text-red-400/70 mt-1">
-              Drop {afterDrop - 10} more gem{afterDrop - 10 > 1 ? 's' : ''}
-            </div>
-          )}
         </div>
 
-        {/* Confirm button */}
-        <button
-          type="button"
-          onClick={handleConfirm}
-          disabled={!isValid}
-          className={[
-            'w-full py-3 rounded-xl font-bold text-base font-display transition-all duration-200',
-            isValid
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-lg hover:shadow-indigo-500/25'
-              : 'bg-white/5 text-white/30 cursor-not-allowed',
-          ].join(' ')}
-        >
-          Confirm Discard
-        </button>
+        {/* Footer: Status bar & Confirm Button - Fixed at bottom, NEVER cut off! */}
+        <div className="pt-2 border-t border-white/10 shrink-0 space-y-2">
+          {/* Status summary */}
+          <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-black/40 border border-white/10 text-xs sm:text-sm">
+            <span className="text-white/70">เหรียญหลังคืน (Remaining):</span>
+            <span
+              className={`font-bold font-mono text-sm ${
+                afterDrop <= 10 ? 'text-emerald-400' : 'text-red-400 animate-pulse'
+              }`}
+            >
+              {afterDrop} / 10 เหรียญ {afterDrop > 10 && `(ต้องคืนอีก ${afterDrop - 10})`}
+            </span>
+          </div>
+
+          {/* Confirm Button */}
+          <button
+            type="button"
+            onClick={handleConfirm}
+            disabled={!isValid}
+            className={[
+              'w-full py-2.5 sm:py-3 rounded-xl font-bold text-sm sm:text-base font-display transition-all duration-200 shadow-xl flex items-center justify-center gap-2',
+              isValid
+                ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-500/25 cursor-pointer hover:scale-[1.01] active:scale-[0.98]'
+                : 'bg-white/10 text-white/30 cursor-not-allowed border border-white/5',
+            ].join(' ')}
+          >
+            <span>{isValid ? '✓ ตกลง (OK - Confirm Discard)' : `เลือกคืนอีก ${afterDrop - 10} เหรียญ`}</span>
+          </button>
+        </div>
       </div>
     </div>,
     document.body,
