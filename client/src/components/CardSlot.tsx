@@ -2,7 +2,7 @@
 //  CardSlot.tsx — Marvel Collectible Character Card Display
 // ============================================================
 
-import React from 'react';
+import React, { useState } from 'react';
 import type { Card, Player, CrystalColor } from '@shared/types/game.types';
 import { ALL_CRYSTAL_COLORS } from '@shared/types/game.types';
 import { soundManager } from '../utils/soundManager';
@@ -85,6 +85,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
   const { canAfford, goldNeeded } = computeAffordability(card, currentPlayer);
   const canReserve = !isReserved && currentPlayer.reservedCards.length < 3;
   const nonZeroCosts = ALL_CRYSTAL_COLORS.filter((c) => (card.cost[c] ?? 0) > 0);
+  const [showMobileActions, setShowMobileActions] = useState<boolean>(false);
 
   return (
     <div
@@ -92,8 +93,14 @@ export const CardSlot: React.FC<CardSlotProps> = ({
         'relative artifact-card w-28 h-[136px] rounded-xl border-2 flex flex-col overflow-hidden group select-none transition-all duration-200',
         TIER_BORDER[card.tier],
         canAfford && isMyTurn ? 'ring-2 ring-emerald-400 ring-offset-1 ring-offset-black' : '',
+        isMyTurn ? 'cursor-pointer' : '',
       ].join(' ')}
       id={`card-${card.id}`}
+      onClick={() => {
+        if (isMyTurn) {
+          setShowMobileActions((prev) => !prev);
+        }
+      }}
     >
       {/* Fallback gradient background */}
       <div className={`absolute inset-0 bg-gradient-to-b ${TIER_BG[card.tier]} z-0`} />
@@ -182,11 +189,29 @@ export const CardSlot: React.FC<CardSlotProps> = ({
         </div>
       </div>
 
-      {/* Interactive Action Buttons (On Player Turn) — Includes Hero Name on Hover */}
+      {/* Interactive Action Buttons (On Player Turn) — Both Desktop Hover and Mobile Touch/Tap */}
       {isMyTurn && (
-        <div className="absolute inset-x-0 bottom-0 flex flex-col opacity-0 group-hover:opacity-100 transition-all duration-150 z-30 shadow-2xl bg-black/95 backdrop-blur-md border-t border-white/20">
-          <div className="px-1 py-0.5 text-center text-yellow-300 font-extrabold text-[10px] tracking-wider truncate bg-white/5 border-b border-white/10" title={card.name}>
-            {card.name}
+        <div
+          className={[
+            'absolute inset-x-0 bottom-0 flex flex-col transition-all duration-150 z-30 shadow-2xl bg-black/95 backdrop-blur-md border-t border-white/20',
+            showMobileActions ? 'opacity-100 pointer-events-auto' : 'opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto',
+          ].join(' ')}
+        >
+          <div className="px-1.5 py-0.5 flex items-center justify-between text-yellow-300 font-extrabold text-[10px] tracking-wider bg-white/5 border-b border-white/10">
+            <span className="truncate flex-1 text-center" title={card.name}>{card.name}</span>
+            {showMobileActions && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMobileActions(false);
+                }}
+                className="text-white/60 hover:text-white px-1 text-xs leading-none"
+                title="ปิด (Close)"
+              >
+                ✕
+              </button>
+            )}
           </div>
           <div className="flex">
             {onBuy && (
@@ -194,6 +219,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
+                  setShowMobileActions(false);
                   soundManager.playCardBuy(card.tier);
                   onBuy(card.id);
                 }}
@@ -204,9 +230,9 @@ export const CardSlot: React.FC<CardSlotProps> = ({
                     : 'อัญมณีไม่เพียงพอที่จะซื้อการ์ดใบนี้ (Cannot afford)'
                 }
                 className={[
-                  'flex-1 py-1.5 text-[10px] font-extrabold uppercase tracking-wide transition-colors',
+                  'flex-1 py-2 text-[10.5px] font-extrabold uppercase tracking-wide transition-colors',
                   canAfford
-                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer'
+                    ? 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white cursor-pointer'
                     : 'bg-black/90 text-white/30 cursor-not-allowed',
                 ].join(' ')}
               >
@@ -218,15 +244,16 @@ export const CardSlot: React.FC<CardSlotProps> = ({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
+                  setShowMobileActions(false);
                   soundManager.playCardReserve();
                   onReserve(card.id);
                 }}
                 disabled={!canReserve}
                 title={canReserve ? 'จองการ์ด (Reserve) + รับ 1 โทเคน S.H.I.E.L.D.' : 'จองการ์ดได้สูงสุด 3 ใบ (Maximum 3)'}
                 className={[
-                  'flex-1 py-1.5 text-[10px] font-extrabold uppercase tracking-wide transition-colors border-l border-white/20',
+                  'flex-1 py-2 text-[10.5px] font-extrabold uppercase tracking-wide transition-colors border-l border-white/20',
                   canReserve
-                    ? 'bg-amber-600 hover:bg-amber-500 text-white cursor-pointer'
+                    ? 'bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white cursor-pointer'
                     : 'bg-black/90 text-white/30 cursor-not-allowed',
                 ].join(' ')}
               >

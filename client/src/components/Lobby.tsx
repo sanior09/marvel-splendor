@@ -410,8 +410,8 @@ export const Lobby: React.FC<LobbyProps> = ({
 
   // ── Main Lobby Screen ─────────────────────────────────────
   return (
-    <ResponsiveScaler baseWidth={880} baseHeight={580}>
-      <div className="w-full h-full max-h-full overflow-hidden board-bg flex flex-col items-center justify-center p-3 sm:p-5">
+    <ResponsiveScaler baseWidth={880} baseHeight={620}>
+      <div className="w-full h-full max-h-full overflow-hidden board-bg flex flex-col items-center justify-center p-2 sm:p-4">
         {/* Hero Header */}
         <div className="text-center space-y-1.5 mb-3">
           {/* Nachapol Industries Brand Text */}
