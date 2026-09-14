@@ -599,13 +599,13 @@ export const Lobby: React.FC<LobbyProps> = ({
 
               {/* Marvel Battlefield Map Selector for Solo Mode (Compact Dropdown Bar matching Bot selector) */}
               <div className="space-y-1.5 pt-1 border-t border-white/10">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
                     <span>🗺️</span>
-                    <span>เลือกแผนที่สมรภูมิมาร์เวล (Marvel Battlefield Map)</span>
+                    <span className="truncate">แผนที่สมรภูมิมาร์เวล (Marvel Map)</span>
                   </label>
-                  <span className="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 px-1.5 py-0.5 rounded border border-yellow-400/30">
-                    ล็อกตลอดทั้งเกม
+                  <span className="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/30 shrink-0 whitespace-nowrap">
+                    🔒 ล็อกตลอดทั้งเกม
                   </span>
                 </div>
 
@@ -621,7 +621,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                       soundManager.playButtonClick();
                       setSelectedMapId(e.target.value);
                     }}
-                    className="bg-neutral-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:border-red-400 font-bold shrink-0 flex-1 cursor-pointer"
+                    className="bg-neutral-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:border-red-400 font-bold min-w-0 flex-1 cursor-pointer truncate"
                   >
                     {MARVEL_MAPS.map((map) => (
                       <option key={map.id} value={map.id} className="bg-neutral-900 text-white">
@@ -630,7 +630,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     ))}
                   </select>
 
-                  <span className="text-[10px] font-bold text-yellow-300 bg-yellow-400/15 border border-yellow-400/30 px-2 py-1 rounded-lg shrink-0 hidden sm:inline-block">
+                  <span className="text-[10px] font-bold text-yellow-300 bg-yellow-400/15 border border-yellow-400/30 px-2 py-1 rounded-lg shrink-0 whitespace-nowrap">
                     {getMarvelMap(selectedMapId).realm}
                   </span>
                 </div>
@@ -639,9 +639,9 @@ export const Lobby: React.FC<LobbyProps> = ({
                 {(() => {
                   const currentMap = getMarvelMap(selectedMapId);
                   return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[10px] text-white/60">
-                      <span className="font-semibold text-white/80 shrink-0">{currentMap.subtitle}:</span>
-                      <span className="truncate">{currentMap.description}</span>
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[10px] text-white/60 overflow-hidden">
+                      <span className="font-semibold text-white/80 shrink-0 whitespace-nowrap">{currentMap.subtitle}:</span>
+                      <span className="truncate min-w-0">{currentMap.description}</span>
                     </div>
                   );
                 })()}
@@ -663,13 +663,13 @@ export const Lobby: React.FC<LobbyProps> = ({
             <div className="space-y-3">
               {/* Marvel Battlefield Map Selector for Multiplayer Room (Compact Dropdown Bar matching Bot selector) */}
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
                     <span>🗺️</span>
-                    <span>เลือกแผนที่สมรภูมิมาร์เวล (Marvel Battlefield Map)</span>
+                    <span className="truncate">แผนที่สมรภูมิมาร์เวล (Marvel Map)</span>
                   </label>
-                  <span className="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 px-1.5 py-0.5 rounded border border-yellow-400/30">
-                    ล็อกตลอดทั้งเกม
+                  <span className="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/30 shrink-0 whitespace-nowrap">
+                    🔒 ล็อกตลอดทั้งเกม
                   </span>
                 </div>
 
@@ -685,16 +685,16 @@ export const Lobby: React.FC<LobbyProps> = ({
                       soundManager.playButtonClick();
                       setSelectedMapId(e.target.value);
                     }}
-                    className="bg-neutral-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:border-red-400 font-bold shrink-0 flex-1 cursor-pointer"
+                    className="bg-neutral-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:border-red-400 font-bold min-w-0 flex-1 cursor-pointer truncate"
                   >
                     {MARVEL_MAPS.map((map) => (
                       <option key={map.id} value={map.id} className="bg-neutral-900 text-white">
-                        {map.icon} {map.name} ({map.nameEn})
+                         {map.icon} {map.name} ({map.nameEn})
                       </option>
                     ))}
                   </select>
 
-                  <span className="text-[10px] font-bold text-yellow-300 bg-yellow-400/15 border border-yellow-400/30 px-2 py-1 rounded-lg shrink-0 hidden sm:inline-block">
+                  <span className="text-[10px] font-bold text-yellow-300 bg-yellow-400/15 border border-yellow-400/30 px-2 py-1 rounded-lg shrink-0 whitespace-nowrap">
                     {getMarvelMap(selectedMapId).realm}
                   </span>
                 </div>
@@ -703,9 +703,9 @@ export const Lobby: React.FC<LobbyProps> = ({
                 {(() => {
                   const currentMap = getMarvelMap(selectedMapId);
                   return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[10px] text-white/60">
-                      <span className="font-semibold text-white/80 shrink-0">{currentMap.subtitle}:</span>
-                      <span className="truncate">{currentMap.description}</span>
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[10px] text-white/60 overflow-hidden">
+                      <span className="font-semibold text-white/80 shrink-0 whitespace-nowrap">{currentMap.subtitle}:</span>
+                      <span className="truncate min-w-0">{currentMap.description}</span>
                     </div>
                   );
                 })()}
