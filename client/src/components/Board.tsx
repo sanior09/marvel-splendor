@@ -164,23 +164,34 @@ export const Board: React.FC<BoardProps> = ({
   return (
     <ResponsiveScaler baseWidth={1120} baseHeight={580}>
       <div
-        className="h-full w-full relative flex flex-col overflow-hidden select-none"
+        className="h-full w-full relative flex flex-col overflow-hidden select-none bg-[#070913]"
         style={{
           background: activeMap.bgStyle,
-          backgroundColor: '#070913',
         }}
       >
-        {/* Protective Contrast Scrim & Subtle Vignette: Ensures cards, gems, and text remain 100% sharp and readable */}
+        {/* Actual Marvel Battlefield High-Res Background Image */}
+        {activeMap.imageUrl && (
+          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+            <img
+              src={activeMap.imageUrl}
+              alt={activeMap.name}
+              className="w-full h-full object-cover object-center opacity-75 transform scale-105 filter brightness-90 contrast-110"
+              loading="eager"
+            />
+          </div>
+        )}
+
+        {/* Protective Contrast Scrim: Dark radial gradient that protects card readability in center while showing scenery around */}
         <div
-          className="absolute inset-0 pointer-events-none z-0 bg-slate-950/70"
+          className="absolute inset-0 pointer-events-none z-0"
           style={{
-            backgroundImage: 'radial-gradient(ellipse at 50% 50%, rgba(3, 7, 18, 0.45) 0%, rgba(2, 4, 10, 0.85) 100%)',
+            background: 'radial-gradient(ellipse at 50% 50%, rgba(7, 10, 20, 0.65) 0%, rgba(3, 5, 12, 0.88) 100%)',
           }}
         />
 
-        {/* Ambient Map Particle/Aura Glow in Top Corner */}
+        {/* Ambient Map Color Glow Tint */}
         <div
-          className="absolute top-0 right-1/4 w-96 h-48 rounded-full blur-3xl pointer-events-none opacity-20 -translate-y-1/2"
+          className="absolute -top-20 -right-20 w-[500px] h-[300px] rounded-full blur-[100px] pointer-events-none opacity-30"
           style={{ backgroundColor: activeMap.ambientColor }}
         />
 

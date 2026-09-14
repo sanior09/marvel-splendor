@@ -11,11 +11,13 @@ export interface MarvelMapDefinition {
   icon: string;
   badgeColor: string;
   accentBorder: string;
-  /** Background gradient styling for the game board */
+  /** Background gradient styling for the game board fallback */
   bgStyle: string;
   /** Ambient lighting / particle hint color */
   ambientColor: string;
   description: string;
+  /** High-resolution Marvel background wallpaper URL */
+  imageUrl: string;
 }
 
 export const MARVEL_MAPS: MarvelMapDefinition[] = [
@@ -29,6 +31,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-cyan-500 to-blue-700',
     accentBorder: 'border-cyan-400/50',
     ambientColor: '#0ea5e9',
+    imageUrl: '/images/maps/avengers_tower.jpg',
     description: 'ศูนย์บัญชาการสตาร์ค ทิวทัศน์มหานครนิวยอร์ก เทคโนโลยีโฮโลกราฟิกสีฟ้าล้ำยุค',
     bgStyle: `
       radial-gradient(ellipse at 15% 15%, rgba(6, 182, 212, 0.18) 0%, transparent 50%),
@@ -47,6 +50,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-amber-500 to-purple-800',
     accentBorder: 'border-amber-400/50',
     ambientColor: '#f59e0b',
+    imageUrl: '/images/maps/wakanda.jpg',
     description: 'มหานครแห่งไวเบรเนียม พระอาทิตย์ตกสีทองอร่าม ผสานพลังงานไวโอเล็ตศักดิ์สิทธิ์',
     bgStyle: `
       radial-gradient(ellipse at 25% 10%, rgba(245, 158, 11, 0.18) 0%, transparent 45%),
@@ -65,6 +69,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-yellow-400 to-amber-700',
     accentBorder: 'border-yellow-400/50',
     ambientColor: '#eab308',
+    imageUrl: '/images/maps/asgard.jpg',
     description: 'อาณาจักรแห่งทวยเทพ พระราชวังทองคำอร่าม แสงละอองดวงดาวไบฟรอสต์ประกายรุ้ง',
     bgStyle: `
       radial-gradient(ellipse at 50% 0%, rgba(234, 179, 8, 0.22) 0%, transparent 55%),
@@ -83,6 +88,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-orange-500 to-emerald-700',
     accentBorder: 'border-orange-400/50',
     ambientColor: '#ea580c',
+    imageUrl: '/images/maps/sanctum.jpg',
     description: 'วิหารจอมเวทย์ สัญลักษณ์หน้าต่างวิเศษ อักขระรูนเวทมนตร์และประกายไฟพอร์ทัลสีส้มทอง',
     bgStyle: `
       radial-gradient(ellipse at 20% 20%, rgba(234, 88, 12, 0.20) 0%, transparent 45%),
@@ -101,6 +107,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-fuchsia-600 to-purple-900',
     accentBorder: 'border-fuchsia-400/50',
     ambientColor: '#d946ef',
+    imageUrl: '/images/maps/knowhere.jpg',
     description: 'สถานีเหมืองอวกาศในหัวกะโหลกสิ่งมีชีวิตโบราณ เนบิวลาสีม่วง-ชมพูคอสมิกสุดตระการตา',
     bgStyle: `
       radial-gradient(ellipse at 75% 20%, rgba(217, 70, 239, 0.20) 0%, transparent 50%),
@@ -119,6 +126,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-emerald-500 to-cyan-700',
     accentBorder: 'border-emerald-400/50',
     ambientColor: '#10b981',
+    imageUrl: '/images/maps/quantum_realm.jpg',
     description: 'มิติหลุดโลกต่ำกว่าระดับปรมาณู วังวนกระแสเวลาและละอองอนุภาคเรืองแสงสีเขียวมรกต',
     bgStyle: `
       radial-gradient(ellipse at 20% 20%, rgba(16, 185, 129, 0.18) 0%, transparent 45%),
