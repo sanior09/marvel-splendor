@@ -12,11 +12,11 @@ import { TutorialModal } from './TutorialModal';
 import { AvatarPicker, MARVEL_AVATARS } from './AvatarPicker';
 
 interface LobbyProps {
-  onCreateRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string) => void;
-  onCreateSolo: (playerName: string, botCount: number, botNames?: string[], mapId?: string) => void;
-  onJoinRoom: (roomId: string, playerName: string, callback: (success: boolean, err?: string) => void) => void;
+  onCreateRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string) => void;
+  onCreateSolo: (playerName: string, botCount: number, botNames?: string[], mapId?: string, avatarUrl?: string) => void;
+  onJoinRoom: (roomId: string, playerName: string, callback: (success: boolean, err?: string) => void, avatarUrl?: string) => void;
   onStartGame: () => void;
-  onAddBot: (botName?: string, personality?: string, callback?: (success: boolean) => void) => void;
+  onAddBot: (botName?: string, personality?: string, callback?: (success: boolean) => void, avatarUrl?: string) => void;
   onRemoveBot: (botId: string) => void;
   onListRooms: (callback: (rooms: RoomInfo[]) => void) => void;
   currentRoom: RoomInfo | null;
@@ -135,7 +135,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     soundManager.playButtonClick();
     setIsLoading(true);
     setError('');
-    onCreateRoom(playerName.trim(), () => setIsLoading(false), selectedMapId);
+    onCreateRoom(playerName.trim(), () => setIsLoading(false), selectedMapId, avatarUrl || undefined);
   };
 
   const handleSolo = (): void => {
@@ -151,7 +151,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     const selectedBotNames = botNames.slice(0, botCount).map((name, idx) => {
       return name.trim() || POPULAR_MARVEL_BOTS[idx]?.name || `Marvel AI ${idx + 1}`;
     });
-    onCreateSolo(playerName.trim(), botCount, selectedBotNames, selectedMapId);
+    onCreateSolo(playerName.trim(), botCount, selectedBotNames, selectedMapId, avatarUrl || undefined);
   };
 
   const handleJoin = (roomId?: string): void => {
@@ -176,7 +176,7 @@ export const Lobby: React.FC<LobbyProps> = ({
         soundManager.playError();
         setError(err ?? 'ไม่สามารถเข้าร่วมห้องได้ (Failed to join room)');
       }
-    });
+    }, avatarUrl || undefined);
   };
 
   const updateBotName = (index: number, name: string) => {
@@ -269,8 +269,14 @@ export const Lobby: React.FC<LobbyProps> = ({
               <div className="divide-y divide-white/5">
                 {currentRoom.players.map((p) => (
                   <div key={p.id} className="flex items-center gap-2.5 px-3.5 py-2">
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-red-600 to-amber-600 flex items-center justify-center font-bold text-xs text-white shadow shrink-0">
-                      {p.isBot ? '🤖' : p.name.charAt(0).toUpperCase()}
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-amber-600 flex items-center justify-center font-bold text-xs text-white shadow shrink-0 overflow-hidden border border-white/20">
+                      {p.avatarUrl ? (
+                        <img src={p.avatarUrl} alt={p.name} className="w-full h-full object-cover object-center" />
+                      ) : p.isBot ? (
+                        '🤖'
+                      ) : (
+                        p.name.charAt(0).toUpperCase()
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <span className="font-bold text-white text-xs truncate block">{p.name}</span>

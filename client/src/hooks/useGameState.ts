@@ -15,12 +15,12 @@ export interface UseGameStateReturn {
   connectionStatus: ConnectionStatus;
   error: string | null;
   // Actions
-  createRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string) => void;
-  createSolo: (playerName: string, botCount: number, botNames?: string[], callback?: (room: RoomInfo) => void, mapId?: string) => void;
-  joinRoom: (roomId: string, playerName: string, callback: (success: boolean, error?: string, room?: RoomInfo) => void) => void;
+  createRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string) => void;
+  createSolo: (playerName: string, botCount: number, botNames?: string[], callback?: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string) => void;
+  joinRoom: (roomId: string, playerName: string, callback: (success: boolean, error?: string, room?: RoomInfo) => void, avatarUrl?: string) => void;
   leaveRoom: () => void;
   startGame: () => void;
-  addBot: (botName?: string, personality?: string, callback?: (success: boolean) => void) => void;
+  addBot: (botName?: string, personality?: string, callback?: (success: boolean) => void, avatarUrl?: string) => void;
   removeBot: (botId: string, callback?: (success: boolean) => void) => void;
   sendAction: (action: GameAction) => void;
   listRooms: (callback: (rooms: RoomInfo[]) => void) => void;
@@ -68,8 +68,8 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
   }, [socket]);
 
   const createRoom = useCallback(
-    (playerName: string, callback: (room: RoomInfo) => void, mapId?: string) => {
-      socket.emit('room:create', { playerName, mapId }, (room) => {
+    (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string) => {
+      socket.emit('room:create', { playerName, mapId, avatarUrl }, (room) => {
         setRoomInfo(room);
         callback(room);
       });
@@ -84,8 +84,9 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
       botNames?: string[],
       callback?: (room: RoomInfo) => void,
       mapId?: string,
+      avatarUrl?: string,
     ) => {
-      socket.emit('room:createSolo', { playerName, botCount, botNames, mapId }, (result) => {
+      socket.emit('room:createSolo', { playerName, botCount, botNames, mapId, avatarUrl }, (result) => {
         if (result.success && result.room) {
           setRoomInfo(result.room);
           callback?.(result.room);
@@ -98,8 +99,13 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
   );
 
   const joinRoom = useCallback(
-    (roomId: string, playerName: string, callback: (success: boolean, error?: string, room?: RoomInfo) => void) => {
-      socket.emit('room:join', { roomId, playerName }, (result) => {
+    (
+      roomId: string,
+      playerName: string,
+      callback: (success: boolean, error?: string, room?: RoomInfo) => void,
+      avatarUrl?: string,
+    ) => {
+      socket.emit('room:join', { roomId, playerName, avatarUrl }, (result) => {
         if (result.success && result.room) {
           setRoomInfo(result.room);
           callback(true, undefined, result.room);
@@ -122,8 +128,8 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
   }, [socket]);
 
   const addBot = useCallback(
-    (botName?: string, personality?: string, callback?: (success: boolean) => void) => {
-      socket.emit('room:addBot', { botName, personality }, (result) => {
+    (botName?: string, personality?: string, callback?: (success: boolean) => void, avatarUrl?: string) => {
+      socket.emit('room:addBot', { botName, personality, avatarUrl }, (result) => {
         if (result.success && result.room) {
           setRoomInfo(result.room);
           callback?.(true);

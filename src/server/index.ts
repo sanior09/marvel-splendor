@@ -56,9 +56,9 @@ io.on('connection', (socket) => {
   console.log(`[Server] Client connected: ${socket.id}`);
 
   // ── Room: Create ──────────────────────────────────────────
-  socket.on('room:create', ({ playerName, mapId }, callback) => {
+  socket.on('room:create', ({ playerName, avatarUrl, mapId }, callback) => {
     try {
-      const room = roomManager.createRoom(socket, playerName, mapId);
+      const room = roomManager.createRoom(socket, playerName, avatarUrl, mapId);
       callback(room);
     } catch (err) {
       console.error('[Server] room:create error:', err);
@@ -67,9 +67,9 @@ io.on('connection', (socket) => {
   });
 
   // ── Room: Join ────────────────────────────────────────────
-  socket.on('room:join', ({ roomId, playerName }, callback) => {
+  socket.on('room:join', ({ roomId, playerName, avatarUrl }, callback) => {
     try {
-      const result = roomManager.joinRoom(socket, roomId, playerName);
+      const result = roomManager.joinRoom(socket, roomId, playerName, avatarUrl);
       callback(result);
     } catch (err) {
       console.error('[Server] room:join error:', err);
@@ -83,9 +83,9 @@ io.on('connection', (socket) => {
   });
 
   // ── Room: Add Bot ─────────────────────────────────────────
-  socket.on('room:addBot', ({ botName, personality }, callback) => {
+  socket.on('room:addBot', ({ botName, personality, avatarUrl }, callback) => {
     try {
-      const result = roomManager.addBot(socket, botName, personality);
+      const result = roomManager.addBot(socket, botName, personality, avatarUrl);
       callback(result);
     } catch (err) {
       console.error('[Server] room:addBot error:', err);
@@ -105,9 +105,9 @@ io.on('connection', (socket) => {
   });
 
   // ── Room: Create Solo (vs Bots) ───────────────────────────
-  socket.on('room:createSolo', ({ playerName, botCount, botNames, mapId }, callback) => {
+  socket.on('room:createSolo', ({ playerName, avatarUrl, botCount, botNames, mapId }, callback) => {
     try {
-      const result = roomManager.createSoloRoom(socket, playerName, botCount, botNames, mapId);
+      const result = roomManager.createSoloRoom(socket, playerName, avatarUrl, botCount, botNames, mapId);
       callback(result);
     } catch (err) {
       console.error('[Server] room:createSolo error:', err);

@@ -80,15 +80,21 @@ export const PlayerList: React.FC<PlayerListProps> = ({
               <div className="relative">
                 <div
                   className={[
-                    'w-7 h-7 rounded-full flex items-center justify-center font-black text-[10px] text-white shadow',
+                    'w-8 h-8 rounded-full flex items-center justify-center font-black text-[10px] text-white shadow overflow-hidden border border-white/20',
                     `bg-gradient-to-br ${AVATAR_GRADIENTS[index % 4]}`,
                     isActive ? 'ring-2 ring-yellow-400 ring-offset-1 ring-offset-black' : '',
                   ].join(' ')}
                 >
-                  {player.isBot ? '🤖' : player.name.charAt(0).toUpperCase()}
+                  {player.avatarUrl ? (
+                    <img src={player.avatarUrl} alt={player.name} className="w-full h-full object-cover object-center" />
+                  ) : player.isBot ? (
+                    '🤖'
+                  ) : (
+                    player.name.charAt(0).toUpperCase()
+                  )}
                 </div>
                 {isActive && (
-                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-yellow-400 rounded-full animate-ping" />
+                  <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-ping" />
                 )}
               </div>
 

@@ -73,6 +73,15 @@ export const GameOver: React.FC<GameOverProps> = ({ winners, players, myPlayerId
                   ].join(' ')}
                 >
                   <span className="text-xl w-8">{medals[rank] ?? '—'}</span>
+                  <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20 shrink-0 bg-white/10 flex items-center justify-center text-xs font-bold text-white shadow">
+                    {player.avatarUrl ? (
+                      <img src={player.avatarUrl} alt={player.name} className="w-full h-full object-cover object-center" />
+                    ) : player.isBot ? (
+                      '🤖'
+                    ) : (
+                      player.name.charAt(0).toUpperCase()
+                    )}
+                  </div>
                   <div className="flex-1 text-left">
                     <span
                       className={`font-bold text-sm ${isMe ? 'text-yellow-300' : 'text-white/90'}`}

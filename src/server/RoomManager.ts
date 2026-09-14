@@ -29,6 +29,7 @@ interface PlayerSession {
   id: string;
   name: string;
   socketId: string;
+  avatarUrl?: string;
   isBot?: boolean;
   botPersonality?: string;
 }
@@ -87,7 +88,7 @@ export class RoomManager {
 
   // ─── Room Creation ──────────────────────────────────────────
 
-  createRoom(socket: Socket, playerName: string, mapId = 'avengers_tower'): RoomInfo {
+  createRoom(socket: Socket, playerName: string, mapId = 'avengers_tower', avatarUrl?: string): RoomInfo {
     const roomId = uuidv4().slice(0, 6).toUpperCase();
     const playerId = uuidv4();
 
@@ -95,6 +96,7 @@ export class RoomManager {
       id: playerId,
       name: playerName,
       socketId: socket.id,
+      avatarUrl,
     };
 
     const room: Room = {
@@ -125,6 +127,7 @@ export class RoomManager {
     socket: Socket,
     roomId: string,
     playerName: string,
+    avatarUrl?: string,
   ): { success: boolean; room?: RoomInfo; error?: string } {
     const room = this.rooms.get(roomId);
 
@@ -137,6 +140,7 @@ export class RoomManager {
       id: playerId,
       name: playerName,
       socketId: socket.id,
+      avatarUrl,
     };
 
     room.sessions.push(session);
@@ -205,6 +209,7 @@ export class RoomManager {
     const botInfo = room.sessions.map((s) => ({
       isBot: s.isBot,
       botPersonality: s.botPersonality,
+      avatarUrl: s.avatarUrl,
     }));
 
     try {
@@ -248,6 +253,7 @@ export class RoomManager {
     socket: Socket,
     botName?: string,
     personality?: string,
+    avatarUrl?: string,
   ): { success: boolean; room?: RoomInfo; error?: string } {
     const roomId = this.socketToRoom.get(socket.id);
     const playerId = this.socketToPlayer.get(socket.id);
@@ -260,21 +266,23 @@ export class RoomManager {
 
     const botId = uuidv4();
     const defaultBots = [
-      { name: 'Tony Stark AI', personality: 'stark' },
-      { name: 'Ultron', personality: 'ultron' },
-      { name: 'Thanos Bot', personality: 'thanos' },
-      { name: 'F.R.I.D.A.Y.', personality: 'friday' },
+      { name: 'Tony Stark AI', personality: 'stark', avatarUrl: '/images/avatars/iron_man.jpg' },
+      { name: 'Ultron', personality: 'ultron', avatarUrl: '/images/avatars/ultron.jpg' },
+      { name: 'Thanos Bot', personality: 'thanos', avatarUrl: '/images/avatars/thanos.jpg' },
+      { name: 'F.R.I.D.A.Y.', personality: 'friday', avatarUrl: '/images/avatars/spider_man.jpg' },
     ];
     const existingNames = new Set(room.sessions.map((s) => s.name));
     const nextDefault = defaultBots.find((b) => !existingNames.has(b.name)) ?? {
       name: `Marvel AI ${room.sessions.length}`,
       personality: 'balanced',
+      avatarUrl: '/images/avatars/doctor_strange.jpg',
     };
 
     room.sessions.push({
       id: botId,
       name: botName ?? nextDefault.name,
       socketId: `bot_${botId}`,
+      avatarUrl: avatarUrl ?? nextDefault.avatarUrl,
       isBot: true,
       botPersonality: personality ?? nextDefault.personality,
     });
@@ -311,15 +319,16 @@ export class RoomManager {
     botCount: number,
     botNames?: string[],
     mapId?: string,
+    avatarUrl?: string,
   ): { success: boolean; room?: RoomInfo; error?: string } {
-    const roomInfo = this.createRoom(socket, playerName, mapId);
+    const roomInfo = this.createRoom(socket, playerName, mapId, avatarUrl);
     const room = this.rooms.get(roomInfo.roomId);
     if (!room) return { success: false, error: 'Failed to create room' };
 
     const botTemplates = [
-      { name: 'Doctor Doom', personality: 'stark' },
-      { name: 'Loki', personality: 'ultron' },
-      { name: 'Thanos Bot', personality: 'thanos' },
+      { name: 'Doctor Doom', personality: 'stark', avatarUrl: '/images/avatars/doctor_doom.jpg' },
+      { name: 'Loki', personality: 'ultron', avatarUrl: '/images/avatars/loki.jpg' },
+      { name: 'Thanos Bot', personality: 'thanos', avatarUrl: '/images/avatars/thanos.jpg' },
     ];
 
     const actualCount = Math.min(Math.max(1, botCount), 3);
@@ -331,6 +340,7 @@ export class RoomManager {
         id: botId,
         name: customName || template.name,
         socketId: `bot_${botId}`,
+        avatarUrl: template.avatarUrl,
         isBot: true,
         botPersonality: template.personality,
       });
@@ -491,6 +501,7 @@ export class RoomManager {
       players: room.sessions.map((s) => ({
         id: s.id,
         name: s.name,
+        avatarUrl: s.avatarUrl,
         isBot: s.isBot,
         botPersonality: s.botPersonality,
       })),

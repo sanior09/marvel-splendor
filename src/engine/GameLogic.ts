@@ -277,7 +277,7 @@ export function initGame(
   roomId: string,
   playerIds: string[],
   playerNames: string[],
-  botInfo?: Array<{ isBot?: boolean; botPersonality?: string }>,
+  botInfo?: Array<{ isBot?: boolean; botPersonality?: string; avatarUrl?: string }>,
   randomizeCosts = true,
 ): GameState {
   const playerCount = playerIds.length;
@@ -342,6 +342,7 @@ export function initGame(
   const players: Player[] = playerIds.map((id, i) => ({
     id,
     name: playerNames[i] ?? `Player ${i + 1}`,
+    avatarUrl: botInfo?.[i]?.avatarUrl,
     crystals: emptyPool(),
     bonuses: emptyPool(),
     ownedCards: [],
