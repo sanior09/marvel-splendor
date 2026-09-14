@@ -510,19 +510,19 @@ export const Lobby: React.FC<LobbyProps> = ({
         </button>
       </div>
 
-      <div className="w-full max-w-lg flex flex-col items-center my-auto py-3 sm:py-6">
+      <div className="w-full max-w-lg flex flex-col items-center my-auto py-1 sm:py-4">
 
         {/* Hero Header */}
-        <div className="text-center space-y-1.5 mb-3">
-          <div className="flex items-center justify-center gap-2.5">
-            <span className="marvel-badge px-3 py-0.5 rounded text-2xl sm:text-3xl font-black tracking-wider shadow-2xl">
+        <div className="text-center space-y-1 mb-2 sm:mb-3">
+          <div className="flex items-center justify-center gap-2">
+            <span className="marvel-badge px-2.5 py-0.5 rounded text-xl sm:text-3xl font-black tracking-wider shadow-2xl">
               MARVEL
             </span>
-            <h1 className="font-display text-3xl sm:text-4xl font-black shimmer-text leading-none tracking-widest">
+            <h1 className="font-display text-2xl sm:text-4xl font-black shimmer-text leading-none tracking-widest">
               SPLENDOR
             </h1>
           </div>
-          <p className="text-white/70 text-xs sm:text-sm max-w-lg mx-auto truncate">
+          <p className="text-white/70 text-[11px] sm:text-sm max-w-lg mx-auto truncate hidden sm:block">
             แย่งชิงถุงมืออินฟินิตี้ • เกณฑ์ฮีโร่มาร์เวล • พิชิตจักรวาล (Infinity Gauntlet • Splendor)
           </p>
           <div className="flex items-center justify-center gap-3 pt-0.5">
@@ -531,7 +531,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 className={`w-2 h-2 rounded-full ${connectionStatus === 'connected' ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'
                   }`}
               />
-              <span className="text-xs text-white/50">
+              <span className="text-[10px] sm:text-xs text-white/50">
                 {connectionStatus === 'connected' ? '🟢 เซิร์ฟเวอร์พร้อมใช้งาน (Server Connected)' : connectionStatus}
               </span>
             </div>
@@ -541,9 +541,9 @@ export const Lobby: React.FC<LobbyProps> = ({
 
         {/* AFK / Inactivity notification banner */}
         {afkNotice && (
-          <div className="max-w-lg w-full mb-3 p-3 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-lg animate-slide-up">
+          <div className="max-w-lg w-full mb-2 p-2 sm:p-3 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-lg animate-slide-up">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-xl shrink-0">⏳</span>
+              <span className="text-lg shrink-0">⏳</span>
               <span className="font-medium">{afkNotice}</span>
             </div>
             {onClearAfkNotice && (
@@ -559,29 +559,29 @@ export const Lobby: React.FC<LobbyProps> = ({
         )}
 
         {/* Main card */}
-        <div className="glass-strong rounded-2xl p-5 sm:p-6 max-w-lg w-full space-y-3.5 border border-white/10 shadow-2xl">
+        <div className="glass-strong rounded-2xl p-3.5 sm:p-6 max-w-lg w-full space-y-2.5 sm:space-y-3.5 border border-white/10 shadow-2xl">
           {/* Player name + Avatar */}
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-white/80 block mb-1.5">
+            <label className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-white/80 block mb-1">
               ชื่อฮีโร่ของคุณ (Your Hero Name)
             </label>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               {/* Avatar button */}
               <button
                 type="button"
                 onClick={() => { soundManager.playButtonClick(); setShowAvatarPicker(true); }}
                 title="เปลี่ยนโปรไฟล์ (Change Avatar)"
-                className="relative shrink-0 w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/20 hover:ring-red-400/70 transition-all cursor-pointer active:scale-90 group"
+                className="relative shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden ring-2 ring-white/20 hover:ring-red-400/70 transition-all cursor-pointer active:scale-90 group"
               >
                 {avatarUrl ? (
                   <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover object-center" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center font-black text-white text-lg select-none">
+                  <div className="w-full h-full bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center font-black text-white text-base sm:text-lg select-none">
                     {avatarInitial}
                   </div>
                 )}
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-sm">✏️</span>
+                  <span className="text-xs sm:text-sm">✏️</span>
                 </div>
               </button>
 
@@ -597,7 +597,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 onKeyDown={(e) => e.key === 'Enter' && (activeTab === 'solo' ? handleSolo() : handleCreate())}
                 placeholder="เช่น Iron Man, Thor, Spider-Man..."
                 maxLength={20}
-                className={`flex-1 bg-white/5 border rounded-xl px-3.5 py-2.5 text-white placeholder-white/30 focus:outline-none transition-all font-medium text-sm ${
+                className={`flex-1 bg-white/5 border rounded-xl px-3 py-1.5 sm:py-2.5 text-white placeholder-white/30 focus:outline-none transition-all font-medium text-xs sm:text-sm ${
                   error
                     ? 'border-red-500 ring-2 ring-red-500/40 bg-red-950/20 animate-pulse'
                     : 'border-white/10 focus:border-red-500/60 focus:ring-1 focus:ring-red-500/40'
@@ -605,7 +605,7 @@ export const Lobby: React.FC<LobbyProps> = ({
               />
             </div>
             {/* Quick Marvel avatar row for fast pick */}
-            <div className="flex items-center gap-1.5 mt-2 overflow-x-auto pb-0.5 scrollbar-none">
+            <div className="flex items-center gap-1.5 mt-1.5 overflow-x-auto pb-0.5 scrollbar-none">
               <span className="text-[9px] text-white/35 font-bold uppercase tracking-wider shrink-0">เร็ว:</span>
               {MARVEL_AVATARS.slice(0, 8).map((av) => (
                 <button
@@ -633,7 +633,7 @@ export const Lobby: React.FC<LobbyProps> = ({
           </div>
 
           {/* Tabs */}
-          <div className="flex rounded-xl overflow-hidden border border-white/10 p-1 bg-black/30 gap-1.5">
+          <div className="flex rounded-xl overflow-hidden border border-white/10 p-0.5 sm:p-1 bg-black/30 gap-1">
             {(['solo', 'create', 'join', 'browse'] as const).map((tab) => (
               <button
                 key={tab}
@@ -643,7 +643,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                   setActiveTab(tab);
                 }}
                 className={[
-                  'flex-1 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all capitalize cursor-pointer',
+                  'flex-1 py-1.5 sm:py-2 text-[11px] sm:text-sm font-bold rounded-lg transition-all capitalize cursor-pointer',
                   activeTab === tab
                     ? 'bg-red-600 text-white shadow-md'
                     : 'text-white/50 hover:text-white hover:bg-white/5',
@@ -662,20 +662,20 @@ export const Lobby: React.FC<LobbyProps> = ({
 
           {/* Solo vs AI Tab with Bot Customizer */}
           {activeTab === 'solo' && (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {/* Number of bots */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-white/70 uppercase tracking-wider block">
+              <div className="space-y-1">
+                <label className="text-[11px] sm:text-xs font-bold text-white/70 uppercase tracking-wider block">
                   จำนวนคู่ต่อสู้บอท AI (Number of AI Opponents)
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                   {[1, 2, 3].map((num) => (
                     <button
                       key={num}
                       type="button"
                       onClick={() => setBotCount(num)}
                       className={[
-                        'py-1.5 px-3 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer',
+                        'py-1 px-2 sm:py-1.5 sm:px-3 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer',
                         botCount === num
                           ? 'border-red-500 bg-red-600/30 text-white ring-1 ring-red-400'
                           : 'border-white/10 bg-white/5 text-white/50 hover:bg-white/10',
@@ -803,7 +803,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 type="button"
                 onClick={handleSolo}
                 disabled={isLoading}
-                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
+                className="w-full py-2.5 sm:py-3.5 rounded-xl font-black font-display text-xs sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
               >
                 {isLoading ? 'กำลังเตรียมเกม... (Assembling...)' : '⚡ เล่นคนเดียวกับบอท (Play Solo vs AI)'}
               </button>
