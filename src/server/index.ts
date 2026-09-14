@@ -107,7 +107,7 @@ io.on('connection', (socket) => {
   // ── Room: Create Solo (vs Bots) ───────────────────────────
   socket.on('room:createSolo', ({ playerName, avatarUrl, botCount, botNames, mapId }, callback) => {
     try {
-      const result = roomManager.createSoloRoom(socket, playerName, avatarUrl, botCount, botNames, mapId);
+      const result = roomManager.createSoloRoom(socket, playerName, botCount, botNames, mapId, avatarUrl);
       callback(result);
     } catch (err) {
       console.error('[Server] room:createSolo error:', err);
