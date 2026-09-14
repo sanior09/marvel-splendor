@@ -18,6 +18,7 @@ import { SoundToggle } from './SoundToggle';
 import { soundManager } from '../utils/soundManager';
 import { getMarvelMap } from '../data/marvelMaps';
 import { HeroRecruitVFX } from './HeroRecruitVFX';
+import { TutorialModal } from './TutorialModal';
 import { getHeroSignature, playHeroSignatureSound, type HeroSignature } from '../data/heroSignatures';
 import type { Card } from '@shared/types/game.types';
 
@@ -62,6 +63,7 @@ export const Board: React.FC<BoardProps> = ({
     isMyPlayer: boolean;
   } | null>(null);
 
+  const [showTutorial, setShowTutorial] = useState(false);
   const lastLocallyBoughtCardIdRef = useRef<string | null>(null);
 
   // Play audio alert when turn transitions to this player
@@ -288,6 +290,19 @@ export const Board: React.FC<BoardProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Interactive Tutorial Guide */}
+            <button
+              type="button"
+              onClick={() => {
+                soundManager.playModalOpen();
+                setShowTutorial(true);
+              }}
+              className="px-2 py-1 rounded-lg bg-yellow-400/10 hover:bg-yellow-400/25 border border-yellow-400/40 text-yellow-300 font-bold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow hover:scale-105"
+              title="เปิดดูคู่มือวิธีเล่น MARVEL SPLENDOR (How to Play)"
+            >
+              <span>📖 วิธีเล่น</span>
+            </button>
+
             {/* Audio SFX Toggle Button */}
             <SoundToggle />
 
@@ -611,6 +626,9 @@ export const Board: React.FC<BoardProps> = ({
             onDismiss={() => setRecruitVFXData(null)}
           />
         )}
+
+        {/* Interactive Roblox-Style Tutorial Modal */}
+        <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
 
         {/* Game over overlay */}
         {phase === 'finished' && (

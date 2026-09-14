@@ -9,6 +9,7 @@ import { ResponsiveScaler } from './ResponsiveScaler';
 import { SoundToggle } from './SoundToggle';
 import { soundManager } from '../utils/soundManager';
 import { MARVEL_MAPS, getMarvelMap } from '../data/marvelMaps';
+import { TutorialModal } from './TutorialModal';
 
 interface LobbyProps {
   onCreateRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string) => void;
@@ -66,6 +67,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [openRooms, setOpenRooms] = useState<RoomInfo[]>([]);
   const [activeTab, setActiveTab] = useState<'solo' | 'create' | 'join' | 'browse'>('solo');
   const [selectedMapId, setSelectedMapId] = useState<string>('avengers_tower');
+  const [showTutorial, setShowTutorial] = useState(false);
 
   // Solo mode customization state
   const [botCount, setBotCount] = useState<number>(2);
@@ -169,7 +171,19 @@ export const Lobby: React.FC<LobbyProps> = ({
       <ResponsiveScaler baseWidth={880} baseHeight={580}>
         <div className="w-full h-full max-h-full overflow-hidden board-bg flex items-center justify-center p-3 sm:p-4">
           <div className="glass-strong rounded-2xl p-5 max-w-md w-full space-y-4 border border-white/15 shadow-2xl relative">
-            <div className="absolute top-3 right-3">
+            <div className="absolute top-3 right-3 flex items-center gap-2 z-20">
+              <button
+                type="button"
+                onClick={() => {
+                  soundManager.playModalOpen();
+                  setShowTutorial(true);
+                }}
+                className="px-2.5 py-1 rounded-lg bg-yellow-400/15 hover:bg-yellow-400/30 border border-yellow-400/50 text-yellow-300 font-bold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow hover:scale-105"
+                title="กดดูคู่มือวิธีเล่น MARVEL SPLENDOR (How to Play)"
+              >
+                <span>📖</span>
+                <span>สอนเล่น</span>
+              </button>
               <SoundToggle compact />
             </div>
 
@@ -406,6 +420,8 @@ export const Lobby: React.FC<LobbyProps> = ({
               </div>,
               document.body,
             )}
+            {/* Tutorial Modal in Waiting Room */}
+            <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
         </div>
       </ResponsiveScaler>
     );
@@ -414,7 +430,24 @@ export const Lobby: React.FC<LobbyProps> = ({
   // ── Main Lobby Screen ─────────────────────────────────────
   return (
     <ResponsiveScaler baseWidth={880} baseHeight={590}>
-      <div className="w-full h-full max-h-full overflow-hidden board-bg flex flex-col items-center justify-center p-2 sm:p-4">
+      <div className="w-full h-full max-h-full overflow-hidden board-bg flex flex-col items-center justify-center p-2 sm:p-4 relative">
+        {/* Top-Right Control Bar: Roblox-style Tutorial Button & Sound Toggle */}
+        <div className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-20 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              soundManager.playModalOpen();
+              setShowTutorial(true);
+            }}
+            className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/60 text-yellow-300 font-black text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
+            title="กดดูวิธีเล่น MARVEL SPLENDOR แบบทีละขั้นตอน (Interactive How-To-Play Tutorial)"
+          >
+            <span className="text-sm animate-bounce">📖</span>
+            <span>สอนเล่น (Tutorial)</span>
+          </button>
+          <SoundToggle compact />
+        </div>
+
         {/* Hero Header */}
         <div className="text-center space-y-1.5 mb-3">
           <div className="flex items-center justify-center gap-2.5">
@@ -796,6 +829,8 @@ export const Lobby: React.FC<LobbyProps> = ({
             />
           ))}
         </div>
+        {/* Interactive Roblox-Style Tutorial Modal */}
+        <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
       </div>
     </ResponsiveScaler>
   );
