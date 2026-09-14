@@ -12,27 +12,29 @@ export interface AvatarOption {
   color: string;
 }
 
+import marvelAvatarsData from '../data/marvelAvatarsData.json';
+
 export const MARVEL_AVATARS: AvatarOption[] = [
-  { id: 'iron_man',        name: 'Iron Man',        src: '/images/avatars/iron_man.jpg',        color: 'ring-red-500' },
-  { id: 'thor',            name: 'Thor',            src: '/images/avatars/thor.jpg',            color: 'ring-yellow-400' },
-  { id: 'captain_america', name: 'Captain America', src: '/images/avatars/captain_america.jpg', color: 'ring-blue-500' },
-  { id: 'hulk',            name: 'Hulk',            src: '/images/avatars/hulk.jpg',            color: 'ring-green-500' },
-  { id: 'spider_man',      name: 'Spider-Man',      src: '/images/avatars/spider_man.jpg',      color: 'ring-red-400' },
-  { id: 'black_panther',   name: 'Black Panther',   src: '/images/avatars/black_panther.jpg',   color: 'ring-purple-500' },
-  { id: 'doctor_strange',  name: 'Dr. Strange',     src: '/images/avatars/doctor_strange.jpg',  color: 'ring-indigo-400' },
-  { id: 'thanos',          name: 'Thanos',          src: '/images/avatars/thanos.jpg',          color: 'ring-violet-600' },
-  { id: 'scarlet_witch',   name: 'Scarlet Witch',   src: '/images/avatars/scarlet_witch.jpg',   color: 'ring-rose-500' },
-  { id: 'black_widow',     name: 'Black Widow',     src: '/images/avatars/black_widow.jpg',     color: 'ring-gray-400' },
-  { id: 'hawkeye',         name: 'Hawkeye',         src: '/images/avatars/hawkeye.jpg',         color: 'ring-purple-500' },
-  { id: 'loki',            name: 'Loki',            src: '/images/avatars/loki.jpg',            color: 'ring-emerald-500' },
-  { id: 'captain_marvel',  name: 'Captain Marvel',  src: '/images/avatars/captain_marvel.jpg',  color: 'ring-yellow-500' },
-  { id: 'vision',          name: 'Vision',          src: '/images/avatars/vision.jpg',          color: 'ring-red-300' },
-  { id: 'ant_man',         name: 'Ant-Man',         src: '/images/avatars/ant_man.jpg',         color: 'ring-red-600' },
-  { id: 'war_machine',     name: 'War Machine',     src: '/images/avatars/war_machine.jpg',     color: 'ring-zinc-400' },
-  { id: 'deadpool',        name: 'Deadpool',        src: '/images/avatars/deadpool.jpg',        color: 'ring-red-600' },
-  { id: 'wolverine',       name: 'Wolverine',       src: '/images/avatars/wolverine.jpg',       color: 'ring-amber-500' },
-  { id: 'groot',           name: 'Groot',           src: '/images/avatars/groot.jpg',           color: 'ring-emerald-700' },
-  { id: 'rocket',          name: 'Rocket',          src: '/images/avatars/rocket.jpg',          color: 'ring-orange-500' },
+  { id: 'iron_man',        name: 'Iron Man',        src: (marvelAvatarsData as Record<string, string>)['iron_man'] || '/images/avatars/iron_man.jpg',        color: 'ring-red-500' },
+  { id: 'thor',            name: 'Thor',            src: (marvelAvatarsData as Record<string, string>)['thor'] || '/images/avatars/thor.jpg',            color: 'ring-yellow-400' },
+  { id: 'captain_america', name: 'Captain America', src: (marvelAvatarsData as Record<string, string>)['captain_america'] || '/images/avatars/captain_america.jpg', color: 'ring-blue-500' },
+  { id: 'hulk',            name: 'Hulk',            src: (marvelAvatarsData as Record<string, string>)['hulk'] || '/images/avatars/hulk.jpg',            color: 'ring-green-500' },
+  { id: 'spider_man',      name: 'Spider-Man',      src: (marvelAvatarsData as Record<string, string>)['spider_man'] || '/images/avatars/spider_man.jpg',      color: 'ring-red-400' },
+  { id: 'black_panther',   name: 'Black Panther',   src: (marvelAvatarsData as Record<string, string>)['black_panther'] || '/images/avatars/black_panther.jpg',   color: 'ring-purple-500' },
+  { id: 'doctor_strange',  name: 'Dr. Strange',     src: (marvelAvatarsData as Record<string, string>)['doctor_strange'] || '/images/avatars/doctor_strange.jpg',  color: 'ring-indigo-400' },
+  { id: 'thanos',          name: 'Thanos',          src: (marvelAvatarsData as Record<string, string>)['thanos'] || '/images/avatars/thanos.jpg',          color: 'ring-violet-600' },
+  { id: 'scarlet_witch',   name: 'Scarlet Witch',   src: (marvelAvatarsData as Record<string, string>)['scarlet_witch'] || '/images/avatars/scarlet_witch.jpg',   color: 'ring-rose-500' },
+  { id: 'black_widow',     name: 'Black Widow',     src: (marvelAvatarsData as Record<string, string>)['black_widow'] || '/images/avatars/black_widow.jpg',     color: 'ring-gray-400' },
+  { id: 'hawkeye',         name: 'Hawkeye',         src: (marvelAvatarsData as Record<string, string>)['hawkeye'] || '/images/avatars/hawkeye.jpg',         color: 'ring-purple-500' },
+  { id: 'loki',            name: 'Loki',            src: (marvelAvatarsData as Record<string, string>)['loki'] || '/images/avatars/loki.jpg',            color: 'ring-emerald-500' },
+  { id: 'captain_marvel',  name: 'Captain Marvel',  src: (marvelAvatarsData as Record<string, string>)['captain_marvel'] || '/images/avatars/captain_marvel.jpg',  color: 'ring-yellow-500' },
+  { id: 'vision',          name: 'Vision',          src: (marvelAvatarsData as Record<string, string>)['vision'] || '/images/avatars/vision.jpg',          color: 'ring-red-300' },
+  { id: 'ant_man',         name: 'Ant-Man',         src: (marvelAvatarsData as Record<string, string>)['ant_man'] || '/images/avatars/ant_man.jpg',         color: 'ring-red-600' },
+  { id: 'war_machine',     name: 'War Machine',     src: (marvelAvatarsData as Record<string, string>)['war_machine'] || '/images/avatars/war_machine.jpg',     color: 'ring-zinc-400' },
+  { id: 'deadpool',        name: 'Deadpool',        src: (marvelAvatarsData as Record<string, string>)['deadpool'] || '/images/avatars/deadpool.jpg',        color: 'ring-red-600' },
+  { id: 'wolverine',       name: 'Wolverine',       src: (marvelAvatarsData as Record<string, string>)['wolverine'] || '/images/avatars/wolverine.jpg',       color: 'ring-amber-500' },
+  { id: 'groot',           name: 'Groot',           src: (marvelAvatarsData as Record<string, string>)['groot'] || '/images/avatars/groot.jpg',           color: 'ring-emerald-700' },
+  { id: 'rocket',          name: 'Rocket',          src: (marvelAvatarsData as Record<string, string>)['rocket'] || '/images/avatars/rocket.jpg',          color: 'ring-orange-500' },
 ];
 
 const FALLBACK_COLORS: Record<string, string> = {
