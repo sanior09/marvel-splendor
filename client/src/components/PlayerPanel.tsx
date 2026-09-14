@@ -83,41 +83,6 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
 
   return (
     <div className="space-y-1.5">
-      {/* Player info banner */}
-      <div
-        className={[
-          'glass rounded-xl px-3 py-1.5 flex items-center gap-2.5 border border-white/10 shadow-md',
-          isMyTurn ? 'ring-2 ring-yellow-400/80 bg-yellow-400/10' : '',
-        ].join(' ')}
-      >
-        <div className="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm text-white bg-gradient-to-br from-red-600 to-amber-600 shadow flex-shrink-0">
-          {player.isBot ? '🤖' : player.name.charAt(0).toUpperCase()}
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-bold text-white text-xs truncate flex items-center gap-1">
-            <span>{player.name}</span>
-            {player.isBot && (
-              <span className="text-[8px] bg-purple-500/30 text-purple-300 px-1 py-0.2 rounded font-bold">
-                AI
-              </span>
-            )}
-          </p>
-          <p className="text-[10px] text-white/50 leading-tight">
-            {isMyTurn ? (
-              <span className="text-yellow-400 font-black animate-pulse">⚡ ถึงตาคุณ (YOUR TURN)</span>
-            ) : (
-              'รอตา... (Waiting)'
-            )}
-          </p>
-        </div>
-        <div className="text-right">
-          <div className="text-xl font-black font-display text-yellow-400 leading-none">
-            {player.score}
-          </div>
-          <div className="text-[8px] text-white/40 uppercase tracking-wider">แต้ม (PTS)</div>
-        </div>
-      </div>
-
       {/* Infinity Gauntlet Mastery Widget */}
       <div className="glass rounded-xl p-2.5 space-y-1.5 border border-amber-500/20 bg-gradient-to-br from-amber-950/20 to-black/40">
         <div className="flex justify-between items-center">
