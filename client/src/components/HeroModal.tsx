@@ -2,7 +2,7 @@
 //  HeroModal.tsx — Large Recruited Marvel Heroes Showcase
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { Player, CrystalColor } from '@shared/types/game.types';
 import { BANK_STONE_COLORS } from '@shared/types/game.types';
@@ -13,6 +13,7 @@ interface HeroModalProps {
   isOpen: boolean;
   onClose: () => void;
   player: Player;
+  initialColor?: CrystalColor | 'all';
 }
 
 const TIER_BORDER: Record<number, string> = {
@@ -27,9 +28,20 @@ const TIER_BADGE: Record<number, { text: string; bg: string }> = {
   3: { text: 'TIER III', bg: 'bg-amber-600/90 text-yellow-100 border-amber-300/60' },
 };
 
-export const HeroModal: React.FC<HeroModalProps> = ({ isOpen, onClose, player }) => {
+export const HeroModal: React.FC<HeroModalProps> = ({
+  isOpen,
+  onClose,
+  player,
+  initialColor = 'all',
+}) => {
   const [filterTier, setFilterTier] = useState<'all' | 1 | 2 | 3>('all');
-  const [filterColor, setFilterColor] = useState<CrystalColor | 'all'>('all');
+  const [filterColor, setFilterColor] = useState<CrystalColor | 'all'>(initialColor);
+
+  useEffect(() => {
+    if (initialColor) {
+      setFilterColor(initialColor);
+    }
+  }, [initialColor]);
 
   if (!isOpen) return null;
 

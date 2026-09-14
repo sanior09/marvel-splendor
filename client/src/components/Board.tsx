@@ -48,6 +48,7 @@ export const Board: React.FC<BoardProps> = ({
   const isMyTurn = currentPlayer?.id === myPlayerId;
 
   const [heroModalPlayer, setHeroModalPlayer] = useState<Player | null>(null);
+  const [heroModalColor, setHeroModalColor] = useState<CrystalColor | 'all'>('all');
 
   // Play audio alert when turn transitions to this player
   const prevIsMyTurnRef = useRef<boolean>(isMyTurn);
@@ -204,6 +205,7 @@ export const Board: React.FC<BoardProps> = ({
               type="button"
               onClick={() => {
                 soundManager.playModalOpen();
+                setHeroModalColor('all');
                 setHeroModalPlayer(myPlayer);
               }}
               className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-red-600/40 via-purple-600/30 to-amber-600/40 hover:from-red-600/60 hover:to-amber-600/60 border border-yellow-400/50 text-yellow-300 font-bold text-[11px] flex items-center gap-1.5 transition-all cursor-pointer shadow hover:scale-105"
@@ -465,7 +467,10 @@ export const Board: React.FC<BoardProps> = ({
               players={players}
               currentPlayerIndex={currentPlayerIndex}
               myPlayerId={myPlayerId}
-              onSelectPlayer={(p) => setHeroModalPlayer(p)}
+              onSelectPlayer={(p) => {
+                setHeroModalColor('all');
+                setHeroModalPlayer(p);
+              }}
             />
 
             {/* My hand & Infinity Gauntlet */}
@@ -474,8 +479,9 @@ export const Board: React.FC<BoardProps> = ({
               isMyTurn={isMyTurn}
               onBuyCard={handleBuyCard}
               onSendAction={onSendAction}
-              onViewCards={() => {
+              onViewCards={(color) => {
                 soundManager.playModalOpen();
+                setHeroModalColor(color ?? 'all');
                 setHeroModalPlayer(myPlayer);
               }}
             />
@@ -489,8 +495,10 @@ export const Board: React.FC<BoardProps> = ({
             onClose={() => {
               soundManager.playModalClose();
               setHeroModalPlayer(null);
+              setHeroModalColor('all');
             }}
             player={heroModalPlayer}
+            initialColor={heroModalColor}
           />
         )}
 
