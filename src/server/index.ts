@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
   // ── Room: Create ──────────────────────────────────────────
   socket.on('room:create', ({ playerName, avatarUrl, mapId }, callback) => {
     try {
-      const room = roomManager.createRoom(socket, playerName, avatarUrl, mapId);
+      const room = roomManager.createRoom(socket, playerName, mapId, avatarUrl);
       callback(room);
     } catch (err) {
       console.error('[Server] room:create error:', err);
