@@ -13,23 +13,24 @@ export interface AvatarOption {
 }
 
 export const MARVEL_AVATARS: AvatarOption[] = [
-  { id: 'iron_man',        name: 'Iron Man',       src: 'https://i.annihil.us/u/prod/marvel/i/mg/9/c0/527bb7b37ff55/portrait_incredible.jpg', color: 'ring-red-500' },
-  { id: 'thor',            name: 'Thor',            src: 'https://i.annihil.us/u/prod/marvel/i/mg/d/d0/5269657a74350/portrait_incredible.jpg', color: 'ring-yellow-400' },
-  { id: 'captain_america', name: 'Captain America', src: 'https://i.annihil.us/u/prod/marvel/i/mg/3/50/537ba56d31087/portrait_incredible.jpg', color: 'ring-blue-500' },
-  { id: 'hulk',            name: 'Hulk',            src: 'https://i.annihil.us/u/prod/marvel/i/mg/5/a0/538615ca33ab0/portrait_incredible.jpg', color: 'ring-green-500' },
-  { id: 'spider_man',      name: 'Spider-Man',      src: 'https://i.annihil.us/u/prod/marvel/i/mg/6/60/538cd3628f00e/portrait_incredible.jpg', color: 'ring-red-400' },
-  { id: 'black_panther',   name: 'Black Panther',   src: 'https://i.annihil.us/u/prod/marvel/i/mg/1/c0/537ba2bfd6bab/portrait_incredible.jpg', color: 'ring-purple-500' },
-  { id: 'doctor_strange',  name: 'Dr. Strange',     src: 'https://i.annihil.us/u/prod/marvel/i/mg/5/f0/5261a85a501fe/portrait_incredible.jpg', color: 'ring-indigo-400' },
-  { id: 'thanos',          name: 'Thanos',          src: 'https://i.annihil.us/u/prod/marvel/i/mg/6/40/5274137e3e2cd/portrait_incredible.jpg', color: 'ring-violet-600' },
-  { id: 'scarlet_witch',   name: 'Scarlet Witch',   src: 'https://i.annihil.us/u/prod/marvel/i/mg/6/70/5261a7d7c394b/portrait_incredible.jpg', color: 'ring-rose-500' },
-  { id: 'black_widow',     name: 'Black Widow',     src: 'https://i.annihil.us/u/prod/marvel/i/mg/f/30/50fecad1f395b/portrait_incredible.jpg', color: 'ring-gray-400' },
-  { id: 'hawkeye',         name: 'Hawkeye',         src: 'https://i.annihil.us/u/prod/marvel/i/mg/e/90/5261a72b4a194/portrait_incredible.jpg', color: 'ring-amber-500' },
-  { id: 'loki',            name: 'Loki',            src: 'https://i.annihil.us/u/prod/marvel/i/mg/d/90/526033c8b474a/portrait_incredible.jpg', color: 'ring-emerald-500' },
-  { id: 'captain_marvel',  name: 'Captain Marvel',  src: 'https://i.annihil.us/u/prod/marvel/i/mg/6/80/5269608c1be7a/portrait_incredible.jpg', color: 'ring-yellow-500' },
-  { id: 'vision',          name: 'Vision',          src: 'https://i.annihil.us/u/prod/marvel/i/mg/9/d0/5111527040594/portrait_incredible.jpg', color: 'ring-red-300' },
-  { id: 'ant_man',         name: 'Ant-Man',         src: 'https://i.annihil.us/u/prod/marvel/i/mg/6/b0/5261a6c26db97/portrait_incredible.jpg', color: 'ring-red-600' },
-  { id: 'war_machine',     name: 'War Machine',     src: 'https://i.annihil.us/u/prod/marvel/i/mg/8/60/5261a7d42dbd9/portrait_incredible.jpg', color: 'ring-zinc-500' },
+  { id: 'iron_man',        name: 'Iron Man',       src: '/images/avatars/iron_man.jpg',        color: 'ring-red-500' },
+  { id: 'thor',            name: 'Thor',            src: '/images/avatars/thor.jpg',            color: 'ring-yellow-400' },
+  { id: 'captain_america', name: 'Captain America', src: '/images/avatars/captain_america.jpg', color: 'ring-blue-500' },
+  { id: 'hulk',            name: 'Hulk',            src: '/images/avatars/hulk.jpg',            color: 'ring-green-500' },
+  { id: 'spider_man',      name: 'Spider-Man',      src: '/images/avatars/spider_man.jpg',      color: 'ring-red-400' },
+  { id: 'black_panther',   name: 'Black Panther',   src: '/images/avatars/black_panther.jpg',   color: 'ring-purple-500' },
+  { id: 'doctor_strange',  name: 'Dr. Strange',     src: '/images/avatars/doctor_strange.jpg',  color: 'ring-indigo-400' },
+  { id: 'thanos',          name: 'Thanos',          src: '/images/avatars/thanos.jpg',          color: 'ring-violet-600' },
+  { id: 'scarlet_witch',   name: 'Scarlet Witch',   src: '/images/avatars/scarlet_witch.jpg',   color: 'ring-rose-500' },
+  { id: 'black_widow',     name: 'Black Widow',     src: '/images/avatars/black_widow.jpg',     color: 'ring-gray-400' },
+  { id: 'hawkeye',         name: 'Hawkeye',         src: '/images/avatars/hawkeye.jpg',         color: 'ring-amber-500' },
+  { id: 'loki',            name: 'Loki',            src: '/images/avatars/loki.jpg',            color: 'ring-emerald-500' },
+  { id: 'captain_marvel',  name: 'Captain Marvel',  src: '/images/avatars/captain_marvel.jpg',  color: 'ring-yellow-500' },
+  { id: 'vision',          name: 'Vision',          src: '/images/avatars/vision.jpg',          color: 'ring-red-300' },
+  { id: 'ant_man',         name: 'Ant-Man',         src: '/images/avatars/ant_man.jpg',         color: 'ring-red-600' },
+  { id: 'war_machine',     name: 'War Machine',     src: '/images/avatars/war_machine.jpg',     color: 'ring-zinc-500' },
 ];
+
 
 const FALLBACK_COLORS: Record<string, string> = {
   iron_man: 'from-red-600 to-yellow-500', thor: 'from-yellow-400 to-blue-600',
