@@ -146,6 +146,8 @@ export interface GameState {
   /** Final winner(s) after all players complete the round */
   winners: string[];
   turnNumber: number;
+  /** Chosen Marvel battlefield background map ID (immutable once game starts) */
+  mapId?: string;
 }
 
 // ─── Actions ─────────────────────────────────────────────────
@@ -220,6 +222,7 @@ export interface RoomInfo {
   players: RoomPlayer[];
   maxPlayers: number;
   status: RoomStatus;
+  mapId?: string;
 }
 
 // ─── Socket Event Payloads ───────────────────────────────────
@@ -233,12 +236,12 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  'room:create': (payload: { playerName: string }, callback: (room: RoomInfo) => void) => void;
+  'room:create': (payload: { playerName: string; mapId?: string }, callback: (room: RoomInfo) => void) => void;
   'room:join': (payload: { roomId: string; playerName: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'room:leave': () => void;
   'room:addBot': (payload: { botName?: string; personality?: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'room:removeBot': (payload: { botId: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
-  'room:createSolo': (payload: { playerName: string; botCount: number; botNames?: string[] }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
+  'room:createSolo': (payload: { playerName: string; botCount: number; botNames?: string[]; mapId?: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'game:start': () => void;
   'game:action': (action: GameAction) => void;
   'room:listAll': (callback: (rooms: RoomInfo[]) => void) => void;

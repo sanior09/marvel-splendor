@@ -8,10 +8,11 @@ import type { RoomInfo } from '@shared/types/game.types';
 import { ResponsiveScaler } from './ResponsiveScaler';
 import { SoundToggle } from './SoundToggle';
 import { soundManager } from '../utils/soundManager';
+import { MARVEL_MAPS, getMarvelMap } from '../data/marvelMaps';
 
 interface LobbyProps {
-  onCreateRoom: (playerName: string, callback: (room: RoomInfo) => void) => void;
-  onCreateSolo: (playerName: string, botCount: number, botNames?: string[]) => void;
+  onCreateRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string) => void;
+  onCreateSolo: (playerName: string, botCount: number, botNames?: string[], mapId?: string) => void;
   onJoinRoom: (roomId: string, playerName: string, callback: (success: boolean, err?: string) => void) => void;
   onStartGame: () => void;
   onAddBot: (botName?: string, personality?: string, callback?: (success: boolean) => void) => void;
@@ -64,6 +65,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [openRooms, setOpenRooms] = useState<RoomInfo[]>([]);
   const [activeTab, setActiveTab] = useState<'solo' | 'create' | 'join' | 'browse'>('solo');
+  const [selectedMapId, setSelectedMapId] = useState<string>('avengers_tower');
 
   // Solo mode customization state
   const [botCount, setBotCount] = useState<number>(2);
@@ -101,7 +103,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     soundManager.playButtonClick();
     setIsLoading(true);
     setError('');
-    onCreateRoom(playerName.trim(), () => setIsLoading(false));
+    onCreateRoom(playerName.trim(), () => setIsLoading(false), selectedMapId);
   };
 
   const handleSolo = (): void => {
@@ -116,7 +118,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     const selectedBotNames = botNames.slice(0, botCount).map((name, idx) => {
       return name.trim() || POPULAR_MARVEL_BOTS[idx]?.name || `Marvel AI ${idx + 1}`;
     });
-    onCreateSolo(playerName.trim(), botCount, selectedBotNames);
+    onCreateSolo(playerName.trim(), botCount, selectedBotNames, selectedMapId);
   };
 
   const handleJoin = (roomId?: string): void => {
@@ -187,6 +189,22 @@ export const Lobby: React.FC<LobbyProps> = ({
                   {currentRoom.roomId}
                 </code>
               </div>
+
+              {/* Battlefield Map Indicator in waiting room */}
+              {(() => {
+                const roomMap = getMarvelMap(currentRoom.mapId);
+                return (
+                  <div
+                    className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-white bg-white/10 border ${roomMap.accentBorder} shadow-sm my-1`}
+                    title={`สมรภูมิรบที่เลือกไว้: ${roomMap.name} (${roomMap.nameEn}) - ล็อกแล้วไม่สามารถเปลี่ยนได้ในเกม`}
+                  >
+                    <span className="text-sm">{roomMap.icon}</span>
+                    <span>สมรภูมิ: <span className="text-yellow-300 font-extrabold">{roomMap.name}</span></span>
+                    <span className="text-[9px] bg-red-600/80 text-white font-mono px-1.5 py-0.2 rounded-full uppercase tracking-wider">🔒 LOCKED</span>
+                  </div>
+                );
+              })()}
+
               <p className="text-[10px] text-white/50">
                 แชร์รหัสนี้ให้เพื่อน หรือเพิ่มบอทมาร์เวล AI เข้ามาประลอง (Share code with friends or customize AI Bots)
               </p>
@@ -395,7 +413,7 @@ export const Lobby: React.FC<LobbyProps> = ({
 
   // ── Main Lobby Screen ─────────────────────────────────────
   return (
-    <ResponsiveScaler baseWidth={880} baseHeight={620}>
+    <ResponsiveScaler baseWidth={920} baseHeight={660}>
       <div className="w-full h-full max-h-full overflow-hidden board-bg flex flex-col items-center justify-center p-2 sm:p-4">
         {/* Hero Header */}
         <div className="text-center space-y-1.5 mb-3">
@@ -579,11 +597,85 @@ export const Lobby: React.FC<LobbyProps> = ({
                 </div>
               </div>
 
+              {/* Marvel Battlefield Map Selector for Solo Mode */}
+              <div className="space-y-1.5 pt-1 border-t border-white/10">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-white/80 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>🗺️</span>
+                    <span>เลือกแผนที่สมรภูมิมาร์เวล (Marvel Battlefield Map)</span>
+                  </label>
+                  <span className="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 px-1.5 py-0.5 rounded border border-yellow-400/30">
+                    ล็อกแล้วไม่สามารถเปลี่ยนได้ในเกม
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-1.5">
+                  {MARVEL_MAPS.map((map) => {
+                    const isSelected = selectedMapId === map.id;
+                    return (
+                      <button
+                        key={map.id}
+                        type="button"
+                        onClick={() => {
+                          soundManager.playButtonClick();
+                          setSelectedMapId(map.id);
+                        }}
+                        className={[
+                          'p-2 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between cursor-pointer group',
+                          isSelected
+                            ? `${map.accentBorder} bg-white/15 ring-2 ring-yellow-400 shadow-lg scale-[1.02]`
+                            : 'border-white/10 bg-black/30 hover:bg-white/10 text-white/70 hover:text-white',
+                        ].join(' ')}
+                        title={`${map.name} (${map.nameEn})\n${map.description}`}
+                      >
+                        {/* Glow indicator */}
+                        {isSelected && (
+                          <div
+                            className="absolute -top-6 -right-6 w-12 h-12 rounded-full blur-md opacity-50"
+                            style={{ backgroundColor: map.ambientColor }}
+                          />
+                        )}
+
+                        <div className="flex items-center justify-between gap-1 mb-1">
+                          <span className="text-base">{map.icon}</span>
+                          {isSelected && (
+                            <span className="text-[9px] font-black text-yellow-300 bg-black/60 px-1.5 py-0.2 rounded-full border border-yellow-400/50">
+                              ✓ เลือก
+                            </span>
+                          )}
+                        </div>
+
+                        <div>
+                          <p className="font-extrabold text-white text-[11px] leading-tight truncate">
+                            {map.name}
+                          </p>
+                          <p className="text-[9px] text-white/50 truncate font-mono">
+                            {map.nameEn}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Map Subtitle & Description */}
+                {(() => {
+                  const currentMap = getMarvelMap(selectedMapId);
+                  return (
+                    <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-black/40 border border-white/5 text-[10px] text-white/70">
+                      <span className="text-xs">{currentMap.icon}</span>
+                      <span className="font-bold text-white shrink-0">{currentMap.name}:</span>
+                      <span className="truncate">{currentMap.description}</span>
+                    </div>
+                  );
+                })()}
+              </div>
+
               <button
                 type="button"
                 onClick={handleSolo}
                 disabled={isLoading || !playerName.trim()}
-                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
+                className="w-full py-3 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
               >
                 {isLoading ? 'กำลังเตรียมเกม... (Assembling...)' : '⚡ เล่นคนเดียวกับบอท (Play Solo vs AI)'}
               </button>
@@ -592,14 +684,90 @@ export const Lobby: React.FC<LobbyProps> = ({
 
           {/* Create Multiplayer Room Tab */}
           {activeTab === 'create' && (
-            <button
-              type="button"
-              onClick={handleCreate}
-              disabled={isLoading || !playerName.trim()}
-              className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
-            >
-              {isLoading ? 'กำลังสร้างห้อง... (Creating...)' : '✦ สร้างห้องเล่นหลายคน (Create Multiplayer Room)'}
-            </button>
+            <div className="space-y-3">
+              {/* Marvel Battlefield Map Selector for Multiplayer Room */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-white/80 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>🗺️</span>
+                    <span>เลือกแผนที่สมรภูมิมาร์เวล (Marvel Battlefield Map)</span>
+                  </label>
+                  <span className="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 px-1.5 py-0.5 rounded border border-yellow-400/30">
+                    ล็อกแล้วไม่สามารถเปลี่ยนได้ในเกม
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-1.5">
+                  {MARVEL_MAPS.map((map) => {
+                    const isSelected = selectedMapId === map.id;
+                    return (
+                      <button
+                        key={map.id}
+                        type="button"
+                        onClick={() => {
+                          soundManager.playButtonClick();
+                          setSelectedMapId(map.id);
+                        }}
+                        className={[
+                          'p-2 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between cursor-pointer group',
+                          isSelected
+                            ? `${map.accentBorder} bg-white/15 ring-2 ring-yellow-400 shadow-lg scale-[1.02]`
+                            : 'border-white/10 bg-black/30 hover:bg-white/10 text-white/70 hover:text-white',
+                        ].join(' ')}
+                        title={`${map.name} (${map.nameEn})\n${map.description}`}
+                      >
+                        {/* Glow indicator */}
+                        {isSelected && (
+                          <div
+                            className="absolute -top-6 -right-6 w-12 h-12 rounded-full blur-md opacity-50"
+                            style={{ backgroundColor: map.ambientColor }}
+                          />
+                        )}
+
+                        <div className="flex items-center justify-between gap-1 mb-1">
+                          <span className="text-base">{map.icon}</span>
+                          {isSelected && (
+                            <span className="text-[9px] font-black text-yellow-300 bg-black/60 px-1.5 py-0.2 rounded-full border border-yellow-400/50">
+                              ✓ เลือก
+                            </span>
+                          )}
+                        </div>
+
+                        <div>
+                          <p className="font-extrabold text-white text-[11px] leading-tight truncate">
+                            {map.name}
+                          </p>
+                          <p className="text-[9px] text-white/50 truncate font-mono">
+                            {map.nameEn}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Map Subtitle & Description */}
+                {(() => {
+                  const currentMap = getMarvelMap(selectedMapId);
+                  return (
+                    <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-black/40 border border-white/5 text-[10px] text-white/70">
+                      <span className="text-xs">{currentMap.icon}</span>
+                      <span className="font-bold text-white shrink-0">{currentMap.name}:</span>
+                      <span className="truncate">{currentMap.description}</span>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCreate}
+                disabled={isLoading || !playerName.trim()}
+                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
+              >
+                {isLoading ? 'กำลังสร้างห้อง... (Creating...)' : '✦ สร้างห้องเล่นหลายคน (Create Multiplayer Room)'}
+              </button>
+            </div>
           )}
 
           {/* Join Room Tab */}

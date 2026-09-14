@@ -39,6 +39,7 @@ interface Room {
   sessions: PlayerSession[];
   maxPlayers: number;
   status: 'waiting' | 'playing' | 'finished';
+  mapId: string;
   // Game state — null until game starts
   gameState: GameState | null;
   // Private decks (never sent to clients)
@@ -86,7 +87,7 @@ export class RoomManager {
 
   // ─── Room Creation ──────────────────────────────────────────
 
-  createRoom(socket: Socket, playerName: string): RoomInfo {
+  createRoom(socket: Socket, playerName: string, mapId = 'avengers_tower'): RoomInfo {
     const roomId = uuidv4().slice(0, 6).toUpperCase();
     const playerId = uuidv4();
 
@@ -102,6 +103,7 @@ export class RoomManager {
       sessions: [session],
       maxPlayers: 4,
       status: 'waiting',
+      mapId: mapId || 'avengers_tower',
       gameState: null,
       decks: { tier1: [], tier2: [], tier3: [] },
       lastActivity: Date.now(),
@@ -113,7 +115,7 @@ export class RoomManager {
 
     socket.join(roomId);
 
-    console.log(`[RoomManager] Room ${roomId} created by ${playerName}`);
+    console.log(`[RoomManager] Room ${roomId} created by ${playerName} with map ${room.mapId}`);
     return this.toRoomInfo(room);
   }
 
@@ -225,6 +227,7 @@ export class RoomManager {
       delete (rawState as Partial<typeof rawState>)._tier2Deck;
       delete (rawState as Partial<typeof rawState>)._tier3Deck;
 
+      rawState.mapId = room.mapId;
       room.gameState = rawState;
       room.status = 'playing';
       room.lastActivity = Date.now();
@@ -307,8 +310,9 @@ export class RoomManager {
     playerName: string,
     botCount: number,
     botNames?: string[],
+    mapId?: string,
   ): { success: boolean; room?: RoomInfo; error?: string } {
-    const roomInfo = this.createRoom(socket, playerName);
+    const roomInfo = this.createRoom(socket, playerName, mapId);
     const room = this.rooms.get(roomInfo.roomId);
     if (!room) return { success: false, error: 'Failed to create room' };
 
@@ -492,6 +496,7 @@ export class RoomManager {
       })),
       maxPlayers: room.maxPlayers,
       status: room.status,
+      mapId: room.mapId,
     };
   }
 }

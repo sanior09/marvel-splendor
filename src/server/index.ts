@@ -56,9 +56,9 @@ io.on('connection', (socket) => {
   console.log(`[Server] Client connected: ${socket.id}`);
 
   // ── Room: Create ──────────────────────────────────────────
-  socket.on('room:create', ({ playerName }, callback) => {
+  socket.on('room:create', ({ playerName, mapId }, callback) => {
     try {
-      const room = roomManager.createRoom(socket, playerName);
+      const room = roomManager.createRoom(socket, playerName, mapId);
       callback(room);
     } catch (err) {
       console.error('[Server] room:create error:', err);
@@ -105,9 +105,9 @@ io.on('connection', (socket) => {
   });
 
   // ── Room: Create Solo (vs Bots) ───────────────────────────
-  socket.on('room:createSolo', ({ playerName, botCount, botNames }, callback) => {
+  socket.on('room:createSolo', ({ playerName, botCount, botNames, mapId }, callback) => {
     try {
-      const result = roomManager.createSoloRoom(socket, playerName, botCount, botNames);
+      const result = roomManager.createSoloRoom(socket, playerName, botCount, botNames, mapId);
       callback(result);
     } catch (err) {
       console.error('[Server] room:createSolo error:', err);

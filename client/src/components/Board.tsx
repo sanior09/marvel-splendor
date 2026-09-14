@@ -16,6 +16,7 @@ import { HeroModal } from './HeroModal';
 import { ResponsiveScaler } from './ResponsiveScaler';
 import { SoundToggle } from './SoundToggle';
 import { soundManager } from '../utils/soundManager';
+import { getMarvelMap } from '../data/marvelMaps';
 
 interface BoardProps {
   state: GameState;
@@ -158,12 +159,33 @@ export const Board: React.FC<BoardProps> = ({
   // ── Render ────────────────────────────────────────────────
 
   const avengersHolder = players.find((p) => p.id === board.avengersAssembleHolder);
+  const activeMap = getMarvelMap(state.mapId);
 
   return (
     <ResponsiveScaler baseWidth={1120} baseHeight={580}>
-      <div className="h-full w-full board-bg flex flex-col overflow-hidden">
+      <div
+        className="h-full w-full relative flex flex-col overflow-hidden select-none"
+        style={{
+          background: activeMap.bgStyle,
+          backgroundColor: '#070913',
+        }}
+      >
+        {/* Protective Contrast Scrim & Subtle Vignette: Ensures cards, gems, and text remain 100% sharp and readable */}
+        <div
+          className="absolute inset-0 pointer-events-none z-0 bg-slate-950/70"
+          style={{
+            backgroundImage: 'radial-gradient(ellipse at 50% 50%, rgba(3, 7, 18, 0.45) 0%, rgba(2, 4, 10, 0.85) 100%)',
+          }}
+        />
+
+        {/* Ambient Map Particle/Aura Glow in Top Corner */}
+        <div
+          className="absolute top-0 right-1/4 w-96 h-48 rounded-full blur-3xl pointer-events-none opacity-20 -translate-y-1/2"
+          style={{ backgroundColor: activeMap.ambientColor }}
+        />
+
         {/* Top bar */}
-        <header className="glass border-b border-white/10 px-3 flex items-center justify-between h-10 flex-shrink-0">
+        <header className="relative z-10 glass border-b border-white/10 px-3 flex items-center justify-between h-10 flex-shrink-0">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5">
               <span className="marvel-badge px-2 py-0.5 rounded text-xs tracking-wider">
@@ -182,6 +204,16 @@ export const Board: React.FC<BoardProps> = ({
                 alt="Nachapol Industries"
                 className="h-4 sm:h-5 object-contain opacity-90 hover:opacity-100 transition-opacity drop-shadow-sm"
               />
+            </div>
+
+            {/* Marvel Battlefield Location Badge */}
+            <div
+              className={`hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold text-white/90 bg-white/10 border ${activeMap.accentBorder} shadow-sm`}
+              title={`สมรภูมิรบ: ${activeMap.name} (${activeMap.nameEn}) - ล็อกแผนที่แล้วตลอดทั้งเกม`}
+            >
+              <span className="text-xs">{activeMap.icon}</span>
+              <span className="truncate max-w-[130px]">{activeMap.name}</span>
+              <span className="text-[8px] bg-black/40 text-yellow-300 font-mono px-1 rounded uppercase tracking-wider">🔒 LOCKED</span>
             </div>
 
             <span className="text-[10px] text-white/50 bg-white/5 px-2 py-0.5 rounded-full font-semibold border border-white/5">
@@ -261,7 +293,7 @@ export const Board: React.FC<BoardProps> = ({
         )}
 
         {/* Main layout: 3-column no-scroll setup */}
-        <div className="flex flex-1 min-h-0 overflow-hidden">
+        <div className="flex flex-1 min-h-0 overflow-hidden relative z-10">
           {/* Left Column: Infinity Stones & S.H.I.E.L.D. Bank (Dedicated dock, NO vertical scroll needed) */}
           <aside className="w-44 p-1.5 flex flex-col flex-shrink-0 border-r border-white/10 bg-black/40 min-h-0 overflow-hidden">
             <GemBank

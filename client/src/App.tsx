@@ -51,23 +51,23 @@ export default function App(): React.ReactElement {
 
   // On room create — capture host player ID
   const handleCreateRoom = useCallback(
-    (playerName: string, callback: (room: RoomInfo) => void) => {
+    (playerName: string, callback: (room: RoomInfo) => void, mapId?: string) => {
       setAfkNotice(null);
       createRoom(playerName, (room) => {
         setMyPlayerId(room.hostId);
         callback(room);
-      });
+      }, mapId);
     },
     [createRoom],
   );
 
   // On Solo Game Create
   const handleCreateSolo = useCallback(
-    (playerName: string, botCount: number, botNames?: string[]) => {
+    (playerName: string, botCount: number, botNames?: string[], mapId?: string) => {
       setAfkNotice(null);
       createSolo(playerName, botCount, botNames, (room) => {
         setMyPlayerId(room.hostId);
-      });
+      }, mapId);
     },
     [createSolo],
   );
