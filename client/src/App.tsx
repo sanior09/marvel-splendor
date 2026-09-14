@@ -112,6 +112,7 @@ export default function App(): React.ReactElement {
             onCreateRoom={handleCreateRoom}
             onCreateSolo={handleCreateSolo}
             onJoinRoom={handleJoinRoom}
+            onLeaveRoom={handleLeave}
             onStartGame={startGame}
             onAddBot={addBot}
             onRemoveBot={removeBot}

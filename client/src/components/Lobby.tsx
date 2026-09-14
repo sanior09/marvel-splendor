@@ -15,6 +15,7 @@ interface LobbyProps {
   onCreateRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string) => void;
   onCreateSolo: (playerName: string, botCount: number, botNames?: string[], mapId?: string, avatarUrl?: string) => void;
   onJoinRoom: (roomId: string, playerName: string, callback: (success: boolean, err?: string) => void, avatarUrl?: string) => void;
+  onLeaveRoom?: () => void;
   onStartGame: () => void;
   onAddBot: (botName?: string, personality?: string, callback?: (success: boolean) => void, avatarUrl?: string) => void;
   onRemoveBot: (botId: string) => void;
@@ -66,6 +67,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   onCreateRoom,
   onCreateSolo,
   onJoinRoom,
+  onLeaveRoom,
   onStartGame,
   onAddBot,
   onRemoveBot,
@@ -203,6 +205,21 @@ export const Lobby: React.FC<LobbyProps> = ({
       <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start sm:justify-center p-3 sm:p-6 relative select-none">
         <div className="w-full max-w-md my-auto py-4">
           <div className="glass-strong rounded-2xl p-5 w-full space-y-4 border border-white/15 shadow-2xl relative">
+            <div className="absolute top-3 left-3 z-20">
+              <button
+                type="button"
+                onClick={() => {
+                  soundManager.playButtonClick();
+                  onLeaveRoom?.();
+                }}
+                className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white/80 hover:text-white font-bold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow hover:scale-105"
+                title="ย้อนกลับไปหน้าแรก (Leave Room & Return to Main Lobby)"
+              >
+                <span>⬅️</span>
+                <span>ย้อนกลับ</span>
+              </button>
+            </div>
+
             <div className="absolute top-3 right-3 flex items-center gap-2 z-20">
               <button
                 type="button"
@@ -216,7 +233,6 @@ export const Lobby: React.FC<LobbyProps> = ({
                 <span>📖</span>
                 <span>สอนเล่น</span>
               </button>
-
             </div>
 
             <div className="text-center space-y-1.5">
