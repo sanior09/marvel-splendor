@@ -28,6 +28,16 @@ const TIER_BADGE: Record<number, { text: string; bg: string }> = {
   3: { text: 'TIER III', bg: 'bg-amber-600/90 text-yellow-100 border-amber-300/60' },
 };
 
+const ALL_TOKENS_LIST: CrystalColor[] = [
+  'topaz',
+  'sapphire',
+  'emerald',
+  'obsidian',
+  'amethyst',
+  'ruby',
+  'gold',
+];
+
 export const HeroModal: React.FC<HeroModalProps> = ({
   isOpen,
   onClose,
@@ -54,6 +64,10 @@ export const HeroModal: React.FC<HeroModalProps> = ({
 
   const totalPoints = cards.reduce((sum, c) => sum + c.points, 0);
   const avengersCount = cards.filter((c) => c.avengersSymbol).length;
+  const totalTokensInHand = ALL_TOKENS_LIST.reduce(
+    (sum, c) => sum + (player.crystals[c] ?? 0),
+    0,
+  );
 
   const handleClose = () => {
     soundManager.playModalClose();
@@ -126,6 +140,33 @@ export const HeroModal: React.FC<HeroModalProps> = ({
             ✕
           </button>
         </header>
+
+        {/* Tokens in Hand Bar (เหรียญมณีในมือของผู้เล่นคนนี้) */}
+        <div className="px-2 sm:px-4 py-1 bg-black/60 border-b border-white/10 flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto no-scrollbar shrink-0">
+          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-white/70 whitespace-nowrap shrink-0">
+            <span className="text-xs">💎</span>
+            <span className="font-bold">มณีในมือของ {player.name} ({totalTokensInHand}/10):</span>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
+            {ALL_TOKENS_LIST.map((c) => {
+              const count = player.crystals[c] ?? 0;
+              return (
+                <div
+                  key={c}
+                  className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded border text-[9px] sm:text-[10px] font-bold ${
+                    count > 0
+                      ? 'bg-white/15 border-white/30 text-white shadow-sm'
+                      : 'bg-white/5 border-white/5 text-white/25'
+                  }`}
+                  title={`${STONE_NAMES[c]}: มี ${count} เหรียญ`}
+                >
+                  <img src={`/images/tokens/${c}.png`} alt={c} className="w-3 h-3 sm:w-3.5 sm:h-3.5 object-contain" />
+                  <span className={count > 0 ? 'text-yellow-300 font-bold' : 'text-white/30'}>{count}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Unified Filter & Discount Toolbar (Single Compact Row) */}
         <div className="px-2 sm:px-4 py-1 bg-black/40 border-b border-white/10 flex items-center justify-between gap-1.5 sm:gap-3 overflow-x-auto no-scrollbar shrink-0">

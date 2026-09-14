@@ -3,9 +3,10 @@
 // ============================================================
 
 import React from 'react';
-import type { Player } from '@shared/types/game.types';
+import type { Player, CrystalColor } from '@shared/types/game.types';
 import { ALL_CRYSTAL_COLORS } from '@shared/types/game.types';
 import { countAvengersSymbols } from '../../../src/engine/WinConditions';
+import { STONE_NAMES } from './GemToken';
 
 interface PlayerListProps {
   players: Player[];
@@ -28,6 +29,16 @@ const STONE_ORDER: (keyof Player['bonuses'])[] = [
   'obsidian',
   'topaz',
   'amethyst',
+];
+
+const ALL_TOKENS_LIST: CrystalColor[] = [
+  'topaz',
+  'sapphire',
+  'emerald',
+  'obsidian',
+  'amethyst',
+  'ruby',
+  'gold',
 ];
 
 export const PlayerList: React.FC<PlayerListProps> = ({
@@ -109,10 +120,10 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                   )}
                 </div>
 
-                {/* Progress bar: Stone dots & stats */}
-                <div className="flex items-center gap-2 mt-1">
-                  {/* Infinity Stone micro-indicators */}
-                  <div className="flex items-center gap-0.5" title={`${ownedStonesCount}/6 Infinity Stones`}>
+                {/* Progress bar: Stone dots, active tokens & stats */}
+                <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                  {/* Infinity Stone micro-indicators (card bonuses) */}
+                  <div className="flex items-center gap-0.5" title={`โบนัสการ์ดฮีโร่ (${ownedStonesCount}/6 สี)`}>
                     {STONE_ORDER.map((stoneColor) => {
                       const owned = (player.bonuses[stoneColor] ?? 0) > 0;
                       return (
@@ -128,13 +139,38 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                     })}
                   </div>
 
-                  <span className="text-[10px] text-white/40">
-                    Stones: {totalCrystals} | 🃏 {player.ownedCards.length}
+                  <span className="text-white/20 text-[9px]">•</span>
+
+                  {/* Active Tokens Breakdown */}
+                  <div className="flex items-center gap-1" title={`มณีในมือ (${totalCrystals}/10)`}>
+                    {ALL_TOKENS_LIST.map((c) => {
+                      const count = player.crystals[c] ?? 0;
+                      if (count === 0) return null;
+                      return (
+                        <span
+                          key={c}
+                          className="inline-flex items-center gap-0.5 bg-black/60 border border-white/15 px-1 py-0.2 rounded text-[8.5px] font-bold text-white shadow-sm"
+                          title={`${STONE_NAMES[c]}: มี ${count} เหรียญ`}
+                        >
+                          <img src={`/images/tokens/${c}.png`} alt={c} className="w-3 h-3 object-contain" />
+                          <span>{count}</span>
+                        </span>
+                      );
+                    })}
+                    {totalCrystals === 0 && (
+                      <span className="text-[9px] text-white/30 italic">0 มณี</span>
+                    )}
+                  </div>
+
+                  <span className="text-white/20 text-[9px]">•</span>
+
+                  <span className="text-[10px] text-white/50 flex items-center gap-1">
+                    <span title={`การ์ดที่เกณฑ์แล้ว (${player.ownedCards.length} ใบ)`}>🃏 {player.ownedCards.length}</span>
                     {avengerCount > 0 && (
-                      <span className="text-red-400 font-bold ml-1">🅰{avengerCount}</span>
+                      <span className="text-red-400 font-bold" title={`Avengers Assemble: ${avengerCount} ตรา`}>🅰{avengerCount}</span>
                     )}
                     {hasTier3 && (
-                      <span className="text-amber-400 font-bold ml-1" title="Has Tier 3 Card">★T3</span>
+                      <span className="text-amber-400 font-bold" title="มีฮีโร่ Tier 3">★T3</span>
                     )}
                   </span>
                 </div>
