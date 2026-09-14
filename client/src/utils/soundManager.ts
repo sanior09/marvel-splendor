@@ -534,6 +534,362 @@ class SoundManager {
       osc.stop(time + 0.08);
     });
   }
+
+  // ────────────────────────────────────────────────────────────
+  //  Hero Signature Sound Effects (Major Characters)
+  // ────────────────────────────────────────────────────────────
+
+  /**
+   * 13. Thor & Storm — Lightning strike crackle & thunder rumble
+   */
+  public playHeroThunder(): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+
+    // A. Electric strike transient (sharp crackle)
+    const crackleOsc = this.ctx.createOscillator();
+    const crackleGain = this.ctx.createGain();
+    const crackleFilter = this.ctx.createBiquadFilter();
+
+    crackleOsc.type = 'sawtooth';
+    crackleOsc.frequency.setValueAtTime(1400, now);
+    crackleOsc.frequency.exponentialRampToValueAtTime(180, now + 0.12);
+
+    crackleFilter.type = 'bandpass';
+    crackleFilter.frequency.setValueAtTime(2200, now);
+    crackleFilter.Q.setValueAtTime(2.5, now);
+
+    crackleGain.gain.setValueAtTime(0.001, now);
+    crackleGain.gain.linearRampToValueAtTime(0.35, now + 0.003);
+    crackleGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+    crackleOsc.connect(crackleFilter);
+    crackleFilter.connect(crackleGain);
+    crackleGain.connect(this.masterGain);
+
+    crackleOsc.start(now);
+    crackleOsc.stop(now + 0.15);
+
+    // B. Sub-bass Thunder Rumble (low resonant boom)
+    const rumbleOsc = this.ctx.createOscillator();
+    const rumbleGain = this.ctx.createGain();
+
+    rumbleOsc.type = 'triangle';
+    rumbleOsc.frequency.setValueAtTime(95, now + 0.03);
+    rumbleOsc.frequency.exponentialRampToValueAtTime(38, now + 0.7);
+
+    rumbleGain.gain.setValueAtTime(0.001, now);
+    rumbleGain.gain.linearRampToValueAtTime(0.4, now + 0.06);
+    rumbleGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
+
+    rumbleOsc.connect(rumbleGain);
+    rumbleGain.connect(this.masterGain);
+
+    rumbleOsc.start(now + 0.03);
+    rumbleOsc.stop(now + 0.9);
+
+    // C. White noise lightning wash
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.4);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const noiseFilter = this.ctx.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.setValueAtTime(800, now);
+    noiseFilter.frequency.exponentialRampToValueAtTime(150, now + 0.4);
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.25, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(this.masterGain);
+
+    noise.start(now + 0.02);
+  }
+
+  /**
+   * 14. Iron Man — Tech repulsor charge & blast
+   */
+  public playHeroRepulsor(): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+
+    // High-pitched capacitor power charge
+    const chargeOsc = this.ctx.createOscillator();
+    const chargeGain = this.ctx.createGain();
+    chargeOsc.type = 'sine';
+    chargeOsc.frequency.setValueAtTime(350, now);
+    chargeOsc.frequency.exponentialRampToValueAtTime(2400, now + 0.16);
+
+    chargeGain.gain.setValueAtTime(0.001, now);
+    chargeGain.gain.linearRampToValueAtTime(0.25, now + 0.14);
+    chargeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
+
+    chargeOsc.connect(chargeGain);
+    chargeGain.connect(this.masterGain);
+    chargeOsc.start(now);
+    chargeOsc.stop(now + 0.18);
+
+    // Punchy repulsor discharge beam
+    const blastTime = now + 0.16;
+    const blastOsc = this.ctx.createOscillator();
+    const blastGain = this.ctx.createGain();
+    blastOsc.type = 'sawtooth';
+    blastOsc.frequency.setValueAtTime(1600, blastTime);
+    blastOsc.frequency.exponentialRampToValueAtTime(140, blastTime + 0.28);
+
+    const blastFilter = this.ctx.createBiquadFilter();
+    blastFilter.type = 'lowpass';
+    blastFilter.frequency.setValueAtTime(3200, blastTime);
+    blastFilter.frequency.exponentialRampToValueAtTime(300, blastTime + 0.28);
+
+    blastGain.gain.setValueAtTime(0.001, blastTime);
+    blastGain.gain.linearRampToValueAtTime(0.38, blastTime + 0.01);
+    blastGain.gain.exponentialRampToValueAtTime(0.0001, blastTime + 0.35);
+
+    blastOsc.connect(blastFilter);
+    blastFilter.connect(blastGain);
+    blastGain.connect(this.masterGain);
+
+    blastOsc.start(blastTime);
+    blastOsc.stop(blastTime + 0.38);
+  }
+
+  /**
+   * 15. Captain America — Vibranium shield ricochet clang
+   */
+  public playHeroShieldClang(): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+
+    // Harmonic metallic ring frequencies of vibranium
+    const freqs = [1180, 1850, 2920, 4200];
+    freqs.forEach((freq, idx) => {
+      if (!this.ctx || !this.masterGain) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+
+      const dur = 0.55 + idx * 0.1;
+      const vol = 0.25 / (idx + 1);
+
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(vol, now + 0.003);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+
+      osc.start(now);
+      osc.stop(now + dur + 0.05);
+    });
+
+    // Metallic thud impact
+    const thud = this.ctx.createOscillator();
+    const thudGain = this.ctx.createGain();
+    thud.type = 'triangle';
+    thud.frequency.setValueAtTime(320, now);
+    thud.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+
+    thudGain.gain.setValueAtTime(0.3, now);
+    thudGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+
+    thud.connect(thudGain);
+    thudGain.connect(this.masterGain);
+    thud.start(now);
+    thud.stop(now + 0.1);
+  }
+
+  /**
+   * 16. Hulk — Gamma ground smash earthquake
+   */
+  public playHeroSmash(): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+
+    // Heavy earthquake sub-bass drop
+    const subOsc = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(180, now);
+    subOsc.frequency.exponentialRampToValueAtTime(32, now + 0.45);
+
+    subGain.gain.setValueAtTime(0.001, now);
+    subGain.gain.linearRampToValueAtTime(0.45, now + 0.015);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+
+    subOsc.connect(subGain);
+    subGain.connect(this.masterGain);
+    subOsc.start(now);
+    subOsc.stop(now + 0.65);
+
+    // Crunch noise impact
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.25);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.2));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const noiseFilter = this.ctx.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.setValueAtTime(450, now);
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.35, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(this.masterGain);
+    noise.start(now);
+  }
+
+  /**
+   * 17. Doctor Strange — Mystic Eldritch mandala chime & shimmer
+   */
+  public playHeroMystic(): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+
+    // Mystical sparkling chime arpeggio
+    const notes = [659.25, 880.0, 1174.66, 1318.51, 1760.0];
+    notes.forEach((freq, idx) => {
+      if (!this.ctx || !this.masterGain) return;
+      const noteTime = now + idx * 0.04;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, noteTime);
+      osc.frequency.linearRampToValueAtTime(freq * 1.02, noteTime + 0.35);
+
+      gain.gain.setValueAtTime(0.001, noteTime);
+      gain.gain.linearRampToValueAtTime(0.18, noteTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, noteTime + 0.45);
+
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+
+      osc.start(noteTime);
+      osc.stop(noteTime + 0.5);
+    });
+  }
+
+  /**
+   * 18. Spider-Man — Web shooter "thwip" pop & zip
+   */
+  public playHeroWeb(): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+
+    // Pneumatic air pop
+    const popOsc = this.ctx.createOscillator();
+    const popGain = this.ctx.createGain();
+    popOsc.type = 'sine';
+    popOsc.frequency.setValueAtTime(620, now);
+    popOsc.frequency.exponentialRampToValueAtTime(140, now + 0.04);
+
+    popGain.gain.setValueAtTime(0.3, now);
+    popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+
+    popOsc.connect(popGain);
+    popGain.connect(this.masterGain);
+    popOsc.start(now);
+    popOsc.stop(now + 0.05);
+
+    // High velocity web zip
+    const zipOsc = this.ctx.createOscillator();
+    const zipGain = this.ctx.createGain();
+    zipOsc.type = 'triangle';
+    zipOsc.frequency.setValueAtTime(1800, now + 0.01);
+    zipOsc.frequency.exponentialRampToValueAtTime(420, now + 0.16);
+
+    zipGain.gain.setValueAtTime(0.001, now + 0.01);
+    zipGain.gain.linearRampToValueAtTime(0.22, now + 0.02);
+    zipGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+
+    zipOsc.connect(zipGain);
+    zipGain.connect(this.masterGain);
+    zipOsc.start(now + 0.01);
+    zipOsc.stop(now + 0.2);
+  }
+
+  /**
+   * 19. Black Panther — Vibranium kinetic shockwave
+   */
+  public playHeroVibranium(): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(75, now);
+    osc.frequency.linearRampToValueAtTime(180, now + 0.09);
+    osc.frequency.exponentialRampToValueAtTime(50, now + 0.45);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.35, now + 0.06);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start(now);
+    osc.stop(now + 0.55);
+  }
+
+  /**
+   * 20. Thanos — Infinity Gauntlet snap & cosmic resonance
+   */
+  public playHeroSnap(): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+
+    // Crisp finger snap pop
+    const snapOsc = this.ctx.createOscillator();
+    const snapGain = this.ctx.createGain();
+    snapOsc.type = 'triangle';
+    snapOsc.frequency.setValueAtTime(3200, now);
+    snapOsc.frequency.exponentialRampToValueAtTime(600, now + 0.035);
+
+    snapGain.gain.setValueAtTime(0.001, now);
+    snapGain.gain.linearRampToValueAtTime(0.4, now + 0.002);
+    snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+    snapOsc.connect(snapGain);
+    snapGain.connect(this.masterGain);
+    snapOsc.start(now);
+    snapOsc.stop(now + 0.045);
+
+    // Cosmic drone resonance
+    const droneOsc = this.ctx.createOscillator();
+    const droneGain = this.ctx.createGain();
+    droneOsc.type = 'sine';
+    droneOsc.frequency.setValueAtTime(110, now + 0.02);
+    droneOsc.frequency.exponentialRampToValueAtTime(55, now + 0.7);
+
+    droneGain.gain.setValueAtTime(0.001, now + 0.02);
+    droneGain.gain.linearRampToValueAtTime(0.3, now + 0.08);
+    droneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.75);
+
+    droneOsc.connect(droneGain);
+    droneGain.connect(this.masterGain);
+    droneOsc.start(now + 0.02);
+    droneOsc.stop(now + 0.8);
+  }
 }
 
 export const soundManager = new SoundManager();

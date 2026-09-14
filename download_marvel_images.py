@@ -136,7 +136,7 @@ CANONICAL_MAPPING = {
 
     # Tier 3 - Power (Purple) — 4 cards
     't3_a01': ('Scarlet Witch', 'Wanda Maximoff (Earth-616)'),
-    't3_a02': ('Silver Surfer', 'Norrin Radd (Earth-616)'),
+    't3_a02': ('Thor', 'Thor Odinson (Earth-616)'),
     't3_a03': ('Star-Lord', 'Peter Quill (Earth-616)'),
     't3_a04': ('Hulk', 'Bruce Banner (Earth-616)'),
 

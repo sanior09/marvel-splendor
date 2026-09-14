@@ -17,6 +17,9 @@ import { ResponsiveScaler } from './ResponsiveScaler';
 import { SoundToggle } from './SoundToggle';
 import { soundManager } from '../utils/soundManager';
 import { getMarvelMap } from '../data/marvelMaps';
+import { HeroRecruitVFX } from './HeroRecruitVFX';
+import { getHeroSignature, playHeroSignatureSound, type HeroSignature } from '../data/heroSignatures';
+import type { Card } from '@shared/types/game.types';
 
 interface BoardProps {
   state: GameState;
@@ -51,6 +54,16 @@ export const Board: React.FC<BoardProps> = ({
   const [heroModalPlayer, setHeroModalPlayer] = useState<Player | null>(null);
   const [heroModalColor, setHeroModalColor] = useState<CrystalColor | 'all'>('all');
 
+  // Hero signature recruitment VFX overlay state
+  const [recruitVFXData, setRecruitVFXData] = useState<{
+    signature: HeroSignature;
+    card: Card;
+    playerName: string;
+    isMyPlayer: boolean;
+  } | null>(null);
+
+  const lastLocallyBoughtCardIdRef = useRef<string | null>(null);
+
   // Play audio alert when turn transitions to this player
   const prevIsMyTurnRef = useRef<boolean>(isMyTurn);
   useEffect(() => {
@@ -60,29 +73,48 @@ export const Board: React.FC<BoardProps> = ({
     prevIsMyTurnRef.current = isMyTurn;
   }, [isMyTurn]);
 
-  // Play audio SFX when an opponent / bot executes an action
+  // Play audio SFX and trigger signature hero VFX when any player executes an action
   const prevStateRef = useRef<GameState>(state);
   useEffect(() => {
     const prevState = prevStateRef.current;
     if (prevState && prevState !== state) {
-      const prevPlayer = prevState.players[prevState.currentPlayerIndex];
-      const currPlayerInNewState = state.players.find((p) => p.id === prevPlayer?.id);
-
-      if (prevPlayer && currPlayerInNewState && prevPlayer.id !== myPlayerId) {
-        // Did bot/opponent buy a card?
-        if (currPlayerInNewState.ownedCards.length > prevPlayer.ownedCards.length) {
-          soundManager.playCardBuy(2);
-        }
-        // Did bot/opponent reserve a card?
-        else if (currPlayerInNewState.reservedCards.length > prevPlayer.reservedCards.length) {
-          soundManager.playCardReserve();
-        }
-        // Did bot/opponent take gems?
-        else {
-          const prevTotalGems = Object.values(prevPlayer.crystals).reduce((a, b) => a + b, 0);
-          const currTotalGems = Object.values(currPlayerInNewState.crystals).reduce((a, b) => a + b, 0);
-          if (currTotalGems > prevTotalGems) {
-            soundManager.playGemCollect();
+      // Check all players for newly acquired cards
+      for (const currP of state.players) {
+        const prevP = prevState.players.find((p) => p.id === currP.id);
+        if (prevP && currP.ownedCards.length > prevP.ownedCards.length) {
+          const newlyAcquired = currP.ownedCards[currP.ownedCards.length - 1];
+          if (newlyAcquired) {
+            const isMe = currP.id === myPlayerId;
+            // Check if this card was already triggered locally on button click
+            if (isMe && lastLocallyBoughtCardIdRef.current === newlyAcquired.id) {
+              lastLocallyBoughtCardIdRef.current = null;
+            } else {
+              const signature = getHeroSignature(newlyAcquired.name);
+              if (signature) {
+                setRecruitVFXData({
+                  signature,
+                  card: newlyAcquired,
+                  playerName: currP.name,
+                  isMyPlayer: isMe,
+                });
+                playHeroSignatureSound(signature);
+              } else if (!isMe) {
+                soundManager.playCardBuy(newlyAcquired.tier);
+              }
+            }
+          }
+        } else if (prevP && currP.id !== myPlayerId) {
+          // Did bot/opponent reserve a card?
+          if (currP.reservedCards.length > prevP.reservedCards.length) {
+            soundManager.playCardReserve();
+          }
+          // Did bot/opponent take gems?
+          else {
+            const prevTotalGems = Object.values(prevP.crystals).reduce((a, b) => a + b, 0);
+            const currTotalGems = Object.values(currP.crystals).reduce((a, b) => a + b, 0);
+            if (currTotalGems > prevTotalGems) {
+              soundManager.playGemCollect();
+            }
           }
         }
       }
@@ -102,6 +134,29 @@ export const Board: React.FC<BoardProps> = ({
   // ── Callbacks to emit actions ─────────────────────────────
 
   const handleBuyCard = (cardId: string): void => {
+    // Find the card being bought across board slots and my reserved cards
+    const allKnownCards = [
+      ...board.tier1,
+      ...board.tier2,
+      ...board.tier3,
+      ...(myPlayer?.reservedCards ?? []),
+    ];
+    const card = allKnownCards.find((c) => c?.id === cardId);
+    if (card) {
+      lastLocallyBoughtCardIdRef.current = cardId;
+      const signature = getHeroSignature(card.name);
+      if (signature) {
+        setRecruitVFXData({
+          signature,
+          card,
+          playerName: myPlayer.name,
+          isMyPlayer: true,
+        });
+        playHeroSignatureSound(signature);
+      } else {
+        soundManager.playCardBuy(card.tier);
+      }
+    }
     onSendAction({ type: 'BUY_CARD', cardId });
   };
 
@@ -543,6 +598,17 @@ export const Board: React.FC<BoardProps> = ({
           <ActionModal
             player={myPlayer}
             onDropGems={handleDropGems}
+          />
+        )}
+
+        {/* Signature Hero Recruit Cinematic VFX & Banner */}
+        {recruitVFXData && (
+          <HeroRecruitVFX
+            signature={recruitVFXData.signature}
+            card={recruitVFXData.card}
+            playerName={recruitVFXData.playerName}
+            isMyPlayer={recruitVFXData.isMyPlayer}
+            onDismiss={() => setRecruitVFXData(null)}
           />
         )}
 

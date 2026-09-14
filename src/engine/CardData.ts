@@ -144,7 +144,7 @@ export const TIER_3_CARDS: Card[] = [
 
   // Power Stone (Amethyst / Purple) — 4 cards
   { id: 't3_a01', name: 'Scarlet Witch', tier: 3, avengersSymbol: true, points: 4, bonusColor: 'amethyst', cost: cost(0, 0, 0, 0, 7) },
-  { id: 't3_a02', name: 'Silver Surfer', tier: 3, avengersSymbol: false, points: 5, bonusColor: 'amethyst', cost: cost(0, 0, 0, 3, 7) },
+  { id: 't3_a02', name: 'Thor', tier: 3, avengersSymbol: true, points: 5, bonusColor: 'amethyst', cost: cost(0, 0, 0, 3, 7) },
   { id: 't3_a03', name: 'Star-Lord', tier: 3, avengersSymbol: false, points: 4, bonusColor: 'amethyst', cost: cost(3, 3, 3, 0, 5) },
   { id: 't3_a04', name: 'Hulk', tier: 3, avengersSymbol: true, points: 4, bonusColor: 'amethyst', cost: cost(0, 5, 3, 3, 3) },
 ];

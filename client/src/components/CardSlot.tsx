@@ -220,7 +220,6 @@ export const CardSlot: React.FC<CardSlotProps> = ({
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowMobileActions(false);
-                  soundManager.playCardBuy(card.tier);
                   onBuy(card.id);
                 }}
                 disabled={!canAfford}
