@@ -174,21 +174,14 @@ export const Board: React.FC<BoardProps> = ({
               </span>
             </div>
 
-            {/* Nachapol Industries X J.A.R.V.I.S. Branding */}
+            {/* Nachapol Industries Logo */}
             <div className="h-4 w-px bg-white/20 mx-0.5" />
-            <div className="flex items-center gap-1 sm:gap-1.5 select-none" title="Nachapol Industries X J.A.R.V.I.S.">
-              <span className="text-[8px] sm:text-[9px] font-semibold tracking-widest text-white/50 uppercase">
-                POWERED BY
-              </span>
-              <span className="text-[9px] sm:text-[10.5px] font-black tracking-wider text-white uppercase drop-shadow-sm">
-                NACHAPOL INDUSTRIES
-              </span>
-              <span className="text-cyan-400 font-black text-[9px] sm:text-[10px]">
-                X
-              </span>
-              <span className="text-[9px] sm:text-[10.5px] font-black tracking-widest text-cyan-300 uppercase drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">
-                J.A.R.V.I.S.
-              </span>
+            <div className="flex items-center select-none" title="Nachapol Industries">
+              <img
+                src="/images/nachapol_industries.png"
+                alt="Nachapol Industries"
+                className="h-4 sm:h-5 object-contain opacity-90 hover:opacity-100 transition-opacity drop-shadow-sm"
+              />
             </div>
 
             <span className="text-[10px] text-white/50 bg-white/5 px-2 py-0.5 rounded-full font-semibold border border-white/5">
