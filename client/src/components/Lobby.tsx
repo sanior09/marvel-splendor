@@ -10,6 +10,7 @@ import { ResponsiveScaler } from './ResponsiveScaler';
 import { soundManager } from '../utils/soundManager';
 import { MARVEL_MAPS, getMarvelMap } from '../data/marvelMaps';
 import { TutorialModal } from './TutorialModal';
+import { AvatarPicker, MARVEL_AVATARS } from './AvatarPicker';
 
 interface LobbyProps {
   onCreateRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string) => void;
@@ -46,6 +47,22 @@ const POPULAR_MARVEL_BOTS: MarvelBotPreset[] = [
   { name: 'Green Goblin', personality: 'ultron', avatar: '🎃', desc: 'Chaotic Threat' },
 ];
 
+// ── QuickAvatarThumb: tiny avatar with error fallback ─────────
+const QUICK_EMOJI: Record<string, string> = {
+  iron_man: '🦾', thor: '⚡', captain_america: '🛡️', hulk: '💚',
+  spider_man: '🕷️', black_panther: '🐾', doctor_strange: '✨', thanos: '🧤',
+};
+const QuickAvatarThumb: React.FC<{ src: string; fallbackEmoji: string }> = ({ src, fallbackEmoji }) => {
+  const [failed, setFailed] = React.useState(false);
+  return failed ? (
+    <div className="w-full h-full bg-gradient-to-br from-red-700 to-purple-700 flex items-center justify-center text-xs select-none">
+      {QUICK_EMOJI[fallbackEmoji] ?? '🦸'}
+    </div>
+  ) : (
+    <img src={src} alt="" loading="lazy" onError={() => setFailed(true)} className="w-full h-full object-cover object-top" />
+  );
+};
+
 export const Lobby: React.FC<LobbyProps> = ({
   onCreateRoom,
   onCreateSolo,
@@ -68,6 +85,19 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [activeTab, setActiveTab] = useState<'solo' | 'create' | 'join' | 'browse'>('solo');
   const [selectedMapId, setSelectedMapId] = useState<string>('avengers_tower');
   const [showTutorial, setShowTutorial] = useState(false);
+
+  // Avatar / Profile picture state
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [avatarId, setAvatarId] = useState<string | null>(null);
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
+
+  const handleAvatarSelect = (url: string, id: string) => {
+    setAvatarUrl(url);
+    setAvatarId(id);
+  };
+
+  // Default fallback avatar display when nothing is chosen
+  const avatarInitial = playerName.trim().charAt(0).toUpperCase() || '?';
 
   // Solo mode customization state
   const [botCount, setBotCount] = useState<number>(2);
@@ -496,21 +526,69 @@ export const Lobby: React.FC<LobbyProps> = ({
 
         {/* Main card */}
         <div className="glass-strong rounded-2xl p-5 sm:p-6 max-w-lg w-full space-y-3.5 border border-white/10 shadow-2xl">
-          {/* Player name */}
+          {/* Player name + Avatar */}
           <div>
-            <label htmlFor="player-name" className="text-xs font-bold uppercase tracking-wider text-white/80 block mb-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-white/80 block mb-1.5">
               ชื่อฮีโร่ของคุณ (Your Hero Name)
             </label>
-            <input
-              id="player-name"
-              type="text"
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && (activeTab === 'solo' ? handleSolo() : handleCreate())}
-              placeholder="เช่น Iron Man, Thor, Spider-Man..."
-              maxLength={20}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-red-500/60 focus:ring-1 focus:ring-red-500/40 transition-colors font-medium text-sm"
-            />
+            <div className="flex items-center gap-2.5">
+              {/* Avatar button */}
+              <button
+                type="button"
+                onClick={() => { soundManager.playButtonClick(); setShowAvatarPicker(true); }}
+                title="เปลี่ยนโปรไฟล์ (Change Avatar)"
+                className="relative shrink-0 w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/20 hover:ring-red-400/70 transition-all cursor-pointer active:scale-90 group"
+              >
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover object-top" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center font-black text-white text-lg select-none">
+                    {avatarInitial}
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="text-sm">✏️</span>
+                </div>
+              </button>
+
+              {/* Name input */}
+              <input
+                id="player-name"
+                type="text"
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && (activeTab === 'solo' ? handleSolo() : handleCreate())}
+                placeholder="เช่น Iron Man, Thor, Spider-Man..."
+                maxLength={20}
+                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-red-500/60 focus:ring-1 focus:ring-red-500/40 transition-colors font-medium text-sm"
+              />
+            </div>
+            {/* Quick Marvel avatar row for fast pick */}
+            <div className="flex items-center gap-1.5 mt-2 overflow-x-auto pb-0.5 scrollbar-none">
+              <span className="text-[9px] text-white/35 font-bold uppercase tracking-wider shrink-0">เร็ว:</span>
+              {MARVEL_AVATARS.slice(0, 8).map((av) => (
+                <button
+                  key={av.id}
+                  type="button"
+                  onClick={() => { handleAvatarSelect(av.src, av.id); soundManager.playButtonClick(); }}
+                  title={av.name}
+                  className={[
+                    'shrink-0 w-7 h-7 rounded-full overflow-hidden ring-1 transition-all cursor-pointer hover:scale-110 active:scale-90',
+                    avatarId === av.id ? `${av.color} ring-offset-1 ring-offset-black/50` : 'ring-white/15 hover:ring-white/40',
+                  ].join(' ')}
+                >
+                  <QuickAvatarThumb src={av.src} fallbackEmoji={av.id} />
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => { soundManager.playButtonClick(); setShowAvatarPicker(true); }}
+                className="shrink-0 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 ring-1 ring-white/15 flex items-center justify-center text-xs text-white/60 hover:text-white transition-all cursor-pointer hover:scale-110"
+                title="ดูทั้งหมด"
+              >
+                ＋
+              </button>
+            </div>
           </div>
 
           {/* Tabs */}
@@ -831,6 +909,13 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
         {/* Interactive Roblox-Style Tutorial Modal */}
         <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
+        {/* Avatar Picker Modal */}
+        <AvatarPicker
+          isOpen={showAvatarPicker}
+          currentAvatarId={avatarId}
+          onSelect={handleAvatarSelect}
+          onClose={() => setShowAvatarPicker(false)}
+        />
       </div>
     </ResponsiveScaler>
   );
