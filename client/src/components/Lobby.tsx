@@ -87,9 +87,9 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [selectedMapId, setSelectedMapId] = useState<string>('avengers_tower');
   const [showTutorial, setShowTutorial] = useState(false);
 
-  // Avatar / Profile picture state
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [avatarId, setAvatarId] = useState<string | null>(null);
+  // Avatar / Profile picture state (Default to Iron Man so avatar is never null)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(MARVEL_AVATARS[0]?.src || null);
+  const [avatarId, setAvatarId] = useState<string | null>(MARVEL_AVATARS[0]?.id || 'iron_man');
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
 
   const handleAvatarSelect = (url: string, id: string) => {
