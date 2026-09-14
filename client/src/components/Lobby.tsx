@@ -271,12 +271,22 @@ export const Lobby: React.FC<LobbyProps> = ({
                   <div key={p.id} className="flex items-center gap-2.5 px-3.5 py-2">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-amber-600 flex items-center justify-center font-bold text-xs text-white shadow shrink-0 overflow-hidden border border-white/20">
                       {p.avatarUrl ? (
-                        <img src={p.avatarUrl} alt={p.name} className="w-full h-full object-cover object-center" />
-                      ) : p.isBot ? (
-                        '🤖'
-                      ) : (
-                        p.name.charAt(0).toUpperCase()
-                      )}
+                        <img
+                          src={p.avatarUrl}
+                          alt={p.name}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            if (target.nextElementSibling) {
+                              (target.nextElementSibling as HTMLElement).style.display = 'block';
+                            }
+                          }}
+                          className="w-full h-full object-cover object-center"
+                        />
+                      ) : null}
+                      <span className={p.avatarUrl ? 'hidden' : 'block'}>
+                        {p.isBot ? '🤖' : p.name.charAt(0).toUpperCase()}
+                      </span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <span className="font-bold text-white text-xs truncate block">{p.name}</span>
