@@ -5,7 +5,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { RoomInfo } from '@shared/types/game.types';
-import { ResponsiveScaler } from './ResponsiveScaler';
 
 import { soundManager } from '../utils/soundManager';
 import { MARVEL_MAPS, getMarvelMap } from '../data/marvelMaps';
@@ -130,6 +129,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     if (!playerName.trim()) {
       soundManager.playError();
       setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
+      document.getElementById('player-name')?.focus();
       return;
     }
     soundManager.playButtonClick();
@@ -142,6 +142,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     if (!playerName.trim()) {
       soundManager.playError();
       setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
+      document.getElementById('player-name')?.focus();
       return;
     }
     soundManager.playCardBuy(3);
@@ -158,6 +159,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     if (!playerName.trim()) {
       soundManager.playError();
       setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
+      document.getElementById('player-name')?.focus();
       return;
     }
     if (!code) {
@@ -198,9 +200,9 @@ export const Lobby: React.FC<LobbyProps> = ({
   // ── In-Room Lobby (Waiting Room) ──────────────────────────
   if (currentRoom) {
     return (
-      <ResponsiveScaler baseWidth={880} baseHeight={580}>
-        <div className="w-full h-full max-h-full overflow-hidden board-bg flex items-center justify-center p-3 sm:p-4">
-          <div className="glass-strong rounded-2xl p-5 max-w-md w-full space-y-4 border border-white/15 shadow-2xl relative">
+      <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start sm:justify-center p-3 sm:p-6 relative select-none">
+        <div className="w-full max-w-md my-auto py-4">
+          <div className="glass-strong rounded-2xl p-5 w-full space-y-4 border border-white/15 shadow-2xl relative">
             <div className="absolute top-3 right-3 flex items-center gap-2 z-20">
               <button
                 type="button"
@@ -453,30 +455,30 @@ export const Lobby: React.FC<LobbyProps> = ({
             {/* Tutorial Modal in Waiting Room */}
             <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
         </div>
-      </ResponsiveScaler>
+      </div>
     );
   }
 
   // ── Main Lobby Screen ─────────────────────────────────────
   return (
-    <ResponsiveScaler baseWidth={880} baseHeight={590}>
-      <div className="w-full h-full max-h-full overflow-hidden board-bg flex flex-col items-center justify-center p-2 sm:p-4 relative">
-        {/* Top-Right Control Bar: Roblox-style Tutorial Button & Sound Toggle */}
-        <div className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-20 flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              soundManager.playModalOpen();
-              setShowTutorial(true);
-            }}
-            className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/60 text-yellow-300 font-black text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
-            title="กดดูวิธีเล่น MARVEL SPLENDOR แบบทีละขั้นตอน (Interactive How-To-Play Tutorial)"
-          >
-            <span className="text-sm animate-bounce">📖</span>
-            <span>สอนเล่น (Tutorial)</span>
-          </button>
+    <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start sm:justify-center p-3 sm:p-6 relative">
+      {/* Top-Right Control Bar: Roblox-style Tutorial Button & Sound Toggle */}
+      <div className="fixed top-2.5 right-2.5 sm:top-4 sm:right-4 z-30 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => {
+            soundManager.playModalOpen();
+            setShowTutorial(true);
+          }}
+          className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/60 text-yellow-300 font-black text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
+          title="กดดูวิธีเล่น MARVEL SPLENDOR แบบทีละขั้นตอน (Interactive How-To-Play Tutorial)"
+        >
+          <span className="text-sm animate-bounce">📖</span>
+          <span>สอนเล่น (Tutorial)</span>
+        </button>
+      </div>
 
-        </div>
+      <div className="w-full max-w-lg flex flex-col items-center my-auto py-3 sm:py-6">
 
         {/* Hero Header */}
         <div className="text-center space-y-1.5 mb-3">
@@ -556,11 +558,18 @@ export const Lobby: React.FC<LobbyProps> = ({
                 id="player-name"
                 type="text"
                 value={playerName}
-                onChange={(e) => setPlayerName(e.target.value)}
+                onChange={(e) => {
+                  setPlayerName(e.target.value);
+                  if (error) setError('');
+                }}
                 onKeyDown={(e) => e.key === 'Enter' && (activeTab === 'solo' ? handleSolo() : handleCreate())}
                 placeholder="เช่น Iron Man, Thor, Spider-Man..."
                 maxLength={20}
-                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-red-500/60 focus:ring-1 focus:ring-red-500/40 transition-colors font-medium text-sm"
+                className={`flex-1 bg-white/5 border rounded-xl px-3.5 py-2.5 text-white placeholder-white/30 focus:outline-none transition-all font-medium text-sm ${
+                  error
+                    ? 'border-red-500 ring-2 ring-red-500/40 bg-red-950/20 animate-pulse'
+                    : 'border-white/10 focus:border-red-500/60 focus:ring-1 focus:ring-red-500/40'
+                }`}
               />
             </div>
             {/* Quick Marvel avatar row for fast pick */}
@@ -761,8 +770,8 @@ export const Lobby: React.FC<LobbyProps> = ({
               <button
                 type="button"
                 onClick={handleSolo}
-                disabled={isLoading || !playerName.trim()}
-                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
+                disabled={isLoading}
+                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
               >
                 {isLoading ? 'กำลังเตรียมเกม... (Assembling...)' : '⚡ เล่นคนเดียวกับบอท (Play Solo vs AI)'}
               </button>
@@ -825,8 +834,8 @@ export const Lobby: React.FC<LobbyProps> = ({
               <button
                 type="button"
                 onClick={handleCreate}
-                disabled={isLoading || !playerName.trim()}
-                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
+                disabled={isLoading}
+                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
               >
                 {isLoading ? 'กำลังสร้างห้อง... (Creating...)' : '✦ สร้างห้องเล่นหลายคน (Create Multiplayer Room)'}
               </button>
@@ -849,8 +858,8 @@ export const Lobby: React.FC<LobbyProps> = ({
               <button
                 type="button"
                 onClick={() => handleJoin()}
-                disabled={isLoading || !playerName.trim() || !joinCode.trim()}
-                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
+                disabled={isLoading || !joinCode.trim()}
+                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
               >
                 {isLoading ? 'กำลังเข้าร่วม... (Joining...)' : '🔗 เข้าร่วมห้อง (Join Room)'}
               </button>
@@ -879,7 +888,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     <button
                       type="button"
                       onClick={() => handleJoin(room.roomId)}
-                      disabled={!playerName.trim()}
+                      disabled={isLoading}
                       className="text-xs bg-red-600 hover:bg-red-500 disabled:bg-white/10 text-white px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer"
                     >
                       เข้าร่วม (Join)
@@ -917,6 +926,6 @@ export const Lobby: React.FC<LobbyProps> = ({
           onClose={() => setShowAvatarPicker(false)}
         />
       </div>
-    </ResponsiveScaler>
+    </div>
   );
 };
