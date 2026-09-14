@@ -172,21 +172,6 @@ export const Lobby: React.FC<LobbyProps> = ({
             </div>
 
             <div className="text-center space-y-1.5">
-              <div className="flex items-center justify-center gap-1.5 mb-1.5 select-none">
-                <span className="text-[9px] sm:text-[10px] font-semibold tracking-widest text-white/45 uppercase">
-                  POWERED BY
-                </span>
-                <span className="text-[11px] sm:text-xs font-black tracking-wider text-white uppercase drop-shadow-sm">
-                  NACHAPOL INDUSTRIES
-                </span>
-                <span className="text-cyan-400 font-black text-[11px] sm:text-xs">
-                  X
-                </span>
-                <span className="text-[11px] sm:text-xs font-black tracking-widest text-cyan-300 uppercase drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">
-                  J.A.R.V.I.S.
-                </span>
-              </div>
-
               <div className="flex items-center justify-center gap-2">
                 <span className="marvel-badge px-2 py-0.5 rounded text-xs tracking-wider">MARVEL</span>
                 <span className="font-display font-black text-lg text-white tracking-widest">SPLENDOR</span>
@@ -414,22 +399,6 @@ export const Lobby: React.FC<LobbyProps> = ({
       <div className="w-full h-full max-h-full overflow-hidden board-bg flex flex-col items-center justify-center p-2 sm:p-4">
         {/* Hero Header */}
         <div className="text-center space-y-1.5 mb-3">
-          {/* Nachapol Industries Brand Text */}
-          <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-2 select-none">
-            <span className="text-[10px] sm:text-xs font-semibold tracking-widest text-white/45 uppercase">
-              POWERED BY
-            </span>
-            <span className="text-xs sm:text-sm font-black tracking-wider text-white uppercase drop-shadow-sm">
-              NACHAPOL INDUSTRIES
-            </span>
-            <span className="text-cyan-400 font-black text-xs sm:text-sm">
-              X
-            </span>
-            <span className="text-xs sm:text-sm font-black tracking-widest text-cyan-300 uppercase drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]">
-              J.A.R.V.I.S.
-            </span>
-          </div>
-
           <div className="flex items-center justify-center gap-2.5">
             <span className="marvel-badge px-3 py-0.5 rounded text-2xl sm:text-3xl font-black tracking-wider shadow-2xl">
               MARVEL
