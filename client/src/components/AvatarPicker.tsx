@@ -13,7 +13,7 @@ export interface AvatarOption {
 }
 
 export const MARVEL_AVATARS: AvatarOption[] = [
-  { id: 'iron_man',        name: 'Iron Man',       src: '/images/avatars/iron_man.jpg',        color: 'ring-red-500' },
+  { id: 'iron_man',        name: 'Iron Man',        src: '/images/avatars/iron_man.jpg',        color: 'ring-red-500' },
   { id: 'thor',            name: 'Thor',            src: '/images/avatars/thor.jpg',            color: 'ring-yellow-400' },
   { id: 'captain_america', name: 'Captain America', src: '/images/avatars/captain_america.jpg', color: 'ring-blue-500' },
   { id: 'hulk',            name: 'Hulk',            src: '/images/avatars/hulk.jpg',            color: 'ring-green-500' },
@@ -23,14 +23,17 @@ export const MARVEL_AVATARS: AvatarOption[] = [
   { id: 'thanos',          name: 'Thanos',          src: '/images/avatars/thanos.jpg',          color: 'ring-violet-600' },
   { id: 'scarlet_witch',   name: 'Scarlet Witch',   src: '/images/avatars/scarlet_witch.jpg',   color: 'ring-rose-500' },
   { id: 'black_widow',     name: 'Black Widow',     src: '/images/avatars/black_widow.jpg',     color: 'ring-gray-400' },
-  { id: 'hawkeye',         name: 'Hawkeye',         src: '/images/avatars/hawkeye.jpg',         color: 'ring-amber-500' },
+  { id: 'hawkeye',         name: 'Hawkeye',         src: '/images/avatars/hawkeye.jpg',         color: 'ring-purple-500' },
   { id: 'loki',            name: 'Loki',            src: '/images/avatars/loki.jpg',            color: 'ring-emerald-500' },
   { id: 'captain_marvel',  name: 'Captain Marvel',  src: '/images/avatars/captain_marvel.jpg',  color: 'ring-yellow-500' },
   { id: 'vision',          name: 'Vision',          src: '/images/avatars/vision.jpg',          color: 'ring-red-300' },
   { id: 'ant_man',         name: 'Ant-Man',         src: '/images/avatars/ant_man.jpg',         color: 'ring-red-600' },
-  { id: 'war_machine',     name: 'War Machine',     src: '/images/avatars/war_machine.jpg',     color: 'ring-zinc-500' },
+  { id: 'war_machine',     name: 'War Machine',     src: '/images/avatars/war_machine.jpg',     color: 'ring-zinc-400' },
+  { id: 'deadpool',        name: 'Deadpool',        src: '/images/avatars/deadpool.jpg',        color: 'ring-red-600' },
+  { id: 'wolverine',       name: 'Wolverine',       src: '/images/avatars/wolverine.jpg',       color: 'ring-amber-500' },
+  { id: 'groot',           name: 'Groot',           src: '/images/avatars/groot.jpg',           color: 'ring-emerald-700' },
+  { id: 'rocket',          name: 'Rocket',          src: '/images/avatars/rocket.jpg',          color: 'ring-orange-500' },
 ];
-
 
 const FALLBACK_COLORS: Record<string, string> = {
   iron_man: 'from-red-600 to-yellow-500', thor: 'from-yellow-400 to-blue-600',
@@ -38,9 +41,11 @@ const FALLBACK_COLORS: Record<string, string> = {
   spider_man: 'from-red-600 to-blue-700', black_panther: 'from-purple-800 to-gray-900',
   doctor_strange: 'from-indigo-600 to-yellow-500', thanos: 'from-violet-700 to-purple-900',
   scarlet_witch: 'from-rose-600 to-red-900', black_widow: 'from-gray-700 to-gray-900',
-  hawkeye: 'from-amber-600 to-gray-700', loki: 'from-emerald-600 to-yellow-600',
+  hawkeye: 'from-purple-600 to-purple-900', loki: 'from-emerald-600 to-yellow-600',
   captain_marvel: 'from-yellow-500 to-blue-700', vision: 'from-yellow-400 to-red-600',
   ant_man: 'from-red-700 to-red-900', war_machine: 'from-zinc-600 to-zinc-900',
+  deadpool: 'from-red-600 to-neutral-900', wolverine: 'from-amber-500 to-blue-700',
+  groot: 'from-emerald-800 to-amber-900', rocket: 'from-orange-600 to-slate-800',
 };
 
 const FALLBACK_EMOJI: Record<string, string> = {
@@ -48,6 +53,7 @@ const FALLBACK_EMOJI: Record<string, string> = {
   spider_man: '🕷️', black_panther: '🐾', doctor_strange: '✨', thanos: '🧤',
   scarlet_witch: '🔮', black_widow: '🕸️', hawkeye: '🎯', loki: '🐍',
   captain_marvel: '⭐', vision: '🤖', ant_man: '🐜', war_machine: '⚙️',
+  deadpool: '⚔️', wolverine: '🐺', groot: '🌳', rocket: '🦝',
 };
 
 interface HeroAvatarImgProps {
@@ -84,7 +90,7 @@ const HeroAvatarImg: React.FC<HeroAvatarImgProps> = ({ av, isSelected, onSelect 
             alt={av.name}
             loading="lazy"
             onError={() => setImgFailed(true)}
-            className="w-full h-full object-cover object-top"
+            className="w-full h-full object-cover object-center"
           />
         )}
       </div>

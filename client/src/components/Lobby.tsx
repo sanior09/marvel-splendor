@@ -59,7 +59,7 @@ const QuickAvatarThumb: React.FC<{ src: string; fallbackEmoji: string }> = ({ sr
       {QUICK_EMOJI[fallbackEmoji] ?? '🦸'}
     </div>
   ) : (
-    <img src={src} alt="" loading="lazy" onError={() => setFailed(true)} className="w-full h-full object-cover object-top" />
+    <img src={src} alt="" loading="lazy" onError={() => setFailed(true)} className="w-full h-full object-cover object-center" />
   );
 };
 
@@ -540,7 +540,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 className="relative shrink-0 w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/20 hover:ring-red-400/70 transition-all cursor-pointer active:scale-90 group"
               >
                 {avatarUrl ? (
-                  <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover object-top" />
+                  <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover object-center" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center font-black text-white text-lg select-none">
                     {avatarInitial}
