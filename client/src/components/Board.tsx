@@ -14,7 +14,7 @@ import { ActionModal } from './ActionModal';
 import { GameOver } from './GameOver';
 import { HeroModal } from './HeroModal';
 import { ResponsiveScaler } from './ResponsiveScaler';
-import { SoundToggle } from './SoundToggle';
+
 import { soundManager } from '../utils/soundManager';
 import { getMarvelMap } from '../data/marvelMaps';
 import { HeroRecruitVFX } from './HeroRecruitVFX';
@@ -303,8 +303,7 @@ export const Board: React.FC<BoardProps> = ({
               <span>📖 วิธีเล่น</span>
             </button>
 
-            {/* Audio SFX Toggle Button */}
-            <SoundToggle />
+
 
             {/* Quick Action: View My Recruited Marvel Heroes in large modal */}
             <button

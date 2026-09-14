@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { RoomInfo } from '@shared/types/game.types';
 import { ResponsiveScaler } from './ResponsiveScaler';
-import { SoundToggle } from './SoundToggle';
+
 import { soundManager } from '../utils/soundManager';
 import { MARVEL_MAPS, getMarvelMap } from '../data/marvelMaps';
 import { TutorialModal } from './TutorialModal';
@@ -184,7 +184,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 <span>📖</span>
                 <span>สอนเล่น</span>
               </button>
-              <SoundToggle compact />
+
             </div>
 
             <div className="text-center space-y-1.5">
@@ -445,7 +445,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             <span className="text-sm animate-bounce">📖</span>
             <span>สอนเล่น (Tutorial)</span>
           </button>
-          <SoundToggle compact />
+
         </div>
 
         {/* Hero Header */}
@@ -471,7 +471,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 {connectionStatus === 'connected' ? '🟢 เซิร์ฟเวอร์พร้อมใช้งาน (Server Connected)' : connectionStatus}
               </span>
             </div>
-            <SoundToggle compact />
+
           </div>
         </div>
 
