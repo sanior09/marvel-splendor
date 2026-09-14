@@ -51,29 +51,29 @@ export default function App(): React.ReactElement {
 
   // On room create — capture host player ID
   const handleCreateRoom = useCallback(
-    (playerName: string, callback: (room: RoomInfo) => void, mapId?: string) => {
+    (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string) => {
       setAfkNotice(null);
       createRoom(playerName, (room) => {
         setMyPlayerId(room.hostId);
         callback(room);
-      }, mapId);
+      }, mapId, avatarUrl);
     },
     [createRoom],
   );
 
   // On Solo Game Create
   const handleCreateSolo = useCallback(
-    (playerName: string, botCount: number, botNames?: string[], mapId?: string) => {
+    (playerName: string, botCount: number, botNames?: string[], mapId?: string, avatarUrl?: string) => {
       setAfkNotice(null);
       createSolo(playerName, botCount, botNames, (room) => {
         setMyPlayerId(room.hostId);
-      }, mapId);
+      }, mapId, avatarUrl);
     },
     [createSolo],
   );
 
   const handleJoinRoom = useCallback(
-    (roomId: string, playerName: string, callback: (success: boolean, err?: string) => void) => {
+    (roomId: string, playerName: string, callback: (success: boolean, err?: string) => void, avatarUrl?: string) => {
       setAfkNotice(null);
       joinRoom(roomId, playerName, (success, err, room) => {
         if (success && room) {
@@ -83,7 +83,7 @@ export default function App(): React.ReactElement {
           }
         }
         callback(success, err);
-      });
+      }, avatarUrl);
     },
     [joinRoom],
   );
