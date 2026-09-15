@@ -7,8 +7,6 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import path from 'path';
-import fs from 'fs';
 import type { ServerToClientEvents, ClientToServerEvents } from '../types/game.types';
 import { RoomManager } from './RoomManager';
 
@@ -26,22 +24,8 @@ const app = express();
 app.use(cors({ origin: corsOrigin }));
 app.use(express.json());
 
-// Health check
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// ค้นหาตำแหน่งไฟล์ under-construction.html
-const possiblePaths = [
-  path.resolve(process.cwd(), 'public/under-construction.html'),
-  path.resolve(__dirname, '../../public/under-construction.html'),
-  path.resolve(__dirname, '../public/under-construction.html')
-];
-
-const underConstructionFile = possiblePaths.find(filePath => fs.existsSync(filePath));
-
-// โค้ด HTML สำรองกรณีหาไฟล์ public ไม่เจอจริงๆ
-const fallbackHTML = `
+// HTML หน้าปิดปรับปรุงระบบ
+const maintenanceHTML = `
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -49,33 +33,55 @@ const fallbackHTML = `
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ปิดปรับปรุงระบบชั่วคราว - Splendor Marvel</title>
     <style>
-        body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, sans-serif; display: flex; height: 100vh; margin: 0; align-items: center; justify-content: center; text-align: center; }
-        .card { background: #1e293b; padding: 2.5rem; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); max-width: 450px; border: 1px solid #334155; }
-        h1 { color: #38bdf8; margin-bottom: 0.5rem; }
-        p { color: #94a3b8; line-height: 1.6; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background-color: #0f172a; 
+            color: #f8fafc; 
+            font-family: system-ui, -apple-system, sans-serif; 
+            display: flex; 
+            height: 100vh; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 1rem;
+        }
+        .card { 
+            background: #1e293b; 
+            padding: 2.5rem; 
+            border-radius: 1rem; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+            max-width: 450px; 
+            width: 100%;
+            border: 1px solid #334155; 
+            text-align: center;
+        }
+        h1 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.5rem; }
+        p { color: #94a3b8; line-height: 1.6; margin-bottom: 0.75rem; }
+        .footer { font-size: 0.875rem; color: #64748b; margin-top: 1.5rem; }
     </style>
 </head>
 <body>
     <div class="card">
         <h1>🛠️ ปิดปรับปรุงระบบชั่วคราว</h1>
-        <p>ระบบเกม Splendor Marvel กำลังอยู่ระหว่างการปรับปรุงและอัปเดตเวอร์ชันใหม่</p>
-        <p style="font-size: 0.875rem; color: #64748b; margin-top: 1.5rem;">— J.A.R.V.I.S. Systems —</p>
+        <p>ระบบเกม Splendor Marvel กำลังอยู่ระหว่างการปรับปรุงและอัปเดตระบบ</p>
+        <p>ขออภัยในความไม่สะดวกครับ</p>
+        <div class="footer">— J.A.R.V.I.S. Systems —</div>
     </div>
 </body>
 </html>
 `;
 
-// 🚨 FORCE ROUTE: บังคับส่งหน้า Under Construction ทุก Request
-app.get('*', (req, res, next) => {
+// Health check
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// 🚨 FORCE ROUTE: ดักจับทุก Request แล้วส่งหน้า HTML Maintenance ทันที
+app.use((req, res, next) => {
   if (req.path.startsWith('/socket.io') || req.path === '/health') {
     return next();
   }
-
-  if (underConstructionFile && fs.existsSync(underConstructionFile)) {
-    return res.sendFile(underConstructionFile);
-  }
-
-  res.send(fallbackHTML);
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.status(200).send(maintenanceHTML);
 });
 
 const httpServer = createServer(app);

@@ -9,7 +9,7 @@
     "dev:client": "cd client && npm run dev",
     "build": "tsc",
     "build:server": "tsc",
-    "start": "node dist/server/index.js",
+    "start": "node dist/src/server/index.js || node dist/server/index.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
