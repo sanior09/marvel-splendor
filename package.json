@@ -7,8 +7,9 @@
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,yellow\" \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "ts-node-dev --respawn --transpile-only src/server/index.ts",
     "dev:client": "cd client && npm run dev",
-    "build": "cd client && npm install --legacy-peer-deps && npm run build && cd .. && tsc",
-    "build:server": "tsc",
+    "prebuild": "node -e \"const fs=require('fs'); fs.rmSync('client/dist', { recursive: true, force: true }); fs.rmSync('dist', { recursive: true, force: true });\"",
+    "build": "npm run build:client && tsc",
+    "build:client": "cd client && npm install && npm run build",
     "start": "node dist/server/index.js",
     "typecheck": "tsc --noEmit"
   },
