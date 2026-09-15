@@ -93,12 +93,15 @@ export const Board: React.FC<BoardProps> = ({
             } else {
               const signature = getHeroSignature(newlyAcquired.name);
               if (signature) {
-                setRecruitVFXData({
-                  signature,
-                  card: newlyAcquired,
-                  playerName: currP.name,
-                  isMyPlayer: isMe,
-                });
+                // VFX overlay only shows on the buyer's own screen
+                if (isMe) {
+                  setRecruitVFXData({
+                    signature,
+                    card: newlyAcquired,
+                    playerName: currP.name,
+                    isMyPlayer: true,
+                  });
+                }
                 playHeroSignatureSound(signature);
               } else if (!isMe) {
                 soundManager.playCardBuy(newlyAcquired.tier);
