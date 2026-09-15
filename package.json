@@ -7,10 +7,7 @@
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,yellow\" \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "ts-node-dev --respawn --transpile-only src/server/index.ts",
     "dev:client": "cd client && npm run dev",
-<<<<<<< HEAD
     "prebuild": "node -e \"const fs=require('fs'); fs.rmSync('client/dist', { recursive: true, force: true }); fs.rmSync('dist', { recursive: true, force: true });\"",
-=======
->>>>>>> 9b33230c94799db1862c65987b2f8218f458ce30
     "build": "npm run build:client && tsc",
     "build:client": "cd client && npm install && npm run build",
     "start": "node dist/server/index.js",
