@@ -46,7 +46,7 @@ export default function App() {
           ขออภัยในความไม่สะดวกครับ
         </p>
         <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '1.5rem', borderTop: '1px solid #334155', paddingTop: '1rem' }}>
-          J.A.R.V.I.S. Protocol — Systems Offline
+          Nachapol Protocol — Systems Offline
         </div>
       </div>
     </div>
