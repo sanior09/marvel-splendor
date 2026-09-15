@@ -31,7 +31,7 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// ค้นหาตำแหน่งไฟล์ under-construction.html แบบ dynamic ครอบคลุมทุกโฟลเดอร์รัน
+// ค้นหาตำแหน่งไฟล์ under-construction.html
 const possiblePaths = [
   path.resolve(process.cwd(), 'public/under-construction.html'),
   path.resolve(__dirname, '../../public/under-construction.html'),
@@ -39,12 +39,31 @@ const possiblePaths = [
 ];
 
 const underConstructionFile = possiblePaths.find(filePath => fs.existsSync(filePath));
-const publicPath = underConstructionFile ? path.dirname(underConstructionFile) : path.resolve(process.cwd(), 'public');
 
-// Serve static assets (เผื่อไฟล์ under-construction.html ดึงรูป/CSS จาก public)
-if (fs.existsSync(publicPath)) {
-  app.use(express.static(publicPath));
-}
+// โค้ด HTML สำรองกรณีหาไฟล์ public ไม่เจอจริงๆ
+const fallbackHTML = `
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ปิดปรับปรุงระบบชั่วคราว - Splendor Marvel</title>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, sans-serif; display: flex; height: 100vh; margin: 0; align-items: center; justify-content: center; text-align: center; }
+        .card { background: #1e293b; padding: 2.5rem; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); max-width: 450px; border: 1px solid #334155; }
+        h1 { color: #38bdf8; margin-bottom: 0.5rem; }
+        p { color: #94a3b8; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🛠️ ปิดปรับปรุงระบบชั่วคราว</h1>
+        <p>ระบบเกม Splendor Marvel กำลังอยู่ระหว่างการปรับปรุงและอัปเดตเวอร์ชันใหม่</p>
+        <p style="font-size: 0.875rem; color: #64748b; margin-top: 1.5rem;">— J.A.R.V.I.S. Systems —</p>
+    </div>
+</body>
+</html>
+`;
 
 // 🚨 FORCE ROUTE: บังคับส่งหน้า Under Construction ทุก Request
 app.get('*', (req, res, next) => {
@@ -56,7 +75,7 @@ app.get('*', (req, res, next) => {
     return res.sendFile(underConstructionFile);
   }
 
-  res.status(500).send('Under Construction page file not found on server.');
+  res.send(fallbackHTML);
 });
 
 const httpServer = createServer(app);
@@ -155,7 +174,6 @@ io.on('connection', (socket) => {
 
 httpServer.listen(PORT, () => {
   console.log(`\n👾 Nexus Realm Server running on port ${PORT}`);
-  console.log(`   → Maintenance Mode Active: Serving under-construction.html`);
-  console.log(`   → Health: http://localhost:${PORT}/health`);
-  console.log(`   → WS:     ws://localhost:${PORT}\n`);
+  console.log(`   → Maintenance Mode Active`);
+  console.log(`   → Health: http://localhost:${PORT}/health\n`);
 });
