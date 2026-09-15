@@ -203,8 +203,8 @@ export const Lobby: React.FC<LobbyProps> = ({
   if (currentRoom) {
     return (
       <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start sm:justify-center p-3 sm:p-6 relative select-none">
-        <div className="w-full max-w-md my-auto py-4">
-          <div className="glass-strong rounded-2xl p-5 w-full space-y-4 border border-white/15 shadow-2xl relative">
+        <div className="w-full max-w-md my-auto py-2 sm:py-4">
+          <div className="glass-strong rounded-2xl p-3.5 sm:p-5 w-full space-y-3 sm:space-y-4 border border-white/15 shadow-2xl relative">
             <div className="absolute top-3 left-3 z-20">
               <button
                 type="button"
@@ -510,19 +510,19 @@ export const Lobby: React.FC<LobbyProps> = ({
         </button>
       </div>
 
-      <div className="w-full max-w-lg flex flex-col items-center my-auto py-3 sm:py-6">
+      <div className="w-full max-w-lg flex flex-col items-center my-auto py-2 sm:py-6">
 
         {/* Hero Header */}
-        <div className="text-center space-y-1.5 mb-3">
-          <div className="flex items-center justify-center gap-2.5">
-            <span className="marvel-badge px-3 py-0.5 rounded text-2xl sm:text-3xl font-black tracking-wider shadow-2xl">
+        <div className="text-center space-y-1 mb-2 sm:mb-3">
+          <div className="flex items-center justify-center gap-2">
+            <span className="marvel-badge px-2 sm:px-3 py-0.5 rounded text-xl sm:text-3xl font-black tracking-wider shadow-2xl">
               MARVEL
             </span>
-            <h1 className="font-display text-3xl sm:text-4xl font-black shimmer-text leading-none tracking-widest">
+            <h1 className="font-display text-2xl sm:text-4xl font-black shimmer-text leading-none tracking-widest">
               SPLENDOR
             </h1>
           </div>
-          <p className="text-white/70 text-xs sm:text-sm max-w-lg mx-auto truncate">
+          <p className="text-white/70 text-[10px] sm:text-sm max-w-xs sm:max-w-lg mx-auto truncate">
             แย่งชิงถุงมืออินฟินิตี้ • เกณฑ์ฮีโร่มาร์เวล • พิชิตจักรวาล (Infinity Gauntlet • Splendor)
           </p>
           <div className="flex items-center justify-center gap-3 pt-0.5">
@@ -559,7 +559,7 @@ export const Lobby: React.FC<LobbyProps> = ({
         )}
 
         {/* Main card */}
-        <div className="glass-strong rounded-2xl p-5 sm:p-6 max-w-lg w-full space-y-3.5 border border-white/10 shadow-2xl">
+        <div className="glass-strong rounded-2xl p-3.5 sm:p-6 max-w-lg w-full space-y-3 sm:space-y-3.5 border border-white/10 shadow-2xl">
           {/* Player name + Avatar */}
           <div>
             <label className="text-xs font-bold uppercase tracking-wider text-white/80 block mb-1.5">

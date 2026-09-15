@@ -20,12 +20,14 @@ export const GameOver: React.FC<GameOverProps> = ({ winners, players, myPlayerId
   }, []);
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/85 backdrop-blur-xl" />
+      <div className="fixed inset-0 bg-black/85 backdrop-blur-xl" />
 
+      {/* Scrollable wrapper */}
+      <div className="relative min-h-full flex items-center justify-center p-4 py-6">
       {/* Card */}
-      <div className="relative glass-strong rounded-3xl p-10 max-w-lg w-full mx-4 text-center space-y-7 border border-yellow-400/30 shadow-[0_0_90px_rgba(245,158,11,0.25)] animate-slide-up">
+      <div className="relative glass-strong rounded-3xl p-5 sm:p-10 max-w-lg w-full text-center space-y-5 sm:space-y-7 border border-yellow-400/30 shadow-[0_0_90px_rgba(245,158,11,0.25)] animate-slide-up">
         {/* Marvel Badge */}
         <div className="flex items-center justify-center gap-2">
           <span className="marvel-badge px-3 py-0.5 rounded text-base font-black">MARVEL</span>
@@ -36,16 +38,16 @@ export const GameOver: React.FC<GameOverProps> = ({ winners, players, myPlayerId
 
         {/* Win/Lose header */}
         <div className="space-y-2">
-          <div className="text-7xl">{isIWon ? '🧤' : '🎖️'}</div>
+          <div className="text-5xl sm:text-7xl">{isIWon ? '🧤' : '🎖️'}</div>
           <h1
             className={[
-              'font-display text-4xl font-black uppercase tracking-wider',
+              'font-display text-2xl sm:text-4xl font-black uppercase tracking-wider',
               isIWon ? 'shimmer-text' : 'text-white/90',
             ].join(' ')}
           >
             {isIWon ? 'ชัยชนะแห่งจักรวาล! (Cosmic Victory!)' : 'จบเกมแล้ว (Game Over)'}
           </h1>
-          <p className="text-white/70 text-base max-w-sm mx-auto">
+          <p className="text-white/70 text-sm sm:text-base max-w-sm mx-auto">
             {isIWon
               ? 'คุณรวบรวมมณีครบทั้ง 6 ชนิดและครอบครอง Infinity Gauntlet สำเร็จ!'
               : `${winnerPlayers.map((p) => p.name).join(' & ')} รวบรวม Infinity Gauntlet สำเร็จและชนะเกมนี้!`}
@@ -116,10 +118,11 @@ export const GameOver: React.FC<GameOverProps> = ({ winners, players, myPlayerId
             soundManager.playButtonClick();
             onLeave();
           }}
-          className="w-full py-4 rounded-xl font-black font-display text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
+          className="w-full py-3 sm:py-4 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
         >
           กลับสู่ล็อบบี้หลัก (Return to Lobby)
         </button>
+      </div>
       </div>
     </div>,
     document.body,
