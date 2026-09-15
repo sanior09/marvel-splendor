@@ -31,8 +31,24 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Serve public static folder for Under Construction page
+// Path ไปยังโฟลเดอร์ public และไฟล์ under-construction.html
 const publicPath = path.resolve(__dirname, '../../public');
+const underConstructionFile = path.join(publicPath, 'under-construction.html');
+
+// 🚨 FORCE ROUTE: บังคับส่งหน้า Under Construction ทุก Request (ยกเว้น socket.io และ health)
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/socket.io') || req.path === '/health') {
+    return next();
+  }
+
+  if (fs.existsSync(underConstructionFile)) {
+    return res.sendFile(underConstructionFile);
+  }
+
+  next();
+});
+
+// Serve public static folder (รูปภาพ หรือ CSS ของหน้า Under Construction)
 if (fs.existsSync(publicPath)) {
   app.use(express.static(publicPath));
 }
@@ -139,18 +155,11 @@ io.on('connection', (socket) => {
   });
 });
 
-// —— SPA Route Fallback (Under Construction Mode) ——————————
-if (fs.existsSync(publicPath)) {
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/socket.io') || req.path === '/health') return next();
-    res.sendFile(path.join(publicPath, 'under-construction.html'));
-  });
-}
-
 // —— Start Listening ———————————————————————————————————————
 
 httpServer.listen(PORT, () => {
   console.log(`\n👾 Nexus Realm Server running on port ${PORT}`);
+  console.log(`   → Status: MAINTENANCE MODE (Under Construction)`);
   console.log(`   → Health: http://localhost:${PORT}/health`);
   console.log(`   → WS:     ws://localhost:${PORT}`);
   console.log(`   → CORS:   ${CLIENT_ORIGIN}\n`);
