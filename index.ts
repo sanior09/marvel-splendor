@@ -1,6 +1,6 @@
 // ============================================================
 // index.ts — Nexus Realm Server Entry Point
-// Express HTTP + Socket.io WebSocket server
+// Express HTTP + Socket.io WebSocket server (Maintenance Mode)
 // ============================================================
 
 import express from 'express';
@@ -31,27 +31,33 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Path ไปยังโฟลเดอร์ public และไฟล์ under-construction.html
-const publicPath = path.resolve(__dirname, '../../public');
-const underConstructionFile = path.join(publicPath, 'under-construction.html');
+// ค้นหาตำแหน่งไฟล์ under-construction.html แบบ dynamic ครอบคลุมทุกโฟลเดอร์รัน
+const possiblePaths = [
+  path.resolve(process.cwd(), 'public/under-construction.html'),
+  path.resolve(__dirname, '../../public/under-construction.html'),
+  path.resolve(__dirname, '../public/under-construction.html')
+];
 
-// 🚨 FORCE ROUTE: บังคับส่งหน้า Under Construction ทุก Request (ยกเว้น socket.io และ health)
+const underConstructionFile = possiblePaths.find(filePath => fs.existsSync(filePath));
+const publicPath = underConstructionFile ? path.dirname(underConstructionFile) : path.resolve(process.cwd(), 'public');
+
+// Serve static assets (เผื่อไฟล์ under-construction.html ดึงรูป/CSS จาก public)
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath));
+}
+
+// 🚨 FORCE ROUTE: บังคับส่งหน้า Under Construction ทุก Request
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/socket.io') || req.path === '/health') {
     return next();
   }
 
-  if (fs.existsSync(underConstructionFile)) {
+  if (underConstructionFile && fs.existsSync(underConstructionFile)) {
     return res.sendFile(underConstructionFile);
   }
 
-  next();
+  res.status(500).send('Under Construction page file not found on server.');
 });
-
-// Serve public static folder (รูปภาพ หรือ CSS ของหน้า Under Construction)
-if (fs.existsSync(publicPath)) {
-  app.use(express.static(publicPath));
-}
 
 const httpServer = createServer(app);
 
@@ -71,7 +77,6 @@ const roomManager = new RoomManager(io);
 io.on('connection', (socket) => {
   console.log(`[Server] Client connected: ${socket.id}`);
 
-  // —— Room: Create ————————————————————————————————————————
   socket.on('room:create', ({ playerName, avatarUrl, mapId }, callback) => {
     try {
       const room = roomManager.createRoom(socket, playerName, mapId, avatarUrl);
@@ -82,7 +87,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // —— Room: Join ——————————————————————————————————————————
   socket.on('room:join', ({ roomId, playerName, avatarUrl }, callback) => {
     try {
       const result = roomManager.joinRoom(socket, roomId, playerName, avatarUrl);
@@ -93,12 +97,10 @@ io.on('connection', (socket) => {
     }
   });
 
-  // —— Room: Leave —————————————————————————————————————————
   socket.on('room:leave', () => {
     roomManager.leaveRoom(socket);
   });
 
-  // —— Room: Add Bot ———————————————————————————————————————
   socket.on('room:addBot', ({ botName, personality, avatarUrl }, callback) => {
     try {
       const result = roomManager.addBot(socket, botName, personality, avatarUrl);
@@ -109,7 +111,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // —— Room: Remove Bot ————————————————————————————————————
   socket.on('room:removeBot', ({ botId }, callback) => {
     try {
       const result = roomManager.removeBot(socket, botId);
@@ -120,7 +121,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // —— Room: Create Solo (vs Bots) —————————————————————————
   socket.on('room:createSolo', ({ playerName, avatarUrl, botCount, botNames, mapId }, callback) => {
     try {
       const result = roomManager.createSoloRoom(socket, playerName, botCount, botNames, mapId, avatarUrl);
@@ -131,12 +131,10 @@ io.on('connection', (socket) => {
     }
   });
 
-  // —— Room: List All Open —————————————————————————————————
   socket.on('room:listAll', (callback) => {
     callback(roomManager.listAllRooms());
   });
 
-  // —— Game: Start —————————————————————————————————————————
   socket.on('game:start', () => {
     const result = roomManager.startGame(socket);
     if (!result.success) {
@@ -144,12 +142,10 @@ io.on('connection', (socket) => {
     }
   });
 
-  // —— Game: Action ————————————————————————————————————————
   socket.on('game:action', (action) => {
     roomManager.handleAction(socket, action);
   });
 
-  // —— Disconnect ——————————————————————————————————————————
   socket.on('disconnect', () => {
     roomManager.handleDisconnect(socket);
   });
@@ -159,8 +155,7 @@ io.on('connection', (socket) => {
 
 httpServer.listen(PORT, () => {
   console.log(`\n👾 Nexus Realm Server running on port ${PORT}`);
-  console.log(`   → Status: MAINTENANCE MODE (Under Construction)`);
+  console.log(`   → Maintenance Mode Active: Serving under-construction.html`);
   console.log(`   → Health: http://localhost:${PORT}/health`);
-  console.log(`   → WS:     ws://localhost:${PORT}`);
-  console.log(`   → CORS:   ${CLIENT_ORIGIN}\n`);
+  console.log(`   → WS:     ws://localhost:${PORT}\n`);
 });
