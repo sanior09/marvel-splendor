@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splendor: Marvel - Under Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0d1117;
+            color: #e6edf3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2.5rem;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            background: rgba(22, 27, 34, 0.8);
+            box-shadow: 0 0 30px rgba(58, 134, 255, 0.15);
+            max-width: 480px;
+            width: 90%;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.75rem;
+            color: #ffffff;
+        }
+
+        p {
+            color: #8b949e;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(56, 189, 248, 0.1);
+            border-radius: 50%;
+            border-top-color: #38bdf8;
+            animation: spin 1s infinite linear;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="status-badge">System Initializing</div>
+        <h1>Splendor: Marvel</h1>
+        <p>ระบบเกมกำลังอยู่ระหว่างการพัฒนาและปรับแต่งโครงสร้างเพื่อประสิทธิภาพสูงสุด</p>
+        <div class="loader"></div>
+    </div>
+</body>
+
+</html>

@@ -1,6 +1,6 @@
 // ============================================================
-//  index.ts — Nexus Realm Server Entry Point
-//  Express HTTP + Socket.io WebSocket server
+// index.ts — Nexus Realm Server Entry Point
+// Express HTTP + Socket.io WebSocket server
 // ============================================================
 
 import express from 'express';
@@ -12,7 +12,7 @@ import fs from 'fs';
 import type { ServerToClientEvents, ClientToServerEvents } from '../types/game.types';
 import { RoomManager } from './RoomManager';
 
-// ─── Server Setup ─────────────────────────────────────────────
+// —— Server Setup ————————————————————————————————————————————
 
 const PORT = process.env.PORT ?? 3001;
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN ?? '*';
@@ -31,10 +31,10 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Serve client static build if available (all-in-one production deployment)
-const clientDistPath = path.resolve(__dirname, '../../client/dist');
-if (fs.existsSync(clientDistPath)) {
-  app.use(express.static(clientDistPath));
+// Serve public static folder for Under Construction page
+const publicPath = path.resolve(__dirname, '../../public');
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath));
 }
 
 const httpServer = createServer(app);
@@ -46,16 +46,16 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
   },
 });
 
-// ─── Room Manager ─────────────────────────────────────────────
+// —— Room Manager ————————————————————————————————————————————
 
 const roomManager = new RoomManager(io);
 
-// ─── Socket.io Event Handlers ─────────────────────────────────
+// —— Socket.io Event Handlers ———————————————————————————————
 
 io.on('connection', (socket) => {
   console.log(`[Server] Client connected: ${socket.id}`);
 
-  // ── Room: Create ──────────────────────────────────────────
+  // —— Room: Create ————————————————————————————————————————
   socket.on('room:create', ({ playerName, avatarUrl, mapId }, callback) => {
     try {
       const room = roomManager.createRoom(socket, playerName, mapId, avatarUrl);
@@ -66,7 +66,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // ── Room: Join ────────────────────────────────────────────
+  // —— Room: Join ——————————————————————————————————————————
   socket.on('room:join', ({ roomId, playerName, avatarUrl }, callback) => {
     try {
       const result = roomManager.joinRoom(socket, roomId, playerName, avatarUrl);
@@ -77,12 +77,12 @@ io.on('connection', (socket) => {
     }
   });
 
-  // ── Room: Leave ───────────────────────────────────────────
+  // —— Room: Leave —————————————————————————————————————————
   socket.on('room:leave', () => {
     roomManager.leaveRoom(socket);
   });
 
-  // ── Room: Add Bot ─────────────────────────────────────────
+  // —— Room: Add Bot ———————————————————————————————————————
   socket.on('room:addBot', ({ botName, personality, avatarUrl }, callback) => {
     try {
       const result = roomManager.addBot(socket, botName, personality, avatarUrl);
@@ -93,7 +93,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // ── Room: Remove Bot ──────────────────────────────────────
+  // —— Room: Remove Bot ————————————————————————————————————
   socket.on('room:removeBot', ({ botId }, callback) => {
     try {
       const result = roomManager.removeBot(socket, botId);
@@ -104,7 +104,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // ── Room: Create Solo (vs Bots) ───────────────────────────
+  // —— Room: Create Solo (vs Bots) —————————————————————————
   socket.on('room:createSolo', ({ playerName, avatarUrl, botCount, botNames, mapId }, callback) => {
     try {
       const result = roomManager.createSoloRoom(socket, playerName, botCount, botNames, mapId, avatarUrl);
@@ -115,12 +115,12 @@ io.on('connection', (socket) => {
     }
   });
 
-  // ── Room: List All Open ───────────────────────────────────
+  // —— Room: List All Open —————————————————————————————————
   socket.on('room:listAll', (callback) => {
     callback(roomManager.listAllRooms());
   });
 
-  // ── Game: Start ───────────────────────────────────────────
+  // —— Game: Start —————————————————————————————————————————
   socket.on('game:start', () => {
     const result = roomManager.startGame(socket);
     if (!result.success) {
@@ -128,29 +128,29 @@ io.on('connection', (socket) => {
     }
   });
 
-  // ── Game: Action ──────────────────────────────────────────
+  // —— Game: Action ————————————————————————————————————————
   socket.on('game:action', (action) => {
     roomManager.handleAction(socket, action);
   });
 
-  // ── Disconnect ────────────────────────────────────────────
+  // —— Disconnect ——————————————————————————————————————————
   socket.on('disconnect', () => {
     roomManager.handleDisconnect(socket);
   });
 });
 
-// ─── SPA Route Fallback ───────────────────────────────────────
-if (fs.existsSync(clientDistPath)) {
+// —— SPA Route Fallback (Under Construction Mode) ——————————
+if (fs.existsSync(publicPath)) {
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/socket.io') || req.path === '/health') return next();
-    res.sendFile(path.join(clientDistPath, 'index.html'));
+    res.sendFile(path.join(publicPath, 'under-construction.html'));
   });
 }
 
-// ─── Start Listening ──────────────────────────────────────────
+// —— Start Listening ———————————————————————————————————————
 
 httpServer.listen(PORT, () => {
-  console.log(`\n🎮 Nexus Realm Server running on port ${PORT}`);
+  console.log(`\n👾 Nexus Realm Server running on port ${PORT}`);
   console.log(`   → Health: http://localhost:${PORT}/health`);
   console.log(`   → WS:     ws://localhost:${PORT}`);
   console.log(`   → CORS:   ${CLIENT_ORIGIN}\n`);
