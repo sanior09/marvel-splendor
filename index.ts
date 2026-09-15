@@ -75,11 +75,13 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// 🚨 FORCE ROUTE: ดักจับทุก Request แล้วส่งหน้า HTML Maintenance ทันที
-app.use((req, res, next) => {
-  if (req.path.startsWith('/socket.io') || req.path === '/health') {
-    return next();
-  }
+// 🚨 FORCE ROUTE: ดักจับหน้า Home (/) และทุก Route ที่ไม่ใช่ /health
+app.get('/', (_req, res) => {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.status(200).send(maintenanceHTML);
+});
+
+app.get('*', (_req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.status(200).send(maintenanceHTML);
 });
