@@ -7,7 +7,7 @@
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,yellow\" \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "ts-node-dev --respawn --transpile-only src/server/index.ts",
     "dev:client": "cd client && npm run dev",
-    "build": "cd client && npm install --legacy-peer-deps && npm run build && cd .. && tsc",
+    "build": "tsc",
     "build:server": "tsc",
     "start": "node dist/server/index.js",
     "typecheck": "tsc --noEmit"
