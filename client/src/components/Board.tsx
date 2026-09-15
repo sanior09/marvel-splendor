@@ -235,7 +235,7 @@ export const Board: React.FC<BoardProps> = ({
             <img
               src={activeMap.imageUrl}
               alt={activeMap.name}
-              className="w-full h-full object-cover object-center opacity-75 transform scale-105 filter brightness-90 contrast-110"
+              className="w-full h-full object-cover object-center opacity-90 transform scale-105 filter brightness-105 contrast-105"
               loading="eager"
             />
           </div>
@@ -245,7 +245,7 @@ export const Board: React.FC<BoardProps> = ({
         <div
           className="absolute inset-0 pointer-events-none z-0"
           style={{
-            background: 'radial-gradient(ellipse at 50% 50%, rgba(7, 10, 20, 0.65) 0%, rgba(3, 5, 12, 0.88) 100%)',
+            background: 'radial-gradient(ellipse at 50% 50%, rgba(7, 10, 20, 0.35) 0%, rgba(3, 5, 12, 0.60) 100%)',
           }}
         />
 
