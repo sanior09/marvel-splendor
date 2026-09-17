@@ -224,14 +224,31 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
               className="w-full h-full object-cover object-center transform scale-105"
             />
             {/* Avengers Symbol badge if present */}
-            {card.avengersSymbol && (
-              <div
-                className="absolute top-2 right-2 w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-yellow-600 border border-yellow-200 flex items-center justify-center font-black text-black shadow-lg text-sm"
-                title="Avengers Symbol"
-              >
-                A
-              </div>
-            )}
+            {(() => {
+              const count = typeof card.avengersCount === 'number'
+                ? card.avengersCount
+                : typeof card.avengersSymbol === 'number'
+                ? card.avengersSymbol
+                : card.avengersSymbol
+                ? 1
+                : 0;
+              if (count <= 0) return null;
+              return (
+                <div
+                  className="absolute top-2 right-2 flex items-center -space-x-2"
+                  title={`Avengers Symbol x${count}`}
+                >
+                  {Array.from({ length: count }).map((_, idx) => (
+                    <div
+                      key={idx}
+                      className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 via-red-700 to-red-950 border-2 border-yellow-300 flex items-center justify-center font-black text-yellow-300 shadow-xl text-base relative z-[1]"
+                    >
+                      A
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
             {/* Victory points badge */}
             {card.points > 0 && (
               <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/75 border border-white/20 font-black text-yellow-300 text-sm shadow">

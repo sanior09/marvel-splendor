@@ -59,7 +59,8 @@ export interface Card {
   readonly bonusColor: CrystalColor;
   /** Crystal cost to purchase this card */
   readonly cost: CrystalPool;
-  readonly avengersSymbol: boolean;
+  readonly avengersSymbol: boolean | number;
+  readonly avengersCount?: number;
 }
 
 // ─── Ancient Guardian (Noble equivalent) ─────────────────────

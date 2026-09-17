@@ -188,14 +188,33 @@ export const CardSlot: React.FC<CardSlotProps> = ({
               {card.points}
             </div>
           )}
-          {card.avengersSymbol && (
-            <div
-              className="bg-red-600/90 w-5 h-5 rounded-full flex items-center justify-center border border-yellow-300 shadow-md"
-              title="Avengers Symbol (Counts toward Avengers Assemble +3 pts)"
-            >
-              <span className="text-yellow-300 font-black text-[11px] leading-none">A</span>
-            </div>
-          )}
+          {(() => {
+            const count = typeof card.avengersCount === 'number'
+              ? card.avengersCount
+              : typeof card.avengersSymbol === 'number'
+              ? card.avengersSymbol
+              : card.avengersSymbol
+              ? 1
+              : 0;
+            if (count <= 0) return null;
+            return (
+              <div
+                className="flex items-center -space-x-1.5"
+                title={`ตรา Avengers ${count} สัญลักษณ์ (Counts toward Avengers Assemble +3 pts)`}
+              >
+                {Array.from({ length: count }).map((_, idx) => (
+                  <div
+                    key={idx}
+                    className="w-5 h-5 rounded-full bg-gradient-to-br from-red-600 via-red-700 to-red-950 flex items-center justify-center border border-yellow-300 shadow-md ring-1 ring-black/50 relative z-[1]"
+                  >
+                    <span className="text-yellow-300 font-black text-[11px] leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] select-none">
+                      A
+                    </span>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
         </div>
 
         {/* Right: Permanent Stone Bonus */}

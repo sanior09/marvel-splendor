@@ -119,34 +119,34 @@ export const TIER_2_CARDS: Card[] = [
 
 export const TIER_3_CARDS: Card[] = [
   // Reality Stone (Ruby / Red) — 4 cards
-  { id: 't3_r01', name: 'Black Panther', tier: 3, avengersSymbol: true, points: 4, bonusColor: 'ruby', cost: cost(0, 0, 0, 7, 0) },
-  { id: 't3_r02', name: 'Captain America', tier: 3, avengersSymbol: true, points: 5, bonusColor: 'ruby', cost: cost(0, 3, 0, 7, 0) },
-  { id: 't3_r03', name: 'Captain Marvel', tier: 3, avengersSymbol: true, points: 4, bonusColor: 'ruby', cost: cost(3, 0, 3, 5, 0) },
-  { id: 't3_r04', name: 'Storm', tier: 3, avengersSymbol: false, points: 6, bonusColor: 'ruby', cost: cost(0, 0, 3, 3, 7) },
+  { id: 't3_r01', name: 'Black Panther', tier: 3, avengersSymbol: true, avengersCount: 1, points: 4, bonusColor: 'ruby', cost: cost(0, 0, 0, 7, 0) },
+  { id: 't3_r02', name: 'Captain America', tier: 3, avengersSymbol: 2, avengersCount: 2, points: 5, bonusColor: 'ruby', cost: cost(0, 3, 0, 7, 0) },
+  { id: 't3_r03', name: 'Captain Marvel', tier: 3, avengersSymbol: true, avengersCount: 1, points: 4, bonusColor: 'ruby', cost: cost(3, 0, 3, 5, 0) },
+  { id: 't3_r04', name: 'Storm', tier: 3, avengersSymbol: false, avengersCount: 0, points: 6, bonusColor: 'ruby', cost: cost(0, 0, 3, 3, 7) },
 
   // Space Stone (Sapphire / Blue) — 4 cards
-  { id: 't3_s01', name: 'Doctor Strange', tier: 3, avengersSymbol: false, points: 4, bonusColor: 'sapphire', cost: cost(7, 0, 0, 0, 0) },
-  { id: 't3_s02', name: 'Emma Frost', tier: 3, avengersSymbol: false, points: 5, bonusColor: 'sapphire', cost: cost(7, 0, 0, 0, 0) },
-  { id: 't3_s03', name: 'Galactus', tier: 3, avengersSymbol: false, points: 4, bonusColor: 'sapphire', cost: cost(5, 0, 0, 0, 3) },
-  { id: 't3_s04', name: 'Groot', tier: 3, avengersSymbol: false, points: 5, bonusColor: 'sapphire', cost: cost(0, 7, 3, 0, 0) },
+  { id: 't3_s01', name: 'Doctor Strange', tier: 3, avengersSymbol: false, avengersCount: 0, points: 4, bonusColor: 'sapphire', cost: cost(7, 0, 0, 0, 0) },
+  { id: 't3_s02', name: 'Emma Frost', tier: 3, avengersSymbol: false, avengersCount: 0, points: 5, bonusColor: 'sapphire', cost: cost(7, 0, 0, 0, 0) },
+  { id: 't3_s03', name: 'Galactus', tier: 3, avengersSymbol: false, avengersCount: 0, points: 4, bonusColor: 'sapphire', cost: cost(5, 0, 0, 0, 3) },
+  { id: 't3_s04', name: 'Groot', tier: 3, avengersSymbol: false, avengersCount: 0, points: 5, bonusColor: 'sapphire', cost: cost(0, 7, 3, 0, 0) },
 
   // Soul Stone (Obsidian / Orange) — 4 cards
-  { id: 't3_o01', name: 'Iron Man', tier: 3, avengersSymbol: true, points: 4, bonusColor: 'obsidian', cost: cost(0, 0, 0, 7, 0) },
-  { id: 't3_o02', name: 'Jean Grey', tier: 3, avengersSymbol: false, points: 5, bonusColor: 'obsidian', cost: cost(0, 0, 3, 7, 0) },
-  { id: 't3_o03', name: 'Magneto', tier: 3, avengersSymbol: false, points: 4, bonusColor: 'obsidian', cost: cost(3, 3, 0, 0, 3) },
-  { id: 't3_o04', name: 'Gamora', tier: 3, avengersSymbol: false, points: 4, bonusColor: 'obsidian', cost: cost(0, 7, 0, 0, 0) },
+  { id: 't3_o01', name: 'Iron Man', tier: 3, avengersSymbol: 2, avengersCount: 2, points: 4, bonusColor: 'obsidian', cost: cost(0, 0, 0, 7, 0) },
+  { id: 't3_o02', name: 'Jean Grey', tier: 3, avengersSymbol: false, avengersCount: 0, points: 5, bonusColor: 'obsidian', cost: cost(0, 0, 3, 7, 0) },
+  { id: 't3_o03', name: 'Magneto', tier: 3, avengersSymbol: false, avengersCount: 0, points: 4, bonusColor: 'obsidian', cost: cost(3, 3, 0, 0, 3) },
+  { id: 't3_o04', name: 'Gamora', tier: 3, avengersSymbol: false, avengersCount: 0, points: 4, bonusColor: 'obsidian', cost: cost(0, 7, 0, 0, 0) },
 
   // Mind Stone (Topaz / Yellow) — 4 cards
-  { id: 't3_t01', name: 'Nick Fury', tier: 3, avengersSymbol: true, points: 4, bonusColor: 'topaz', cost: cost(0, 0, 7, 0, 0) },
-  { id: 't3_t02', name: 'Professor X', tier: 3, avengersSymbol: false, points: 5, bonusColor: 'topaz', cost: cost(0, 0, 7, 0, 0) },
-  { id: 't3_t03', name: 'Rocket Raccoon', tier: 3, avengersSymbol: false, points: 4, bonusColor: 'topaz', cost: cost(3, 0, 5, 0, 3) },
-  { id: 't3_t04', name: 'Thanos', tier: 3, avengersSymbol: false, points: 6, bonusColor: 'topaz', cost: cost(0, 0, 7, 3, 0) },
+  { id: 't3_t01', name: 'Nick Fury', tier: 3, avengersSymbol: true, avengersCount: 1, points: 4, bonusColor: 'topaz', cost: cost(0, 0, 7, 0, 0) },
+  { id: 't3_t02', name: 'Professor X', tier: 3, avengersSymbol: false, avengersCount: 0, points: 5, bonusColor: 'topaz', cost: cost(0, 0, 7, 0, 0) },
+  { id: 't3_t03', name: 'Rocket Raccoon', tier: 3, avengersSymbol: false, avengersCount: 0, points: 4, bonusColor: 'topaz', cost: cost(3, 0, 5, 0, 3) },
+  { id: 't3_t04', name: 'Thanos', tier: 3, avengersSymbol: false, avengersCount: 0, points: 6, bonusColor: 'topaz', cost: cost(0, 0, 7, 3, 0) },
 
   // Power Stone (Amethyst / Purple) — 4 cards
-  { id: 't3_a01', name: 'Scarlet Witch', tier: 3, avengersSymbol: true, points: 4, bonusColor: 'amethyst', cost: cost(0, 0, 0, 0, 7) },
-  { id: 't3_a02', name: 'Thor', tier: 3, avengersSymbol: true, points: 5, bonusColor: 'amethyst', cost: cost(0, 0, 0, 3, 7) },
-  { id: 't3_a03', name: 'Star-Lord', tier: 3, avengersSymbol: false, points: 4, bonusColor: 'amethyst', cost: cost(3, 3, 3, 0, 5) },
-  { id: 't3_a04', name: 'Hulk', tier: 3, avengersSymbol: true, points: 4, bonusColor: 'amethyst', cost: cost(0, 5, 3, 3, 3) },
+  { id: 't3_a01', name: 'Scarlet Witch', tier: 3, avengersSymbol: true, avengersCount: 1, points: 4, bonusColor: 'amethyst', cost: cost(0, 0, 0, 0, 7) },
+  { id: 't3_a02', name: 'Thor', tier: 3, avengersSymbol: 2, avengersCount: 2, points: 5, bonusColor: 'amethyst', cost: cost(0, 0, 0, 3, 7) },
+  { id: 't3_a03', name: 'Star-Lord', tier: 3, avengersSymbol: false, avengersCount: 0, points: 4, bonusColor: 'amethyst', cost: cost(3, 3, 3, 0, 5) },
+  { id: 't3_a04', name: 'Hulk', tier: 3, avengersSymbol: 2, avengersCount: 2, points: 4, bonusColor: 'amethyst', cost: cost(0, 5, 3, 3, 3) },
 ];
 
 // ─── Marvel Locations (10 tiles — +3 PTS each) ───────────────

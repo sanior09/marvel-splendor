@@ -3,7 +3,7 @@
 //  Pure functions — no side effects, no mutation.
 // ============================================================
 
-import type { Player, Guardian, CrystalColor } from '../types/game.types';
+import type { Player, Guardian, CrystalColor, Card } from '../types/game.types';
 import { CARD_BONUS_COLORS } from '../types/game.types';
 
 // ─── Constants ───────────────────────────────────────────────
@@ -23,8 +23,15 @@ export function calculateScore(player: Player, holdsAvengersAssemble: boolean = 
   return cardPoints + guardianPoints + (holdsAvengersAssemble ? 3 : 0);
 }
 
+export function getCardAvengersCount(card: Card | { avengersSymbol?: boolean | number; avengersCount?: number } | null | undefined): number {
+  if (!card) return 0;
+  if (typeof card.avengersCount === 'number') return card.avengersCount;
+  if (typeof card.avengersSymbol === 'number') return card.avengersSymbol;
+  return card.avengersSymbol ? 1 : 0;
+}
+
 export function countAvengersSymbols(player: Player): number {
-  return player.ownedCards.filter((c) => c.avengersSymbol).length;
+  return player.ownedCards.reduce((total, card) => total + getCardAvengersCount(card), 0);
 }
 
 // ─── Bonus Crystal Aggregator ────────────────────────────────

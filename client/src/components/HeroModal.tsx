@@ -8,6 +8,7 @@ import type { Player, CrystalColor } from '@shared/types/game.types';
 import { BANK_STONE_COLORS } from '@shared/types/game.types';
 import { STONE_NAMES } from './GemToken';
 import { soundManager } from '../utils/soundManager';
+import { countAvengersSymbols, getCardAvengersCount } from '../../../src/engine/WinConditions';
 
 interface HeroModalProps {
   isOpen: boolean;
@@ -63,7 +64,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({
   });
 
   const totalPoints = cards.reduce((sum, c) => sum + c.points, 0);
-  const avengersCount = cards.filter((c) => c.avengersSymbol).length;
+  const avengersCount = countAvengersSymbols(player);
   const totalTokensInHand = ALL_TOKENS_LIST.reduce(
     (sum, c) => sum + (player.crystals[c] ?? 0),
     0,
@@ -300,14 +301,25 @@ export const HeroModal: React.FC<HeroModalProps> = ({
                           {card.points}
                         </div>
                       )}
-                      {card.avengersSymbol && (
-                        <div
-                          className="bg-red-600 w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center border border-yellow-300 shadow"
-                          title="Avengers Assemble Symbol"
-                        >
-                          <span className="text-yellow-300 font-black text-[9px] sm:text-xs leading-none">A</span>
-                        </div>
-                      )}
+                      {(() => {
+                        const count = getCardAvengersCount(card);
+                        if (count <= 0) return null;
+                        return (
+                          <div
+                            className="flex items-center -space-x-1"
+                            title={`ตรา Avengers ${count} สัญลักษณ์ (Avengers Assemble Symbol${count > 1 ? ` x${count}` : ''})`}
+                          >
+                            {Array.from({ length: count }).map((_, idx) => (
+                              <div
+                                key={idx}
+                                className="bg-gradient-to-br from-red-600 via-red-700 to-red-950 w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center border-2 border-yellow-300 shadow relative z-[1]"
+                              >
+                                <span className="text-yellow-300 font-black text-[9px] sm:text-xs leading-none select-none">A</span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     {/* Permanent Stone Bonus Badge */}
