@@ -80,8 +80,17 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('room:leave', () => {
-    roomManager.leaveRoom(socket);
+  socket.on('room:leave', (payload) => {
+    roomManager.leaveRoom(socket, payload);
+  });
+
+  socket.on('room:afkTimeout', ({ roomId, playerId }, callback) => {
+    try {
+      const success = roomManager.convertPlayerToBot(roomId, playerId, 'client_afk_timeout');
+      callback?.({ success });
+    } catch (err) {
+      callback?.({ success: false });
+    }
   });
 
   socket.on('room:addBot', ({ botName, personality, avatarUrl }, callback) => {

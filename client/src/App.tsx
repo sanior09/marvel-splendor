@@ -68,6 +68,7 @@ function GameRouter(): React.ReactElement {
     setTargetScore,
     joinRoom,
     leaveRoom,
+    afkTimeout,
     startGame,
     toggleReady,
     addBot,
@@ -81,10 +82,15 @@ function GameRouter(): React.ReactElement {
 
   // Auto-kick / Bot takeover when idle for 3 minutes without any activity/moves
   const handleInactivityTimeout = useCallback(() => {
-    leaveRoom();
+    const activeRoomId = gameState?.roomId || roomInfo?.roomId;
+    if (activeRoomId && myPlayerId) {
+      afkTimeout(activeRoomId, myPlayerId);
+    } else {
+      leaveRoom();
+    }
     setMyPlayerId(null);
     setAfkNotice('คุณถูกออกจากห้องอัตโนมัติเนื่องจากไม่มีการเคลื่อนไหวเกิน 3 นาที โดยระบบได้ส่งบอท AI เข้าเล่นแทนเรียบร้อยแล้ว (Auto-replaced by AI Bot due to 3 minutes of inactivity)');
-  }, [leaveRoom]);
+  }, [gameState?.roomId, roomInfo?.roomId, myPlayerId, afkTimeout, leaveRoom]);
 
   const { remainingSeconds, isWarning, resetTimer } = useInactivityTimeout({
     timeoutMs: 3 * 60 * 1000, // 3 minutes
@@ -116,26 +122,28 @@ function GameRouter(): React.ReactElement {
     [createSolo],
   );
 
+  // On Room Join — capture joining player ID
   const handleJoinRoom = useCallback(
     (roomId: string, playerName: string, callback: (success: boolean, err?: string) => void, avatarUrl?: string) => {
       setAfkNotice(null);
       joinRoom(roomId, playerName, (success, err, room) => {
         if (success && room) {
-          const lastPlayer = room.players[room.players.length - 1];
-          if (lastPlayer) {
-            setMyPlayerId(lastPlayer.id);
-          }
+          const me = room.players.find((p) => p.name === playerName);
+          if (me) setMyPlayerId(me.id);
+          callback(true);
+        } else {
+          callback(false, err);
         }
-        callback(success, err);
       }, avatarUrl);
     },
     [joinRoom],
   );
 
   const handleLeave = useCallback(() => {
-    leaveRoom();
+    const activeRoomId = gameState?.roomId || roomInfo?.roomId;
+    leaveRoom(activeRoomId && myPlayerId ? { roomId: activeRoomId, playerId: myPlayerId } : undefined);
     setMyPlayerId(null);
-  }, [leaveRoom]);
+  }, [gameState?.roomId, roomInfo?.roomId, myPlayerId, leaveRoom]);
 
   // ── Routing ───────────────────────────────────────────────
 

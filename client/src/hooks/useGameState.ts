@@ -19,7 +19,8 @@ export interface UseGameStateReturn {
   createSolo: (playerName: string, botCount: number, botNames?: string[], callback?: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string, targetScore?: number) => void;
   setTargetScore: (targetScore: number, callback?: (success: boolean, error?: string) => void) => void;
   joinRoom: (roomId: string, playerName: string, callback: (success: boolean, error?: string, room?: RoomInfo) => void, avatarUrl?: string) => void;
-  leaveRoom: () => void;
+  leaveRoom: (payload?: { roomId?: string; playerId?: string }) => void;
+  afkTimeout: (roomId: string, playerId: string) => void;
   startGame: () => void;
   toggleReady: () => void;
   addBot: (botName?: string, personality?: string, callback?: (success: boolean) => void, avatarUrl?: string) => void;
@@ -47,6 +48,10 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
     const onGameOver = (): void => {
       // Game state will update with phase: 'finished'
     };
+    const onPlayerKickedAfk = (): void => {
+      setGameState(null);
+      setRoomInfo(null);
+    };
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
@@ -55,6 +60,7 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
     socket.on('room:updated', onRoomUpdated);
     socket.on('game:error', onGameError);
     socket.on('game:over', onGameOver);
+    socket.on('player:kickedAfk', onPlayerKickedAfk);
 
     if (socket.connected) setConnectionStatus('connected');
 
@@ -66,6 +72,7 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
       socket.off('room:updated', onRoomUpdated);
       socket.off('game:error', onGameError);
       socket.off('game:over', onGameOver);
+      socket.off('player:kickedAfk', onPlayerKickedAfk);
     };
   }, [socket]);
 
@@ -135,11 +142,23 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
     [socket],
   );
 
-  const leaveRoom = useCallback(() => {
-    socket.emit('room:leave');
-    setGameState(null);
-    setRoomInfo(null);
-  }, [socket]);
+  const leaveRoom = useCallback(
+    (payload?: { roomId?: string; playerId?: string }) => {
+      socket.emit('room:leave', payload);
+      setGameState(null);
+      setRoomInfo(null);
+    },
+    [socket],
+  );
+
+  const afkTimeout = useCallback(
+    (roomId: string, playerId: string) => {
+      socket.emit('room:afkTimeout', { roomId, playerId });
+      setGameState(null);
+      setRoomInfo(null);
+    },
+    [socket],
+  );
 
   const startGame = useCallback(() => {
     socket.emit('game:start');
@@ -211,6 +230,7 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
     setTargetScore,
     joinRoom,
     leaveRoom,
+    afkTimeout,
     startGame,
     toggleReady,
     addBot,

@@ -241,12 +241,14 @@ export interface ServerToClientEvents {
   'game:error': (payload: { message: string }) => void;
   'game:over': (payload: { winners: string[] }) => void;
   'room:list': (rooms: RoomInfo[]) => void;
+  'player:kickedAfk': (payload: { message: string }) => void;
 }
 
 export interface ClientToServerEvents {
   'room:create': (payload: { playerName: string; avatarUrl?: string; mapId?: string; targetScore?: number }, callback: (room: RoomInfo) => void) => void;
   'room:join': (payload: { roomId: string; playerName: string; avatarUrl?: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
-  'room:leave': () => void;
+  'room:leave': (payload?: { roomId?: string; playerId?: string }) => void;
+  'room:afkTimeout': (payload: { roomId: string; playerId: string }, callback?: (result: { success: boolean }) => void) => void;
   'room:toggleReady': (callback?: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'room:addBot': (payload: { botName?: string; personality?: string; avatarUrl?: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'room:removeBot': (payload: { botId: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;

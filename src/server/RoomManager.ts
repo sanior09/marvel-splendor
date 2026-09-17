@@ -52,6 +52,7 @@ interface Room {
     tier3: Card[];
   };
   lastActivity: number;
+  lastTurnTime?: number;
 }
 
 // ─── RoomManager Class ────────────────────────────────────────
@@ -64,10 +65,35 @@ export class RoomManager {
   private socketToPlayer: Map<string, string> = new Map();
 
   constructor(private readonly io: Server<ClientToServerEvents, ServerToClientEvents>) {
-    // Periodic cleanup of abandoned rooms (> 5.5 minutes of complete inactivity)
+    // Periodic cleanup of abandoned rooms (> 4 minutes of complete inactivity)
     setInterval(() => {
       this.cleanupInactiveRooms();
     }, 60 * 1000);
+
+    // Periodic check for AFK players on active turn (> 3 minutes without moving)
+    setInterval(() => {
+      this.checkActiveTurnTimeouts();
+    }, 10 * 1000);
+  }
+
+  private checkActiveTurnTimeouts(): void {
+    const now = Date.now();
+    const TURN_TIMEOUT_MS = 3 * 60 * 1000; // 3 minutes
+
+    for (const [roomId, room] of this.rooms.entries()) {
+      if (room.status === 'playing' && room.gameState && room.gameState.phase !== 'finished') {
+        const activePlayer = room.gameState.players[room.gameState.currentPlayerIndex];
+        if (activePlayer && !activePlayer.isBot) {
+          const turnTime = room.lastTurnTime ?? room.lastActivity ?? now;
+          if (now - turnTime >= TURN_TIMEOUT_MS) {
+            console.log(
+              `[RoomManager] Turn timeout: Player ${activePlayer.name} (${activePlayer.id}) AFK for >3m in room ${roomId}. Converting to AI Bot!`
+            );
+            this.convertPlayerToBot(roomId, activePlayer.id, 'turn_timeout_3m');
+          }
+        }
+      }
+    }
   }
 
   private cleanupInactiveRooms(): void {
@@ -165,70 +191,36 @@ export class RoomManager {
 
   // ─── Leave Room ─────────────────────────────────────────────
 
-  leaveRoom(socket: Socket): void {
-    const roomId = this.socketToRoom.get(socket.id);
-    if (!roomId) return;
+  leaveRoom(socket: Socket, payload?: { roomId?: string; playerId?: string }): void {
+    let roomId = payload?.roomId || this.socketToRoom.get(socket.id);
+    let playerId = payload?.playerId || this.socketToPlayer.get(socket.id);
 
-    const room = this.rooms.get(roomId);
-    if (!room) return;
-
-    const playerId = this.socketToPlayer.get(socket.id);
-
-    // ─── Active Game AFK / Disconnect Takeover ───────────────
-    // If game is in progress, convert player to an AI Bot so the game continues smoothly!
-    if (room.status === 'playing' && room.gameState && room.gameState.phase !== 'finished') {
-      const session = room.sessions.find((s) => s.socketId === socket.id);
-      const otherHumans = room.sessions.filter((s) => s.socketId !== socket.id && !s.isBot);
-
-      // If no humans are left in the entire room, close the room
-      if (otherHumans.length === 0) {
-        this.socketToRoom.delete(socket.id);
-        this.socketToPlayer.delete(socket.id);
-        socket.leave(roomId);
-        this.rooms.delete(roomId);
-        console.log(`[RoomManager] Active room ${roomId} deleted (all humans left)`);
-        return;
-      }
-
-      if (session) {
-        session.isBot = true;
-        session.socketId = `bot_${session.id}`;
-        if (!session.name.includes('(AI)')) {
-          session.name = `${session.name} (AI)`;
+    // Fallback search across all rooms by socket.id or playerId if mapping was lost
+    if (!roomId || !playerId) {
+      for (const [rId, r] of this.rooms.entries()) {
+        const s = r.sessions.find(
+          (sess) => sess.socketId === socket.id || (payload?.playerId && sess.id === payload.playerId)
+        );
+        if (s) {
+          roomId = rId;
+          playerId = s.id;
+          break;
         }
-        session.botPersonality = session.botPersonality || 'balanced';
-
-        const gamePlayer = room.gameState.players.find((p) => p.id === session.id);
-        if (gamePlayer) {
-          gamePlayer.isBot = true;
-          if (!gamePlayer.name.includes('(AI)')) {
-            gamePlayer.name = `${gamePlayer.name} (AI)`;
-          }
-          gamePlayer.botPersonality = session.botPersonality;
-        }
-
-        // Transfer host if host was the one who left
-        if (room.hostId === playerId) {
-          room.hostId = otherHumans[0].id;
-        }
-
-        this.socketToRoom.delete(socket.id);
-        this.socketToPlayer.delete(socket.id);
-        socket.leave(roomId);
-
-        room.lastActivity = Date.now();
-        this.io.to(roomId).emit('room:updated', this.toRoomInfo(room));
-        this.broadcastGameState(roomId);
-        console.log(`[RoomManager] Player ${playerId} (${session.name}) converted to AI Bot in room ${roomId}`);
-
-        // If it was this player's turn, trigger bot turn execution immediately!
-        this.checkBotTurn(roomId);
-        return;
       }
     }
 
+    if (!roomId || !playerId) return;
+    const room = this.rooms.get(roomId);
+    if (!room) return;
+
+    // ─── Active Game AFK / Disconnect Takeover ───────────────
+    if (room.status === 'playing' && room.gameState && room.gameState.phase !== 'finished') {
+      this.convertPlayerToBot(roomId, playerId, 'player_leave');
+      return;
+    }
+
     // ─── Waiting Room or Finished Game: Normal Removal ────────
-    room.sessions = room.sessions.filter((s) => s.socketId !== socket.id);
+    room.sessions = room.sessions.filter((s) => s.id !== playerId && s.socketId !== socket.id);
 
     this.socketToRoom.delete(socket.id);
     this.socketToPlayer.delete(socket.id);
@@ -249,6 +241,80 @@ export class RoomManager {
 
     this.io.to(roomId).emit('room:updated', this.toRoomInfo(room));
     console.log(`[RoomManager] Player ${playerId} left room ${roomId}`);
+  }
+
+  // ─── Convert Player to Bot ──────────────────────────────────
+
+  convertPlayerToBot(roomId: string, playerId: string, reason = 'afk'): boolean {
+    const room = this.rooms.get(roomId);
+    if (!room || room.status !== 'playing' || !room.gameState || room.gameState.phase === 'finished') {
+      return false;
+    }
+
+    const session = room.sessions.find((s) => s.id === playerId);
+    if (!session || session.isBot) {
+      return false;
+    }
+
+    const otherHumans = room.sessions.filter((s) => s.id !== playerId && !s.isBot);
+
+    // If no humans are left in the entire room, close the room
+    if (otherHumans.length === 0) {
+      this.socketToRoom.delete(session.socketId);
+      this.socketToPlayer.delete(session.socketId);
+      const sock = this.io.sockets.sockets.get(session.socketId);
+      if (sock) sock.leave(roomId);
+      this.rooms.delete(roomId);
+      console.log(`[RoomManager] Active room ${roomId} deleted (all humans left, reason: ${reason})`);
+      return true;
+    }
+
+    // Convert session
+    session.isBot = true;
+    const oldSocketId = session.socketId;
+    session.socketId = `bot_${session.id}`;
+    if (!session.name.includes('(AI)')) {
+      session.name = `${session.name} (AI)`;
+    }
+    session.botPersonality = session.botPersonality || 'balanced';
+
+    // Convert player in gameState
+    const gamePlayer = room.gameState.players.find((p) => p.id === session.id);
+    if (gamePlayer) {
+      gamePlayer.isBot = true;
+      if (!gamePlayer.name.includes('(AI)')) {
+        gamePlayer.name = `${gamePlayer.name} (AI)`;
+      }
+      gamePlayer.botPersonality = session.botPersonality;
+    }
+
+    // Transfer host if host was the one who left
+    if (room.hostId === playerId) {
+      room.hostId = otherHumans[0].id;
+    }
+
+    // Clean up socket mapping and notify the kicked client
+    if (oldSocketId) {
+      this.socketToRoom.delete(oldSocketId);
+      this.socketToPlayer.delete(oldSocketId);
+      const sock = this.io.sockets.sockets.get(oldSocketId);
+      if (sock) {
+        sock.emit('player:kickedAfk', {
+          message: 'คุณถูกออกจากห้องอัตโนมัติเนื่องจากไม่มีการเคลื่อนไหวเกิน 3 นาที โดยระบบได้ส่งบอท AI เข้าเล่นแทนเรียบร้อยแล้ว (Auto-replaced by AI Bot due to 3 minutes of inactivity)',
+        });
+        sock.leave(roomId);
+      }
+    }
+
+    room.lastActivity = Date.now();
+    room.lastTurnTime = Date.now();
+    this.io.to(roomId).emit('room:updated', this.toRoomInfo(room));
+    this.broadcastGameState(roomId);
+    console.log(`[RoomManager] Player ${playerId} (${session.name}) converted to AI Bot in room ${roomId} (reason: ${reason})`);
+
+    // If it was this player's turn, trigger bot turn execution immediately!
+    this.checkBotTurn(roomId);
+    return true;
   }
 
   // ─── Start Game ─────────────────────────────────────────────
@@ -307,6 +373,7 @@ export class RoomManager {
       room.gameState = rawState;
       room.status = 'playing';
       room.lastActivity = Date.now();
+      room.lastTurnTime = Date.now();
 
       this.broadcastGameState(roomId);
       console.log(`[RoomManager] Game started in room ${roomId}`);
@@ -475,6 +542,7 @@ export class RoomManager {
         currentRoom.gameState = newState;
         currentRoom.decks = newDecks;
         currentRoom.lastActivity = Date.now();
+        currentRoom.lastTurnTime = Date.now();
 
         if (newState.phase === 'finished') {
           currentRoom.status = 'finished';
@@ -525,6 +593,7 @@ export class RoomManager {
       room.gameState = newState;
       room.decks = newDecks;
       room.lastActivity = Date.now();
+      room.lastTurnTime = Date.now();
 
       if (newState.phase === 'finished') {
         room.status = 'finished';
