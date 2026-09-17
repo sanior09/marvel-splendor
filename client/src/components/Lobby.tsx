@@ -101,7 +101,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [openRooms, setOpenRooms] = useState<RoomInfo[]>([]);
   const [activeTab, setActiveTab] = useState<'solo' | 'create' | 'join' | 'browse'>('solo');
-  const [selectedMapId, setSelectedMapId] = useState<string>('avengers_tower');
+  const [selectedMapId, setSelectedMapId] = useState<string>('asgard');
   const [targetScore, setTargetScore] = useState<number>(16);
   const [showTutorial, setShowTutorial] = useState(false);
 

@@ -116,7 +116,7 @@ export class RoomManager {
 
   // ─── Room Creation ──────────────────────────────────────────
 
-  createRoom(socket: Socket, playerName: string, mapId = 'avengers_tower', avatarUrl?: string, targetScore = 16): RoomInfo {
+  createRoom(socket: Socket, playerName: string, mapId = 'asgard', avatarUrl?: string, targetScore = 16): RoomInfo {
     const roomId = uuidv4().slice(0, 6).toUpperCase();
     const playerId = uuidv4();
 
@@ -135,7 +135,7 @@ export class RoomManager {
       sessions: [session],
       maxPlayers: 4,
       status: 'waiting',
-      mapId: mapId || 'avengers_tower',
+      mapId: mapId || 'asgard',
       targetScore: validTargetScore,
       gameState: null,
       decks: { tier1: [], tier2: [], tier3: [] },

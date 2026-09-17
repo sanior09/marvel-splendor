@@ -22,6 +22,25 @@ export interface MarvelMapDefinition {
 
 export const MARVEL_MAPS: MarvelMapDefinition[] = [
   {
+    id: 'asgard',
+    name: 'แอสการ์ด (สะพานไบฟรอสต์)',
+    nameEn: 'Realm of Asgard',
+    subtitle: 'Golden Palace & Bifrost Bridge',
+    realm: 'Nine Realms • Cosmic',
+    icon: '⚡',
+    badgeColor: 'from-yellow-400 to-amber-700',
+    accentBorder: 'border-yellow-400/50',
+    ambientColor: '#eab308',
+    imageUrl: '/images/maps/asgard.jpg?v=5',
+    description: 'อาณาจักรแห่งทวยเทพ พระราชวังทองคำอร่าม แสงละอองดวงดาวไบฟรอสต์ประกายรุ้ง',
+    bgStyle: `
+      radial-gradient(ellipse at 50% 0%, rgba(234, 179, 8, 0.22) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 85%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 15% 75%, rgba(56, 189, 248, 0.12) 0%, transparent 40%),
+      radial-gradient(ellipse at 50% 50%, #1c1408 0%, #070503 100%)
+    `,
+  },
+  {
     id: 'avengers_tower',
     name: 'อเวนเจอร์ส ทาวเวอร์',
     nameEn: 'Avengers Tower',
@@ -31,7 +50,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-cyan-500 to-blue-700',
     accentBorder: 'border-cyan-400/50',
     ambientColor: '#0ea5e9',
-    imageUrl: '/images/maps/avengers_tower.jpg',
+    imageUrl: '/images/maps/avengers_tower.jpg?v=5',
     description: 'ศูนย์บัญชาการสตาร์ค ทิวทัศน์มหานครนิวยอร์ก เทคโนโลยีโฮโลกราฟิกสีฟ้าล้ำยุค',
     bgStyle: `
       radial-gradient(ellipse at 15% 15%, rgba(6, 182, 212, 0.18) 0%, transparent 50%),
@@ -50,32 +69,13 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-amber-500 to-purple-800',
     accentBorder: 'border-amber-400/50',
     ambientColor: '#f59e0b',
-    imageUrl: '/images/maps/wakanda.jpg',
+    imageUrl: '/images/maps/wakanda.jpg?v=5',
     description: 'มหานครแห่งไวเบรเนียม พระอาทิตย์ตกสีทองอร่าม ผสานพลังงานไวโอเล็ตศักดิ์สิทธิ์',
     bgStyle: `
       radial-gradient(ellipse at 25% 10%, rgba(245, 158, 11, 0.18) 0%, transparent 45%),
       radial-gradient(ellipse at 80% 80%, rgba(147, 51, 234, 0.18) 0%, transparent 50%),
       radial-gradient(ellipse at 50% 50%, rgba(120, 53, 15, 0.15) 0%, transparent 65%),
       radial-gradient(ellipse at 50% 50%, #150d1e 0%, #06040a 100%)
-    `,
-  },
-  {
-    id: 'asgard',
-    name: 'แอสการ์ด (สะพานไบฟรอสต์)',
-    nameEn: 'Realm of Asgard',
-    subtitle: 'Golden Palace & Bifrost Bridge',
-    realm: 'Nine Realms • Cosmic',
-    icon: '⚡',
-    badgeColor: 'from-yellow-400 to-amber-700',
-    accentBorder: 'border-yellow-400/50',
-    ambientColor: '#eab308',
-    imageUrl: '/images/maps/asgard.jpg',
-    description: 'อาณาจักรแห่งทวยเทพ พระราชวังทองคำอร่าม แสงละอองดวงดาวไบฟรอสต์ประกายรุ้ง',
-    bgStyle: `
-      radial-gradient(ellipse at 50% 0%, rgba(234, 179, 8, 0.22) 0%, transparent 55%),
-      radial-gradient(ellipse at 85% 85%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
-      radial-gradient(ellipse at 15% 75%, rgba(56, 189, 248, 0.12) 0%, transparent 40%),
-      radial-gradient(ellipse at 50% 50%, #1c1408 0%, #070503 100%)
     `,
   },
   {
@@ -88,7 +88,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-orange-500 to-emerald-700',
     accentBorder: 'border-orange-400/50',
     ambientColor: '#ea580c',
-    imageUrl: '/images/maps/sanctum.jpg',
+    imageUrl: '/images/maps/sanctum.jpg?v=5',
     description: 'วิหารจอมเวทย์ สัญลักษณ์หน้าต่างวิเศษ อักขระรูนเวทมนตร์และประกายไฟพอร์ทัลสีส้มทอง',
     bgStyle: `
       radial-gradient(ellipse at 20% 20%, rgba(234, 88, 12, 0.20) 0%, transparent 45%),
@@ -107,7 +107,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-fuchsia-600 to-purple-900',
     accentBorder: 'border-fuchsia-400/50',
     ambientColor: '#d946ef',
-    imageUrl: '/images/maps/knowhere.jpg',
+    imageUrl: '/images/maps/knowhere.jpg?v=5',
     description: 'สถานีเหมืองอวกาศในหัวกะโหลกสิ่งมีชีวิตโบราณ เนบิวลาสีม่วง-ชมพูคอสมิกสุดตระการตา',
     bgStyle: `
       radial-gradient(ellipse at 75% 20%, rgba(217, 70, 239, 0.20) 0%, transparent 50%),
@@ -126,7 +126,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-emerald-500 to-cyan-700',
     accentBorder: 'border-emerald-400/50',
     ambientColor: '#10b981',
-    imageUrl: '/images/maps/quantum_realm.jpg',
+    imageUrl: '/images/maps/quantum_realm.jpg?v=5',
     description: 'มิติหลุดโลกต่ำกว่าระดับปรมาณู วังวนกระแสเวลาและละอองอนุภาคเรืองแสงสีเขียวมรกต',
     bgStyle: `
       radial-gradient(ellipse at 20% 20%, rgba(16, 185, 129, 0.18) 0%, transparent 45%),
@@ -137,7 +137,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
   },
 ];
 
-export const DEFAULT_MAP_ID = 'avengers_tower';
+export const DEFAULT_MAP_ID = 'asgard';
 
 export function getMarvelMap(mapId?: string | null): MarvelMapDefinition {
   const found = MARVEL_MAPS.find((m) => m.id === mapId);
