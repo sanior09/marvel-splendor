@@ -72,7 +72,7 @@ export function MaintenanceCard({
   title = 'ระบบปิดปรับปรุงชั่วคราว',
   description = 'ระบบเกม Marvel Splendor กำลังอยู่ระหว่างการอัปเดตโครงสร้างระบบและปรับปรุงเซิร์ฟเวอร์',
   note = 'ขออภัยในความไม่สะดวกครับ',
-  protocolFooter = 'J.A.R.V.I.S. Protocol — Systems Offline',
+  protocolFooter = 'Nachapol Protocol — Systems Offline',
 }: MaintenanceCardProps): ReactElement {
   return (
     <div style={containerStyle}>
