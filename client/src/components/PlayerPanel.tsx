@@ -12,6 +12,8 @@ import { countAvengersSymbols } from '../../../src/engine/WinConditions';
 interface PlayerPanelProps {
   player: Player;
   isMyTurn: boolean;
+  holdsAvengersAssemble?: boolean;
+  targetScore?: number;
   onBuyCard: (cardId: string) => void;
   onSendAction: (action: GameAction) => void;
   onViewCards?: (color?: CrystalColor) => void;
@@ -69,6 +71,7 @@ const CARD_BONUS_THEMES: Record<
 export const PlayerPanel: React.FC<PlayerPanelProps> = ({
   player,
   isMyTurn,
+  targetScore = 16,
   onBuyCard,
   onViewCards,
 }) => {
@@ -166,10 +169,10 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
         {/* Win Conditions Checklist */}
         <div className="space-y-0.5 pt-0.5 text-[11px]">
           <WinRequirementRow
-            label="แต้มรวม 16+ แต้ม (16+ PTS)"
-            met={player.score >= 16}
+            label={`แต้มรวม ${targetScore}+ แต้ม (${targetScore}+ PTS)`}
+            met={player.score >= targetScore}
             current={player.score}
-            target={16}
+            target={targetScore}
           />
           <WinRequirementRow
             label="โบนัสการ์ดครบ 5 สี (5 Bonuses)"

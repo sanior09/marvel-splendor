@@ -15,8 +15,9 @@ export interface UseGameStateReturn {
   connectionStatus: ConnectionStatus;
   error: string | null;
   // Actions
-  createRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string) => void;
-  createSolo: (playerName: string, botCount: number, botNames?: string[], callback?: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string) => void;
+  createRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string, targetScore?: number) => void;
+  createSolo: (playerName: string, botCount: number, botNames?: string[], callback?: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string, targetScore?: number) => void;
+  setTargetScore: (targetScore: number, callback?: (success: boolean, error?: string) => void) => void;
   joinRoom: (roomId: string, playerName: string, callback: (success: boolean, error?: string, room?: RoomInfo) => void, avatarUrl?: string) => void;
   leaveRoom: () => void;
   startGame: () => void;
@@ -68,8 +69,8 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
   }, [socket]);
 
   const createRoom = useCallback(
-    (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string) => {
-      socket.emit('room:create', { playerName, mapId, avatarUrl }, (room) => {
+    (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string, targetScore?: number) => {
+      socket.emit('room:create', { playerName, mapId, avatarUrl, targetScore }, (room) => {
         setRoomInfo(room);
         callback(room);
       });
@@ -85,13 +86,29 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
       callback?: (room: RoomInfo) => void,
       mapId?: string,
       avatarUrl?: string,
+      targetScore?: number,
     ) => {
-      socket.emit('room:createSolo', { playerName, botCount, botNames, mapId, avatarUrl }, (result) => {
+      socket.emit('room:createSolo', { playerName, botCount, botNames, mapId, avatarUrl, targetScore }, (result) => {
         if (result.success && result.room) {
           setRoomInfo(result.room);
           callback?.(result.room);
         } else {
           setError(result.error ?? 'Failed to start solo game');
+        }
+      });
+    },
+    [socket],
+  );
+
+  const setTargetScore = useCallback(
+    (targetScore: number, callback?: (success: boolean, error?: string) => void) => {
+      socket.emit('room:setTargetScore', { targetScore }, (result) => {
+        if (result.success && result.room) {
+          setRoomInfo(result.room);
+          callback?.(true);
+        } else {
+          setError(result.error ?? 'Failed to set target score');
+          callback?.(false, result.error);
         }
       });
     },
@@ -182,6 +199,7 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
     error,
     createRoom,
     createSolo,
+    setTargetScore,
     joinRoom,
     leaveRoom,
     startGame,

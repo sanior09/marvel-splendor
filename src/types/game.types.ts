@@ -150,6 +150,8 @@ export interface GameState {
   turnNumber: number;
   /** Chosen Marvel battlefield background map ID (immutable once game starts) */
   mapId?: string;
+  /** Target score needed to trigger win condition (default: 16) */
+  targetScore?: number;
 }
 
 // ─── Actions ─────────────────────────────────────────────────
@@ -226,6 +228,7 @@ export interface RoomInfo {
   maxPlayers: number;
   status: RoomStatus;
   mapId?: string;
+  targetScore?: number;
 }
 
 // ─── Socket Event Payloads ───────────────────────────────────
@@ -239,12 +242,13 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  'room:create': (payload: { playerName: string; avatarUrl?: string; mapId?: string }, callback: (room: RoomInfo) => void) => void;
+  'room:create': (payload: { playerName: string; avatarUrl?: string; mapId?: string; targetScore?: number }, callback: (room: RoomInfo) => void) => void;
   'room:join': (payload: { roomId: string; playerName: string; avatarUrl?: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'room:leave': () => void;
   'room:addBot': (payload: { botName?: string; personality?: string; avatarUrl?: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'room:removeBot': (payload: { botId: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
-  'room:createSolo': (payload: { playerName: string; avatarUrl?: string; botCount: number; botNames?: string[]; mapId?: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
+  'room:createSolo': (payload: { playerName: string; avatarUrl?: string; botCount: number; botNames?: string[]; mapId?: string; targetScore?: number }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
+  'room:setTargetScore': (payload: { targetScore: number }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'game:start': () => void;
   'game:action': (action: GameAction) => void;
   'room:listAll': (callback: (rooms: RoomInfo[]) => void) => void;

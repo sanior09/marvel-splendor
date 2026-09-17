@@ -662,7 +662,8 @@ export function applyAction(
 
   // Win condition check — triggers final round
   const winningPlayer = newState.players[playerIndex];
-  if (checkWinCondition(winningPlayer, newState.board.avengersAssembleHolder === winningPlayer.id) && newState.winTriggeredBy === null) {
+  const targetScore = newState.targetScore ?? 16;
+  if (checkWinCondition(winningPlayer, newState.board.avengersAssembleHolder === winningPlayer.id, targetScore) && newState.winTriggeredBy === null) {
     newState.winTriggeredBy = playerId;
   }
 
@@ -931,9 +932,11 @@ function advanceTurn(state: GameState): GameState {
     newState.winTriggeredBy !== null &&
     nextIndex === 0 // Wrapped around to first player = round complete
   ) {
+    const targetScore = newState.targetScore ?? 16;
     const winners = resolveWinners(
-      newState.players.filter((p) => checkWinCondition(p, newState.board.avengersAssembleHolder === p.id)),
-      newState.board.avengersAssembleHolder
+      newState.players.filter((p) => checkWinCondition(p, newState.board.avengersAssembleHolder === p.id, targetScore)),
+      newState.board.avengersAssembleHolder,
+      targetScore
     );
     newState.winners = winners.map((p) => p.id);
     newState.phase = 'finished';

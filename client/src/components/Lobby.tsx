@@ -12,13 +12,14 @@ import { TutorialModal } from './TutorialModal';
 import { AvatarPicker, MARVEL_AVATARS } from './AvatarPicker';
 
 interface LobbyProps {
-  onCreateRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string) => void;
-  onCreateSolo: (playerName: string, botCount: number, botNames?: string[], mapId?: string, avatarUrl?: string) => void;
+  onCreateRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string, targetScore?: number) => void;
+  onCreateSolo: (playerName: string, botCount: number, botNames?: string[], mapId?: string, avatarUrl?: string, targetScore?: number) => void;
   onJoinRoom: (roomId: string, playerName: string, callback: (success: boolean, err?: string) => void, avatarUrl?: string) => void;
   onLeaveRoom?: () => void;
   onStartGame: () => void;
   onAddBot: (botName?: string, personality?: string, callback?: (success: boolean) => void, avatarUrl?: string) => void;
   onRemoveBot: (botId: string) => void;
+  onSetTargetScore?: (targetScore: number) => void;
   onListRooms: (callback: (rooms: RoomInfo[]) => void) => void;
   currentRoom: RoomInfo | null;
   myPlayerId: string | null;
@@ -71,6 +72,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   onStartGame,
   onAddBot,
   onRemoveBot,
+  onSetTargetScore,
   onListRooms,
   currentRoom,
   myPlayerId,
@@ -85,6 +87,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [openRooms, setOpenRooms] = useState<RoomInfo[]>([]);
   const [activeTab, setActiveTab] = useState<'solo' | 'create' | 'join' | 'browse'>('solo');
   const [selectedMapId, setSelectedMapId] = useState<string>('avengers_tower');
+  const [targetScore, setTargetScore] = useState<number>(16);
   const [showTutorial, setShowTutorial] = useState(false);
 
   // Avatar / Profile picture state (Default to Iron Man so avatar is never null)
@@ -137,7 +140,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     soundManager.playButtonClick();
     setIsLoading(true);
     setError('');
-    onCreateRoom(playerName.trim(), () => setIsLoading(false), selectedMapId, avatarUrl || undefined);
+    onCreateRoom(playerName.trim(), () => setIsLoading(false), selectedMapId, avatarUrl || undefined, targetScore);
   };
 
   const handleSolo = (): void => {
@@ -153,7 +156,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     const selectedBotNames = botNames.slice(0, botCount).map((name, idx) => {
       return name.trim() || POPULAR_MARVEL_BOTS[idx]?.name || `Marvel AI ${idx + 1}`;
     });
-    onCreateSolo(playerName.trim(), botCount, selectedBotNames, selectedMapId, avatarUrl || undefined);
+    onCreateSolo(playerName.trim(), botCount, selectedBotNames, selectedMapId, avatarUrl || undefined, targetScore);
   };
 
   const handleJoin = (roomId?: string): void => {
@@ -252,20 +255,55 @@ export const Lobby: React.FC<LobbyProps> = ({
                 </code>
               </div>
 
-              {/* Battlefield Map Indicator in waiting room */}
-              {(() => {
-                const roomMap = getMarvelMap(currentRoom.mapId);
-                return (
-                  <div
-                    className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-white bg-white/10 border ${roomMap.accentBorder} shadow-sm my-1`}
-                    title={`สมรภูมิรบที่เลือกไว้: ${roomMap.name} (${roomMap.nameEn}) - ล็อกแล้วไม่สามารถเปลี่ยนได้ในเกม`}
-                  >
-                    <span className="text-sm">{roomMap.icon}</span>
-                    <span>สมรภูมิ: <span className="text-yellow-300 font-extrabold">{roomMap.name}</span></span>
-                    <span className="text-[9px] bg-red-600/80 text-white font-mono px-1.5 py-0.2 rounded-full uppercase tracking-wider">🔒 LOCKED</span>
-                  </div>
-                );
-              })()}
+              {/* Battlefield Map & Target Score Indicators in waiting room */}
+              <div className="flex flex-wrap items-center justify-center gap-2 my-1">
+                {(() => {
+                  const roomMap = getMarvelMap(currentRoom.mapId);
+                  return (
+                    <div
+                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-white bg-white/10 border ${roomMap.accentBorder} shadow-sm`}
+                      title={`สมรภูมิรบที่เลือกไว้: ${roomMap.name} (${roomMap.nameEn}) - ล็อกแล้วไม่สามารถเปลี่ยนได้ในเกม`}
+                    >
+                      <span className="text-sm">{roomMap.icon}</span>
+                      <span>สมรภูมิ: <span className="text-yellow-300 font-extrabold">{roomMap.name}</span></span>
+                      <span className="text-[9px] bg-red-600/80 text-white font-mono px-1.5 py-0.2 rounded-full uppercase tracking-wider">🔒 LOCKED</span>
+                    </div>
+                  );
+                })()}
+
+                <div
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-white bg-amber-950/40 border border-yellow-500/40 shadow-sm"
+                  title="แต้มเป้าหมายสำหรับชัยชนะในเกมนี้"
+                >
+                  <span>🎯 แต้มเป้าหมาย:</span>
+                  <span className="text-yellow-300 font-black text-sm">{currentRoom.targetScore ?? 16} แต้ม</span>
+                </div>
+              </div>
+
+              {/* Host Target Score Quick Adjust */}
+              {isHost && onSetTargetScore && (
+                <div className="flex items-center justify-center gap-1.5 mt-0.5 mb-1 text-[10px] text-white/70">
+                  <span className="font-semibold text-yellow-300/80">ปรับแต้มชนะ:</span>
+                  {[12, 16, 20, 24].map((pts) => (
+                    <button
+                      key={pts}
+                      type="button"
+                      onClick={() => {
+                        soundManager.playButtonClick();
+                        onSetTargetScore(pts);
+                      }}
+                      className={[
+                        'px-2 py-0.5 rounded-lg font-black transition-all cursor-pointer border',
+                        (currentRoom.targetScore ?? 16) === pts
+                          ? 'border-yellow-400 bg-yellow-400 text-black shadow'
+                          : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white',
+                      ].join(' ')}
+                    >
+                      {pts}P
+                    </button>
+                  ))}
+                </div>
+              )}
 
               <p className="text-[10px] text-white/50">
                 แชร์รหัสนี้ให้เพื่อน หรือเพิ่มบอทมาร์เวล AI เข้ามาประลอง (Share code with friends or customize AI Bots)
@@ -799,6 +837,59 @@ export const Lobby: React.FC<LobbyProps> = ({
                 })()}
               </div>
 
+              {/* Target Winning Points Selector (Solo Mode) */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>🎯</span>
+                    <span>แต้มเป้าหมายชัยชนะ (Target Win Points)</span>
+                  </label>
+                  <span className="text-[10px] text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
+                    {targetScore} แต้ม
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-4 gap-1.5">
+                  {[12, 16, 20, 24].map((pts) => (
+                    <button
+                      key={pts}
+                      type="button"
+                      onClick={() => {
+                        soundManager.playButtonClick();
+                        setTargetScore(pts);
+                      }}
+                      className={[
+                        'py-1.5 px-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center',
+                        targetScore === pts
+                          ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow'
+                          : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white font-semibold',
+                      ].join(' ')}
+                    >
+                      <span className="text-xs sm:text-sm font-black">{pts} แต้ม</span>
+                      <span className="text-[8px] opacity-70">
+                        {pts === 12 ? 'เร็ว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
+                  <span className="text-white/50 text-[10px] font-semibold whitespace-nowrap">ปรับละเอียด (10-50):</span>
+                  <input
+                    type="range"
+                    min={10}
+                    max={50}
+                    step={1}
+                    value={targetScore}
+                    onChange={(e) => setTargetScore(Number(e.target.value))}
+                    className="flex-1 accent-yellow-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
+                  />
+                  <span className="font-mono font-black text-yellow-300 text-sm w-7 text-right">
+                    {targetScore}
+                  </span>
+                </div>
+              </div>
+
               <button
                 type="button"
                 onClick={handleSolo}
@@ -861,6 +952,59 @@ export const Lobby: React.FC<LobbyProps> = ({
                     </div>
                   );
                 })()}
+              </div>
+
+              {/* Target Winning Points Selector (Multiplayer Room) */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>🎯</span>
+                    <span>แต้มเป้าหมายชัยชนะ (Target Win Points)</span>
+                  </label>
+                  <span className="text-[10px] text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
+                    {targetScore} แต้ม
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-4 gap-1.5">
+                  {[12, 16, 20, 24].map((pts) => (
+                    <button
+                      key={pts}
+                      type="button"
+                      onClick={() => {
+                        soundManager.playButtonClick();
+                        setTargetScore(pts);
+                      }}
+                      className={[
+                        'py-1.5 px-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center',
+                        targetScore === pts
+                          ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow'
+                          : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white font-semibold',
+                      ].join(' ')}
+                    >
+                      <span className="text-xs sm:text-sm font-black">{pts} แต้ม</span>
+                      <span className="text-[8px] opacity-70">
+                        {pts === 12 ? 'เร็ว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
+                  <span className="text-white/50 text-[10px] font-semibold whitespace-nowrap">ปรับละเอียด (10-50):</span>
+                  <input
+                    type="range"
+                    min={10}
+                    max={50}
+                    step={1}
+                    value={targetScore}
+                    onChange={(e) => setTargetScore(Number(e.target.value))}
+                    className="flex-1 accent-yellow-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
+                  />
+                  <span className="font-mono font-black text-yellow-300 text-sm w-7 text-right">
+                    {targetScore}
+                  </span>
+                </div>
               </div>
 
               <button

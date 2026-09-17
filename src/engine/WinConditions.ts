@@ -78,10 +78,14 @@ export function getEligibleGuardians(
 // ─── Win Condition Checks ─────────────────────────────────────
 
 /**
- * Condition 1: Score must be ≥ 16 (Infinity Points).
+ * Condition 1: Score must be ≥ targetScore (default 16 Infinity Points).
  */
-export function hasEnoughScore(player: Player, holdsAvengersAssemble: boolean = false): boolean {
-  return calculateScore(player, holdsAvengersAssemble) >= WIN_SCORE_THRESHOLD;
+export function hasEnoughScore(
+  player: Player,
+  holdsAvengersAssemble: boolean = false,
+  targetScore: number = WIN_SCORE_THRESHOLD,
+): boolean {
+  return calculateScore(player, holdsAvengersAssemble) >= targetScore;
 }
 
 /**
@@ -101,7 +105,7 @@ export function hasTimeStone(player: Player): boolean {
 
 /**
  * Master win check: All three Infinity Gauntlet conditions must be simultaneously true.
- * 1. Has ≥ 16 Infinity Points
+ * 1. Has ≥ targetScore Infinity Points (default 16)
  * 2. Has all 5 stone bonuses on cards (Yellow, Blue, Orange, Purple, Red)
  * 3. Has 1 Green Time Stone token
  *
@@ -109,8 +113,12 @@ export function hasTimeStone(player: Player): boolean {
  *
  * @returns true if the player has assembled the Infinity Gauntlet
  */
-export function checkWinCondition(player: Player, holdsAvengersAssemble: boolean = false): boolean {
-  return hasEnoughScore(player, holdsAvengersAssemble) && hasAllCrystalColors(player) && hasTimeStone(player);
+export function checkWinCondition(
+  player: Player,
+  holdsAvengersAssemble: boolean = false,
+  targetScore: number = WIN_SCORE_THRESHOLD,
+): boolean {
+  return hasEnoughScore(player, holdsAvengersAssemble, targetScore) && hasAllCrystalColors(player) && hasTimeStone(player);
 }
 
 /**
@@ -119,12 +127,16 @@ export function checkWinCondition(player: Player, holdsAvengersAssemble: boolean
  * If multiple qualify, highest score wins.
  * Tiebreaker: more Tier-3 cards, then fewer owned cards.
  */
-export function resolveWinners(candidates: Player[], avengersAssembleHolder: string | null = null): Player[] {
+export function resolveWinners(
+  candidates: Player[],
+  avengersAssembleHolder: string | null = null,
+  targetScore: number = WIN_SCORE_THRESHOLD,
+): Player[] {
   if (candidates.length === 0) return [];
   if (candidates.length === 1) return candidates;
 
   // Filter for players who completed the Gauntlet requirements
-  const qualifiers = candidates.filter((p) => checkWinCondition(p, p.id === avengersAssembleHolder));
+  const qualifiers = candidates.filter((p) => checkWinCondition(p, p.id === avengersAssembleHolder, targetScore));
   const pool = qualifiers.length > 0 ? qualifiers : candidates;
 
   if (pool.length === 1) return pool;

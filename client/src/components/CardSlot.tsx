@@ -40,6 +40,44 @@ const STONE_NAMES: Record<CrystalColor, string> = {
   gold: 'S.H.I.E.L.D.',
 };
 
+const STONE_EFFECTS: Record<CrystalColor, { color: string; glow: string; glowAlpha: string }> = {
+  ruby: {
+    color: '#ef4444',
+    glow: 'rgba(239, 68, 68, 0.85)',
+    glowAlpha: 'rgba(239, 68, 68, 0.55)',
+  },
+  sapphire: {
+    color: '#3b82f6',
+    glow: 'rgba(59, 130, 246, 0.85)',
+    glowAlpha: 'rgba(59, 130, 246, 0.55)',
+  },
+  obsidian: {
+    color: '#f97316',
+    glow: 'rgba(249, 115, 22, 0.85)',
+    glowAlpha: 'rgba(249, 115, 22, 0.55)',
+  },
+  topaz: {
+    color: '#eab308',
+    glow: 'rgba(234, 179, 8, 0.85)',
+    glowAlpha: 'rgba(234, 179, 8, 0.55)',
+  },
+  amethyst: {
+    color: '#a855f7',
+    glow: 'rgba(168, 85, 247, 0.85)',
+    glowAlpha: 'rgba(168, 85, 247, 0.55)',
+  },
+  emerald: {
+    color: '#10b981',
+    glow: 'rgba(16, 185, 129, 0.85)',
+    glowAlpha: 'rgba(16, 185, 129, 0.55)',
+  },
+  gold: {
+    color: '#e2e8f0',
+    glow: 'rgba(226, 232, 240, 0.85)',
+    glowAlpha: 'rgba(226, 232, 240, 0.55)',
+  },
+};
+
 function computeAffordability(card: Card, player: Player): { canAfford: boolean; goldNeeded: number } {
   let goldNeeded = 0;
   for (const color of ALL_CRYSTAL_COLORS) {
@@ -86,22 +124,45 @@ export const CardSlot: React.FC<CardSlotProps> = ({
   const canReserve = !isReserved && currentPlayer.reservedCards.length < 3;
   const nonZeroCosts = ALL_CRYSTAL_COLORS.filter((c) => (card.cost[c] ?? 0) > 0);
   const [showMobileActions, setShowMobileActions] = useState<boolean>(false);
+  const stoneEffect = STONE_EFFECTS[card.bonusColor] ?? STONE_EFFECTS.ruby;
 
   return (
-    <div
-      className={[
-        'relative artifact-card w-28 h-[136px] rounded-xl border-2 flex flex-col overflow-hidden group select-none transition-all duration-200',
-        TIER_BORDER[card.tier],
-        canAfford && isMyTurn ? 'ring-2 ring-emerald-400 ring-offset-1 ring-offset-black' : '',
-        isMyTurn ? 'cursor-pointer' : '',
-      ].join(' ')}
-      id={`card-${card.id}`}
-      onClick={() => {
-        if (isMyTurn) {
-          setShowMobileActions((prev) => !prev);
-        }
-      }}
-    >
+    <div className="relative group select-none">
+      {/* ── Under-Card Ambient Glow Beam (แสงนีออนสะท้อนใต้การ์ดตามสีเหรียญ) ── */}
+      <div
+        className="absolute -bottom-2 inset-x-2 h-4 rounded-full blur-md opacity-65 group-hover:opacity-100 group-hover:h-5 group-hover:-bottom-2.5 transition-all duration-300 pointer-events-none z-0"
+        style={{
+          backgroundColor: stoneEffect.glow,
+          boxShadow: `0 4px 18px 4px ${stoneEffect.glow}`,
+        }}
+      />
+      {/* Under-Card Center Intense Line */}
+      <div
+        className="absolute -bottom-0.5 inset-x-3.5 h-[2px] rounded-full blur-[1px] opacity-85 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-0"
+        style={{
+          backgroundColor: stoneEffect.color,
+          boxShadow: `0 0 10px 2px ${stoneEffect.color}`,
+        }}
+      />
+
+      {/* ── Card Main Container ── */}
+      <div
+        className={[
+          'relative artifact-card w-28 h-[136px] rounded-xl border-2 flex flex-col overflow-hidden transition-all duration-200 z-10',
+          TIER_BORDER[card.tier],
+          canAfford && isMyTurn ? 'ring-2 ring-emerald-400 ring-offset-1 ring-offset-black' : '',
+          isMyTurn ? 'cursor-pointer' : '',
+        ].join(' ')}
+        style={{
+          boxShadow: `0 10px 22px -4px ${stoneEffect.glowAlpha}`,
+        }}
+        id={`card-${card.id}`}
+        onClick={() => {
+          if (isMyTurn) {
+            setShowMobileActions((prev) => !prev);
+          }
+        }}
+      >
       {/* Fallback gradient background */}
       <div className={`absolute inset-0 bg-gradient-to-b ${TIER_BG[card.tier]} z-0`} />
 
@@ -262,6 +323,17 @@ export const CardSlot: React.FC<CardSlotProps> = ({
           </div>
         </div>
       )}
+
+      {/* Bottom neon base border matching card bonus coin */}
+      <div
+        className="absolute bottom-0 inset-x-0 h-[2.5px] z-20 pointer-events-none opacity-90 group-hover:opacity-100 transition-opacity"
+        style={{
+          backgroundColor: stoneEffect.color,
+          boxShadow: `0 0 10px 2px ${stoneEffect.color}`,
+        }}
+      />
     </div>
+  </div>
   );
 };
+

@@ -585,6 +585,8 @@ export const Board: React.FC<BoardProps> = ({
             <PlayerPanel
               player={myPlayer}
               isMyTurn={isMyTurn}
+              holdsAvengersAssemble={board.avengersAssembleHolder === myPlayer.id}
+              targetScore={state.targetScore ?? 16}
               onBuyCard={handleBuyCard}
               onSendAction={onSendAction}
               onViewCards={(color) => {

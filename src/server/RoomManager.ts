@@ -41,6 +41,7 @@ interface Room {
   maxPlayers: number;
   status: 'waiting' | 'playing' | 'finished';
   mapId: string;
+  targetScore: number;
   // Game state — null until game starts
   gameState: GameState | null;
   // Private decks (never sent to clients)
@@ -88,7 +89,7 @@ export class RoomManager {
 
   // ─── Room Creation ──────────────────────────────────────────
 
-  createRoom(socket: Socket, playerName: string, mapId = 'avengers_tower', avatarUrl?: string): RoomInfo {
+  createRoom(socket: Socket, playerName: string, mapId = 'avengers_tower', avatarUrl?: string, targetScore = 16): RoomInfo {
     const roomId = uuidv4().slice(0, 6).toUpperCase();
     const playerId = uuidv4();
 
@@ -99,6 +100,8 @@ export class RoomManager {
       avatarUrl,
     };
 
+    const validTargetScore = Math.min(Math.max(10, Number(targetScore) || 16), 50);
+
     const room: Room = {
       roomId,
       hostId: playerId,
@@ -106,6 +109,7 @@ export class RoomManager {
       maxPlayers: 4,
       status: 'waiting',
       mapId: mapId || 'avengers_tower',
+      targetScore: validTargetScore,
       gameState: null,
       decks: { tier1: [], tier2: [], tier3: [] },
       lastActivity: Date.now(),
@@ -233,6 +237,7 @@ export class RoomManager {
       delete (rawState as Partial<typeof rawState>)._tier3Deck;
 
       rawState.mapId = room.mapId;
+      rawState.targetScore = room.targetScore ?? 16;
       room.gameState = rawState;
       room.status = 'playing';
       room.lastActivity = Date.now();
@@ -320,8 +325,9 @@ export class RoomManager {
     botNames?: string[],
     mapId?: string,
     avatarUrl?: string,
+    targetScore = 16,
   ): { success: boolean; room?: RoomInfo; error?: string } {
-    const roomInfo = this.createRoom(socket, playerName, mapId, avatarUrl);
+    const roomInfo = this.createRoom(socket, playerName, mapId, avatarUrl, targetScore);
     const room = this.rooms.get(roomInfo.roomId);
     if (!room) return { success: false, error: 'Failed to create room' };
 
@@ -492,6 +498,27 @@ export class RoomManager {
     this.leaveRoom(socket);
   }
 
+  setTargetScore(
+    socket: Socket,
+    targetScore: number,
+  ): { success: boolean; room?: RoomInfo; error?: string } {
+    const roomId = this.socketToRoom.get(socket.id);
+    const playerId = this.socketToPlayer.get(socket.id);
+
+    if (!roomId || !playerId) return { success: false, error: 'Not in a room' };
+    const room = this.rooms.get(roomId);
+    if (!room) return { success: false, error: 'Room not found' };
+    if (room.hostId !== playerId) return { success: false, error: 'Only the host can change target score' };
+    if (room.status !== 'waiting') return { success: false, error: 'Game already in progress' };
+
+    room.targetScore = Math.min(Math.max(10, Number(targetScore) || 16), 50);
+    room.lastActivity = Date.now();
+
+    const roomInfo = this.toRoomInfo(room);
+    this.io.to(roomId).emit('room:updated', roomInfo);
+    return { success: true, room: roomInfo };
+  }
+
   // ─── Private Helpers ────────────────────────────────────────
 
   private toRoomInfo(room: Room): RoomInfo {
@@ -508,6 +535,7 @@ export class RoomManager {
       maxPlayers: room.maxPlayers,
       status: room.status,
       mapId: room.mapId,
+      targetScore: room.targetScore ?? 16,
     };
   }
 }

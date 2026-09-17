@@ -62,9 +62,9 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
 const roomManager = new RoomManager(io);
 
 io.on('connection', (socket) => {
-  socket.on('room:create', ({ playerName, avatarUrl, mapId }, callback) => {
+  socket.on('room:create', ({ playerName, avatarUrl, mapId, targetScore }, callback) => {
     try {
-      const room = roomManager.createRoom(socket, playerName, mapId, avatarUrl);
+      const room = roomManager.createRoom(socket, playerName, mapId, avatarUrl, targetScore);
       callback(room);
     } catch (err) {
       socket.emit('game:error', { message: 'Failed to create room' });
@@ -102,12 +102,21 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('room:createSolo', ({ playerName, avatarUrl, botCount, botNames, mapId }, callback) => {
+  socket.on('room:createSolo', ({ playerName, avatarUrl, botCount, botNames, mapId, targetScore }, callback) => {
     try {
-      const result = roomManager.createSoloRoom(socket, playerName, botCount, botNames, mapId, avatarUrl);
+      const result = roomManager.createSoloRoom(socket, playerName, botCount, botNames, mapId, avatarUrl, targetScore);
       callback(result);
     } catch (err) {
       callback({ success: false, error: 'Failed to create solo room' });
+    }
+  });
+
+  socket.on('room:setTargetScore', ({ targetScore }, callback) => {
+    try {
+      const result = roomManager.setTargetScore(socket, targetScore);
+      callback(result);
+    } catch (err) {
+      callback({ success: false, error: 'Failed to set target score' });
     }
   });
 
