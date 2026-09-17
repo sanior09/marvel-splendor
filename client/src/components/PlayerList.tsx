@@ -7,6 +7,18 @@ import type { Player, CrystalColor } from '@shared/types/game.types';
 import { ALL_CRYSTAL_COLORS } from '@shared/types/game.types';
 import { countAvengersSymbols } from '../../../src/engine/WinConditions';
 import { STONE_NAMES } from './GemToken';
+import marvelAvatarsData from '../data/marvelAvatarsData.json';
+
+const resolvePlayerAvatar = (player: Player): string | undefined => {
+  if (player.avatarUrl) return player.avatarUrl;
+  const lower = player.name.toLowerCase();
+  const avatarMap = marvelAvatarsData as Record<string, string>;
+  if (lower.includes('doom')) return avatarMap['doctor_doom'] || '/images/avatars/doctor_doom.jpg';
+  if (lower.includes('loki')) return avatarMap['loki'] || '/images/avatars/loki.jpg';
+  if (lower.includes('thanos')) return avatarMap['thanos'] || '/images/avatars/thanos.jpg';
+  if (lower.includes('stark') || lower.includes('iron')) return avatarMap['iron_man'] || '/images/avatars/iron_man.jpg';
+  return undefined;
+};
 
 interface PlayerListProps {
   players: Player[];
@@ -87,23 +99,37 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                     isActive ? 'ring-2 ring-yellow-400 ring-offset-1 ring-offset-black' : '',
                   ].join(' ')}
                 >
-                  {player.avatarUrl ? (
-                    <img
-                      src={player.avatarUrl}
-                      alt={player.name}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        if (target.nextElementSibling) {
-                          (target.nextElementSibling as HTMLElement).style.display = 'block';
-                        }
-                      }}
-                      className="w-full h-full object-cover object-center"
-                    />
-                  ) : null}
-                  <span className={player.avatarUrl ? 'hidden' : 'block'}>
-                    {player.isBot ? '🤖' : player.name.charAt(0).toUpperCase()}
-                  </span>
+                {(() => {
+                  const avatarSrc = resolvePlayerAvatar(player);
+                  const isDoom = player.name.toLowerCase().includes('doom');
+                  const fallbackEmoji = isDoom ? '👑' : player.isBot ? '🤖' : player.name.charAt(0).toUpperCase();
+                  return (
+                    <>
+                      {avatarSrc ? (
+                        <img
+                          src={avatarSrc}
+                          alt={player.name}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            const doomBase64 = (marvelAvatarsData as Record<string, string>)['doctor_doom'];
+                            if (isDoom && doomBase64 && target.src !== doomBase64) {
+                              target.src = doomBase64;
+                              return;
+                            }
+                            target.style.display = 'none';
+                            if (target.nextElementSibling) {
+                              (target.nextElementSibling as HTMLElement).style.display = 'block';
+                            }
+                          }}
+                          className="w-full h-full object-cover object-center"
+                        />
+                      ) : null}
+                      <span className={avatarSrc ? 'hidden' : 'block'}>
+                        {fallbackEmoji}
+                      </span>
+                    </>
+                  );
+                })()}
                 </div>
                 {isActive && (
                   <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-ping" />

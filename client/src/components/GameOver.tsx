@@ -2,6 +2,18 @@ import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { Player } from '@shared/types/game.types';
 import { soundManager } from '../utils/soundManager';
+import marvelAvatarsData from '../data/marvelAvatarsData.json';
+
+const resolvePlayerAvatar = (player: Player): string | undefined => {
+  if (player.avatarUrl) return player.avatarUrl;
+  const lower = player.name.toLowerCase();
+  const avatarMap = marvelAvatarsData as Record<string, string>;
+  if (lower.includes('doom')) return avatarMap['doctor_doom'] || '/images/avatars/doctor_doom.jpg';
+  if (lower.includes('loki')) return avatarMap['loki'] || '/images/avatars/loki.jpg';
+  if (lower.includes('thanos')) return avatarMap['thanos'] || '/images/avatars/thanos.jpg';
+  if (lower.includes('stark') || lower.includes('iron')) return avatarMap['iron_man'] || '/images/avatars/iron_man.jpg';
+  return undefined;
+};
 
 interface GameOverProps {
   winners: string[];
@@ -76,13 +88,16 @@ export const GameOver: React.FC<GameOverProps> = ({ winners, players, myPlayerId
                 >
                   <span className="text-xl w-8">{medals[rank] ?? '—'}</span>
                   <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20 shrink-0 bg-white/10 flex items-center justify-center text-xs font-bold text-white shadow">
-                    {player.avatarUrl ? (
-                      <img src={player.avatarUrl} alt={player.name} className="w-full h-full object-cover object-center" />
-                    ) : player.isBot ? (
-                      '🤖'
-                    ) : (
-                      player.name.charAt(0).toUpperCase()
-                    )}
+                    {(() => {
+                      const avatarSrc = resolvePlayerAvatar(player);
+                      const isDoom = player.name.toLowerCase().includes('doom');
+                      const fallbackEmoji = isDoom ? '👑' : player.isBot ? '🤖' : player.name.charAt(0).toUpperCase();
+                      return avatarSrc ? (
+                        <img src={avatarSrc} alt={player.name} className="w-full h-full object-cover object-center" />
+                      ) : (
+                        fallbackEmoji
+                      );
+                    })()}
                   </div>
                   <div className="flex-1 text-left">
                     <span

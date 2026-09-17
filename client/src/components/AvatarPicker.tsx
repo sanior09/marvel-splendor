@@ -35,6 +35,7 @@ export const MARVEL_AVATARS: AvatarOption[] = [
   { id: 'wolverine',       name: 'Wolverine',       src: (marvelAvatarsData as Record<string, string>)['wolverine'] || '/images/avatars/wolverine.jpg',       color: 'ring-amber-500' },
   { id: 'groot',           name: 'Groot',           src: (marvelAvatarsData as Record<string, string>)['groot'] || '/images/avatars/groot.jpg',           color: 'ring-emerald-700' },
   { id: 'rocket',          name: 'Rocket',          src: (marvelAvatarsData as Record<string, string>)['rocket'] || '/images/avatars/rocket.jpg',          color: 'ring-orange-500' },
+  { id: 'doctor_doom',     name: 'Doctor Doom',     src: (marvelAvatarsData as Record<string, string>)['doctor_doom'] || '/images/avatars/doctor_doom.jpg', color: 'ring-emerald-600' },
 ];
 
 const FALLBACK_COLORS: Record<string, string> = {
@@ -48,6 +49,7 @@ const FALLBACK_COLORS: Record<string, string> = {
   ant_man: 'from-red-700 to-red-900', war_machine: 'from-zinc-600 to-zinc-900',
   deadpool: 'from-red-600 to-neutral-900', wolverine: 'from-amber-500 to-blue-700',
   groot: 'from-emerald-800 to-amber-900', rocket: 'from-orange-600 to-slate-800',
+  doctor_doom: 'from-emerald-700 to-green-950',
 };
 
 const FALLBACK_EMOJI: Record<string, string> = {
@@ -56,6 +58,7 @@ const FALLBACK_EMOJI: Record<string, string> = {
   scarlet_witch: '🔮', black_widow: '🕸️', hawkeye: '🎯', loki: '🐍',
   captain_marvel: '⭐', vision: '🤖', ant_man: '🐜', war_machine: '⚙️',
   deadpool: '⚔️', wolverine: '🐺', groot: '🌳', rocket: '🦝',
+  doctor_doom: '👑',
 };
 
 interface HeroAvatarImgProps {

@@ -271,23 +271,31 @@ export class RoomManager {
 
     const botId = uuidv4();
     const defaultBots = [
-      { name: 'Tony Stark AI', personality: 'stark', avatarUrl: '/images/avatars/iron_man.jpg' },
-      { name: 'Ultron', personality: 'ultron', avatarUrl: '/images/avatars/ultron.jpg' },
+      { name: 'Doctor Doom', personality: 'stark', avatarUrl: '/images/avatars/doctor_doom.jpg' },
+      { name: 'Loki', personality: 'ultron', avatarUrl: '/images/avatars/loki.jpg' },
       { name: 'Thanos Bot', personality: 'thanos', avatarUrl: '/images/avatars/thanos.jpg' },
-      { name: 'F.R.I.D.A.Y.', personality: 'friday', avatarUrl: '/images/avatars/spider_man.jpg' },
+      { name: 'Tony Stark AI', personality: 'stark', avatarUrl: '/images/avatars/iron_man.jpg' },
     ];
     const existingNames = new Set(room.sessions.map((s) => s.name));
     const nextDefault = defaultBots.find((b) => !existingNames.has(b.name)) ?? {
       name: `Marvel AI ${room.sessions.length}`,
       personality: 'balanced',
-      avatarUrl: '/images/avatars/doctor_strange.jpg',
+      avatarUrl: '/images/avatars/doctor_doom.jpg',
     };
+
+    const finalBotName = botName ?? nextDefault.name;
+    const resolvedAvatarUrl = avatarUrl ??
+      (finalBotName.toLowerCase().includes('doom') ? '/images/avatars/doctor_doom.jpg' :
+       finalBotName.toLowerCase().includes('loki') ? '/images/avatars/loki.jpg' :
+       finalBotName.toLowerCase().includes('thanos') ? '/images/avatars/thanos.jpg' :
+       finalBotName.toLowerCase().includes('stark') || finalBotName.toLowerCase().includes('iron') ? '/images/avatars/iron_man.jpg' :
+       nextDefault.avatarUrl);
 
     room.sessions.push({
       id: botId,
-      name: botName ?? nextDefault.name,
+      name: finalBotName,
       socketId: `bot_${botId}`,
-      avatarUrl: avatarUrl ?? nextDefault.avatarUrl,
+      avatarUrl: resolvedAvatarUrl,
       isBot: true,
       botPersonality: personality ?? nextDefault.personality,
     });
