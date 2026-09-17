@@ -32,6 +32,7 @@ interface PlayerSession {
   avatarUrl?: string;
   isBot?: boolean;
   botPersonality?: string;
+  isReady?: boolean;
 }
 
 interface Room {
@@ -263,6 +264,15 @@ export class RoomManager {
     if (room.hostId !== playerId) return { success: false, error: 'Only the host can start the game' };
     if (room.sessions.length < 2) return { success: false, error: 'Need at least 2 players' };
     if (room.status !== 'waiting') return { success: false, error: 'Game already started' };
+
+    // Check if all non-host human players are ready
+    const unreadyPlayers = room.sessions.filter(
+      (s) => s.id !== room.hostId && !s.isBot && !s.isReady
+    );
+    if (unreadyPlayers.length > 0) {
+      const names = unreadyPlayers.map((p) => p.name).join(', ');
+      return { success: false, error: `ยังเริ่มเกมไม่ได้ เนื่องจากรอผู้เล่นกดพร้อม: ${names}` };
+    }
 
     const playerIds = room.sessions.map((s) => s.id);
     const playerNames = room.sessions.map((s) => s.name);
@@ -583,6 +593,30 @@ export class RoomManager {
     return { success: true, room: roomInfo };
   }
 
+  // ─── Player Ready Toggle ────────────────────────────────────
+
+  toggleReady(socket: Socket): { success: boolean; room?: RoomInfo; error?: string } {
+    const roomId = this.socketToRoom.get(socket.id);
+    const playerId = this.socketToPlayer.get(socket.id);
+
+    if (!roomId || !playerId) return { success: false, error: 'Not in a room' };
+    const room = this.rooms.get(roomId);
+    if (!room) return { success: false, error: 'Room not found' };
+    if (room.status !== 'waiting') return { success: false, error: 'Game already in progress' };
+
+    const session = room.sessions.find((s) => s.id === playerId);
+    if (!session) return { success: false, error: 'Player session not found' };
+
+    // Toggle ready status
+    session.isReady = !session.isReady;
+    room.lastActivity = Date.now();
+
+    const roomInfo = this.toRoomInfo(room);
+    this.io.to(roomId).emit('room:updated', roomInfo);
+    console.log(`[RoomManager] Player ${session.name} in room ${roomId} toggled ready: ${session.isReady}`);
+    return { success: true, room: roomInfo };
+  }
+
   // ─── Private Helpers ────────────────────────────────────────
 
   private toRoomInfo(room: Room): RoomInfo {
@@ -595,6 +629,7 @@ export class RoomManager {
         avatarUrl: s.avatarUrl,
         isBot: s.isBot,
         botPersonality: s.botPersonality,
+        isReady: s.id === room.hostId ? true : (s.isBot ? true : Boolean(s.isReady)),
       })),
       maxPlayers: room.maxPlayers,
       status: room.status,

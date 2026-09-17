@@ -29,6 +29,7 @@ interface LobbyProps {
   onJoinRoom: (roomId: string, playerName: string, callback: (success: boolean, err?: string) => void, avatarUrl?: string) => void;
   onLeaveRoom?: () => void;
   onStartGame: () => void;
+  onToggleReady?: () => void;
   onAddBot: (botName?: string, personality?: string, callback?: (success: boolean) => void, avatarUrl?: string) => void;
   onRemoveBot: (botId: string) => void;
   onSetTargetScore?: (targetScore: number) => void;
@@ -83,6 +84,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   onJoinRoom,
   onLeaveRoom,
   onStartGame,
+  onToggleReady,
   onAddBot,
   onRemoveBot,
   onSetTargetScore,
@@ -130,8 +132,14 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [newBotPersonality, setNewBotPersonality] = useState('stark');
 
   const isHost = currentRoom?.hostId === myPlayerId;
-  const canStart = isHost && (currentRoom?.players.length ?? 0) >= 2;
+  const nonHostHumans = currentRoom?.players.filter((p) => p.id !== currentRoom.hostId && !p.isBot) ?? [];
+  const unreadyHumans = nonHostHumans.filter((p) => !p.isReady);
+  const allReady = nonHostHumans.length === 0 || unreadyHumans.length === 0;
+  const canStart = isHost && (currentRoom?.players.length ?? 0) >= 2 && allReady;
   const canAddMoreBots = isHost && (currentRoom?.players.length ?? 0) < 4;
+
+  const myPlayerInRoom = currentRoom?.players.find((p) => p.id === myPlayerId);
+  const isMeReady = Boolean(myPlayerInRoom?.isReady);
 
   useEffect(() => {
     if (!currentRoom) {
@@ -376,9 +384,23 @@ export const Lobby: React.FC<LobbyProps> = ({
                       {p.isBot && <span className="text-[8px] text-purple-300 block">🤖 บอทมาร์เวล (Marvel AI Bot)</span>}
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
-                      {p.id === currentRoom.hostId && (
+                      {p.id === currentRoom.hostId ? (
                         <span className="text-[9px] font-bold text-yellow-400 bg-yellow-400/10 px-1.5 py-0.5 rounded-full border border-yellow-400/30">
                           👑 หัวหน้าห้อง (Host)
+                        </span>
+                      ) : p.isBot ? (
+                        <span className="text-[9px] font-bold text-emerald-300 bg-emerald-500/20 px-1.5 py-0.5 rounded-full border border-emerald-400/30 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                          พร้อมเสมอ (Ready)
+                        </span>
+                      ) : p.isReady ? (
+                        <span className="text-[9px] font-bold text-emerald-300 bg-emerald-500/20 px-1.5 py-0.5 rounded-full border border-emerald-400/30 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                          ✅ พร้อมเล่น (Ready)
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-medium text-amber-300/80 bg-amber-500/10 px-1.5 py-0.5 rounded-full border border-amber-400/20 flex items-center gap-1">
+                          ⏳ ยังไม่พร้อม (Not Ready)
                         </span>
                       )}
                       {p.id === myPlayerId && p.id !== currentRoom.hostId && (
@@ -440,33 +462,87 @@ export const Lobby: React.FC<LobbyProps> = ({
               </div>
             )}
 
-            {/* Status message */}
+            {/* Non-Host Ready Toggle Controls */}
             {!isHost && (
-              <p className="text-center text-white/60 text-xs animate-pulse">
-                กำลังรอหัวหน้าห้องเริ่มเกม... (Waiting for host to launch)
-              </p>
+              <div className="space-y-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundManager.playButtonClick();
+                    onToggleReady?.();
+                  }}
+                  className={[
+                    'w-full py-3.5 rounded-xl font-black font-display text-sm transition-all duration-200 uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:-translate-y-0.5',
+                    isMeReady
+                      ? 'bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white border border-amber-400/40 shadow-amber-950/40'
+                      : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border border-emerald-400/40 shadow-emerald-950/40 animate-pulse',
+                  ].join(' ')}
+                >
+                  {isMeReady ? (
+                    <>
+                      <span>✕</span>
+                      <span>ยกเลิกพร้อมเล่น (Cancel Ready)</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-base">⚡</span>
+                      <span>กดพร้อมเล่น (I'm Ready!)</span>
+                    </>
+                  )}
+                </button>
+                {isMeReady ? (
+                  <p className="text-center text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1.5">
+                    <span>✨</span> คุณพร้อมแล้ว! กำลังรอหัวหน้าห้องกดเริ่มเกม...
+                  </p>
+                ) : (
+                  <p className="text-center text-amber-300/90 text-xs flex items-center justify-center gap-1.5">
+                    <span>⚠️</span> กรุณากดปุ่มเพื่อส่งสัญญาณให้หัวหน้าห้องทราบว่าคุณพร้อม
+                  </p>
+                )}
+              </div>
             )}
 
-            {/* Start button */}
+            {/* Host Start Game Controls */}
             {isHost && (
-              <button
-                type="button"
-                onClick={() => {
-                  soundManager.playCardBuy(3);
-                  onStartGame();
-                }}
-                disabled={!canStart}
-                className={[
-                  'w-full py-3 rounded-xl font-black font-display text-sm transition-all duration-200 uppercase tracking-wider',
-                  canStart
-                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg hover:-translate-y-0.5 cursor-pointer'
-                    : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5',
-                ].join(' ')}
-              >
-                {canStart
-                  ? '⚡ เริ่มเกม Splendor: Marvel (Start Game)'
-                  : `ต้องการอีก ${2 - (currentRoom?.players.length ?? 0)} คนหรือบอท (Need More Players)`}
-              </button>
+              <div className="space-y-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!canStart) {
+                      soundManager.playError();
+                      return;
+                    }
+                    soundManager.playCardBuy(3);
+                    onStartGame();
+                  }}
+                  disabled={!canStart}
+                  className={[
+                    'w-full py-3 rounded-xl font-black font-display text-sm transition-all duration-200 uppercase tracking-wider',
+                    canStart
+                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg hover:-translate-y-0.5 cursor-pointer'
+                      : 'bg-white/5 text-white/40 cursor-not-allowed border border-white/5',
+                  ].join(' ')}
+                >
+                  {(currentRoom?.players.length ?? 0) < 2
+                    ? `ต้องการอีก ${2 - (currentRoom?.players.length ?? 0)} คนหรือบอท (Need More Players)`
+                    : !allReady
+                    ? `⏳ รอผู้เล่นกดพร้อม (${nonHostHumans.length - unreadyHumans.length}/${nonHostHumans.length} คนพร้อม)`
+                    : '⚡ เริ่มเกม Splendor: Marvel (Start Game)'}
+                </button>
+
+                {(currentRoom?.players.length ?? 0) >= 2 && !allReady && (
+                  <p className="text-center text-amber-400/90 text-xs flex items-center justify-center gap-1">
+                    <span>⏳</span>
+                    <span>รอผู้เล่น: <span className="font-bold text-amber-300">{unreadyHumans.map((p) => p.name).join(', ')}</span> กดยืนยันพร้อมเล่น</span>
+                  </p>
+                )}
+                {canStart && (
+                  <p className="text-center text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1">
+                    <span>✨</span>
+                    <span>ทุกคนพร้อมเข้าสู่สมรภูมิแล้ว! หัวหน้าห้องเริ่มเกมได้เลย</span>
+                  </p>
+                )}
+              </div>
             )}
           </div>
 

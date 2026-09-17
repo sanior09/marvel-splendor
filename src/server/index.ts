@@ -120,6 +120,15 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('room:toggleReady', (callback) => {
+    try {
+      const result = roomManager.toggleReady(socket);
+      callback?.(result);
+    } catch (err) {
+      callback?.({ success: false, error: 'Failed to toggle ready status' });
+    }
+  });
+
   socket.on('room:listAll', (callback) => {
     callback(roomManager.listAllRooms());
   });

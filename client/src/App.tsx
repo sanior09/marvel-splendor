@@ -69,6 +69,7 @@ function GameRouter(): React.ReactElement {
     joinRoom,
     leaveRoom,
     startGame,
+    toggleReady,
     addBot,
     removeBot,
     sendAction,
@@ -157,6 +158,7 @@ function GameRouter(): React.ReactElement {
             onJoinRoom={handleJoinRoom}
             onLeaveRoom={handleLeave}
             onStartGame={startGame}
+            onToggleReady={toggleReady}
             onAddBot={addBot}
             onRemoveBot={removeBot}
             onSetTargetScore={setTargetScore}

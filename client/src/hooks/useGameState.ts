@@ -21,6 +21,7 @@ export interface UseGameStateReturn {
   joinRoom: (roomId: string, playerName: string, callback: (success: boolean, error?: string, room?: RoomInfo) => void, avatarUrl?: string) => void;
   leaveRoom: () => void;
   startGame: () => void;
+  toggleReady: () => void;
   addBot: (botName?: string, personality?: string, callback?: (success: boolean) => void, avatarUrl?: string) => void;
   removeBot: (botId: string, callback?: (success: boolean) => void) => void;
   sendAction: (action: GameAction) => void;
@@ -144,6 +145,14 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
     socket.emit('game:start');
   }, [socket]);
 
+  const toggleReady = useCallback(() => {
+    socket.emit('room:toggleReady', (result) => {
+      if (result && !result.success && result.error) {
+        setError(result.error);
+      }
+    });
+  }, [socket]);
+
   const addBot = useCallback(
     (botName?: string, personality?: string, callback?: (success: boolean) => void, avatarUrl?: string) => {
       socket.emit('room:addBot', { botName, personality, avatarUrl }, (result) => {
@@ -203,6 +212,7 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
     joinRoom,
     leaveRoom,
     startGame,
+    toggleReady,
     addBot,
     removeBot,
     sendAction,

@@ -220,6 +220,7 @@ export interface RoomPlayer {
   avatarUrl?: string;
   isBot?: boolean;
   botPersonality?: string;
+  isReady?: boolean;
 }
 
 export interface RoomInfo {
@@ -246,6 +247,7 @@ export interface ClientToServerEvents {
   'room:create': (payload: { playerName: string; avatarUrl?: string; mapId?: string; targetScore?: number }, callback: (room: RoomInfo) => void) => void;
   'room:join': (payload: { roomId: string; playerName: string; avatarUrl?: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'room:leave': () => void;
+  'room:toggleReady': (callback?: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'room:addBot': (payload: { botName?: string; personality?: string; avatarUrl?: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'room:removeBot': (payload: { botId: string }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'room:createSolo': (payload: { playerName: string; avatarUrl?: string; botCount: number; botNames?: string[]; mapId?: string; targetScore?: number }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
