@@ -71,11 +71,11 @@ export class RoomManager {
 
   private cleanupInactiveRooms(): void {
     const now = Date.now();
-    const INACTIVITY_LIMIT_MS = 5.5 * 60 * 1000;
+    const INACTIVITY_LIMIT_MS = 4 * 60 * 1000;
 
     for (const [roomId, room] of this.rooms.entries()) {
       if (now - (room.lastActivity ?? now) > INACTIVITY_LIMIT_MS) {
-        console.log(`[RoomManager] Closing abandoned room ${roomId} due to 5.5min inactivity`);
+        console.log(`[RoomManager] Closing abandoned room ${roomId} due to 4min inactivity`);
         for (const session of room.sessions) {
           if (!session.isBot) {
             this.socketToRoom.delete(session.socketId);
@@ -172,22 +172,78 @@ export class RoomManager {
     if (!room) return;
 
     const playerId = this.socketToPlayer.get(socket.id);
+
+    // ─── Active Game AFK / Disconnect Takeover ───────────────
+    // If game is in progress, convert player to an AI Bot so the game continues smoothly!
+    if (room.status === 'playing' && room.gameState && room.gameState.phase !== 'finished') {
+      const session = room.sessions.find((s) => s.socketId === socket.id);
+      const otherHumans = room.sessions.filter((s) => s.socketId !== socket.id && !s.isBot);
+
+      // If no humans are left in the entire room, close the room
+      if (otherHumans.length === 0) {
+        this.socketToRoom.delete(socket.id);
+        this.socketToPlayer.delete(socket.id);
+        socket.leave(roomId);
+        this.rooms.delete(roomId);
+        console.log(`[RoomManager] Active room ${roomId} deleted (all humans left)`);
+        return;
+      }
+
+      if (session) {
+        session.isBot = true;
+        session.socketId = `bot_${session.id}`;
+        if (!session.name.includes('(AI)')) {
+          session.name = `${session.name} (AI)`;
+        }
+        session.botPersonality = session.botPersonality || 'balanced';
+
+        const gamePlayer = room.gameState.players.find((p) => p.id === session.id);
+        if (gamePlayer) {
+          gamePlayer.isBot = true;
+          if (!gamePlayer.name.includes('(AI)')) {
+            gamePlayer.name = `${gamePlayer.name} (AI)`;
+          }
+          gamePlayer.botPersonality = session.botPersonality;
+        }
+
+        // Transfer host if host was the one who left
+        if (room.hostId === playerId) {
+          room.hostId = otherHumans[0].id;
+        }
+
+        this.socketToRoom.delete(socket.id);
+        this.socketToPlayer.delete(socket.id);
+        socket.leave(roomId);
+
+        room.lastActivity = Date.now();
+        this.io.to(roomId).emit('room:updated', this.toRoomInfo(room));
+        this.broadcastGameState(roomId);
+        console.log(`[RoomManager] Player ${playerId} (${session.name}) converted to AI Bot in room ${roomId}`);
+
+        // If it was this player's turn, trigger bot turn execution immediately!
+        this.checkBotTurn(roomId);
+        return;
+      }
+    }
+
+    // ─── Waiting Room or Finished Game: Normal Removal ────────
     room.sessions = room.sessions.filter((s) => s.socketId !== socket.id);
 
     this.socketToRoom.delete(socket.id);
     this.socketToPlayer.delete(socket.id);
     socket.leave(roomId);
 
-    // Clean up empty rooms
-    if (room.sessions.length === 0) {
+    // Clean up empty rooms or rooms where only bots remain
+    if (room.sessions.length === 0 || room.sessions.every((s) => s.isBot)) {
       this.rooms.delete(roomId);
-      console.log(`[RoomManager] Room ${roomId} deleted (empty)`);
+      console.log(`[RoomManager] Room ${roomId} deleted (empty or only bots left)`);
       return;
     }
 
     // Transfer host if host left
     if (room.hostId === playerId && room.sessions.length > 0) {
-      room.hostId = room.sessions[0].id;
+      const nextHuman = room.sessions.find((s) => !s.isBot);
+      room.hostId = nextHuman ? nextHuman.id : room.sessions[0].id;
     }
 
     this.io.to(roomId).emit('room:updated', this.toRoomInfo(room));

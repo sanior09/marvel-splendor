@@ -78,15 +78,15 @@ function GameRouter(): React.ReactElement {
 
   const isInRoomOrGame = Boolean(myPlayerId && (gameState || roomInfo));
 
-  // Auto-kick when idle for 5 minutes without any activity/moves
+  // Auto-kick / Bot takeover when idle for 3 minutes without any activity/moves
   const handleInactivityTimeout = useCallback(() => {
     leaveRoom();
     setMyPlayerId(null);
-    setAfkNotice('คุณถูกออกจากห้องอัตโนมัติ เนื่องจากไม่มีการเคลื่อนไหวหรือไม่ได้เล่นเกิน 5 นาที (Auto-kicked due to 5 minutes of inactivity)');
+    setAfkNotice('คุณถูกออกจากห้องอัตโนมัติเนื่องจากไม่มีการเคลื่อนไหวเกิน 3 นาที โดยระบบได้ส่งบอท AI เข้าเล่นแทนเรียบร้อยแล้ว (Auto-replaced by AI Bot due to 3 minutes of inactivity)');
   }, [leaveRoom]);
 
   const { remainingSeconds, isWarning, resetTimer } = useInactivityTimeout({
-    timeoutMs: 5 * 60 * 1000, // 5 minutes
+    timeoutMs: 3 * 60 * 1000, // 3 minutes
     warningThresholdMs: 60 * 1000, // 60 seconds warning grace period
     enabled: isInRoomOrGame,
     onTimeout: handleInactivityTimeout,

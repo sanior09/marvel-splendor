@@ -5,7 +5,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface UseInactivityTimeoutOptions {
-  /** Inactivity timeout in milliseconds (default: 5 minutes = 300,000ms) */
+  /** Inactivity timeout in milliseconds (default: 3 minutes = 180,000ms) */
   timeoutMs?: number;
   /** Warning threshold in milliseconds before timeout (default: 60 seconds = 60,000ms) */
   warningThresholdMs?: number;
@@ -25,7 +25,7 @@ interface UseInactivityTimeoutReturn {
 }
 
 export function useInactivityTimeout({
-  timeoutMs = 5 * 60 * 1000, // 5 minutes
+  timeoutMs = 3 * 60 * 1000, // 3 minutes
   warningThresholdMs = 60 * 1000, // 60 seconds
   enabled,
   onTimeout,

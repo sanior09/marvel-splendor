@@ -45,7 +45,7 @@ export const InactivityWarningModal: React.FC<InactivityWarningModalProps> = ({
             เตือนความไม่เคลื่อนไหว (AFK Alert)
           </h3>
           <p className="text-white/70 text-xs sm:text-sm">
-            คุณไม่มีการเคลื่อนไหวหรือเล่นเกมเกือบ 5 นาที ระบบจะออกจากห้องอัตโนมัติในอีก:
+            คุณไม่มีการเคลื่อนไหวเกือบ 3 นาที ระบบจะให้บอท AI เข้ามาเล่นแทนคุณอัตโนมัติในอีก:
           </p>
         </div>
 
