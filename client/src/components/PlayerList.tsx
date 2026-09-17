@@ -12,6 +12,7 @@ interface PlayerListProps {
   players: Player[];
   currentPlayerIndex: number;
   myPlayerId: string;
+  targetScore?: number;
   onSelectPlayer?: (player: Player) => void;
 }
 
@@ -45,6 +46,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
   players,
   currentPlayerIndex,
   myPlayerId,
+  targetScore = 16,
   onSelectPlayer,
 }) => {
   return (
@@ -53,7 +55,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
         <h3 className="font-display text-[11px] font-bold text-white/80 uppercase tracking-wider flex items-center gap-1">
           <span>ผู้เล่นในเกม (Marvel Rivals)</span>
         </h3>
-        <span className="text-[9px] text-white/50 uppercase font-semibold">ชนะ (Win): 16 PTS</span>
+        <span className="text-[9px] text-white/50 uppercase font-semibold">ชนะ (Win): {targetScore} PTS</span>
       </div>
       <div className="divide-y divide-white/5">
         {players.map((player, index) => {

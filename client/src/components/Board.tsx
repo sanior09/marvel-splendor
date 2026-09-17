@@ -445,7 +445,7 @@ export const Board: React.FC<BoardProps> = ({
 
                   <div className="text-center leading-none">
                     <span className="font-black text-[10.5px] text-white drop-shadow leading-none">
-                      ชนะ (WIN): 16 PTS
+                      ชนะ (WIN): {state.targetScore ?? 16} PTS
                     </span>
                     <div className="text-[6.5px] text-yellow-100/90 font-bold uppercase tracking-tight">
                       โบนัส 5 สี + 🟢 Time Stone
@@ -575,6 +575,7 @@ export const Board: React.FC<BoardProps> = ({
               players={players}
               currentPlayerIndex={currentPlayerIndex}
               myPlayerId={myPlayerId}
+              targetScore={state.targetScore ?? 16}
               onSelectPlayer={(p) => {
                 setHeroModalColor('all');
                 setHeroModalPlayer(p);
