@@ -106,7 +106,15 @@ export const Lobby: React.FC<LobbyProps> = ({
   onLogout,
   onResumeRoom,
 }) => {
-  const [playerName, setPlayerName] = useState('');
+  const [playerName, setPlayerName] = useState(userProfile?.username || '');
+
+  // Pre-fill with logged-in username automatically; user can click and edit anytime
+  useEffect(() => {
+    if (userProfile?.username && !playerName) {
+      setPlayerName(userProfile.username);
+    }
+  }, [userProfile?.username]);
+
   const [joinCode, setJoinCode] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -163,7 +171,8 @@ export const Lobby: React.FC<LobbyProps> = ({
   }, [currentRoom, onListRooms]);
 
   const handleCreate = (): void => {
-    if (!playerName.trim()) {
+    const finalName = playerName.trim() || userProfile?.username || '';
+    if (!finalName) {
       soundManager.playError();
       setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
       document.getElementById('player-name')?.focus();
@@ -172,11 +181,12 @@ export const Lobby: React.FC<LobbyProps> = ({
     soundManager.playButtonClick();
     setIsLoading(true);
     setError('');
-    onCreateRoom(playerName.trim(), () => setIsLoading(false), selectedMapId, avatarUrl || undefined, targetScore);
+    onCreateRoom(finalName, () => setIsLoading(false), selectedMapId, avatarUrl || undefined, targetScore);
   };
 
   const handleSolo = (): void => {
-    if (!playerName.trim()) {
+    const finalName = playerName.trim() || userProfile?.username || '';
+    if (!finalName) {
       soundManager.playError();
       setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
       document.getElementById('player-name')?.focus();
@@ -188,12 +198,13 @@ export const Lobby: React.FC<LobbyProps> = ({
     const selectedBotNames = botNames.slice(0, botCount).map((name, idx) => {
       return name.trim() || POPULAR_MARVEL_BOTS[idx]?.name || `Marvel AI ${idx + 1}`;
     });
-    onCreateSolo(playerName.trim(), botCount, selectedBotNames, selectedMapId, avatarUrl || undefined, targetScore);
+    onCreateSolo(finalName, botCount, selectedBotNames, selectedMapId, avatarUrl || undefined, targetScore);
   };
 
   const handleJoin = (roomId?: string): void => {
     const code = (roomId ?? joinCode).trim().toUpperCase();
-    if (!playerName.trim()) {
+    const finalName = playerName.trim() || userProfile?.username || '';
+    if (!finalName) {
       soundManager.playError();
       setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
       document.getElementById('player-name')?.focus();
@@ -207,7 +218,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     soundManager.playButtonClick();
     setIsLoading(true);
     setError('');
-    onJoinRoom(code, playerName.trim(), (success, err) => {
+    onJoinRoom(code, finalName, (success, err) => {
       setIsLoading(false);
       if (!success) {
         soundManager.playError();
@@ -736,9 +747,27 @@ export const Lobby: React.FC<LobbyProps> = ({
         <div className="glass-strong rounded-2xl p-3.5 sm:p-6 max-w-lg w-full space-y-3 sm:space-y-3.5 border border-white/10 shadow-2xl">
           {/* Player name + Avatar */}
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-white/80 block mb-1.5">
-              ชื่อฮีโร่ของคุณ (Your Hero Name)
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label htmlFor="player-name" className="text-xs font-bold uppercase tracking-wider text-white/80">
+                ชื่อฮีโร่ของคุณ (Your Hero Name)
+              </label>
+              {userProfile?.username && (
+                <span className="text-[10px] font-semibold flex items-center gap-1">
+                  {playerName.trim() === userProfile.username ? (
+                    <span className="text-amber-400">✨ ดึงชื่อจากบัญชีอัตโนมัติ (คลิกเพื่อแก้ไข)</span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setPlayerName(userProfile.username)}
+                      className="text-white/40 hover:text-amber-300 underline cursor-pointer transition-colors"
+                      title="กดเพื่อรีเซ็ตกลับเป็นชื่อบัญชี"
+                    >
+                      ↺ คืนค่าเป็น {userProfile.username}
+                    </button>
+                  )}
+                </span>
+              )}
+            </div>
             <div className="flex items-center gap-2.5">
               {/* Avatar button */}
               <button
@@ -769,7 +798,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                   if (error) setError('');
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && (activeTab === 'solo' ? handleSolo() : handleCreate())}
-                placeholder="เช่น Iron Man, Thor, Spider-Man..."
+                placeholder={userProfile?.username ? `ชื่อฮีโร่ (เริ่มต้น: ${userProfile.username})` : 'เช่น Iron Man, Thor, Spider-Man...'}
                 maxLength={20}
                 className={`flex-1 bg-white/5 border rounded-xl px-3.5 py-2.5 text-white placeholder-white/30 focus:outline-none transition-all font-medium text-sm ${
                   error
