@@ -40,36 +40,47 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
-        className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${
+        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${
           isOwner
-            ? 'border-amber-400/60 shadow-[0_0_15px_rgba(255,215,0,0.4)] hover:shadow-[0_0_22px_rgba(255,215,0,0.6)]'
+            ? 'border-amber-400/60 shadow-[0_0_15px_rgba(255,215,0,0.4)] hover:shadow-[0_0_22px_rgba(255,0,128,0.6)]'
             : 'border-white/15 hover:border-white/30'
         }`}
         style={{
           background: isOwner
-            ? 'linear-gradient(135deg, rgba(30, 20, 5, 0.92) 0%, rgba(15, 12, 5, 0.95) 100%)'
+            ? 'linear-gradient(135deg, rgba(255,0,128,0.18) 0%, rgba(255,215,0,0.18) 100%)'
             : 'rgba(255,255,255,0.06)',
         }}
       >
-        <span className={`text-lg leading-none ${isOwner ? 'animate-bounce' : ''}`}>
+        <span className={`text-base leading-none ${isOwner ? 'animate-bounce' : ''}`}>
           {profile.rank.icon}
         </span>
         <div className="text-left">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             <span className="text-white text-xs font-black leading-tight tracking-wide">
               {profile.username}
             </span>
             {isOwner && (
-              <span className="text-[9px] px-1.5 py-0.2 rounded bg-gradient-to-r from-amber-400 to-pink-500 text-black font-black uppercase leading-none shadow-sm">
+              <span className="text-[9px] px-1 py-0.2 rounded bg-gradient-to-r from-amber-500 to-pink-500 text-black font-extrabold uppercase leading-none shadow-sm">
                 CREATOR
               </span>
             )}
           </div>
-          <div className="mt-0.5">
-            <RankBadge rank={profile.rank} size="sm" />
+          <div
+            className="text-[10px] font-black leading-tight tracking-wide"
+            style={
+              isOwner
+                ? {
+                    background: 'linear-gradient(90deg, #ffd700, #ff007f)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }
+                : { color: profile.rank.color || 'rgba(255,255,255,0.6)' }
+            }
+          >
+            {profile.rank.name}
           </div>
         </div>
-        <div className="text-white/40 text-xs ml-1">{expanded ? '▲' : '▼'}</div>
+        <div className="text-white/30 text-xs ml-1">{expanded ? '▲' : '▼'}</div>
       </button>
 
       {/* Dropdown Popup Modal */}
