@@ -47,6 +47,7 @@ interface LobbyProps {
   isGuest?: boolean;
   onLogout?: () => void;
   onResumeRoom?: (roomId: string, playerId: string) => void;
+  onClearActiveRoom?: () => void;
 }
 
 interface MarvelBotPreset {
@@ -106,6 +107,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   isGuest,
   onLogout,
   onResumeRoom,
+  onClearActiveRoom,
 }) => {
   const [playerName, setPlayerName] = useState(userProfile?.username || '');
 
@@ -673,6 +675,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             activeRoomId={userProfile.activeRoomId}
             activePlayerId={userProfile.activePlayerId}
             onResumeRoom={onResumeRoom}
+            onClearActiveRoom={onClearActiveRoom}
           />
         )}
         {isGuest && onLogout && (

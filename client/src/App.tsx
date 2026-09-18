@@ -213,15 +213,19 @@ function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactEl
 
   // Resume game from other device: join with saved playerId from profile
   const handleResumeRoom = useCallback(
-    (roomId: string, _savedPlayerId: string) => {
+    (roomId: string, savedPlayerId?: string) => {
       const playerName = auth.profile?.username || 'Player';
       handleJoinRoom(roomId, playerName, (success, err) => {
-        if (!success) {
+        if (success) {
+          if (savedPlayerId) setMyPlayerId(savedPlayerId);
+        } else {
           console.warn('[Resume] Could not rejoin room:', err);
+          auth.clearActiveRoom();
+          alert(err || `ห้อง ${roomId} สิ้นสุดหรือไม่มีอยู่แล้ว ระบบได้ล้างสถานะห้องให้เรียบร้อยแล้ว`);
         }
       });
     },
-    [auth.profile?.username, handleJoinRoom],
+    [auth.profile?.username, handleJoinRoom, auth.clearActiveRoom],
   );
 
   const handleLeave = useCallback(() => {
@@ -269,6 +273,7 @@ function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactEl
             isGuest={isGuest}
             onLogout={onLogout}
             onResumeRoom={handleResumeRoom}
+            onClearActiveRoom={auth.clearActiveRoom}
           />
         )}
 

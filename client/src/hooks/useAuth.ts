@@ -69,6 +69,7 @@ export interface UseAuthReturn {
   logout: () => void;
   clearError: () => void;
   refreshProfile: () => Promise<void>;
+  clearActiveRoom: () => Promise<void>;
 }
 
 export function useAuth(): UseAuthReturn {
@@ -172,5 +173,23 @@ export function useAuth(): UseAuthReturn {
     } catch { /* ignore */ }
   }, []);
 
-  return { profile, token, isLoading, error, login, register, logout, clearError, refreshProfile };
+  const clearActiveRoom = useCallback(async () => {
+    const storedToken = localStorage.getItem(STORAGE_KEY_TOKEN);
+    if (!storedToken) return;
+    try {
+      const result = await apiPost<{ success: boolean; profile?: UserProfile }>(
+        '/api/auth/clear-active-room',
+        { token: storedToken }
+      );
+      if (result.success && result.profile) {
+        setProfile(result.profile);
+      } else {
+        setProfile((prev) => (prev ? { ...prev, activeRoomId: undefined, activePlayerId: undefined } : null));
+      }
+    } catch {
+      setProfile((prev) => (prev ? { ...prev, activeRoomId: undefined, activePlayerId: undefined } : null));
+    }
+  }, []);
+
+  return { profile, token, isLoading, error, login, register, logout, clearError, refreshProfile, clearActiveRoom };
 }

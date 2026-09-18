@@ -72,6 +72,13 @@ app.post('/api/auth/login', async (req: Request, res: Response): Promise<void> =
     return;
   }
   const result = await userManager.login(username.trim(), password);
+  if (result.success && result.profile?.activeRoomId) {
+    if (!roomManager.isRoomActive(result.profile.activeRoomId)) {
+      await userManager.setActiveRoom(result.profile.id, null, null);
+      result.profile.activeRoomId = undefined;
+      result.profile.activePlayerId = undefined;
+    }
+  }
   res.status(result.success ? 200 : 401).json(result);
 });
 
@@ -81,7 +88,23 @@ app.post('/api/auth/verify', async (req: Request, res: Response): Promise<void> 
   if (!token) { res.status(400).json({ success: false, error: 'No token' }); return; }
   const profile = await userManager.verifyToken(token);
   if (!profile) { res.status(401).json({ success: false, error: 'Token ไม่ถูกต้องหรือหมดอายุ' }); return; }
+  if (profile.activeRoomId && !roomManager.isRoomActive(profile.activeRoomId)) {
+    await userManager.setActiveRoom(profile.id, null, null);
+    profile.activeRoomId = undefined;
+    profile.activePlayerId = undefined;
+  }
   res.json({ success: true, profile });
+});
+
+// POST /api/auth/clear-active-room
+app.post('/api/auth/clear-active-room', async (req: Request, res: Response): Promise<void> => {
+  const { token } = req.body as { token?: string };
+  if (!token) { res.status(400).json({ success: false, error: 'No token' }); return; }
+  const profile = await userManager.verifyToken(token);
+  if (!profile) { res.status(401).json({ success: false, error: 'Token ไม่ถูกต้อง' }); return; }
+  await userManager.setActiveRoom(profile.id, null, null);
+  const updated = await userManager.getProfile(profile.id);
+  res.json({ success: true, profile: updated });
 });
 
 // ── Serve Frontend Static Files ──────────────────────────────────

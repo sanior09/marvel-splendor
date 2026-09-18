@@ -112,11 +112,19 @@ export class RoomManager {
           if (!session.isBot) {
             this.socketToRoom.delete(session.socketId);
             this.socketToPlayer.delete(session.socketId);
+            if (session.accountId) {
+              userManager.setActiveRoom(session.accountId, null, null).catch(() => {});
+            }
           }
         }
         this.rooms.delete(roomId);
       }
     }
+  }
+
+  isRoomActive(roomId: string): boolean {
+    const room = this.rooms.get(roomId);
+    return Boolean(room && room.status !== 'finished');
   }
 
   // ─── Room Creation ──────────────────────────────────────────
@@ -171,9 +179,45 @@ export class RoomManager {
   ): { success: boolean; room?: RoomInfo; error?: string } {
     const room = this.rooms.get(roomId);
 
-    if (!room) return { success: false, error: `Room ${roomId} not found` };
-    if (room.status !== 'waiting') return { success: false, error: 'Game already in progress' };
-    if (room.sessions.length >= room.maxPlayers) return { success: false, error: 'Room is full' };
+    if (!room || room.status === 'finished') {
+      if (accountId) {
+        userManager.setActiveRoom(accountId, null, null).catch(() => {});
+      }
+      return { success: false, error: `ห้อง ${roomId} สิ้นสุดหรือไม่มีอยู่แล้ว` };
+    }
+
+    // Check if player is reconnecting to their existing session in this room
+    const existingSession = room.sessions.find(
+      (s) => (accountId && s.accountId === accountId) || s.name.toLowerCase() === playerName.toLowerCase()
+    );
+
+    if (existingSession) {
+      existingSession.socketId = socket.id;
+      if (avatarUrl) existingSession.avatarUrl = avatarUrl;
+      existingSession.isBot = false;
+      room.lastActivity = Date.now();
+
+      this.socketToRoom.set(socket.id, roomId);
+      this.socketToPlayer.set(socket.id, existingSession.id);
+      socket.join(roomId);
+
+      const roomInfo = this.toRoomInfo(room);
+      this.io.to(roomId).emit('room:updated', roomInfo);
+
+      // If game is actively playing, sync state directly to reconnecting player
+      if (room.status === 'playing' && room.gameState) {
+        const pState = room.gameState.players.find((p) => p.id === existingSession.id);
+        if (pState) pState.isBot = false;
+        socket.emit('game:stateUpdate', sanitizeStateForPlayer(room.gameState, existingSession.id));
+      }
+
+      console.log(`[RoomManager] ${existingSession.name} (${existingSession.id}) reconnected to room ${roomId}`);
+      return { success: true, room: roomInfo };
+    }
+
+    // New player joining checks
+    if (room.status !== 'waiting') return { success: false, error: 'เกมเริ่มไปแล้ว ไม่สามารถเข้าร่วมใหม่ได้' };
+    if (room.sessions.length >= room.maxPlayers) return { success: false, error: 'ห้องเต็มแล้ว' };
 
     const playerId = uuidv4();
     const cachedProfile = accountId ? userManager.getProfileSync(accountId) : null;
@@ -223,7 +267,11 @@ export class RoomManager {
 
     if (!roomId || !playerId) return;
     const room = this.rooms.get(roomId);
-    if (!room) return;
+    // Clear user active room if leaving
+    const leavingSession = room.sessions.find((s) => s.id === playerId || s.socketId === socket.id);
+    if (leavingSession?.accountId) {
+      userManager.setActiveRoom(leavingSession.accountId, null, null).catch(() => {});
+    }
 
     // ─── Active Game AFK / Disconnect Takeover ───────────────
     if (room.status === 'playing' && room.gameState && room.gameState.phase !== 'finished') {

@@ -12,6 +12,7 @@ interface ProfileBadgeProps {
   activeRoomId?: string;
   activePlayerId?: string;
   onResumeRoom?: (roomId: string, playerId: string) => void;
+  onClearActiveRoom?: () => void;
 }
 
 export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
@@ -20,6 +21,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
   activeRoomId,
   activePlayerId,
   onResumeRoom,
+  onClearActiveRoom,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -171,19 +173,35 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
 
           {/* Resume Room Banner */}
           {activeRoomId && activePlayerId && onResumeRoom && (
-            <button
-              onClick={() => {
-                onResumeRoom(activeRoomId, activePlayerId);
-                setExpanded(false);
-              }}
-              className="w-full py-2.5 px-3 rounded-xl mb-3 text-sm font-bold text-black flex items-center justify-center gap-2 transition-all hover:scale-105"
-              style={{
-                background: 'linear-gradient(135deg, #ffd700 0%, #ea580c 100%)',
-                boxShadow: '0 6px 16px rgba(234,179,8,0.35)',
-              }}
-            >
-              ▶ กลับเข้าห้อง {activeRoomId}
-            </button>
+            <div className="flex items-center gap-1.5 mb-3">
+              <button
+                type="button"
+                onClick={() => {
+                  onResumeRoom(activeRoomId, activePlayerId);
+                  setExpanded(false);
+                }}
+                className="flex-1 py-2.5 px-3 rounded-xl text-sm font-bold text-black flex items-center justify-center gap-2 transition-all hover:scale-[1.02] cursor-pointer"
+                style={{
+                  background: 'linear-gradient(135deg, #ffd700 0%, #ea580c 100%)',
+                  boxShadow: '0 6px 16px rgba(234,179,8,0.35)',
+                }}
+              >
+                ▶ กลับเข้าห้อง {activeRoomId}
+              </button>
+              {onClearActiveRoom && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClearActiveRoom();
+                  }}
+                  className="py-2.5 px-3 rounded-xl text-white/50 hover:text-white hover:bg-white/10 text-xs border border-white/10 transition-all cursor-pointer"
+                  title="ยกเลิก/ล้างสถานะห้องนี้"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           )}
 
           {/* Logout */}
