@@ -4,9 +4,18 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
+import dns from 'dns';
+import mongoose from 'mongoose';
 import type { ServerToClientEvents, ClientToServerEvents } from '../types/game.types';
 import { RoomManager } from './RoomManager';
 import { userManager } from './UserManager';
+
+// Ensure reliable DNS resolution for MongoDB Atlas SRV records
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch {
+  // Ignore in environments where setting servers isn't supported
+}
 
 const PORT = Number(process.env.PORT ?? 3001);
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN ?? '*';
@@ -29,9 +38,17 @@ userManager.connect(MONGODB_URI).catch((err) => {
   console.error('[Server] MongoDB connection error:', err);
 });
 
-// ── Health Check ────────────────────────────────────────────────
+// ── Health Check & DB Status ────────────────────────────────────
 app.get('/health', (_req: Request, res: Response): void => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.get('/api/db-status', (_req: Request, res: Response): void => {
+  res.json({
+    connected: userManager.isConnected(),
+    readyState: mongoose.connection.readyState,
+    lastError: userManager.getLastError(),
+  });
 });
 
 // ── Auth REST API ───────────────────────────────────────────────

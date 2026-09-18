@@ -120,21 +120,39 @@ export interface UserProfile {
 
 export class UserManager {
   private connected = false;
+  private lastError: string | null = null;
+
+  public isConnected(): boolean {
+    return this.connected && mongoose.connection.readyState === 1;
+  }
+
+  public getLastError(): string | null {
+    return this.lastError;
+  }
 
   async connect(uri: string): Promise<void> {
-    if (this.connected) return;
+    if (this.connected && mongoose.connection.readyState === 1) return;
     try {
-      await mongoose.connect(uri, { dbName: 'marvel_splendor' });
+      this.lastError = null;
+      await mongoose.connect(uri, { dbName: 'marvel_splendor', serverSelectionTimeoutMS: 5000 });
       this.connected = true;
       console.log('[UserManager] ✅ Connected to MongoDB Atlas');
-    } catch (err) {
-      console.error('[UserManager] ❌ MongoDB connection failed:', err);
+    } catch (err: any) {
+      this.connected = false;
+      this.lastError = err.message || String(err);
+      console.error('[UserManager] ❌ MongoDB connection failed:', this.lastError);
     }
   }
 
   // ─── Register ─────────────────────────────────────────────
 
   async register(username: string, password: string): Promise<AuthResult> {
+    if (!this.isConnected()) {
+      return {
+        success: false,
+        error: `ระบบฐานข้อมูลยังเชื่อมต่อไม่สำเร็จ: ${this.lastError || 'กำลังเชื่อมต่อ'}`,
+      };
+    }
     try {
       if (!username || username.length < 2) return { success: false, error: 'ชื่อผู้ใช้ต้องมีอย่างน้อย 2 ตัวอักษร' };
       if (!password || password.length < 6) return { success: false, error: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' };
@@ -153,13 +171,19 @@ export class UserManager {
     } catch (err: any) {
       if (err.code === 11000) return { success: false, error: 'ชื่อผู้ใช้นี้ถูกใช้แล้ว' };
       console.error('[UserManager] register error:', err);
-      return { success: false, error: 'เกิดข้อผิดพลาด กรุณาลองใหม่' };
+      return { success: false, error: `สมัครไม่สำเร็จ: ${err.message || 'กรุณาลองใหม่'}` };
     }
   }
 
   // ─── Login ────────────────────────────────────────────────
 
   async login(username: string, password: string): Promise<AuthResult> {
+    if (!this.isConnected()) {
+      return {
+        success: false,
+        error: `ระบบฐานข้อมูลยังเชื่อมต่อไม่สำเร็จ: ${this.lastError || 'กำลังเชื่อมต่อ'}`,
+      };
+    }
     try {
       const user = await User.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
       if (!user) return { success: false, error: 'ไม่พบชื่อผู้ใช้นี้ในระบบ' };
@@ -172,9 +196,9 @@ export class UserManager {
 
       const token = this.generateToken(user.id, user.username);
       return { success: true, token, profile: this.toProfile(user) };
-    } catch (err) {
+    } catch (err: any) {
       console.error('[UserManager] login error:', err);
-      return { success: false, error: 'เกิดข้อผิดพลาด กรุณาลองใหม่' };
+      return { success: false, error: `เข้าสู่ระบบไม่สำเร็จ: ${err.message || 'กรุณาลองใหม่'}` };
     }
   }
 
