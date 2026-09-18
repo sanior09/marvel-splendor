@@ -19,12 +19,14 @@ export interface Rank {
 }
 
 export const RANKS: Rank[] = [
-  { name: 'นักสู้ใหม่',       nameEn: 'Recruit',               minXP: 0,     icon: '🥉', color: '#cd7f32' },
-  { name: 'เจ้าหน้าที่ S.H.I.E.L.D.', nameEn: 'S.H.I.E.L.D. Agent', minXP: 100,  icon: '🥈', color: '#c0c0c0' },
-  { name: 'อเวนเจอร์',        nameEn: 'Avenger',               minXP: 500,   icon: '🥇', color: '#ffd700' },
-  { name: 'ผู้พิทักษ์กาแล็กซี', nameEn: 'Guardian',            minXP: 1500,  icon: '💎', color: '#b9f2ff' },
-  { name: 'ผู้ถือครองอินฟินิตี้', nameEn: 'Infinity Wielder',  minXP: 5000,  icon: '🔥', color: '#ff6a00' },
-  { name: '👑 THE ONE ABOVE ALL', nameEn: 'The One Above All', minXP: 50000, icon: '👑', color: '#ff007f', isOwner: true },
+  { name: 'นักสู้ใหม่',         nameEn: 'Recruit',             minXP: 0,      icon: '🥉', color: '#cd7f32' },
+  { name: 'เจ้าหน้าที่ S.H.I.E.L.D.', nameEn: 'S.H.I.E.L.D. Agent', minXP: 300,  icon: '🥈', color: '#94a3b8' },
+  { name: 'ซูเปอร์โซลเยอร์',     nameEn: 'Super Soldier',        minXP: 800,    icon: '🛡️', color: '#38bdf8' },
+  { name: 'อเวนเจอร์',          nameEn: 'Avenger',             minXP: 1800,   icon: '🥇', color: '#ffd700' },
+  { name: 'ผู้พิทักษ์กาแล็กซี',   nameEn: 'Guardian',            minXP: 3500,   icon: '💎', color: '#a855f7' },
+  { name: 'จอมเวทสูงสุด',       nameEn: 'Sorcerer Supreme',     minXP: 6500,   icon: '🌌', color: '#06b6d4' },
+  { name: 'ผู้ถือครองอินฟินิตี้', nameEn: 'Infinity Wielder',   minXP: 12000,  icon: '🔥', color: '#ff6a00' },
+  { name: '👑 THE ONE ABOVE ALL', nameEn: 'The One Above All', minXP: 50000,  icon: '👑', color: '#ff007f', isOwner: true },
 ];
 
 export function getRank(xp: number): Rank {
@@ -44,10 +46,10 @@ export function getNextRank(xp: number): Rank | null {
 // ─── XP Awards ───────────────────────────────────────────────
 
 export const XP_AWARDS = {
-  GAME_PLAYED:    10,
-  GAME_WIN:       50,
-  RANK_1:         30,
-  BUY_TIER3:       5,
+  GAME_PLAYED:    15,
+  GAME_WIN:       35,
+  RANK_1:         20,
+  BUY_TIER3:       3,
   CLAIM_GUARDIAN:  5,
 };
 

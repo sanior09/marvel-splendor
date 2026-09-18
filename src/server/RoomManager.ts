@@ -22,6 +22,7 @@ import {
   sanitizeStateForPlayer,
 } from '../engine/GameLogic';
 import { computeBotAction } from '../engine/BotLogic';
+import { userManager } from './UserManager';
 
 // ─── Internal Types ───────────────────────────────────────────
 
@@ -552,6 +553,7 @@ export class RoomManager {
         if (newState.phase === 'finished') {
           currentRoom.status = 'finished';
           this.io.to(roomId).emit('game:over', { winners: newState.winners });
+          this.handleGameOver(currentRoom);
         }
 
         this.broadcastGameState(roomId);
@@ -603,6 +605,7 @@ export class RoomManager {
       if (newState.phase === 'finished') {
         room.status = 'finished';
         this.io.to(roomId).emit('game:over', { winners: newState.winners });
+        this.handleGameOver(room);
       }
 
       this.broadcastGameState(roomId);
@@ -611,6 +614,35 @@ export class RoomManager {
       const msg = err instanceof Error ? err.message : 'Action execution error';
       console.error(`[RoomManager] Action error in room ${roomId}:`, err);
       socket.emit('game:error', { message: msg });
+    }
+  }
+
+  // ─── Handle Game Over (Record XP & Stats) ───────────────────
+
+  private handleGameOver(room: Room): void {
+    if (!room.gameState) return;
+    const gameState = room.gameState;
+    const winners = gameState.winners || [];
+
+    for (const session of room.sessions) {
+      if (!session.accountId || session.isBot) continue;
+      const pState = gameState.players.find((p) => p.id === session.id);
+      const won = winners.includes(session.id);
+      const isRankOne = won;
+      const tier3Count = pState ? pState.ownedCards.filter((c) => c.tier === 3).length : 0;
+      const guardianCount = pState?.guardians?.length ?? 0;
+      const bonusXP = (tier3Count * 3) + (guardianCount * 5);
+
+      userManager
+        .recordGameResult(session.accountId, {
+          won,
+          finalScore: pState?.score ?? 0,
+          isRankOne,
+          bonusXP,
+        })
+        .catch((err) => {
+          console.error(`[RoomManager] Error recording game result for user ${session.accountId}:`, err);
+        });
     }
   }
 
