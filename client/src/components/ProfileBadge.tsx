@@ -86,7 +86,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
       {/* Dropdown Popup Modal */}
       {expanded && (
         <div
-          className="absolute right-0 top-full mt-2.5 w-72 rounded-2xl p-4 z-50 border animate-slide-up"
+          className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-1.5rem)] max-h-[85vh] overflow-y-auto rounded-2xl p-3.5 sm:p-4 z-50 border animate-slide-up"
           style={{
             background: 'linear-gradient(135deg, rgba(16, 18, 32, 0.98) 0%, rgba(8, 10, 18, 0.99) 100%)',
             backdropFilter: 'blur(24px)',
