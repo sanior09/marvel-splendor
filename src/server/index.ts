@@ -6,6 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import type { ServerToClientEvents, ClientToServerEvents } from '../types/game.types';
 import { RoomManager } from './RoomManager';
+import { userManager } from './UserManager';
 
 const PORT = Number(process.env.PORT ?? 3001);
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN ?? '*';
@@ -14,17 +15,59 @@ const corsOrigin =
     ? true
     : CLIENT_ORIGIN.split(',').map((s) => s.trim());
 
+const MONGODB_URI =
+  process.env.MONGODB_URI ||
+  'mongodb+srv://xenia5523_db_user:1YZ8rpQAeBGYm2EF@cluster0.ggyfbtj.mongodb.net/?appName=Cluster0';
+
 const app = express();
 
 app.use(cors({ origin: corsOrigin }));
 app.use(express.json());
 
-// ── Health Check Endpoint ──────────────────────────────────
+// ── Connect MongoDB ────────────────────────────────────────────
+userManager.connect(MONGODB_URI).catch((err) => {
+  console.error('[Server] MongoDB connection error:', err);
+});
+
+// ── Health Check ────────────────────────────────────────────────
 app.get('/health', (_req: Request, res: Response): void => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// ── Serve Frontend Static Files (Dynamic Path Detection) ───
+// ── Auth REST API ───────────────────────────────────────────────
+
+// POST /api/auth/register
+app.post('/api/auth/register', async (req: Request, res: Response): Promise<void> => {
+  const { username, password } = req.body as { username?: string; password?: string };
+  if (!username || !password) {
+    res.status(400).json({ success: false, error: 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน' });
+    return;
+  }
+  const result = await userManager.register(username.trim(), password);
+  res.status(result.success ? 201 : 400).json(result);
+});
+
+// POST /api/auth/login
+app.post('/api/auth/login', async (req: Request, res: Response): Promise<void> => {
+  const { username, password } = req.body as { username?: string; password?: string };
+  if (!username || !password) {
+    res.status(400).json({ success: false, error: 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน' });
+    return;
+  }
+  const result = await userManager.login(username.trim(), password);
+  res.status(result.success ? 200 : 401).json(result);
+});
+
+// POST /api/auth/verify
+app.post('/api/auth/verify', async (req: Request, res: Response): Promise<void> => {
+  const { token } = req.body as { token?: string };
+  if (!token) { res.status(400).json({ success: false, error: 'No token' }); return; }
+  const profile = await userManager.verifyToken(token);
+  if (!profile) { res.status(401).json({ success: false, error: 'Token ไม่ถูกต้องหรือหมดอายุ' }); return; }
+  res.json({ success: true, profile });
+});
+
+// ── Serve Frontend Static Files ──────────────────────────────────
 const candidatePaths = [
   path.resolve(process.cwd(), 'client/dist'),
   path.resolve(__dirname, '../../client/dist'),
@@ -38,7 +81,7 @@ if (fs.existsSync(clientBuildPath)) {
   app.use(express.static(clientBuildPath));
 
   app.get('*', (req: Request, res: Response, next: NextFunction): void => {
-    if (req.path.startsWith('/socket.io') || req.path === '/health') {
+    if (req.path.startsWith('/socket.io') || req.path === '/health' || req.path.startsWith('/api/')) {
       next();
       return;
     }
@@ -62,18 +105,32 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
 const roomManager = new RoomManager(io);
 
 io.on('connection', (socket) => {
-  socket.on('room:create', ({ playerName, avatarUrl, mapId, targetScore }, callback) => {
+  socket.on('room:create', (data: any, callback) => {
     try {
-      const room = roomManager.createRoom(socket, playerName, mapId, avatarUrl, targetScore);
+      const { playerName, avatarUrl, mapId, targetScore } = data;
+      const accountId = data.accountId as string | undefined;
+      const room = roomManager.createRoom(socket, playerName, mapId, avatarUrl, targetScore, accountId);
+      // Link account → room
+      if (accountId) {
+        const session = room.players.find((p) => p.name === playerName);
+        if (session) userManager.setActiveRoom(accountId, room.roomId, session.id);
+      }
       callback(room);
     } catch (err) {
       socket.emit('game:error', { message: 'Failed to create room' });
     }
   });
 
-  socket.on('room:join', ({ roomId, playerName, avatarUrl }, callback) => {
+  socket.on('room:join', (data: any, callback) => {
     try {
-      const result = roomManager.joinRoom(socket, roomId, playerName, avatarUrl);
+      const { roomId, playerName, avatarUrl } = data;
+      const accountId = data.accountId as string | undefined;
+      const result = roomManager.joinRoom(socket, roomId, playerName, avatarUrl, accountId);
+      // Link account → room
+      if (accountId && result.success && result.room) {
+        const session = result.room.players.find((p) => p.name === playerName);
+        if (session) userManager.setActiveRoom(accountId, roomId, session.id);
+      }
       callback(result);
     } catch (err) {
       callback({ success: false, error: 'Failed to join room' });
@@ -111,9 +168,15 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('room:createSolo', ({ playerName, avatarUrl, botCount, botNames, mapId, targetScore }, callback) => {
+  socket.on('room:createSolo', (data: any, callback) => {
     try {
-      const result = roomManager.createSoloRoom(socket, playerName, botCount, botNames, mapId, avatarUrl, targetScore);
+      const { playerName, avatarUrl, botCount, botNames, mapId, targetScore } = data;
+      const accountId = data.accountId as string | undefined;
+      const result = roomManager.createSoloRoom(socket, playerName, botCount, botNames, mapId, avatarUrl, targetScore, accountId);
+      if (result.success && result.room && accountId) {
+        const session = result.room.players.find((p) => p.name === playerName);
+        if (session) userManager.setActiveRoom(accountId, result.room.roomId, session.id);
+      }
       callback(result);
     } catch (err) {
       callback({ success: false, error: 'Failed to create solo room' });

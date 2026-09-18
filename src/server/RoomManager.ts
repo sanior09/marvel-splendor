@@ -33,6 +33,7 @@ interface PlayerSession {
   isBot?: boolean;
   botPersonality?: string;
   isReady?: boolean;
+  accountId?: string; // linked MongoDB user account ID
 }
 
 interface Room {
@@ -116,7 +117,7 @@ export class RoomManager {
 
   // ─── Room Creation ──────────────────────────────────────────
 
-  createRoom(socket: Socket, playerName: string, mapId = 'asgard', avatarUrl?: string, targetScore = 16): RoomInfo {
+  createRoom(socket: Socket, playerName: string, mapId = 'asgard', avatarUrl?: string, targetScore = 16, accountId?: string): RoomInfo {
     const roomId = uuidv4().slice(0, 6).toUpperCase();
     const playerId = uuidv4();
 
@@ -125,6 +126,7 @@ export class RoomManager {
       name: playerName,
       socketId: socket.id,
       avatarUrl,
+      accountId,
     };
 
     const validTargetScore = Math.min(Math.max(10, Number(targetScore) || 16), 50);
@@ -159,6 +161,7 @@ export class RoomManager {
     roomId: string,
     playerName: string,
     avatarUrl?: string,
+    accountId?: string,
   ): { success: boolean; room?: RoomInfo; error?: string } {
     const room = this.rooms.get(roomId);
 
@@ -172,6 +175,7 @@ export class RoomManager {
       name: playerName,
       socketId: socket.id,
       avatarUrl,
+      accountId,
     };
 
     room.sessions.push(session);
@@ -467,8 +471,9 @@ export class RoomManager {
     mapId?: string,
     avatarUrl?: string,
     targetScore = 16,
+    accountId?: string,
   ): { success: boolean; room?: RoomInfo; error?: string } {
-    const roomInfo = this.createRoom(socket, playerName, mapId, avatarUrl, targetScore);
+    const roomInfo = this.createRoom(socket, playerName, mapId, avatarUrl, targetScore, accountId);
     const room = this.rooms.get(roomInfo.roomId);
     if (!room) return { success: false, error: 'Failed to create room' };
 

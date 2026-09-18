@@ -4,12 +4,14 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { MaintenanceCard } from './components/MaintenanceCard';
+import { LoginScreen } from './components/LoginScreen';
 import { Lobby } from './components/Lobby';
 import { Board } from './components/Board';
 import { OrientationGuard } from './components/OrientationGuard';
 import { InactivityWarningModal } from './components/InactivityWarningModal';
 import { useGameState } from './hooks/useGameState';
 import { useInactivityTimeout } from './hooks/useInactivityTimeout';
+import { useAuth } from './hooks/useAuth';
 import type { RoomInfo } from '@shared/types/game.types';
 
 /**
@@ -51,12 +53,81 @@ export default function App(): React.ReactElement {
     );
   }
 
-  return <GameRouter />;
+  return <AuthGate />;
 }
 
-function GameRouter(): React.ReactElement {
+// ─── Auth Gate: show login or game ──────────────────────────────
+
+function AuthGate(): React.ReactElement {
+  const auth = useAuth();
+  // isGuest: user explicitly skipped login
+  const [isGuest, setIsGuest] = useState(false);
+
+  // Auto-skip login screen once token verified
+  const isAuthenticated = Boolean(auth.profile && auth.token);
+
+  // While verifying stored token, show loading
+  if (auth.isLoading) {
+    return (
+      <div
+        className="fixed inset-0 flex items-center justify-center"
+        style={{ background: '#06070f', fontFamily: "'Outfit', sans-serif" }}
+      >
+        <div className="text-center">
+          <div
+            className="text-3xl font-black tracking-widest mb-3"
+            style={{
+              background: 'linear-gradient(90deg, #ffd700, #e040fb, #4895ef, #ffd700)',
+              backgroundSize: '200% auto',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              animation: 'shimmer 3s linear infinite',
+            }}
+          >
+            MARVEL SPLENDOR
+          </div>
+          <div className="text-white/30 text-sm animate-pulse">กำลังตรวจสอบระบบ...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login screen if not authenticated and not guest
+  if (!isAuthenticated && !isGuest) {
+    return (
+      <LoginScreen
+        auth={auth}
+        onContinueAsGuest={() => setIsGuest(true)}
+      />
+    );
+  }
+
+  return (
+    <GameRouter
+      auth={auth}
+      isGuest={isGuest}
+      onLogout={() => {
+        auth.logout();
+        setIsGuest(false);
+      }}
+    />
+  );
+}
+
+// ─── Game Router ────────────────────────────────────────────────
+
+interface GameRouterProps {
+  auth: ReturnType<typeof useAuth>;
+  isGuest: boolean;
+  onLogout: () => void;
+}
+
+function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactElement {
   const [myPlayerId, setMyPlayerId] = useState<string | null>(null);
   const [afkNotice, setAfkNotice] = useState<string | null>(null);
+
+  const accountId = auth.profile?.id ?? undefined;
 
   const {
     gameState,
@@ -80,7 +151,7 @@ function GameRouter(): React.ReactElement {
 
   const isInRoomOrGame = Boolean(myPlayerId && (gameState || roomInfo));
 
-  // Auto-kick / Bot takeover when idle for 3 minutes without any activity/moves
+  // Auto-kick / Bot takeover when idle for 3 minutes
   const handleInactivityTimeout = useCallback(() => {
     const activeRoomId = gameState?.roomId || roomInfo?.roomId;
     if (activeRoomId && myPlayerId) {
@@ -93,8 +164,8 @@ function GameRouter(): React.ReactElement {
   }, [gameState?.roomId, roomInfo?.roomId, myPlayerId, afkTimeout, leaveRoom]);
 
   const { remainingSeconds, isWarning, resetTimer } = useInactivityTimeout({
-    timeoutMs: 3 * 60 * 1000, // 3 minutes
-    warningThresholdMs: 60 * 1000, // 60 seconds warning grace period
+    timeoutMs: 3 * 60 * 1000,
+    warningThresholdMs: 60 * 1000,
     enabled: isInRoomOrGame,
     onTimeout: handleInactivityTimeout,
   });
@@ -106,9 +177,9 @@ function GameRouter(): React.ReactElement {
       createRoom(playerName, (room) => {
         setMyPlayerId(room.hostId);
         callback(room);
-      }, mapId, avatarUrl, targetScore);
+      }, mapId, avatarUrl, targetScore, accountId);
     },
-    [createRoom],
+    [createRoom, accountId],
   );
 
   // On Solo Game Create
@@ -117,9 +188,9 @@ function GameRouter(): React.ReactElement {
       setAfkNotice(null);
       createSolo(playerName, botCount, botNames, (room) => {
         setMyPlayerId(room.hostId);
-      }, mapId, avatarUrl, targetScore);
+      }, mapId, avatarUrl, targetScore, accountId);
     },
-    [createSolo],
+    [createSolo, accountId],
   );
 
   // On Room Join — capture joining player ID
@@ -134,18 +205,31 @@ function GameRouter(): React.ReactElement {
         } else {
           callback(false, err);
         }
-      }, avatarUrl);
+      }, avatarUrl, accountId);
     },
-    [joinRoom],
+    [joinRoom, accountId],
+  );
+
+  // Resume game from other device: join with saved playerId from profile
+  const handleResumeRoom = useCallback(
+    (roomId: string, _savedPlayerId: string) => {
+      const playerName = auth.profile?.username || 'Player';
+      handleJoinRoom(roomId, playerName, (success, err) => {
+        if (!success) {
+          console.warn('[Resume] Could not rejoin room:', err);
+        }
+      });
+    },
+    [auth.profile?.username, handleJoinRoom],
   );
 
   const handleLeave = useCallback(() => {
     const activeRoomId = gameState?.roomId || roomInfo?.roomId;
     leaveRoom(activeRoomId && myPlayerId ? { roomId: activeRoomId, playerId: myPlayerId } : undefined);
     setMyPlayerId(null);
-  }, [gameState?.roomId, roomInfo?.roomId, myPlayerId, leaveRoom]);
-
-  // ── Routing ───────────────────────────────────────────────
+    // Refresh profile to clear active room
+    if (!isGuest) auth.refreshProfile();
+  }, [gameState?.roomId, roomInfo?.roomId, myPlayerId, leaveRoom, isGuest, auth]);
 
   return (
     <OrientationGuard>
@@ -176,6 +260,11 @@ function GameRouter(): React.ReactElement {
             connectionStatus={connectionStatus}
             afkNotice={afkNotice}
             onClearAfkNotice={() => setAfkNotice(null)}
+            // Auth / Profile props
+            userProfile={auth.profile}
+            isGuest={isGuest}
+            onLogout={onLogout}
+            onResumeRoom={handleResumeRoom}
           />
         )}
 

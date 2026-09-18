@@ -5,11 +5,13 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { RoomInfo } from '@shared/types/game.types';
+import type { UserProfile } from '../hooks/useAuth';
 
 import { soundManager } from '../utils/soundManager';
 import { MARVEL_MAPS, getMarvelMap } from '../data/marvelMaps';
 import { TutorialModal } from './TutorialModal';
 import { AvatarPicker, MARVEL_AVATARS } from './AvatarPicker';
+import { ProfileBadge } from './ProfileBadge';
 import marvelAvatarsData from '../data/marvelAvatarsData.json';
 
 const resolvePlayerAvatar = (name: string, avatarUrl?: string): string | undefined => {
@@ -39,6 +41,11 @@ interface LobbyProps {
   connectionStatus: string;
   afkNotice?: string | null;
   onClearAfkNotice?: () => void;
+  // Auth / Profile
+  userProfile?: UserProfile | null;
+  isGuest?: boolean;
+  onLogout?: () => void;
+  onResumeRoom?: (roomId: string, playerId: string) => void;
 }
 
 interface MarvelBotPreset {
@@ -94,6 +101,10 @@ export const Lobby: React.FC<LobbyProps> = ({
   connectionStatus,
   afkNotice,
   onClearAfkNotice,
+  userProfile,
+  isGuest,
+  onLogout,
+  onResumeRoom,
 }) => {
   const [playerName, setPlayerName] = useState('');
   const [joinCode, setJoinCode] = useState('');
@@ -637,8 +648,28 @@ export const Lobby: React.FC<LobbyProps> = ({
   // ── Main Lobby Screen ─────────────────────────────────────
   return (
     <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start sm:justify-center p-3 sm:p-6 relative">
-      {/* Top-Right Control Bar: Roblox-style Tutorial Button & Sound Toggle */}
+      {/* Top-Right Control Bar: Profile Badge + Tutorial Button + Sound Toggle */}
       <div className="fixed top-2.5 right-2.5 sm:top-4 sm:right-4 z-30 flex items-center gap-2">
+        {/* Profile Badge */}
+        {userProfile && !isGuest && onLogout && (
+          <ProfileBadge
+            profile={userProfile}
+            onLogout={onLogout}
+            activeRoomId={userProfile.activeRoomId}
+            activePlayerId={userProfile.activePlayerId}
+            onResumeRoom={onResumeRoom}
+          />
+        )}
+        {isGuest && onLogout && (
+          <button
+            type="button"
+            onClick={onLogout}
+            className="px-3 py-1.5 rounded-xl border border-white/15 text-white/50 hover:text-white text-xs transition-all"
+            title="ล็อกอินเพื่อสะสมแต้ม"
+          >
+            👤 ล็อกอิน
+          </button>
+        )}
         <button
           type="button"
           onClick={() => {
