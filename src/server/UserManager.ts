@@ -125,6 +125,7 @@ export interface UserProfile {
 export class UserManager {
   private connected = false;
   private lastError: string | null = null;
+  private profileCache: Map<string, UserProfile> = new Map();
 
   public isConnected(): boolean {
     return this.connected && mongoose.connection.readyState === 1;
@@ -132,6 +133,10 @@ export class UserManager {
 
   public getLastError(): string | null {
     return this.lastError;
+  }
+
+  public getProfileSync(userId: string): UserProfile | null {
+    return this.profileCache.get(userId) ?? null;
   }
 
   async connect(uri: string): Promise<void> {
@@ -290,7 +295,7 @@ export class UserManager {
     const rank = getRank(user.xp);
     const nextRank = getNextRank(user.xp);
     const winRate = user.gamesPlayed > 0 ? Math.round((user.gamesWon / user.gamesPlayed) * 100) : 0;
-    return {
+    const profile: UserProfile = {
       id: (user._id as any).toString(),
       username: user.username,
       gamesPlayed: user.gamesPlayed,
@@ -305,6 +310,8 @@ export class UserManager {
       activePlayerId: user.activePlayerId || undefined,
       createdAt: user.createdAt.toISOString(),
     };
+    this.profileCache.set(profile.id, profile);
+    return profile;
   }
 }
 

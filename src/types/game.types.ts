@@ -74,13 +74,21 @@ export interface Guardian {
   readonly requirement: Partial<Record<CrystalColor, number>>;
 }
 
-// ─── Player ──────────────────────────────────────────────────
+export interface PlayerRankInfo {
+  name: string;
+  nameEn: string;
+  icon: string;
+  color: string;
+  isOwner?: boolean;
+}
 
 export interface Player {
   readonly id: string;
   name: string;
   /** Avatar image URL or path */
   avatarUrl?: string;
+  /** Player rank information */
+  rank?: PlayerRankInfo;
   /** Crystals in hand (max 10) */
   crystals: CrystalPool;
   /** Bonus crystals from owned cards (permanent discount) */
@@ -221,6 +229,7 @@ export interface RoomPlayer {
   isBot?: boolean;
   botPersonality?: string;
   isReady?: boolean;
+  rank?: PlayerRankInfo;
 }
 
 export interface RoomInfo {

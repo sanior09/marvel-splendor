@@ -13,6 +13,7 @@ import type {
   GameAction,
   ServerToClientEvents,
   ClientToServerEvents,
+  PlayerRankInfo,
 } from '../types/game.types';
 import type { Card } from '../types/game.types';
 import {
@@ -35,6 +36,7 @@ interface PlayerSession {
   botPersonality?: string;
   isReady?: boolean;
   accountId?: string; // linked MongoDB user account ID
+  rank?: PlayerRankInfo;
 }
 
 interface Room {
@@ -55,6 +57,19 @@ interface Room {
   };
   lastActivity: number;
   lastTurnTime?: number;
+}
+
+function getBotRank(botName: string): PlayerRankInfo {
+  const lower = botName.toLowerCase();
+  if (lower.includes('doom') || lower.includes('thanos')) {
+    return { name: 'ผู้ถือครองอินฟินิตี้', nameEn: 'Infinity Wielder', icon: '🔥', color: '#ff6a00' };
+  } else if (lower.includes('loki')) {
+    return { name: 'ผู้พิทักษ์กาแล็กซี', nameEn: 'Guardian', icon: '💎', color: '#a855f7' };
+  } else if (lower.includes('stark') || lower.includes('iron')) {
+    return { name: 'อเวนเจอร์', nameEn: 'Avenger', icon: '🥇', color: '#ffd700' };
+  } else {
+    return { name: 'ซูเปอร์โซลเยอร์', nameEn: 'Super Soldier', icon: '🛡️', color: '#38bdf8' };
+  }
 }
 
 // ─── RoomManager Class ────────────────────────────────────────
@@ -121,6 +136,7 @@ export class RoomManager {
   createRoom(socket: Socket, playerName: string, mapId = 'asgard', avatarUrl?: string, targetScore = 16, accountId?: string): RoomInfo {
     const roomId = uuidv4().slice(0, 6).toUpperCase();
     const playerId = uuidv4();
+    const cachedProfile = accountId ? userManager.getProfileSync(accountId) : null;
 
     const session: PlayerSession = {
       id: playerId,
@@ -128,6 +144,7 @@ export class RoomManager {
       socketId: socket.id,
       avatarUrl,
       accountId,
+      rank: cachedProfile?.rank,
     };
 
     const validTargetScore = Math.min(Math.max(10, Number(targetScore) || 16), 50);
@@ -171,12 +188,14 @@ export class RoomManager {
     if (room.sessions.length >= room.maxPlayers) return { success: false, error: 'Room is full' };
 
     const playerId = uuidv4();
+    const cachedProfile = accountId ? userManager.getProfileSync(accountId) : null;
     const session: PlayerSession = {
       id: playerId,
       name: playerName,
       socketId: socket.id,
       avatarUrl,
       accountId,
+      rank: cachedProfile?.rank,
     };
 
     room.sessions.push(session);
@@ -375,6 +394,23 @@ export class RoomManager {
 
       rawState.mapId = room.mapId;
       rawState.targetScore = room.targetScore ?? 16;
+
+      // Attach rank info to every player
+      for (const p of rawState.players) {
+        const session = room.sessions.find((s) => s.id === p.id);
+        if (session?.rank) {
+          p.rank = session.rank;
+        } else if (session?.accountId) {
+          const cached = userManager.getProfileSync(session.accountId);
+          if (cached) p.rank = cached.rank;
+        }
+        if (!p.rank) {
+          p.rank = p.isBot
+            ? getBotRank(p.name)
+            : { name: 'นักสู้ใหม่', nameEn: 'Recruit', icon: '🥉', color: '#cd7f32' };
+        }
+      }
+
       room.gameState = rawState;
       room.status = 'playing';
       room.lastActivity = Date.now();
@@ -436,6 +472,7 @@ export class RoomManager {
       avatarUrl: resolvedAvatarUrl,
       isBot: true,
       botPersonality: personality ?? nextDefault.personality,
+      rank: getBotRank(finalBotName),
     });
 
     room.lastActivity = Date.now();
@@ -489,13 +526,15 @@ export class RoomManager {
       const template = botTemplates[i];
       const customName = botNames?.[i]?.trim();
       const botId = uuidv4();
+      const finalBotName = customName || template.name;
       room.sessions.push({
         id: botId,
-        name: customName || template.name,
+        name: finalBotName,
         socketId: `bot_${botId}`,
         avatarUrl: template.avatarUrl,
         isBot: true,
         botPersonality: template.personality,
+        rank: getBotRank(finalBotName),
       });
     }
 
@@ -759,6 +798,7 @@ export class RoomManager {
         isBot: s.isBot,
         botPersonality: s.botPersonality,
         isReady: s.id === room.hostId ? true : (s.isBot ? true : Boolean(s.isReady)),
+        rank: s.rank,
       })),
       maxPlayers: room.maxPlayers,
       status: room.status,

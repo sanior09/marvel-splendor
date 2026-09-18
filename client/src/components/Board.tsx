@@ -335,8 +335,27 @@ export const Board: React.FC<BoardProps> = ({
 
             <span className="text-[11px]">
               {isMyTurn ? (
-                <span className="text-yellow-400 font-extrabold tracking-wide animate-pulse bg-yellow-400/10 border border-yellow-400/30 px-2.5 py-0.5 rounded-full">
-                  ⚡ ถึงตาคุณแล้ว (YOUR TURN)
+                <span className="text-yellow-400 font-extrabold tracking-wide animate-pulse bg-yellow-400/10 border border-yellow-400/30 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5">
+                  <span>⚡ ถึงตาคุณแล้ว (YOUR TURN)</span>
+                  {myPlayer?.rank && (
+                    <span
+                      className={`text-[9px] px-1.5 py-0.2 rounded font-black inline-flex items-center gap-1 border ${
+                        myPlayer.rank.isOwner
+                          ? 'border-amber-400 shadow-[0_0_8px_rgba(255,215,0,0.6)]'
+                          : 'border-white/20'
+                      }`}
+                      style={{
+                        background: myPlayer.rank.isOwner
+                          ? 'linear-gradient(90deg, rgba(255,0,128,0.35), rgba(255,215,0,0.35))'
+                          : 'rgba(255,255,255,0.08)',
+                        borderColor: myPlayer.rank.color,
+                        color: myPlayer.rank.color,
+                      }}
+                    >
+                      <span>{myPlayer.rank.icon}</span>
+                      <span>{myPlayer.rank.name}</span>
+                    </span>
+                  )}
                 </span>
               ) : currentPlayer?.isBot ? (
                 <span className="bg-purple-950/50 border border-purple-500/40 px-2.5 py-0.5 rounded-full text-purple-200 font-semibold inline-flex items-center gap-1.5 shadow-sm">
@@ -344,11 +363,44 @@ export const Board: React.FC<BoardProps> = ({
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
                   </span>
-                  <span>🤖 <strong className="text-white font-bold">{currentPlayer.name}</strong> กำลังคิด... (Thinking)</span>
+                  <span>🤖 <strong className="text-white font-bold">{currentPlayer.name}</strong></span>
+                  {currentPlayer.rank && (
+                    <span
+                      className="text-[9px] px-1.5 py-0.2 rounded font-black inline-flex items-center gap-1 border border-white/20"
+                      style={{
+                        background: 'rgba(255,255,255,0.08)',
+                        borderColor: currentPlayer.rank.color,
+                        color: currentPlayer.rank.color,
+                      }}
+                    >
+                      <span>{currentPlayer.rank.icon}</span>
+                      <span>{currentPlayer.rank.name}</span>
+                    </span>
+                  )}
+                  <span>กำลังคิด... (Thinking)</span>
                 </span>
               ) : (
-                <span className="text-white/60 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/5">
-                  รอตาของ (Waiting): <strong className="text-white font-bold">{currentPlayer?.name}</strong>
+                <span className="text-white/60 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/5 inline-flex items-center gap-1.5">
+                  <span>รอตาของ (Waiting): <strong className="text-white font-bold">{currentPlayer?.name}</strong></span>
+                  {currentPlayer?.rank && (
+                    <span
+                      className={`text-[9px] px-1.5 py-0.2 rounded font-black inline-flex items-center gap-1 border ${
+                        currentPlayer.rank.isOwner
+                          ? 'border-amber-400 shadow-[0_0_8px_rgba(255,215,0,0.6)]'
+                          : 'border-white/20'
+                      }`}
+                      style={{
+                        background: currentPlayer.rank.isOwner
+                          ? 'linear-gradient(90deg, rgba(255,0,128,0.35), rgba(255,215,0,0.35))'
+                          : 'rgba(255,255,255,0.08)',
+                        borderColor: currentPlayer.rank.color,
+                        color: currentPlayer.rank.color,
+                      }}
+                    >
+                      <span>{currentPlayer.rank.icon}</span>
+                      <span>{currentPlayer.rank.name}</span>
+                    </span>
+                  )}
                 </span>
               )}
             </span>

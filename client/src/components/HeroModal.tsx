@@ -107,6 +107,37 @@ export const HeroModal: React.FC<HeroModalProps> = ({
               <span className="bg-yellow-400/20 text-yellow-300 border border-yellow-400/40 text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-bold truncate max-w-[100px] sm:max-w-[150px]">
                 {player.name}
               </span>
+              {player.rank && (
+                <span
+                  className={`text-[9px] px-1.5 py-0.2 rounded font-black inline-flex items-center gap-1 border shadow-sm ${
+                    player.rank.isOwner
+                      ? 'border-amber-400 shadow-[0_0_8px_rgba(255,215,0,0.6)] animate-pulse'
+                      : 'border-white/20'
+                  }`}
+                  style={{
+                    background: player.rank.isOwner
+                      ? 'linear-gradient(90deg, rgba(255,0,128,0.35), rgba(255,215,0,0.35))'
+                      : 'rgba(255,255,255,0.08)',
+                    borderColor: player.rank.color,
+                  }}
+                  title={`ยศ: ${player.rank.name}`}
+                >
+                  <span>{player.rank.icon}</span>
+                  <span
+                    style={
+                      player.rank.isOwner
+                        ? {
+                            background: 'linear-gradient(90deg, #ffd700, #ff007f)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                          }
+                        : { color: player.rank.color }
+                    }
+                  >
+                    {player.rank.name}
+                  </span>
+                </span>
+              )}
             </div>
 
             {/* Core Stats Pills */}

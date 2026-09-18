@@ -138,7 +138,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   <span
                     className={`text-xs font-bold truncate ${
                       isMe ? 'text-yellow-300' : 'text-white/90'
@@ -146,9 +146,43 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                   >
                     {player.name}
                   </span>
+
+                  {/* Rank Tag / Badge directly attached after name! */}
+                  {player.rank && (
+                    <span
+                      className={`text-[9px] px-1.5 py-0.2 rounded font-black inline-flex items-center gap-1 border shadow-sm ${
+                        player.rank.isOwner
+                          ? 'border-amber-400 shadow-[0_0_10px_rgba(255,215,0,0.6)] animate-pulse'
+                          : 'border-white/20'
+                      }`}
+                      style={{
+                        background: player.rank.isOwner
+                          ? 'linear-gradient(90deg, rgba(255,0,128,0.35), rgba(255,215,0,0.35))'
+                          : 'rgba(255,255,255,0.08)',
+                        borderColor: player.rank.color,
+                      }}
+                      title={`ยศ: ${player.rank.name}`}
+                    >
+                      <span className="text-[10px] leading-none">{player.rank.icon}</span>
+                      <span
+                        style={
+                          player.rank.isOwner
+                            ? {
+                                background: 'linear-gradient(90deg, #ffd700, #ff007f)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                              }
+                            : { color: player.rank.color }
+                        }
+                      >
+                        {player.rank.name}
+                      </span>
+                    </span>
+                  )}
+
                   {isMe && (
                     <span className="text-[9px] bg-yellow-400/20 text-yellow-300 px-1 rounded font-bold">
-                      คุณ (YOU)
+                      คุณ
                     </span>
                   )}
                   {player.isBot && (

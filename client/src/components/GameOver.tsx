@@ -278,19 +278,50 @@ export const GameOver: React.FC<GameOverProps> = ({
                       );
                     })()}
                   </div>
-                  <div className="flex-1 text-left">
+                  <div className="flex-1 text-left flex items-center gap-1.5 flex-wrap">
                     <span
                       className={`font-bold text-sm ${isMe ? 'text-yellow-300' : 'text-white/90'}`}
                     >
                       {player.name}
                     </span>
+                    {player.rank && (
+                      <span
+                        className={`text-[9px] px-1.5 py-0.2 rounded font-black inline-flex items-center gap-1 border shadow-sm ${
+                          player.rank.isOwner
+                            ? 'border-amber-400 shadow-[0_0_8px_rgba(255,215,0,0.6)] animate-pulse'
+                            : 'border-white/20'
+                        }`}
+                        style={{
+                          background: player.rank.isOwner
+                            ? 'linear-gradient(90deg, rgba(255,0,128,0.35), rgba(255,215,0,0.35))'
+                            : 'rgba(255,255,255,0.08)',
+                          borderColor: player.rank.color,
+                        }}
+                        title={`ยศ: ${player.rank.name}`}
+                      >
+                        <span className="text-[10px] leading-none">{player.rank.icon}</span>
+                        <span
+                          style={
+                            player.rank.isOwner
+                              ? {
+                                  background: 'linear-gradient(90deg, #ffd700, #ff007f)',
+                                  WebkitBackgroundClip: 'text',
+                                  WebkitTextFillColor: 'transparent',
+                                }
+                              : { color: player.rank.color }
+                          }
+                        >
+                          {player.rank.name}
+                        </span>
+                      </span>
+                    )}
                     {player.isBot && (
-                      <span className="text-[9px] bg-purple-500/20 text-purple-300 px-1 py-0.5 rounded ml-1.5 font-bold">
+                      <span className="text-[9px] bg-purple-500/20 text-purple-300 px-1 py-0.5 rounded font-bold">
                         บอท (BOT)
                       </span>
                     )}
                     {isMe && (
-                      <span className="text-[10px] text-yellow-400/80 font-semibold ml-1.5">
+                      <span className="text-[10px] text-yellow-400/80 font-semibold">
                         (คุณ)
                       </span>
                     )}
