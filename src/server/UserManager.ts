@@ -26,7 +26,7 @@ export const RANKS: Rank[] = [
   { name: 'ผู้พิทักษ์กาแล็กซี',   nameEn: 'Guardian',            minXP: 3500,   icon: '💎', color: '#a855f7' },
   { name: 'จอมเวทสูงสุด',       nameEn: 'Sorcerer Supreme',     minXP: 6500,   icon: '🌌', color: '#06b6d4' },
   { name: 'ผู้ถือครองอินฟินิตี้', nameEn: 'Infinity Wielder',   minXP: 12000,  icon: '🔥', color: '#ff6a00' },
-  { name: '👑 THE ONE ABOVE ALL', nameEn: 'The One Above All', minXP: 50000,  icon: '👑', color: '#ff007f', isOwner: true },
+  { name: 'THE ONE ABOVE ALL',    nameEn: 'The One Above All',   minXP: 50000,  icon: '👑', color: '#ffd700', isOwner: true },
 ];
 
 export function getRank(xp: number): Rank {

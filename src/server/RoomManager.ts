@@ -59,18 +59,6 @@ interface Room {
   lastTurnTime?: number;
 }
 
-function getBotRank(botName: string): PlayerRankInfo {
-  const lower = botName.toLowerCase();
-  if (lower.includes('doom') || lower.includes('thanos')) {
-    return { name: 'ผู้ถือครองอินฟินิตี้', nameEn: 'Infinity Wielder', icon: '🔥', color: '#ff6a00' };
-  } else if (lower.includes('loki')) {
-    return { name: 'ผู้พิทักษ์กาแล็กซี', nameEn: 'Guardian', icon: '💎', color: '#a855f7' };
-  } else if (lower.includes('stark') || lower.includes('iron')) {
-    return { name: 'อเวนเจอร์', nameEn: 'Avenger', icon: '🥇', color: '#ffd700' };
-  } else {
-    return { name: 'ซูเปอร์โซลเยอร์', nameEn: 'Super Soldier', icon: '🛡️', color: '#38bdf8' };
-  }
-}
 
 // ─── RoomManager Class ────────────────────────────────────────
 
@@ -397,6 +385,10 @@ export class RoomManager {
 
       // Attach rank info to every player
       for (const p of rawState.players) {
+        if (p.isBot) {
+          p.rank = undefined;
+          continue;
+        }
         const session = room.sessions.find((s) => s.id === p.id);
         if (session?.rank) {
           p.rank = session.rank;
@@ -405,9 +397,7 @@ export class RoomManager {
           if (cached) p.rank = cached.rank;
         }
         if (!p.rank) {
-          p.rank = p.isBot
-            ? getBotRank(p.name)
-            : { name: 'นักสู้ใหม่', nameEn: 'Recruit', icon: '🥉', color: '#cd7f32' };
+          p.rank = { name: 'นักสู้ใหม่', nameEn: 'Recruit', icon: '🥉', color: '#cd7f32' };
         }
       }
 
@@ -472,7 +462,6 @@ export class RoomManager {
       avatarUrl: resolvedAvatarUrl,
       isBot: true,
       botPersonality: personality ?? nextDefault.personality,
-      rank: getBotRank(finalBotName),
     });
 
     room.lastActivity = Date.now();
@@ -534,7 +523,6 @@ export class RoomManager {
         avatarUrl: template.avatarUrl,
         isBot: true,
         botPersonality: template.personality,
-        rank: getBotRank(finalBotName),
       });
     }
 

@@ -13,6 +13,7 @@ import { TutorialModal } from './TutorialModal';
 import { AvatarPicker, MARVEL_AVATARS } from './AvatarPicker';
 import { ProfileBadge } from './ProfileBadge';
 import marvelAvatarsData from '../data/marvelAvatarsData.json';
+import { RankBadge } from './RankBadge';
 
 const resolvePlayerAvatar = (name: string, avatarUrl?: string): string | undefined => {
   if (avatarUrl) return avatarUrl;
@@ -404,37 +405,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-bold text-white text-xs truncate">{p.name}</span>
-                        {p.rank && (
-                          <span
-                            className={`text-[9px] px-1.5 py-0.2 rounded font-black inline-flex items-center gap-1 border shadow-sm ${
-                              p.rank.isOwner
-                                ? 'border-amber-400 shadow-[0_0_8px_rgba(255,215,0,0.6)] animate-pulse'
-                                : 'border-white/20'
-                            }`}
-                            style={{
-                              background: p.rank.isOwner
-                                ? 'linear-gradient(90deg, rgba(255,0,128,0.35), rgba(255,215,0,0.35))'
-                                : 'rgba(255,255,255,0.08)',
-                              borderColor: p.rank.color,
-                            }}
-                            title={`ยศ: ${p.rank.name}`}
-                          >
-                            <span className="text-[10px] leading-none">{p.rank.icon}</span>
-                            <span
-                              style={
-                                p.rank.isOwner
-                                  ? {
-                                      background: 'linear-gradient(90deg, #ffd700, #ff007f)',
-                                      WebkitBackgroundClip: 'text',
-                                      WebkitTextFillColor: 'transparent',
-                                    }
-                                  : { color: p.rank.color }
-                              }
-                            >
-                              {p.rank.name}
-                            </span>
-                          </span>
-                        )}
+                        <RankBadge rank={p.rank} isBot={p.isBot} size="sm" />
                       </div>
                       {p.isBot && <span className="text-[8px] text-purple-300 block">🤖 บอทมาร์เวล (Marvel AI Bot)</span>}
                     </div>

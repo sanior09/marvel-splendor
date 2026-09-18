@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import type { Player } from '@shared/types/game.types';
 import { soundManager } from '../utils/soundManager';
 import marvelAvatarsData from '../data/marvelAvatarsData.json';
+import { RankBadge } from './RankBadge';
 
 const resolvePlayerAvatar = (player: Player): string | undefined => {
   if (player.avatarUrl) return player.avatarUrl;
@@ -284,37 +285,7 @@ export const GameOver: React.FC<GameOverProps> = ({
                     >
                       {player.name}
                     </span>
-                    {player.rank && (
-                      <span
-                        className={`text-[9px] px-1.5 py-0.2 rounded font-black inline-flex items-center gap-1 border shadow-sm ${
-                          player.rank.isOwner
-                            ? 'border-amber-400 shadow-[0_0_8px_rgba(255,215,0,0.6)] animate-pulse'
-                            : 'border-white/20'
-                        }`}
-                        style={{
-                          background: player.rank.isOwner
-                            ? 'linear-gradient(90deg, rgba(255,0,128,0.35), rgba(255,215,0,0.35))'
-                            : 'rgba(255,255,255,0.08)',
-                          borderColor: player.rank.color,
-                        }}
-                        title={`ยศ: ${player.rank.name}`}
-                      >
-                        <span className="text-[10px] leading-none">{player.rank.icon}</span>
-                        <span
-                          style={
-                            player.rank.isOwner
-                              ? {
-                                  background: 'linear-gradient(90deg, #ffd700, #ff007f)',
-                                  WebkitBackgroundClip: 'text',
-                                  WebkitTextFillColor: 'transparent',
-                                }
-                              : { color: player.rank.color }
-                          }
-                        >
-                          {player.rank.name}
-                        </span>
-                      </span>
-                    )}
+                    <RankBadge rank={player.rank} isBot={player.isBot} size="md" />
                     {player.isBot && (
                       <span className="text-[9px] bg-purple-500/20 text-purple-300 px-1 py-0.5 rounded font-bold">
                         บอท (BOT)

@@ -74,6 +74,14 @@ body {
 .text-glow-amethyst { text-shadow: 0 0 12px #9333eaaa; }
 .text-glow-gold     { text-shadow: 0 0 16px #94a3b8aa; }
 
+/* ─── Rank Badge Font & Sharp Rendering ───────────────── */
+.rank-badge {
+  font-family: 'Chakra Petch', 'Prompt', 'Outfit', sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 /* ─── Marvel Branding ────────────────────────────────── */
 .marvel-badge {
   background: #e23636;
