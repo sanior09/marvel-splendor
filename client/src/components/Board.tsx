@@ -22,6 +22,8 @@ import { TutorialModal } from './TutorialModal';
 import { getHeroSignature, playHeroSignatureSound, type HeroSignature } from '../data/heroSignatures';
 import type { Card } from '@shared/types/game.types';
 
+import type { UserProfile } from '../hooks/useAuth';
+
 interface BoardProps {
   state: GameState;
   myPlayerId: string;
@@ -29,6 +31,9 @@ interface BoardProps {
   onLeave: () => void;
   error: string | null;
   onClearError: () => void;
+  gameOverData?: { winners: string[]; xpData?: Record<string, any> } | null;
+  userProfile?: UserProfile | null;
+  refreshProfile?: () => void;
 }
 
 const GAUNTLET_5_BONUS_STONES: CrystalColor[] = [
@@ -46,6 +51,9 @@ export const Board: React.FC<BoardProps> = ({
   onLeave,
   error,
   onClearError,
+  gameOverData,
+  userProfile,
+  refreshProfile,
 }) => {
   const { board, players, currentPlayerIndex, phase } = state;
   const currentPlayer = players[currentPlayerIndex];
@@ -642,6 +650,9 @@ export const Board: React.FC<BoardProps> = ({
             players={players}
             myPlayerId={myPlayerId}
             onLeave={onLeave}
+            gameOverData={gameOverData}
+            userProfile={userProfile}
+            refreshProfile={refreshProfile}
           />
         )}
       </div>

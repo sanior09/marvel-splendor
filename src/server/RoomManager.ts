@@ -552,7 +552,6 @@ export class RoomManager {
 
         if (newState.phase === 'finished') {
           currentRoom.status = 'finished';
-          this.io.to(roomId).emit('game:over', { winners: newState.winners });
           this.handleGameOver(currentRoom);
         }
 
@@ -604,7 +603,6 @@ export class RoomManager {
 
       if (newState.phase === 'finished') {
         room.status = 'finished';
-        this.io.to(roomId).emit('game:over', { winners: newState.winners });
         this.handleGameOver(room);
       }
 
@@ -619,13 +617,13 @@ export class RoomManager {
 
   // ─── Handle Game Over (Record XP & Stats) ───────────────────
 
-  private handleGameOver(room: Room): void {
+  private async handleGameOver(room: Room): Promise<void> {
     if (!room.gameState) return;
     const gameState = room.gameState;
     const winners = gameState.winners || [];
+    const xpData: Record<string, any> = {};
 
     for (const session of room.sessions) {
-      if (!session.accountId || session.isBot) continue;
       const pState = gameState.players.find((p) => p.id === session.id);
       const won = winners.includes(session.id);
       const isRankOne = won;
@@ -633,17 +631,42 @@ export class RoomManager {
       const guardianCount = pState?.guardians?.length ?? 0;
       const bonusXP = (tier3Count * 3) + (guardianCount * 5);
 
-      userManager
-        .recordGameResult(session.accountId, {
-          won,
-          finalScore: pState?.score ?? 0,
-          isRankOne,
-          bonusXP,
-        })
-        .catch((err) => {
+      if (session.accountId && !session.isBot) {
+        try {
+          const res = await userManager.recordGameResult(session.accountId, {
+            won,
+            finalScore: pState?.score ?? 0,
+            isRankOne,
+            bonusXP,
+          });
+          if (res) {
+            xpData[session.id] = {
+              xpGained: res.xpGained,
+              breakdown: res.breakdown,
+              profile: res.profile,
+              isRankOne,
+              won,
+            };
+          }
+        } catch (err) {
           console.error(`[RoomManager] Error recording game result for user ${session.accountId}:`, err);
-        });
+        }
+      } else {
+        const baseXP = 15;
+        const winXP = won ? 35 : 0;
+        const rankXP = isRankOne ? 20 : 0;
+        const totalXP = baseXP + winXP + rankXP + bonusXP;
+        xpData[session.id] = {
+          xpGained: totalXP,
+          breakdown: { baseXP, winXP, rankXP, bonusXP },
+          isGuest: true,
+          isRankOne,
+          won,
+        };
+      }
     }
+
+    this.io.to(room.roomId).emit('game:over', { winners: gameState.winners, xpData });
   }
 
   // ─── Broadcast State ────────────────────────────────────────

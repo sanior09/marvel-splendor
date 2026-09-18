@@ -134,6 +134,7 @@ function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactEl
     roomInfo,
     connectionStatus,
     error,
+    gameOverData,
     createRoom,
     createSolo,
     setTargetScore,
@@ -242,6 +243,9 @@ function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactEl
             onLeave={handleLeave}
             error={error}
             onClearError={clearError}
+            gameOverData={gameOverData}
+            userProfile={auth.profile}
+            refreshProfile={auth.refreshProfile}
           />
         ) : (
           <Lobby

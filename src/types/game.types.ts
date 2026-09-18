@@ -239,7 +239,7 @@ export interface ServerToClientEvents {
   'room:updated': (room: RoomInfo) => void;
   'game:stateUpdate': (state: GameState) => void;
   'game:error': (payload: { message: string }) => void;
-  'game:over': (payload: { winners: string[] }) => void;
+  'game:over': (payload: { winners: string[]; xpData?: Record<string, any> }) => void;
   'room:list': (rooms: RoomInfo[]) => void;
   'player:kickedAfk': (payload: { message: string }) => void;
 }

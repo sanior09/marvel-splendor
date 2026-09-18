@@ -15,21 +15,72 @@ const resolvePlayerAvatar = (player: Player): string | undefined => {
   return undefined;
 };
 
+import type { UserProfile } from '../hooks/useAuth';
+
 interface GameOverProps {
   winners: string[];
   players: Player[];
   myPlayerId: string;
   onLeave: () => void;
+  gameOverData?: { winners: string[]; xpData?: Record<string, any> } | null;
+  userProfile?: UserProfile | null;
+  refreshProfile?: () => void;
 }
 
-export const GameOver: React.FC<GameOverProps> = ({ winners, players, myPlayerId, onLeave }) => {
+export const GameOver: React.FC<GameOverProps> = ({
+  winners,
+  players,
+  myPlayerId,
+  onLeave,
+  gameOverData,
+  userProfile,
+  refreshProfile,
+}) => {
   const winnerPlayers = players.filter((p) => winners.includes(p.id));
   const isIWon = winners.includes(myPlayerId);
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+  const myPlayer = players.find((p) => p.id === myPlayerId);
 
   useEffect(() => {
     soundManager.playVictory();
-  }, []);
+    if (refreshProfile) {
+      refreshProfile();
+    }
+  }, [refreshProfile]);
+
+  // XP & Rank Calculations
+  const myXpData = gameOverData?.xpData?.[myPlayerId];
+  const fallbackTier3Count = myPlayer ? myPlayer.ownedCards.filter((c) => c.tier === 3).length : 0;
+  const fallbackGuardianCount = myPlayer?.guardians.length ?? 0;
+  const fallbackBonusXP = (fallbackTier3Count * 3) + (fallbackGuardianCount * 5);
+  const fallbackBaseXP = 15;
+  const fallbackWinXP = isIWon ? 35 : 0;
+  const fallbackXpGained = fallbackBaseXP + fallbackWinXP + fallbackBonusXP;
+
+  const displayXpGained = myXpData?.xpGained ?? fallbackXpGained;
+  const breakdown = myXpData?.breakdown ?? {
+    baseXP: fallbackBaseXP,
+    winXP: fallbackWinXP,
+    bonusXP: fallbackBonusXP,
+  };
+
+  const activeProfile = myXpData?.profile ?? userProfile;
+  const currentRank = activeProfile?.rank;
+  const nextRank = activeProfile?.nextRank;
+  const xpToNextRank = activeProfile?.xpToNextRank;
+  const isOwner = Boolean(currentRank?.isOwner || (activeProfile && activeProfile.xp >= 50000));
+
+  const xpPercent = (activeProfile && nextRank)
+    ? Math.min(
+        100,
+        Math.max(
+          0,
+          Math.round(
+            ((activeProfile.xp - currentRank!.minXP) / (nextRank.minXP - currentRank!.minXP)) * 100
+          )
+        )
+      )
+    : 100;
 
   return createPortal(
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -64,6 +115,134 @@ export const GameOver: React.FC<GameOverProps> = ({ winners, players, myPlayerId
               ? 'คุณรวบรวมมณีครบทั้ง 6 ชนิดและครอบครอง Infinity Gauntlet สำเร็จ!'
               : `${winnerPlayers.map((p) => p.name).join(' & ')} รวบรวม Infinity Gauntlet สำเร็จและชนะเกมนี้!`}
           </p>
+        </div>
+
+        {/* ── EXP & Rank Progression Card ── */}
+        <div
+          className="rounded-2xl p-4 sm:p-5 text-left border relative overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, rgba(30, 20, 50, 0.85) 0%, rgba(12, 10, 24, 0.95) 100%)',
+            borderColor: isOwner ? 'rgba(255, 215, 0, 0.6)' : 'rgba(168, 85, 247, 0.4)',
+            boxShadow: isOwner
+              ? '0 10px 30px rgba(255, 0, 128, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.15)'
+              : '0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(168, 85, 247, 0.12)',
+          }}
+        >
+          {/* Top Row: Title & XP Gained Pill */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">⚡</span>
+              <div>
+                <div className="text-white font-black text-sm uppercase tracking-wider">
+                  สรุปแต้ม EXP & อันดับ
+                </div>
+                <div className="text-white/40 text-[10px]">EXP & Rank Progression</div>
+              </div>
+            </div>
+
+            {/* Glowing XP Gained Pill */}
+            <div
+              className="px-3 py-1 rounded-full flex items-center gap-1.5 border font-black text-xs shadow-lg animate-pulse"
+              style={{
+                background: 'linear-gradient(90deg, #f59e0b, #ec4899)',
+                borderColor: '#fef08a',
+                color: '#ffffff',
+                boxShadow: '0 0 15px rgba(245, 158, 11, 0.5)',
+              }}
+            >
+              <span>+{displayXpGained} EXP</span>
+            </div>
+          </div>
+
+          {/* XP Breakdown Details */}
+          <div className="flex flex-wrap gap-1.5 mb-3 text-[11px]">
+            <span className="px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/80 flex items-center gap-1">
+              <span>🎮 เล่นจบ</span>
+              <strong className="text-white font-bold">+{breakdown.baseXP}</strong>
+            </span>
+            {breakdown.winXP > 0 && (
+              <span className="px-2.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-400/30 text-amber-300 font-bold flex items-center gap-1">
+                <span>🏆 ชนะเกม</span>
+                <strong>+{breakdown.winXP}</strong>
+              </span>
+            )}
+            {breakdown.bonusXP > 0 && (
+              <span className="px-2.5 py-0.5 rounded-md bg-purple-500/15 border border-purple-400/30 text-purple-300 flex items-center gap-1">
+                <span>✨ โบนัสการ์ด/สถานที่</span>
+                <strong>+{breakdown.bonusXP}</strong>
+              </span>
+            )}
+          </div>
+
+          {/* Current Rank & Next Rank Progress */}
+          {activeProfile && currentRank ? (
+            <div className="space-y-2 pt-3 border-t border-white/10">
+              {/* Rank title row */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className={`text-2xl ${isOwner ? 'animate-bounce' : ''}`}>{currentRank.icon}</span>
+                  <div>
+                    <div className="text-[10px] text-white/50">ยศของคุณ</div>
+                    <div className="text-sm font-black text-white flex items-center gap-1.5">
+                      <span style={{ color: currentRank.color }}>{currentRank.name}</span>
+                      {isOwner && (
+                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-gradient-to-r from-amber-400 to-pink-500 text-black font-extrabold uppercase">
+                          OWNER
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Total XP */}
+                <div className="text-right">
+                  <div className="text-[10px] text-white/50">EXP รวมสะสม</div>
+                  <div className="text-sm font-black text-amber-300">
+                    {activeProfile.xp.toLocaleString()} XP
+                  </div>
+                </div>
+              </div>
+
+              {/* Progress Bar towards Next Rank */}
+              {nextRank ? (
+                <div className="space-y-1 pt-1">
+                  <div className="h-2.5 rounded-full bg-black/40 overflow-hidden border border-white/10 relative">
+                    <div
+                      className="h-full rounded-full transition-all duration-1000"
+                      style={{
+                        width: `${xpPercent}%`,
+                        background: `linear-gradient(90deg, ${currentRank.color}, #ffd700, #ff007f)`,
+                        boxShadow: '0 0 10px rgba(255, 215, 0, 0.5)',
+                      }}
+                    />
+                  </div>
+
+                  {/* Next rank highlight banner */}
+                  <div className="flex items-center justify-between text-[11px] pt-0.5">
+                    <span className="text-amber-300 font-bold flex items-center gap-1 flex-wrap">
+                      <span>🚀 อีก {xpToNextRank?.toLocaleString()} XP</span>
+                      <span className="text-white/60">จะเลื่อนสู่ยศ</span>
+                      <span className="text-white font-extrabold underline decoration-amber-400">
+                        {nextRank.name} {nextRank.icon}
+                      </span>
+                    </span>
+                    <span className="text-white/40 text-[10px]">{xpPercent}%</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-1.5 px-3 rounded-lg bg-gradient-to-r from-amber-500/20 to-pink-500/20 border border-amber-400/40 text-center">
+                  <span className="text-xs font-black text-amber-300 flex items-center justify-center gap-1.5">
+                    <span>👑</span>
+                    <span>ท่านอยู่ในระดับสูงสุดแห่งจักรวาลแล้ว (MAX RANK)</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="pt-2 border-t border-white/10 text-center text-xs text-white/50">
+              💡 คุณเล่นเป็นผู้เยี่ยมชม — เข้าสู่ระบบเพื่อสะสมแต้ม EXP และไต่แรงก์ถาวร
+            </div>
+          )}
         </div>
 
         {/* Scoreboard */}

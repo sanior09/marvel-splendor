@@ -14,6 +14,7 @@ export interface UseGameStateReturn {
   myPlayerId: string | null;
   connectionStatus: ConnectionStatus;
   error: string | null;
+  gameOverData: { winners: string[]; xpData?: Record<string, any> } | null;
   // Actions
   createRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string, targetScore?: number, accountId?: string) => void;
   createSolo: (playerName: string, botCount: number, botNames?: string[], callback?: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string, targetScore?: number, accountId?: string) => void;
@@ -34,6 +35,7 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
   const socket = useSocket();
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [roomInfo, setRoomInfo] = useState<RoomInfo | null>(null);
+  const [gameOverData, setGameOverData] = useState<{ winners: string[]; xpData?: Record<string, any> } | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('connecting');
   const [error, setError] = useState<string | null>(null);
 
@@ -45,12 +47,13 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
     const onStateUpdate = (state: GameState): void => setGameState(state);
     const onRoomUpdated = (room: RoomInfo): void => setRoomInfo(room);
     const onGameError = ({ message }: { message: string }): void => setError(message);
-    const onGameOver = (): void => {
-      // Game state will update with phase: 'finished'
+    const onGameOver = (payload: { winners: string[]; xpData?: Record<string, any> }): void => {
+      setGameOverData(payload);
     };
     const onPlayerKickedAfk = (): void => {
       setGameState(null);
       setRoomInfo(null);
+      setGameOverData(null);
     };
 
     socket.on('connect', onConnect);
@@ -227,6 +230,7 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
     myPlayerId,
     connectionStatus,
     error,
+    gameOverData,
     createRoom,
     createSolo,
     setTargetScore,

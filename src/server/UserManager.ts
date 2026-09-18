@@ -239,21 +239,33 @@ export class UserManager {
     finalScore: number;
     isRankOne: boolean;
     bonusXP?: number;
-  }): Promise<void> {
-    const xpGained = XP_AWARDS.GAME_PLAYED
-      + (opts.won ? XP_AWARDS.GAME_WIN : 0)
-      + (opts.isRankOne ? XP_AWARDS.RANK_1 : 0)
-      + (opts.bonusXP ?? 0);
+  }): Promise<{ profile: UserProfile; xpGained: number; breakdown: { baseXP: number; winXP: number; rankXP: number; bonusXP: number } } | null> {
+    const baseXP = XP_AWARDS.GAME_PLAYED;
+    const winXP = opts.won ? XP_AWARDS.GAME_WIN : 0;
+    const rankXP = opts.isRankOne ? XP_AWARDS.RANK_1 : 0;
+    const bonusXP = opts.bonusXP ?? 0;
+    const xpGained = baseXP + winXP + rankXP + bonusXP;
 
-    await User.findByIdAndUpdate(userId, {
-      $inc: {
-        gamesPlayed: 1,
-        gamesWon: opts.won ? 1 : 0,
-        xp: xpGained,
-        totalScore: opts.finalScore,
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $inc: {
+          gamesPlayed: 1,
+          gamesWon: opts.won ? 1 : 0,
+          xp: xpGained,
+          totalScore: opts.finalScore,
+        },
+        $set: { activeRoomId: null, activePlayerId: null, lastSeen: new Date() },
       },
-      $set: { activeRoomId: null, activePlayerId: null, lastSeen: new Date() },
-    });
+      { new: true }
+    );
+
+    if (!user) return null;
+    return {
+      profile: this.toProfile(user),
+      xpGained,
+      breakdown: { baseXP, winXP, rankXP, bonusXP },
+    };
   }
 
   // ─── Award Bonus XP (for in-game milestones) ─────────────
