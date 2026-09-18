@@ -14,6 +14,7 @@ export interface Rank {
   minXP: number;
   icon: string;
   color: string;
+  isOwner?: boolean;
 }
 
 export interface UserProfile {

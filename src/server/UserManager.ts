@@ -15,6 +15,7 @@ export interface Rank {
   minXP: number;
   icon: string;
   color: string;
+  isOwner?: boolean;
 }
 
 export const RANKS: Rank[] = [
@@ -23,6 +24,7 @@ export const RANKS: Rank[] = [
   { name: 'อเวนเจอร์',        nameEn: 'Avenger',               minXP: 500,   icon: '🥇', color: '#ffd700' },
   { name: 'ผู้พิทักษ์กาแล็กซี', nameEn: 'Guardian',            minXP: 1500,  icon: '💎', color: '#b9f2ff' },
   { name: 'ผู้ถือครองอินฟินิตี้', nameEn: 'Infinity Wielder',  minXP: 5000,  icon: '🔥', color: '#ff6a00' },
+  { name: '👑 THE ONE ABOVE ALL', nameEn: 'The One Above All', minXP: 50000, icon: '👑', color: '#ff007f', isOwner: true },
 ];
 
 export function getRank(xp: number): Rank {

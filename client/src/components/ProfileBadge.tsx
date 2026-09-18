@@ -29,18 +29,48 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
       ))
     : 100;
 
+  const isOwner = Boolean(profile.rank.isOwner || profile.rank.minXP >= 50000);
+
   return (
     <div className="relative">
       {/* Badge Button */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/15 hover:border-white/30 transition-all"
-        style={{ background: 'rgba(255,255,255,0.06)' }}
+        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all ${
+          isOwner
+            ? 'border-amber-400/60 shadow-[0_0_15px_rgba(255,215,0,0.4)] hover:shadow-[0_0_22px_rgba(255,0,128,0.6)]'
+            : 'border-white/15 hover:border-white/30'
+        }`}
+        style={{
+          background: isOwner
+            ? 'linear-gradient(135deg, rgba(255,0,128,0.18) 0%, rgba(255,215,0,0.18) 100%)'
+            : 'rgba(255,255,255,0.06)',
+        }}
       >
-        <span className="text-base leading-none">{profile.rank.icon}</span>
+        <span className={`text-base leading-none ${isOwner ? 'animate-bounce' : ''}`}>{profile.rank.icon}</span>
         <div className="text-left">
-          <div className="text-white text-xs font-bold leading-tight">{profile.username}</div>
-          <div className="text-white/50 text-[10px] leading-tight">{profile.rank.name}</div>
+          <div className="flex items-center gap-1">
+            <span className="text-white text-xs font-black leading-tight tracking-wide">{profile.username}</span>
+            {isOwner && (
+              <span className="text-[9px] px-1 py-0.2 rounded bg-gradient-to-r from-amber-500 to-pink-500 text-black font-extrabold uppercase leading-none">
+                CREATOR
+              </span>
+            )}
+          </div>
+          <div
+            className="text-[10px] font-bold leading-tight"
+            style={
+              isOwner
+                ? {
+                    background: 'linear-gradient(90deg, #ffd700, #ff007f)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }
+                : { color: 'rgba(255,255,255,0.5)' }
+            }
+          >
+            {profile.rank.name}
+          </div>
         </div>
         <div className="text-white/30 text-xs ml-1">{expanded ? '▲' : '▼'}</div>
       </button>
@@ -48,24 +78,49 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
       {/* Dropdown */}
       {expanded && (
         <div
-          className="absolute right-0 top-full mt-2 w-64 rounded-2xl p-4 z-50 border border-white/15"
+          className="absolute right-0 top-full mt-2 w-64 rounded-2xl p-4 z-50 border"
           style={{
             background: 'linear-gradient(135deg, rgba(20,22,40,0.98) 0%, rgba(10,11,20,0.98) 100%)',
             backdropFilter: 'blur(20px)',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+            borderColor: isOwner ? 'rgba(255,215,0,0.4)' : 'rgba(255,255,255,0.15)',
+            boxShadow: isOwner
+              ? '0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(255,0,128,0.3)'
+              : '0 20px 40px rgba(0,0,0,0.6)',
           }}
         >
           {/* Header */}
           <div className="flex items-center gap-3 mb-4">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center text-2xl border-2"
-              style={{ borderColor: profile.rank.color, background: 'rgba(255,255,255,0.05)' }}
+              style={{
+                borderColor: isOwner ? '#ffd700' : profile.rank.color,
+                background: isOwner ? 'rgba(255,215,0,0.15)' : 'rgba(255,255,255,0.05)',
+                boxShadow: isOwner ? '0 0 15px rgba(255,215,0,0.5)' : undefined,
+              }}
             >
               {profile.rank.icon}
             </div>
             <div>
-              <div className="text-white font-bold">{profile.username}</div>
-              <div className="text-xs font-semibold" style={{ color: profile.rank.color }}>
+              <div className="text-white font-bold flex items-center gap-1.5">
+                {profile.username}
+                {isOwner && (
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-pink-500 text-black font-extrabold shadow-sm">
+                    👑 OWNER
+                  </span>
+                )}
+              </div>
+              <div
+                className="text-xs font-bold"
+                style={
+                  isOwner
+                    ? {
+                        background: 'linear-gradient(90deg, #ffd700, #ff007f, #00f0ff)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                      }
+                    : { color: profile.rank.color }
+                }
+              >
                 {profile.rank.name}
               </div>
             </div>
