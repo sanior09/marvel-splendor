@@ -26,7 +26,7 @@ const corsOrigin =
 
 const MONGODB_URI =
   process.env.MONGODB_URI ||
-  'mongodb+srv://xenia5523_db_user:1YZ8rpQAeBGYm2EF@cluster0.ggyfbtj.mongodb.net/?appName=Cluster0';
+  'mongodb+srv://xenia5523_db_user:Marvel1234@cluster0.ggyfbtj.mongodb.net/?appName=Cluster0';
 
 const app = express();
 
