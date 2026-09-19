@@ -186,11 +186,6 @@ export const GameOver: React.FC<GameOverProps> = ({
                     <div className="text-[10px] text-white/50">ยศของคุณ</div>
                     <div className="text-sm font-black text-white flex items-center gap-1.5">
                       <span style={{ color: currentRank.color }}>{currentRank.name}</span>
-                      {isOwner && (
-                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-gradient-to-r from-amber-400 to-pink-500 text-black font-extrabold uppercase">
-                          OWNER
-                        </span>
-                      )}
                     </div>
                   </div>
                 </div>

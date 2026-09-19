@@ -59,11 +59,6 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
             <span className="text-white text-xs font-black leading-tight tracking-wide">
               {profile.username}
             </span>
-            {isOwner && (
-              <span className="text-[9px] px-1 py-0.2 rounded bg-gradient-to-r from-amber-500 to-pink-500 text-black font-extrabold uppercase leading-none shadow-sm">
-                CREATOR
-              </span>
-            )}
           </div>
           <div
             className="text-[10px] font-black leading-tight tracking-wide"
@@ -122,11 +117,6 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
               <div className="min-w-0">
                 <div className="text-white font-black text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
                   <span className="truncate">{profile.username}</span>
-                  {isOwner && (
-                    <span className="text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-md bg-gradient-to-r from-amber-400 to-pink-500 text-black font-black shadow-sm tracking-wider">
-                      👑 OWNER
-                    </span>
-                  )}
                 </div>
                 <div className="mt-0.5">
                   <RankBadge rank={profile.rank} size="sm" />
