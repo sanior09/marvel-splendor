@@ -66,9 +66,9 @@ export const PlayerList: React.FC<PlayerListProps> = ({
     <div className="glass rounded-xl overflow-hidden border border-white/10 shadow-lg">
       <div className="px-3 py-1.5 border-b border-white/10 flex items-center justify-between">
         <h3 className="font-display text-[11px] font-bold text-white/80 uppercase tracking-wider flex items-center gap-1">
-          <span>ผู้เล่นในเกม (Marvel Rivals)</span>
+          <span>ผู้เล่นในสมรภูมิ</span>
         </h3>
-        <span className="text-[9px] text-white/50 uppercase font-semibold">ชนะ (Win): {targetScore} PTS</span>
+        <span className="text-[9px] text-white/50 uppercase font-semibold">เป้าหมาย: {targetScore} แต้ม</span>
       </div>
       <div className="divide-y divide-white/5">
         {players.map((player, index) => {
@@ -164,7 +164,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                           : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
                       }`}
                     >
-                      {isActive ? '🤖 กำลังคิด...' : 'บอท (BOT)'}
+                      {isActive ? 'กำลังคิด...' : 'AI BOT'}
                     </span>
                   )}
                 </div>

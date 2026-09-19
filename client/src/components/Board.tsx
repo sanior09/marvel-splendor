@@ -326,9 +326,9 @@ export const Board: React.FC<BoardProps> = ({
                 setHeroModalPlayer(myPlayer);
               }}
               className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-red-600/40 via-purple-600/30 to-amber-600/40 hover:from-red-600/60 hover:to-amber-600/60 border border-yellow-400/50 text-yellow-300 font-bold text-[11px] flex items-center gap-1.5 transition-all cursor-pointer shadow hover:scale-105"
-              title="เปิดดูการ์ดฮีโร่ทั้งหมดที่คุณครอบครองแบบขยายใหญ่ (View Recruited Heroes)"
+              title="เปิดดูการ์ดฮีโร่ทั้งหมดที่คุณครอบครองแบบขยายใหญ่"
             >
-              <span>🦸‍♂️ ดูฮีโร่ของฉัน (My Heroes)</span>
+              <span>คลังการ์ดฮีโร่</span>
               <span className="bg-yellow-400 text-black text-[9px] font-black px-1.5 rounded-full shadow">
                 {myPlayer.ownedCards.length}
               </span>
@@ -337,7 +337,7 @@ export const Board: React.FC<BoardProps> = ({
             <span className="text-[11px]">
               {isMyTurn ? (
                 <span className="text-yellow-400 font-extrabold tracking-wide animate-pulse bg-yellow-400/10 border border-yellow-400/30 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5">
-                  <span>⚡ ถึงตาคุณแล้ว (YOUR TURN)</span>
+                  <span>⚡ ถึงตาคุณแล้ว</span>
                   <RankBadge rank={myPlayer?.rank} isBot={false} size="sm" />
                 </span>
               ) : currentPlayer?.isBot ? (
@@ -346,11 +346,11 @@ export const Board: React.FC<BoardProps> = ({
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
                   </span>
-                  <span>🤖 <strong className="text-white font-bold">{currentPlayer.name}</strong> กำลังคิด... (Thinking)</span>
+                  <span>🤖 <strong className="text-white font-bold">{currentPlayer.name}</strong> กำลังคำนวณ...</span>
                 </span>
               ) : (
                 <span className="text-white/60 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/5 inline-flex items-center gap-1.5">
-                  <span>รอตาของ (Waiting): <strong className="text-white font-bold">{currentPlayer?.name}</strong></span>
+                  <span>รอตาของ: <strong className="text-white font-bold">{currentPlayer?.name}</strong></span>
                   <RankBadge rank={currentPlayer?.rank} isBot={currentPlayer?.isBot} size="sm" />
                 </span>
               )}
@@ -364,7 +364,7 @@ export const Board: React.FC<BoardProps> = ({
               }}
               className="text-[11px] text-white/50 hover:text-white transition-colors border border-white/10 hover:border-white/30 px-2.5 py-0.5 rounded-lg cursor-pointer"
             >
-              ออกจากห้อง (Leave)
+              ออกจากห้อง
             </button>
           </div>
         </header>

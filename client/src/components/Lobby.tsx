@@ -177,7 +177,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     const finalName = playerName.trim() || userProfile?.username || '';
     if (!finalName) {
       soundManager.playError();
-      setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
+      setError('กรุณาระบุชื่อฮีโร่ของคุณ');
       document.getElementById('player-name')?.focus();
       return;
     }
@@ -191,7 +191,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     const finalName = playerName.trim() || userProfile?.username || '';
     if (!finalName) {
       soundManager.playError();
-      setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
+      setError('กรุณาระบุชื่อฮีโร่ของคุณ');
       document.getElementById('player-name')?.focus();
       return;
     }
@@ -209,13 +209,13 @@ export const Lobby: React.FC<LobbyProps> = ({
     const finalName = playerName.trim() || userProfile?.username || '';
     if (!finalName) {
       soundManager.playError();
-      setError('กรุณาระบุชื่อฮีโร่ของคุณ (Please enter your Hero name)');
+      setError('กรุณาระบุชื่อฮีโร่ของคุณ');
       document.getElementById('player-name')?.focus();
       return;
     }
     if (!code) {
       soundManager.playError();
-      setError('กรุณากรอกรหัสห้อง (Please enter room code)');
+      setError('กรุณากรอกรหัสห้อง');
       return;
     }
     soundManager.playButtonClick();
@@ -225,7 +225,7 @@ export const Lobby: React.FC<LobbyProps> = ({
       setIsLoading(false);
       if (!success) {
         soundManager.playError();
-        setError(err ?? 'ไม่สามารถเข้าร่วมห้องได้ (Failed to join room)');
+        setError(err ?? 'ไม่สามารถเข้าร่วมห้องได้');
       }
     }, avatarUrl || undefined);
   };
@@ -264,9 +264,8 @@ export const Lobby: React.FC<LobbyProps> = ({
                   onLeaveRoom?.();
                 }}
                 className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white/80 hover:text-white font-bold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow hover:scale-105"
-                title="ย้อนกลับไปหน้าแรก (Leave Room & Return to Main Lobby)"
+                title="ออกจากห้องแล้วกลับสู่หน้าหลัก"
               >
-                <span>⬅️</span>
                 <span>ย้อนกลับ</span>
               </button>
             </div>
@@ -279,10 +278,10 @@ export const Lobby: React.FC<LobbyProps> = ({
                   setShowTutorial(true);
                 }}
                 className="px-2.5 py-1 rounded-lg bg-yellow-400/15 hover:bg-yellow-400/30 border border-yellow-400/50 text-yellow-300 font-bold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow hover:scale-105"
-                title="กดดูคู่มือวิธีเล่น MARVEL SPLENDOR (How to Play)"
+                title="คู่มือวิธีเล่น MARVEL SPLENDOR"
               >
-                <span>📖</span>
-                <span>สอนเล่น</span>
+                <span>📘</span>
+                <span>วิธีเล่น</span>
               </button>
             </div>
 
@@ -292,11 +291,11 @@ export const Lobby: React.FC<LobbyProps> = ({
                 <span className="font-display font-black text-lg text-white tracking-widest">SPLENDOR</span>
               </div>
               <h2 className="font-display text-xl font-black text-white">
-                รวมพลเหล่าฮีโร่ <span className="text-xs font-normal text-white/50">(Assemble Heroes)</span>
+                รวมพลเหล่าฮีโร่
               </h2>
               <div className="flex items-center justify-center gap-2">
                 <span className="text-white/60 text-xs uppercase tracking-wider font-semibold">
-                  รหัสห้อง (Room Code):
+                  รหัสห้อง:
                 </span>
                 <code className="bg-red-500/20 text-red-300 px-2.5 py-0.5 rounded-lg font-mono font-black text-lg tracking-widest border border-red-500/40">
                   {currentRoom.roomId}
@@ -310,11 +309,11 @@ export const Lobby: React.FC<LobbyProps> = ({
                   return (
                     <div
                       className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-white bg-white/10 border ${roomMap.accentBorder} shadow-sm`}
-                      title={`สมรภูมิรบที่เลือกไว้: ${roomMap.name} (${roomMap.nameEn}) - ล็อกแล้วไม่สามารถเปลี่ยนได้ในเกม`}
+                      title={`สมรภูมิรบ: ${roomMap.name} (${roomMap.nameEn}) - ล็อกตลอดทั้งเกม`}
                     >
                       <span className="text-sm">{roomMap.icon}</span>
                       <span>สมรภูมิ: <span className="text-yellow-300 font-extrabold">{roomMap.name}</span></span>
-                      <span className="text-[9px] bg-red-600/80 text-white font-mono px-1.5 py-0.2 rounded-full uppercase tracking-wider">🔒 LOCKED</span>
+                      <span className="text-[9px] bg-red-600/80 text-white font-mono px-1.5 py-0.2 rounded-full uppercase tracking-wider">LOCKED</span>
                     </div>
                   );
                 })()}
@@ -323,7 +322,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                   className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-white bg-amber-950/40 border border-yellow-500/40 shadow-sm"
                   title="แต้มเป้าหมายสำหรับชัยชนะในเกมนี้"
                 >
-                  <span>🎯 แต้มเป้าหมาย:</span>
+                  <span>🎯 เป้าหมาย:</span>
                   <span className="text-yellow-300 font-black text-sm">{currentRoom.targetScore ?? 16} แต้ม</span>
                 </div>
               </div>
@@ -354,7 +353,7 @@ export const Lobby: React.FC<LobbyProps> = ({
               )}
 
               <p className="text-[10px] text-white/50">
-                แชร์รหัสนี้ให้เพื่อน หรือเพิ่มบอทมาร์เวล AI เข้ามาประลอง (Share code with friends or customize AI Bots)
+                แชร์รหัสห้องให้เพื่อน หรือเพิ่มบอท AI เข้ามาร่วมประลอง
               </p>
             </div>
 
@@ -362,10 +361,10 @@ export const Lobby: React.FC<LobbyProps> = ({
             <div className="glass rounded-xl overflow-hidden border border-white/10 max-h-48 overflow-y-auto">
               <div className="px-3.5 py-2 border-b border-white/10 flex items-center justify-between sticky top-0 bg-neutral-950/80 backdrop-blur-sm z-10">
                 <span className="text-[11px] text-white/70 font-bold uppercase tracking-wider">
-                  ผู้เล่นที่เข้าร่วม (Recruited Players)
+                  ผู้เล่นที่เข้าร่วม
                 </span>
                 <span className="text-[11px] text-white/50 font-semibold">
-                  {currentRoom.players.length}/4 คน (Slots)
+                  {currentRoom.players.length}/4 คน
                 </span>
               </div>
               <div className="divide-y divide-white/5">
@@ -409,31 +408,32 @@ export const Lobby: React.FC<LobbyProps> = ({
                         <span className="font-bold text-white text-xs truncate">{p.name}</span>
                         <RankBadge rank={p.rank} isBot={p.isBot} size="sm" />
                       </div>
-                      {p.isBot && <span className="text-[8px] text-purple-300 block">🤖 บอทมาร์เวล (Marvel AI Bot)</span>}
+                      {p.isBot && <span className="text-[8px] text-purple-300 block">AI BOT</span>}
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
                       {p.id === currentRoom.hostId ? (
                         <span className="text-[9px] font-bold text-yellow-400 bg-yellow-400/10 px-1.5 py-0.5 rounded-full border border-yellow-400/30">
-                          👑 หัวหน้าห้อง (Host)
+                          👑 หัวหน้าห้อง
                         </span>
                       ) : p.isBot ? (
                         <span className="text-[9px] font-bold text-emerald-300 bg-emerald-500/20 px-1.5 py-0.5 rounded-full border border-emerald-400/30 flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                          พร้อมเสมอ (Ready)
+                          พร้อม
                         </span>
                       ) : p.isReady ? (
                         <span className="text-[9px] font-bold text-emerald-300 bg-emerald-500/20 px-1.5 py-0.5 rounded-full border border-emerald-400/30 flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                          ✅ พร้อมเล่น (Ready)
+                          พร้อมแล้ว
                         </span>
                       ) : (
                         <span className="text-[9px] font-medium text-amber-300/80 bg-amber-500/10 px-1.5 py-0.5 rounded-full border border-amber-400/20 flex items-center gap-1">
-                          ⏳ ยังไม่พร้อม (Not Ready)
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                          ยังไม่พร้อม
                         </span>
                       )}
                       {p.id === myPlayerId && p.id !== currentRoom.hostId && (
                         <span className="text-[9px] font-bold text-indigo-300 bg-indigo-500/20 px-1.5 py-0.5 rounded-full border border-indigo-400/30">
-                          👤 คุณ (YOU)
+                          คุณ
                         </span>
                       )}
                       {isHost && p.isBot && (
@@ -441,7 +441,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                           type="button"
                           onClick={() => onRemoveBot(p.id)}
                           className="text-red-400 hover:text-red-300 text-xs px-1.5 py-0.5 rounded bg-red-500/10 hover:bg-red-500/20 transition-colors cursor-pointer"
-                          title="ลบบอทออก (Remove Bot)"
+                          title="ลบบอทออก"
                         >
                           ✕
                         </button>
@@ -465,7 +465,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 }}
                 className="w-full py-2 rounded-xl border border-dashed border-purple-400/40 text-purple-300 hover:bg-purple-500/15 hover:border-purple-400 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
               >
-                <span>+ เพิ่มและปรับแต่งบอทมาร์เวล (+ Add Marvel AI Bot)</span>
+                <span>+ เพิ่มคู่ต่อสู้บอท AI</span>
               </button>
             )}
 
@@ -509,12 +509,12 @@ export const Lobby: React.FC<LobbyProps> = ({
                   {isMeReady ? (
                     <>
                       <span>✕</span>
-                      <span>ยกเลิกพร้อมเล่น (Cancel Ready)</span>
+                      <span>ยกเลิกพร้อมเล่น</span>
                     </>
                   ) : (
                     <>
                       <span className="text-base">⚡</span>
-                      <span>กดพร้อมเล่น (I'm Ready!)</span>
+                      <span>ยืนยันพร้อมเล่น</span>
                     </>
                   )}
                 </button>
@@ -552,10 +552,10 @@ export const Lobby: React.FC<LobbyProps> = ({
                   ].join(' ')}
                 >
                   {(currentRoom?.players.length ?? 0) < 2
-                    ? `ต้องการอีก ${2 - (currentRoom?.players.length ?? 0)} คนหรือบอท (Need More Players)`
+                    ? `ต้องการผู้เล่นอีกอย่างน้อย ${2 - (currentRoom?.players.length ?? 0)} คน`
                     : !allReady
-                    ? `⏳ รอผู้เล่นกดพร้อม (${nonHostHumans.length - unreadyHumans.length}/${nonHostHumans.length} คนพร้อม)`
-                    : '⚡ เริ่มเกม Splendor: Marvel (Start Game)'}
+                    ? `รอผู้เล่นยืนยัน (${nonHostHumans.length - unreadyHumans.length}/${nonHostHumans.length} พร้อม)`
+                    : 'เริ่มเกม MARVEL SPLENDOR'}
                 </button>
 
                 {(currentRoom?.players.length ?? 0) >= 2 && !allReady && (
@@ -581,7 +581,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 <div className="glass-strong rounded-3xl p-6 max-w-sm w-full space-y-4 border border-purple-500/40 shadow-2xl">
                   <div className="flex items-center justify-between border-b border-white/10 pb-2">
                     <h3 className="font-bold text-base text-white flex items-center gap-1.5">
-                      <span>🤖</span> เพิ่มคู่ต่อสู้บอท AI (Add Marvel AI Opponent)
+                      <span>🤖</span> เพิ่มคู่ต่อสู้บอท AI
                     </h3>
                     <button
                       type="button"
@@ -594,7 +594,7 @@ export const Lobby: React.FC<LobbyProps> = ({
 
                   <div>
                     <label className="text-[11px] font-bold text-white/70 uppercase tracking-wider block mb-1.5">
-                      ชื่อบอท (Bot Name - พิมพ์เองหรือเลือกด้านล่าง)
+                      ชื่อบอท AI (เลือกด่วนหรือพิมพ์เอง)
                     </label>
                     <input
                       type="text"
@@ -608,7 +608,7 @@ export const Lobby: React.FC<LobbyProps> = ({
 
                   <div>
                     <label className="text-[10px] font-bold text-white/50 uppercase tracking-wider block mb-1">
-                      เลือกตัวละครด่วน (Quick Character Select)
+                      เลือกตัวละครด่วน
                     </label>
                     <div className="grid grid-cols-2 gap-1.5 max-h-40 overflow-y-auto pr-1">
                       {POPULAR_MARVEL_BOTS.map((bot) => (
@@ -640,7 +640,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                       onClick={() => setShowAddBotModal(false)}
                       className="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition-colors cursor-pointer"
                     >
-                      ยกเลิก (Cancel)
+                      ยกเลิก
                     </button>
                     <button
                       type="button"
@@ -648,7 +648,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                       disabled={!newBotName.trim()}
                       className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg transition-all cursor-pointer"
                     >
-                      + เพิ่มบอท (+ Add Bot)
+                      + เพิ่มบอท
                     </button>
                   </div>
                 </div>
@@ -694,11 +694,11 @@ export const Lobby: React.FC<LobbyProps> = ({
             soundManager.playModalOpen();
             setShowTutorial(true);
           }}
-          className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/60 text-yellow-300 font-black text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
-          title="กดดูวิธีเล่น MARVEL SPLENDOR แบบทีละขั้นตอน (Interactive How-To-Play Tutorial)"
+          className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/60 text-yellow-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
+          title="คู่มือวิธีเล่น MARVEL SPLENDOR"
         >
-          <span className="text-sm animate-bounce">📖</span>
-          <span>สอนเล่น (Tutorial)</span>
+          <span>📘</span>
+          <span>วิธีเล่น</span>
         </button>
       </div>
 
@@ -715,7 +715,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             </h1>
           </div>
           <p className="text-white/70 text-[10px] sm:text-sm max-w-xs sm:max-w-lg mx-auto truncate">
-            แย่งชิงถุงมืออินฟินิตี้ • เกณฑ์ฮีโร่มาร์เวล • พิชิตจักรวาล (Infinity Gauntlet • Splendor)
+            แย่งชิงถุงมืออินฟินิตี้ • รวมพลฮีโร่มาร์เวล • พิชิตจักรวาล
           </p>
           <div className="flex items-center justify-center gap-3 pt-0.5">
             <div className="flex items-center gap-1.5">
@@ -723,8 +723,8 @@ export const Lobby: React.FC<LobbyProps> = ({
                 className={`w-2 h-2 rounded-full ${connectionStatus === 'connected' ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'
                   }`}
               />
-              <span className="text-xs text-white/50">
-                {connectionStatus === 'connected' ? '🟢 เซิร์ฟเวอร์พร้อมใช้งาน (Server Connected)' : connectionStatus}
+              <span className="text-xs text-white/60 font-medium">
+                {connectionStatus === 'connected' ? 'เซิร์ฟเวอร์ออนไลน์' : connectionStatus}
               </span>
             </div>
 
@@ -756,12 +756,12 @@ export const Lobby: React.FC<LobbyProps> = ({
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label htmlFor="player-name" className="text-xs font-bold uppercase tracking-wider text-white/80">
-                ชื่อฮีโร่ของคุณ (Your Hero Name)
+                ชื่อฮีโร่ของคุณ
               </label>
               {userProfile?.username && (
                 <span className="text-[10px] font-semibold flex items-center gap-1">
                   {playerName.trim() === userProfile.username ? (
-                    <span className="text-amber-400">✨ ดึงชื่อจากบัญชีอัตโนมัติ (คลิกเพื่อแก้ไข)</span>
+                    <span className="text-amber-400">✨ ชื่อจากบัญชี (คลิกเพื่อเปลี่ยน)</span>
                   ) : (
                     <button
                       type="button"
@@ -780,7 +780,7 @@ export const Lobby: React.FC<LobbyProps> = ({
               <button
                 type="button"
                 onClick={() => { soundManager.playButtonClick(); setShowAvatarPicker(true); }}
-                title="เปลี่ยนโปรไฟล์ (Change Avatar)"
+                title="เปลี่ยนรูปโปรไฟล์"
                 className="relative shrink-0 w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/20 hover:ring-red-400/70 transition-all cursor-pointer active:scale-90 group"
               >
                 {avatarUrl ? (
@@ -860,12 +860,12 @@ export const Lobby: React.FC<LobbyProps> = ({
                 ].join(' ')}
               >
                 {tab === 'solo'
-                  ? '🤖 เล่นกับบอท'
+                  ? 'เล่นกับบอท'
                   : tab === 'create'
-                    ? '✦ สร้างห้อง'
+                    ? 'สร้างห้อง'
                     : tab === 'join'
-                      ? '🔗 เข้าร่วม'
-                      : '🌐 ค้นหาห้อง'}
+                      ? 'เข้าร่วม'
+                      : 'ค้นหาห้อง'}
               </button>
             ))}
           </div>
@@ -876,7 +876,7 @@ export const Lobby: React.FC<LobbyProps> = ({
               {/* Number of bots */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-white/70 uppercase tracking-wider block">
-                  จำนวนคู่ต่อสู้บอท AI (Number of AI Opponents)
+                  จำนวนคู่ต่อสู้บอท AI
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   {[1, 2, 3].map((num) => (
@@ -915,7 +915,7 @@ export const Lobby: React.FC<LobbyProps> = ({
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-bold text-white/70 uppercase tracking-wider block">
-                    เลือกหรือพิมพ์ชื่อคู่ต่อสู้ AI (Customize Bots)
+                    เลือกหรือระบุชื่อคู่ต่อสู้ AI
                   </label>
                   <span className="text-[10px] text-white/40">เลือกด่วนหรือพิมพ์เอง</span>
                 </div>
@@ -964,7 +964,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 <div className="flex items-center justify-between gap-2">
                   <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
                     <span>🗺️</span>
-                    <span className="truncate">แผนที่สมรภูมิมาร์เวล (Marvel Map)</span>
+                    <span className="truncate">สมรภูมิรบมาร์เวล</span>
                   </label>
                   <span className="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/30 shrink-0 whitespace-nowrap">
                     🔒 ล็อกตลอดทั้งเกม
@@ -1014,7 +1014,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 <div className="flex items-center justify-between gap-2">
                   <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5">
                     <span>🎯</span>
-                    <span>แต้มเป้าหมายชัยชนะ (Target Win Points)</span>
+                    <span>แต้มชัยชนะเป้าหมาย</span>
                   </label>
                   <span className="text-[10px] text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
                     {targetScore} แต้ม
@@ -1068,7 +1068,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 disabled={isLoading}
                 className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
               >
-                {isLoading ? 'กำลังเตรียมเกม... (Assembling...)' : '⚡ เล่นคนเดียวกับบอท (Play Solo vs AI)'}
+                {isLoading ? 'กำลังเตรียมสมรภูมิ...' : 'เข้าสู่สมรภูมิเดี่ยว'}
               </button>
             </div>
           )}
@@ -1081,7 +1081,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 <div className="flex items-center justify-between gap-2">
                   <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
                     <span>🗺️</span>
-                    <span className="truncate">แผนที่สมรภูมิมาร์เวล (Marvel Map)</span>
+                    <span className="truncate">สมรภูมิรบมาร์เวล</span>
                   </label>
                   <span className="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/30 shrink-0 whitespace-nowrap">
                     🔒 ล็อกตลอดทั้งเกม
@@ -1131,7 +1131,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 <div className="flex items-center justify-between gap-2">
                   <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5">
                     <span>🎯</span>
-                    <span>แต้มเป้าหมายชัยชนะ (Target Win Points)</span>
+                    <span>แต้มชัยชนะเป้าหมาย</span>
                   </label>
                   <span className="text-[10px] text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
                     {targetScore} แต้ม
@@ -1185,7 +1185,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 disabled={isLoading}
                 className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
               >
-                {isLoading ? 'กำลังสร้างห้อง... (Creating...)' : '✦ สร้างห้องเล่นหลายคน (Create Multiplayer Room)'}
+                {isLoading ? 'กำลังสร้างห้อง...' : 'สร้างห้องใหม่'}
               </button>
             </div>
           )}
@@ -1199,7 +1199,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                 onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
-                placeholder="กรอกรหัสห้อง 6 หลัก (ROOM CODE)"
+                placeholder="กรอกรหัสห้อง 6 หลัก"
                 maxLength={6}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-red-500/60 focus:ring-1 focus:ring-red-500/40 transition-colors font-mono tracking-widest text-center text-lg uppercase font-black"
               />
@@ -1209,7 +1209,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 disabled={isLoading || !joinCode.trim()}
                 className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
               >
-                {isLoading ? 'กำลังเข้าร่วม... (Joining...)' : '🔗 เข้าร่วมห้อง (Join Room)'}
+                {isLoading ? 'กำลังเชื่อมต่อ...' : 'เข้าร่วมห้อง'}
               </button>
             </div>
           )}
@@ -1219,7 +1219,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             <div className="space-y-2 max-h-40 overflow-y-auto">
               {openRooms.length === 0 ? (
                 <div className="text-center py-5 text-white/40 text-xs">
-                  ยังไม่มีห้องที่เปิดอยู่ตอนนี้ สร้างห้องใหม่ได้เลย! (No open rooms right now)
+                  ขณะนี้ยังไม่มีห้องเปิดอยู่ สร้างห้องใหม่เพื่อเริ่มเล่นได้ทันที
                 </div>
               ) : (
                 openRooms.map((room) => (
@@ -1230,7 +1230,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     <div>
                       <code className="text-red-300 font-mono font-bold text-sm">{room.roomId}</code>
                       <p className="text-[10px] text-white/50">
-                        ผู้เล่น {room.players.length}/{room.maxPlayers} คน (Players)
+                        ผู้เล่น {room.players.length}/{room.maxPlayers} คน
                       </p>
                     </div>
                     <button
@@ -1239,7 +1239,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                       disabled={isLoading}
                       className="text-xs bg-red-600 hover:bg-red-500 disabled:bg-white/10 text-white px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer"
                     >
-                      เข้าร่วม (Join)
+                      เข้าร่วม
                     </button>
                   </div>
                 ))

@@ -109,7 +109,7 @@ export const GameOver: React.FC<GameOverProps> = ({
               isIWon ? 'shimmer-text' : 'text-white/90',
             ].join(' ')}
           >
-            {isIWon ? 'ชัยชนะแห่งจักรวาล! (Cosmic Victory!)' : 'จบเกมแล้ว (Game Over)'}
+            {isIWon ? 'ชัยชนะแห่งจักรวาล!' : 'จบการแข่งขัน'}
           </h1>
           <p className="text-white/70 text-sm sm:text-base max-w-sm mx-auto">
             {isIWon
@@ -250,7 +250,7 @@ export const GameOver: React.FC<GameOverProps> = ({
         <div className="glass rounded-2xl overflow-hidden border border-white/10">
           <div className="px-4 py-2 border-b border-white/10 bg-black/30">
             <span className="text-xs text-white/60 uppercase tracking-widest font-bold">
-              สรุปอันดับผลการแข่งขัน (Final Standings)
+              สรุปอันดับผลการแข่งขัน
             </span>
           </div>
           <div className="divide-y divide-white/5">
@@ -287,20 +287,20 @@ export const GameOver: React.FC<GameOverProps> = ({
                     </span>
                     <RankBadge rank={player.rank} isBot={player.isBot} size="md" />
                     {player.isBot && (
-                      <span className="text-[9px] bg-purple-500/20 text-purple-300 px-1 py-0.5 rounded font-bold">
-                        บอท (BOT)
+                      <span className="text-[9px] bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-bold">
+                        AI BOT
                       </span>
                     )}
                     {isMe && (
-                      <span className="text-[10px] text-yellow-400/80 font-semibold">
-                        (คุณ)
+                      <span className="text-[10px] text-yellow-400/80 font-bold">
+                        คุณ
                       </span>
                     )}
                   </div>
                   <span className="text-xl font-black font-display text-yellow-400">
                     {player.score}
                   </span>
-                  <span className="text-xs text-white/40 uppercase">แต้ม (PTS)</span>
+                  <span className="text-xs text-white/40 uppercase font-bold">แต้ม</span>
                 </div>
               );
             })}
@@ -316,7 +316,7 @@ export const GameOver: React.FC<GameOverProps> = ({
           }}
           className="w-full py-3 sm:py-4 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
         >
-          กลับสู่ล็อบบี้หลัก (Return to Lobby)
+          กลับสู่ล็อบบี้หลัก
         </button>
       </div>
       </div>

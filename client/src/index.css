@@ -28,32 +28,35 @@ html, body, #root {
 }
 
 body {
-  font-family: 'Outfit', 'Inter', sans-serif;
-  background-color: #0a0b14;
-  color: #e8eaf6;
+  font-family: 'Prompt', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #070913;
+  color: #f1f5f9;
   overflow-x: hidden;
   overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ─── Scrollbar ──────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0a0b14; }
-::-webkit-scrollbar-thumb { background: #252860; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #4895ef88; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #070913; }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #334155; }
 
 /* ─── Glassmorphism Card ─────────────────────────────── */
 .glass {
-  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-strong {
-  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.14);
+  background: linear-gradient(145deg, rgba(17, 22, 38, 0.95) 0%, rgba(8, 10, 20, 0.98) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* ─── Infinity Stone Crystal Colors ─────────────────── */
@@ -76,7 +79,7 @@ body {
 
 /* ─── Rank Badge Font & Sharp Rendering ───────────────── */
 .rank-badge {
-  font-family: 'Chakra Petch', 'Prompt', 'Outfit', sans-serif !important;
+  font-family: 'Chakra Petch', 'Prompt', sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -84,26 +87,26 @@ body {
 
 /* ─── Marvel Branding ────────────────────────────────── */
 .marvel-badge {
-  background: #e23636;
+  background: #c51d24;
   color: #ffffff;
   font-family: 'Bebas Neue', Impact, sans-serif;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
   font-weight: 900;
-  box-shadow: 0 2px 8px rgba(226, 54, 54, 0.4);
+  box-shadow: 0 3px 12px rgba(197, 29, 36, 0.45);
 }
 
 /* ─── Shimmer Gradient ───────────────────────────────── */
 .shimmer-text {
-  background: linear-gradient(90deg, #ffd700, #e040fb, #4895ef, #ffd700);
+  background: linear-gradient(90deg, #ffd700 0%, #ffffff 30%, #f59e0b 60%, #ffd700 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: shimmer 3s linear infinite;
+  animation: shimmer 4s ease-in-out infinite;
 }
 
 /* ─── Card hover ─────────────────────────────────────── */
@@ -156,10 +159,12 @@ body {
 
 /* ─── Board Background ───────────────────────────────── */
 .board-bg {
-  background:
-    radial-gradient(ellipse at 20% 20%, rgba(72,149,239,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(107,76,154,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, #0d1030 0%, #060810 100%);
+  background-color: #070913;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(197, 29, 36, 0.14), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 85% 80%, rgba(59, 130, 246, 0.08), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 15% 70%, rgba(245, 158, 11, 0.07), transparent 60%),
+    radial-gradient(ellipse at 50% 50%, #0d1224 0%, #070913 100%);
 }
 
 /* ─── Neon border ────────────────────────────────────── */

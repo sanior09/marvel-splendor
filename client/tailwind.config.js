@@ -4,8 +4,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Outfit', 'Inter', 'sans-serif'],
-        display: ['Cinzel', 'serif'],
+        sans: ['Prompt', 'Outfit', 'Inter', 'sans-serif'],
+        display: ['Montserrat', 'Chakra Petch', 'sans-serif'],
+        marvel: ['"Bebas Neue"', 'Impact', 'sans-serif'],
+        rank: ['"Chakra Petch"', 'Prompt', 'sans-serif'],
       },
       colors: {
         // Crystal theme colors
