@@ -1268,10 +1268,10 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
 
         {/* Developer Credits & Non-Commercial Disclaimer Footer */}
-        <footer className="w-full max-w-lg mt-3 pt-2.5 border-t border-white/10 flex flex-col items-center text-center space-y-1">
-          <div className="flex items-center justify-center gap-1.5 flex-wrap text-xs text-white/80">
-            <span className="text-[11px] text-white/60">🛠️ พัฒนาโดย:</span>
-            <span className="font-black text-yellow-300 bg-yellow-400/10 border border-yellow-400/30 px-2.5 py-0.5 rounded-full text-xs shadow-sm">
+        <footer className="w-full max-w-lg mt-3 p-3 rounded-xl bg-slate-900/80 border border-slate-700/60 backdrop-blur-md shadow-lg flex flex-col items-center text-center space-y-1.5 font-sans">
+          <div className="flex items-center justify-center gap-2 flex-wrap text-xs">
+            <span className="text-slate-400 font-medium">พัฒนาโดย:</span>
+            <span className="font-mono font-bold text-amber-300 bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-md text-xs">
               sanior09
             </span>
             <button
@@ -1280,17 +1280,19 @@ export const Lobby: React.FC<LobbyProps> = ({
                 soundManager.playModalOpen();
                 setShowDisclaimerModal(true);
               }}
-              className="text-[11px] text-cyan-300 hover:text-cyan-200 underline transition-colors cursor-pointer ml-1 font-semibold"
+              className="text-xs text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-2.5 py-0.5 rounded-md border border-slate-600 transition-colors cursor-pointer font-medium"
               title="อ่านข้อกำหนดทางลิขสิทธิ์และวัตถุประสงค์โครงการ"
             >
-              (ข้อกำหนดและลิขสิทธิ์)
+              ℹ️ ข้อมูลโครงการ & ลิขสิทธิ์
             </button>
           </div>
-          <p className="text-[10px] text-white/50 max-w-md leading-relaxed px-2">
-            จัดทำขึ้นเพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Project เท่านั้น <br className="hidden sm:inline" />
-            <span className="text-amber-300/90 font-medium">มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น</span>
+          <p className="text-xs text-slate-300 leading-normal">
+            Fan-Made Project • จัดทำขึ้นเพื่อการศึกษาและความบันเทิงเท่านั้น
           </p>
-          <p className="text-[9px] text-white/30">
+          <p className="text-xs text-amber-300 font-medium leading-normal">
+            มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น
+          </p>
+          <p className="text-[11px] text-slate-400 leading-normal">
             Marvel และ Splendor เป็นเครื่องหมายการค้าและลิขสิทธิ์ของ MARVEL / Disney และ Space Cowboys
           </p>
         </footer>
