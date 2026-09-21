@@ -255,8 +255,8 @@ export const Lobby: React.FC<LobbyProps> = ({
   // ── In-Room Lobby (Waiting Room) ──────────────────────────
   if (currentRoom) {
     return (
-      <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start sm:justify-center p-3 sm:p-6 relative select-none">
-        <div className="w-full max-w-md my-auto py-2 sm:py-4">
+      <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start p-3 sm:p-6 relative select-none">
+        <div className="w-full max-w-md pt-2 pb-6 sm:pb-8">
           <div className="glass-strong rounded-2xl p-3.5 sm:p-5 w-full space-y-3 sm:space-y-4 border border-white/15 shadow-2xl relative">
             <div className="absolute top-3 left-3 z-20">
               <button
@@ -668,9 +668,9 @@ export const Lobby: React.FC<LobbyProps> = ({
 
   // ── Main Lobby Screen ─────────────────────────────────────
   return (
-    <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start sm:justify-center p-3 sm:p-6 relative">
+    <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start px-3 py-3 sm:py-5 relative">
       {/* Top-Right Control Bar: Profile Badge + Tutorial Button + Sound Toggle */}
-      <div className="fixed top-2.5 right-2.5 sm:top-4 sm:right-4 z-30 flex items-center gap-2">
+      <div className="fixed top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 z-30 flex items-center gap-2">
         {/* Profile Badge */}
         {userProfile && !isGuest && onLogout && (
           <ProfileBadge
@@ -706,19 +706,19 @@ export const Lobby: React.FC<LobbyProps> = ({
         </button>
       </div>
 
-      <div className="w-full max-w-lg flex flex-col items-center my-auto py-2 sm:py-6">
+      <div className="w-full max-w-lg flex flex-col items-center pt-2 sm:pt-3 pb-6 sm:pb-8">
 
         {/* Hero Header */}
-        <div className="text-center space-y-1 mb-2 sm:mb-3">
+        <div className="text-center space-y-1 mb-2 sm:mb-2.5 px-2">
           <div className="flex items-center justify-center gap-2">
-            <span className="marvel-badge px-2 sm:px-3 py-0.5 rounded text-xl sm:text-3xl font-black tracking-wider shadow-2xl">
+            <span className="marvel-badge px-2 sm:px-2.5 py-0.5 rounded text-lg sm:text-2xl font-black tracking-wider shadow-xl">
               MARVEL
             </span>
-            <h1 className="font-display text-2xl sm:text-4xl font-black shimmer-text leading-none tracking-widest">
+            <h1 className="font-display text-2xl sm:text-3xl font-black shimmer-text leading-none tracking-widest">
               SPLENDOR
             </h1>
           </div>
-          <p className="text-white/70 text-[10px] sm:text-sm max-w-xs sm:max-w-lg mx-auto truncate">
+          <p className="text-white/70 text-[10px] sm:text-xs max-w-xs sm:max-w-lg mx-auto truncate">
             แย่งชิงถุงมืออินฟินิตี้ • รวมพลฮีโร่มาร์เวล • พิชิตจักรวาล
           </p>
           <div className="flex items-center justify-center gap-3 pt-0.5">
@@ -727,11 +727,10 @@ export const Lobby: React.FC<LobbyProps> = ({
                 className={`w-2 h-2 rounded-full ${connectionStatus === 'connected' ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'
                   }`}
               />
-              <span className="text-xs text-white/60 font-medium">
+              <span className="text-[11px] text-white/60 font-medium">
                 {connectionStatus === 'connected' ? 'เซิร์ฟเวอร์ออนไลน์' : connectionStatus}
               </span>
             </div>
-
           </div>
         </div>
 
@@ -755,7 +754,7 @@ export const Lobby: React.FC<LobbyProps> = ({
         )}
 
         {/* Main card */}
-        <div className="glass-strong rounded-2xl p-3.5 sm:p-6 max-w-lg w-full space-y-3 sm:space-y-3.5 border border-white/10 shadow-2xl">
+        <div className="glass-strong rounded-2xl p-3 sm:p-5 max-w-lg w-full space-y-2.5 sm:space-y-3 border border-white/10 shadow-2xl">
           {/* Player name + Avatar */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
@@ -857,7 +856,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                   setActiveTab(tab);
                 }}
                 className={[
-                  'flex-1 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all capitalize cursor-pointer',
+                  'flex-1 py-1.5 sm:py-2 text-xs sm:text-sm font-bold rounded-lg transition-all capitalize cursor-pointer',
                   activeTab === tab
                     ? 'bg-red-600 text-white shadow-md'
                     : 'text-white/50 hover:text-white hover:bg-white/5',
@@ -1070,7 +1069,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 type="button"
                 onClick={handleSolo}
                 disabled={isLoading}
-                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
+                className="w-full py-3 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
               >
                 {isLoading ? 'กำลังเตรียมสมรภูมิ...' : 'เข้าสู่สมรภูมิเดี่ยว'}
               </button>
@@ -1187,7 +1186,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 type="button"
                 onClick={handleCreate}
                 disabled={isLoading}
-                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
+                className="w-full py-3 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
               >
                 {isLoading ? 'กำลังสร้างห้อง...' : 'สร้างห้องใหม่'}
               </button>
@@ -1211,7 +1210,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 type="button"
                 onClick={() => handleJoin()}
                 disabled={isLoading || !joinCode.trim()}
-                className="w-full py-3.5 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
+                className="w-full py-3 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
               >
                 {isLoading ? 'กำลังเชื่อมต่อ...' : 'เข้าร่วมห้อง'}
               </button>
@@ -1260,17 +1259,17 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
 
         {/* Decorative 6 Infinity Stones */}
-        <div className="flex gap-3 mt-3 items-center justify-center">
+        <div className="flex gap-2.5 mt-2.5 items-center justify-center">
           {['ruby', 'sapphire', 'emerald', 'obsidian', 'topaz', 'amethyst'].map((c) => (
             <div
               key={c}
-              className={`w-4 h-4 rounded-full crystal-${c} shadow-md border border-white/20 transition-transform hover:scale-125 cursor-pointer`}
+              className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full crystal-${c} shadow-md border border-white/20 transition-transform hover:scale-125 cursor-pointer`}
             />
           ))}
         </div>
 
         {/* Developer Credits & Non-Commercial Disclaimer Footer */}
-        <footer className="w-full max-w-lg mt-3 pt-2.5 border-t border-white/10 flex flex-col items-center text-center space-y-1">
+        <footer className="w-full max-w-lg mt-2.5 pt-2 border-t border-white/10 flex flex-col items-center text-center space-y-1">
           <div className="flex items-center justify-center gap-1.5 flex-wrap text-xs text-white/80">
             <span className="text-[11px] text-white/60">🛠️ พัฒนาโดย:</span>
             <span className="font-black text-yellow-300 bg-yellow-400/10 border border-yellow-400/30 px-2.5 py-0.5 rounded-full text-xs shadow-sm">
