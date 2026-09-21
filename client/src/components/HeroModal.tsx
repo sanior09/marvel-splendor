@@ -8,7 +8,6 @@ import type { Player, CrystalColor } from '@shared/types/game.types';
 import { BANK_STONE_COLORS } from '@shared/types/game.types';
 import { STONE_NAMES } from './GemToken';
 import { soundManager } from '../utils/soundManager';
-import { getHeroSignature, playHeroSignatureSound } from '../data/heroSignatures';
 import { countAvengersSymbols, getCardAvengersCount } from '../../../src/engine/WinConditions';
 import { RankBadge } from './RankBadge';
 
@@ -278,18 +277,11 @@ export const HeroModal: React.FC<HeroModalProps> = ({
             </div>
           ) : (
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3 justify-items-center">
-              {filteredCards.map((card) => {
-                const sig = getHeroSignature(card.name);
-                return (
-                  <div
-                    key={card.id}
-                    onClick={() => {
-                      if (sig) playHeroSignatureSound(sig);
-                      else soundManager.playCardBuy(card.tier);
-                    }}
-                    title={`คลิกเพื่อฟังเสียงซาวด์เอฟเฟกต์ของ ${card.name}`}
-                    className={`relative w-22 sm:w-26 md:w-32 lg:w-36 h-32 sm:h-38 md:h-48 lg:h-52 rounded-lg sm:rounded-xl border-2 overflow-hidden flex flex-col justify-between shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 group bg-slate-900 shrink-0 cursor-pointer ${TIER_BORDER[card.tier]}`}
-                  >
+              {filteredCards.map((card) => (
+                <div
+                  key={card.id}
+                  className={`relative w-22 sm:w-26 md:w-32 lg:w-36 h-32 sm:h-38 md:h-48 lg:h-52 rounded-lg sm:rounded-xl border-2 overflow-hidden flex flex-col justify-between shadow-lg transition-all duration-200 hover:scale-105 group bg-slate-900 shrink-0 ${TIER_BORDER[card.tier]}`}
+                >
                   {/* Character Portrait Artwork */}
                   <img
                     src={`/images/cards/${card.id}.jpg`}
@@ -360,14 +352,9 @@ export const HeroModal: React.FC<HeroModalProps> = ({
                     <h3 className="font-display font-black text-[10px] sm:text-xs md:text-sm text-white tracking-wide truncate drop-shadow">
                       {card.name}
                     </h3>
-                    {/* Sound Hint Icon in Card */}
-                    <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity bg-black/70 rounded-full w-5 h-5 flex items-center justify-center text-[10px] text-cyan-300 border border-cyan-400/40 shadow">
-                      🔊
-                    </div>
                   </div>
                 </div>
-              );
-            })}
+              ))}
             </div>
           )}
         </div>

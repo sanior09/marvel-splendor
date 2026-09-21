@@ -20,8 +20,6 @@ import { soundManager } from '../utils/soundManager';
 import { getMarvelMap } from '../data/marvelMaps';
 import { HeroRecruitVFX } from './HeroRecruitVFX';
 import { TutorialModal } from './TutorialModal';
-import { HeroSoundboardModal } from './HeroSoundboardModal';
-import { SoundToggle } from './SoundToggle';
 import { getHeroSignature, playHeroSignatureSound, type HeroSignature } from '../data/heroSignatures';
 import type { Card } from '@shared/types/game.types';
 
@@ -75,7 +73,6 @@ export const Board: React.FC<BoardProps> = ({
   } | null>(null);
 
   const [showTutorial, setShowTutorial] = useState(false);
-  const [showSoundboard, setShowSoundboard] = useState(false);
   const lastLocallyBoughtCardIdRef = useRef<string | null>(null);
 
   // Play audio alert when turn transitions to this player
@@ -358,21 +355,6 @@ export const Board: React.FC<BoardProps> = ({
                 </span>
               )}
             </span>
-
-            <button
-              type="button"
-              onClick={() => {
-                soundManager.playModalOpen();
-                setShowSoundboard(true);
-              }}
-              className="text-[11px] text-cyan-300 hover:text-cyan-100 transition-colors border border-cyan-500/40 hover:border-cyan-400 px-2 py-0.5 rounded-lg cursor-pointer flex items-center gap-1 bg-cyan-950/40 shadow-sm"
-              title="ห้องทดสอบเสียงฮีโร่ (Hero Soundboard)"
-            >
-              <span>🎧</span>
-              <span className="hidden sm:inline">ฟังเสียงฮีโร่</span>
-            </button>
-
-            <SoundToggle compact />
 
             <button
               type="button"
@@ -663,9 +645,6 @@ export const Board: React.FC<BoardProps> = ({
 
         {/* Interactive Roblox-Style Tutorial Modal */}
         <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
-
-        {/* Marvel Hero Soundboard Modal */}
-        <HeroSoundboardModal isOpen={showSoundboard} onClose={() => setShowSoundboard(false)} />
 
         {/* Game over overlay */}
         {phase === 'finished' && (
