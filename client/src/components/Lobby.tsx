@@ -10,6 +10,8 @@ import type { UserProfile } from '../hooks/useAuth';
 import { soundManager } from '../utils/soundManager';
 import { MARVEL_MAPS, getMarvelMap } from '../data/marvelMaps';
 import { TutorialModal } from './TutorialModal';
+import { HeroSoundboardModal } from './HeroSoundboardModal';
+import { SoundToggle } from './SoundToggle';
 import { AvatarPicker, MARVEL_AVATARS } from './AvatarPicker';
 import { ProfileBadge } from './ProfileBadge';
 import marvelAvatarsData from '../data/marvelAvatarsData.json';
@@ -126,6 +128,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [selectedMapId, setSelectedMapId] = useState<string>('asgard');
   const [targetScore, setTargetScore] = useState<number>(16);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showSoundboard, setShowSoundboard] = useState(false);
 
   // Avatar / Profile picture state (Default to Iron Man so avatar is never null)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(MARVEL_AVATARS[0]?.src || null);
@@ -657,6 +660,8 @@ export const Lobby: React.FC<LobbyProps> = ({
             )}
             {/* Tutorial Modal in Waiting Room */}
             <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
+            {/* Hero Soundboard Modal in Waiting Room */}
+            <HeroSoundboardModal isOpen={showSoundboard} onClose={() => setShowSoundboard(false)} />
         </div>
       </div>
     );
@@ -665,7 +670,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   // ── Main Lobby Screen ─────────────────────────────────────
   return (
     <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start sm:justify-center p-3 sm:p-6 relative">
-      {/* Top-Right Control Bar: Profile Badge + Tutorial Button + Sound Toggle */}
+      {/* Top-Right Control Bar: Profile Badge + Soundboard + Tutorial Button + Sound Toggle */}
       <div className="fixed top-2.5 right-2.5 sm:top-4 sm:right-4 z-30 flex items-center gap-2">
         {/* Profile Badge */}
         {userProfile && !isGuest && onLogout && (
@@ -688,6 +693,22 @@ export const Lobby: React.FC<LobbyProps> = ({
             👤 ล็อกอิน
           </button>
         )}
+        {/* Hero Soundboard Button */}
+        <button
+          type="button"
+          onClick={() => {
+            soundManager.playModalOpen();
+            setShowSoundboard(true);
+          }}
+          className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/25 via-blue-500/20 to-indigo-600/30 hover:from-cyan-500/40 hover:to-blue-500/40 border border-cyan-400/60 text-cyan-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
+          title="ห้องทดสอบเสียงฮีโร่ (Hero Soundboard)"
+        >
+          <span>🎧</span>
+          <span className="hidden sm:inline">ฟังเสียงฮีโร่</span>
+        </button>
+        {/* SFX Mute/Unmute Toggle */}
+        <SoundToggle compact />
+        {/* How to Play Tutorial Button */}
         <button
           type="button"
           onClick={() => {
@@ -1266,6 +1287,8 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
         {/* Interactive Roblox-Style Tutorial Modal */}
         <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
+        {/* Marvel Hero Soundboard Modal */}
+        <HeroSoundboardModal isOpen={showSoundboard} onClose={() => setShowSoundboard(false)} />
         {/* Avatar Picker Modal */}
         <AvatarPicker
           isOpen={showAvatarPicker}

@@ -96,6 +96,19 @@ class SoundManager {
     }
   }
 
+  public getVolume(): number {
+    return this.volume;
+  }
+
+  public stopAll(): void {
+    if (this.masterGain && this.ctx) {
+      const now = this.ctx.currentTime;
+      this.masterGain.gain.cancelScheduledValues(now);
+      this.masterGain.gain.setValueAtTime(0, now);
+      this.masterGain.gain.setValueAtTime(this.muted ? 0 : this.volume, now + 0.05);
+    }
+  }
+
   // ────────────────────────────────────────────────────────────
   //  Procedural Sound Generators
   // ────────────────────────────────────────────────────────────

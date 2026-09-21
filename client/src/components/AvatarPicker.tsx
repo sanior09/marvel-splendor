@@ -13,6 +13,7 @@ export interface AvatarOption {
 }
 
 import marvelAvatarsData from '../data/marvelAvatarsData.json';
+import { getHeroSignature, playHeroSignatureSound } from '../data/heroSignatures';
 
 export const MARVEL_AVATARS: AvatarOption[] = [
   { id: 'iron_man',        name: 'Iron Man',        src: (marvelAvatarsData as Record<string, string>)['iron_man'] || '/images/avatars/iron_man.jpg',        color: 'ring-red-500' },
@@ -213,7 +214,12 @@ export const AvatarPicker: React.FC<AvatarPickerProps> = ({
                 key={av.id}
                 av={av}
                 isSelected={currentAvatarId === av.id}
-                onSelect={() => { onSelect(av.src, av.id); onClose(); }}
+                onSelect={() => {
+                  const sig = getHeroSignature(av.name);
+                  if (sig) playHeroSignatureSound(sig);
+                  onSelect(av.src, av.id);
+                  onClose();
+                }}
               />
             ))}
           </div>
