@@ -6,13 +6,13 @@ import { soundManager } from '../utils/soundManager';
 
 export type HeroVFXType =
   | 'lightning'    // Thor, Storm
-  | 'repulsor'     // Iron Man, Captain Marvel
-  | 'shield'       // Captain America, Hawkeye
-  | 'smash'        // Hulk, She-Hulk, Deadpool
-  | 'mystic'       // Doctor Strange, Scarlet Witch, Loki
-  | 'web'          // Spider-Man, Miles Morales
-  | 'vibranium'    // Black Panther, Wolverine
-  | 'infinity';    // Thanos
+  | 'repulsor'     // Iron Man, Captain Marvel, Star-Lord
+  | 'shield'       // Captain America, Hawkeye, Nick Fury
+  | 'smash'        // Hulk, She-Hulk, Deadpool, Groot
+  | 'mystic'       // Doctor Strange, Scarlet Witch, Loki, Jean Grey
+  | 'web'          // Spider-Man, Miles Morales, Spider-Gwen
+  | 'vibranium'    // Black Panther, Wolverine, Magneto
+  | 'infinity';    // Thanos, Galactus
 
 export interface HeroSignature {
   id: string;
@@ -41,7 +41,9 @@ export interface HeroSignature {
     | 'loki'
     | 'deadpool'
     | 'widow'
-    | 'claw';
+    | 'claw'
+    | 'magnetic'
+    | 'groot';
 }
 
 export const HERO_SIGNATURES: HeroSignature[] = [
@@ -76,10 +78,10 @@ export const HERO_SIGNATURES: HeroSignature[] = [
   {
     id: 'iron_man',
     name: 'Iron Man',
-    aliases: ['Iron Man', 'ไอรอนแมน'],
+    aliases: ['Iron Man', 'ไอรอนแมน', 'Tony Stark'],
     titleTh: 'ไอรอนแมน • อัจฉริยะเกราะเหล็ก',
     titleEn: 'IRON MAN • ARMORED AVENGER',
-    tagline: 'ระบบเตาปฏิกรณ์อาร์คพร้อมประจัญบาน!',
+    tagline: 'ระบบเตาปฏิกรณ์อาร์คและรีพัลเซอร์พร้อมประจัญบาน!',
     icon: '🤖',
     vfxType: 'repulsor',
     accentColor: '#f59e0b',
@@ -90,10 +92,10 @@ export const HERO_SIGNATURES: HeroSignature[] = [
   {
     id: 'captain_america',
     name: 'Captain America',
-    aliases: ['Captain America', 'กัปตันอเมริกา'],
+    aliases: ['Captain America', 'กัปตันอเมริกา', 'Steve Rogers'],
     titleTh: 'กัปตันอเมริกา • ผู้พิทักษ์เสรีภาพ',
     titleEn: 'CAPTAIN AMERICA • FIRST AVENGER',
-    tagline: 'โล่ไวเบรเนียมสะท้อนเกียรติยศ!',
+    tagline: 'โล่ไวเบรเนียมสะท้อนเกียรติยศสะท้านสนามรบ!',
     icon: '🛡️',
     vfxType: 'shield',
     accentColor: '#3b82f6',
@@ -104,10 +106,10 @@ export const HERO_SIGNATURES: HeroSignature[] = [
   {
     id: 'hulk',
     name: 'Hulk',
-    aliases: ['Hulk', 'ฮัลค์'],
+    aliases: ['Hulk', 'ฮัลค์', 'Bruce Banner'],
     titleTh: 'ฮัลค์ • พลังหมัดทำลายล้าง',
     titleEn: 'THE INCREDIBLE HULK',
-    tagline: 'HULK SMASH! คลื่นพลังแกมมาถล่มพื้น!',
+    tagline: 'HULK SMASH! คลื่นพลังแกมมาถล่มพื้นพสุธา!',
     icon: '💥',
     vfxType: 'smash',
     accentColor: '#22c55e',
@@ -118,10 +120,10 @@ export const HERO_SIGNATURES: HeroSignature[] = [
   {
     id: 'doctor_strange',
     name: 'Doctor Strange',
-    aliases: ['Doctor Strange', 'ด็อกเตอร์สเตรนจ์', 'ดร. สเตรนจ์'],
+    aliases: ['Doctor Strange', 'ด็อกเตอร์สเตรนจ์', 'ดร. สเตรนจ์', 'Stephen Strange'],
     titleTh: 'ด็อกเตอร์ สเตรนจ์ • จอมเวทย์สูงสุด',
     titleEn: 'DOCTOR STRANGE • SORCERER SUPREME',
-    tagline: 'ศาสตร์ลึกลับแห่งคามาร์-ทาจเบิกเนตร!',
+    tagline: 'ศาสตร์ลึกลับแห่งคามาร์-ทาจเบิกเนตรแห่งมิติ!',
     icon: '🔮',
     vfxType: 'mystic',
     accentColor: '#f97316',
@@ -132,10 +134,10 @@ export const HERO_SIGNATURES: HeroSignature[] = [
   {
     id: 'spider_man',
     name: 'Spider-Man',
-    aliases: ['Spider-Man', 'Miles Morales', 'สไปเดอร์แมน', 'Spider-Gwen'],
+    aliases: ['Spider-Man', 'Miles Morales', 'สไปเดอร์แมน', 'Spider-Gwen', 'Peter Parker'],
     titleTh: 'สไปเดอร์แมน • ฮีโร่เพื่อนบ้านผู้แสนดี',
     titleEn: 'SPIDER-MAN • FRIENDLY NEIGHBORHOOD',
-    tagline: 'ใยแมงมุมพุ่งกระชับพื้นที่!',
+    tagline: 'ใยแมงมุมพุ่งกระชับพื้นที่อย่างรวดเร็ว!',
     icon: '🕷️',
     vfxType: 'web',
     accentColor: '#ef4444',
@@ -146,7 +148,7 @@ export const HERO_SIGNATURES: HeroSignature[] = [
   {
     id: 'black_panther',
     name: 'Black Panther',
-    aliases: ['Black Panther', 'แบล็คแพนเธอร์'],
+    aliases: ['Black Panther', 'แบล็คแพนเธอร์', "T'Challa"],
     titleTh: 'แบล็ค แพนเธอร์ • กษัตริย์แห่งวากานด้า',
     titleEn: 'BLACK PANTHER • KING OF WAKANDA',
     tagline: 'พลังจลน์ไวเบรเนียมคำราม! WAKANDA FOREVER!',
@@ -163,7 +165,7 @@ export const HERO_SIGNATURES: HeroSignature[] = [
     aliases: ['Thanos', 'ธานอส', 'Galactus'],
     titleTh: 'ธานอส • จอมราชันย์แห่งไททัน',
     titleEn: 'THANOS • THE MAD TITAN',
-    tagline: 'สมดุลแห่งจักรวาลอยู่ในกำมือ!',
+    tagline: 'สมดุลแห่งจักรวาลอยู่ในกำมือเพียงแค่ดีดนิ้ว!',
     icon: '🧤',
     vfxType: 'infinity',
     accentColor: '#eab308',
@@ -283,6 +285,76 @@ export const HERO_SIGNATURES: HeroSignature[] = [
     bgGradient: 'from-emerald-600/35 via-green-950/60 to-black/85',
     soundKey: 'smash',
   },
+  {
+    id: 'magneto',
+    name: 'Magneto',
+    aliases: ['Magneto', 'แมกนีโต', 'Erik Lehnsherr'],
+    titleTh: 'แมกนีโต • จ้าวแห่งสนามแม่เหล็ก',
+    titleEn: 'MAGNETO • MASTER OF MAGNETISM',
+    tagline: 'คลื่นแม่เหล็กไฟฟ้าบิดเบือนโลหะทั้งมวล!',
+    icon: '🧲',
+    vfxType: 'vibranium',
+    accentColor: '#c084fc',
+    glowColor: 'rgba(192, 132, 252, 0.75)',
+    bgGradient: 'from-purple-700/35 via-indigo-950/60 to-black/85',
+    soundKey: 'magnetic',
+  },
+  {
+    id: 'groot',
+    name: 'Groot',
+    aliases: ['Groot', 'กรูท'],
+    titleTh: 'กรูท • ผู้พิทักษ์พฤกษาพสุธา',
+    titleEn: 'GROOT • I AM GROOT',
+    tagline: 'รากไม้โบราณผุดทะลวงพื้นพิภพ!',
+    icon: '🌳',
+    vfxType: 'smash',
+    accentColor: '#84cc16',
+    glowColor: 'rgba(132, 204, 22, 0.7)',
+    bgGradient: 'from-lime-600/35 via-stone-900/60 to-black/85',
+    soundKey: 'groot',
+  },
+  {
+    id: 'star_lord',
+    name: 'Star-Lord',
+    aliases: ['Star-Lord', 'สตาร์ลอร์ด', 'Peter Quill'],
+    titleTh: 'สตาร์ลอร์ด • ผู้นำการ์เดียนส์',
+    titleEn: 'STAR-LORD • GUARDIANS LEADER',
+    tagline: 'ปืนบลาสเตอร์คู่ยิงกระหน่ำจักรวาล!',
+    icon: '🚀',
+    vfxType: 'repulsor',
+    accentColor: '#f97316',
+    glowColor: 'rgba(249, 115, 22, 0.7)',
+    bgGradient: 'from-orange-600/35 via-slate-900/60 to-black/85',
+    soundKey: 'repulsor',
+  },
+  {
+    id: 'jean_grey',
+    name: 'Jean Grey',
+    aliases: ['Jean Grey', 'จีน เกรย์', 'Phoenix', 'ฟีนิกซ์'],
+    titleTh: 'จีน เกรย์ • ร่างสถิตฟีนิกซ์',
+    titleEn: 'JEAN GREY • PHOENIX FORCE',
+    tagline: 'เพลิงฟีนิกซ์แผดเผาห้วงมิติ!',
+    icon: '🔥',
+    vfxType: 'mystic',
+    accentColor: '#f43f5e',
+    glowColor: 'rgba(244, 63, 94, 0.75)',
+    bgGradient: 'from-rose-600/35 via-amber-950/60 to-black/85',
+    soundKey: 'chaos',
+  },
+  {
+    id: 'nick_fury',
+    name: 'Nick Fury',
+    aliases: ['Nick Fury', 'นิค ฟิวรี่'],
+    titleTh: 'นิค ฟิวรี่ • ผู้อำนวยการชิลด์',
+    titleEn: 'NICK FURY • DIRECTOR OF S.H.I.E.L.D.',
+    tagline: 'คำสั่งรวมพลอเวนเจอร์สเริ่มขึ้นแล้ว!',
+    icon: '🎖️',
+    vfxType: 'shield',
+    accentColor: '#94a3b8',
+    glowColor: 'rgba(148, 163, 184, 0.7)',
+    bgGradient: 'from-slate-700/35 via-zinc-900/60 to-black/85',
+    soundKey: 'shield',
+  },
 ];
 
 export function getHeroSignature(cardName?: string | null): HeroSignature | null {
@@ -344,6 +416,12 @@ export function playHeroSignatureSound(sig: HeroSignature): void {
       break;
     case 'claw':
       soundManager.playHeroClaw();
+      break;
+    case 'magnetic':
+      soundManager.playHeroMagnetic();
+      break;
+    case 'groot':
+      soundManager.playHeroGroot();
       break;
   }
 }
