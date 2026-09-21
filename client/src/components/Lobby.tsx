@@ -10,6 +10,7 @@ import type { UserProfile } from '../hooks/useAuth';
 import { soundManager } from '../utils/soundManager';
 import { MARVEL_MAPS, getMarvelMap } from '../data/marvelMaps';
 import { TutorialModal } from './TutorialModal';
+import { AboutDisclaimerModal } from './AboutDisclaimerModal';
 import { AvatarPicker, MARVEL_AVATARS } from './AvatarPicker';
 import { ProfileBadge } from './ProfileBadge';
 import marvelAvatarsData from '../data/marvelAvatarsData.json';
@@ -126,6 +127,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [selectedMapId, setSelectedMapId] = useState<string>('asgard');
   const [targetScore, setTargetScore] = useState<number>(16);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
 
   // Avatar / Profile picture state (Default to Iron Man so avatar is never null)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(MARVEL_AVATARS[0]?.src || null);
@@ -1264,8 +1266,42 @@ export const Lobby: React.FC<LobbyProps> = ({
             />
           ))}
         </div>
+
+        {/* Developer Credits & Non-Commercial Disclaimer Footer */}
+        <footer className="w-full max-w-lg mt-3 pt-2.5 border-t border-white/10 flex flex-col items-center text-center space-y-1">
+          <div className="flex items-center justify-center gap-1.5 flex-wrap text-xs text-white/80">
+            <span className="text-[11px] text-white/60">🛠️ พัฒนาโดย:</span>
+            <span className="font-black text-yellow-300 bg-yellow-400/10 border border-yellow-400/30 px-2.5 py-0.5 rounded-full text-xs shadow-sm">
+              sanior09
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                soundManager.playModalOpen();
+                setShowDisclaimerModal(true);
+              }}
+              className="text-[11px] text-cyan-300 hover:text-cyan-200 underline transition-colors cursor-pointer ml-1 font-semibold"
+              title="อ่านข้อกำหนดทางลิขสิทธิ์และวัตถุประสงค์โครงการ"
+            >
+              (ข้อกำหนดและลิขสิทธิ์)
+            </button>
+          </div>
+          <p className="text-[10px] text-white/50 max-w-md leading-relaxed px-2">
+            จัดทำขึ้นเพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Project เท่านั้น <br className="hidden sm:inline" />
+            <span className="text-amber-300/90 font-medium">มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น</span>
+          </p>
+          <p className="text-[9px] text-white/30">
+            Marvel และ Splendor เป็นเครื่องหมายการค้าและลิขสิทธิ์ของ MARVEL / Disney และ Space Cowboys
+          </p>
+        </footer>
+
         {/* Interactive Roblox-Style Tutorial Modal */}
         <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
+        {/* Developer Credits & Non-Commercial Disclaimer Modal */}
+        <AboutDisclaimerModal
+          isOpen={showDisclaimerModal}
+          onClose={() => setShowDisclaimerModal(false)}
+        />
         {/* Avatar Picker Modal */}
         <AvatarPicker
           isOpen={showAvatarPicker}
