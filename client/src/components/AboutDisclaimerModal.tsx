@@ -63,12 +63,12 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
               <span className="text-white/60 font-bold uppercase text-[10px] tracking-wider">
                 ผู้พัฒนาเว็บไซต์ (Developer / Creator)
               </span>
-              <span className="bg-white/15 text-white border border-white/25 px-2.5 py-0.5 rounded-full font-bold text-xs shadow-sm tracking-wide">
+              <span className="bg-gradient-to-r from-amber-950/90 via-yellow-950/80 to-amber-950/90 text-amber-200 border border-amber-400/60 px-3 py-0.5 rounded-full font-bold text-xs shadow-[0_1px_8px_rgba(245,158,11,0.25)] tracking-wider drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
                 👑 sanior09
               </span>
             </div>
             <p className="text-white/80 text-[11px]">
-              โครงการนี้พัฒนาขึ้นโดย <strong className="text-white">sanior09</strong> ด้วยความมุ่งมั่นในการสร้างสรรค์ระบบเว็บเกมกระดานแบบ Real-Time Multiplayer และ Solo AI บนสถาปัตยกรรม React, TypeScript, Node.js และ Web Audio API
+              โครงการนี้พัฒนาขึ้นโดย <strong className="text-amber-200 font-bold">sanior09</strong> ด้วยความมุ่งมั่นในการสร้างสรรค์ระบบเว็บเกมกระดานแบบ Real-Time Multiplayer และ Solo AI บนสถาปัตยกรรม React, TypeScript, Node.js และ Web Audio API
             </p>
           </div>
 
@@ -79,7 +79,7 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
               <span>คำชี้แจง: ไม่ได้ทำเพื่อการค้าหรือหารายได้ (Non-Commercial Notice)</span>
             </div>
             <p className="text-white/90 text-[11px] leading-relaxed">
-              เว็บไซต์และเกมนี้สร้างขึ้นมา <strong className="text-white underline decoration-white/40">เพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Tribute สำหรับแฟนบอร์ดเกม Splendor และ Marvel เท่านั้น</strong>
+              เว็บไซต์และเกมนี้สร้างขึ้นมา <strong className="text-amber-200 font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">เพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Tribute สำหรับแฟนบอร์ดเกม Splendor และ Marvel เท่านั้น</strong>
             </p>
             <ul className="list-disc list-inside space-y-1 text-white/75 text-[10.5px] pl-1">
               <li><strong>ไม่มีการแสวงหาผลกำไร:</strong> ไม่มีการเรียกเก็บค่าธรรมเนียมหรือค่าใช้จ่ายใดๆ จากผู้เล่นทั้งสิ้น</li>
