@@ -85,6 +85,25 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* ─── High-Visibility Numerical Typography (คมชัดทุกหน้าจอทั้ง PC และมือถือ) ── */
+.font-num {
+  font-family: 'Chakra Petch', 'Montserrat', 'Outfit', monospace, sans-serif !important;
+  font-feature-settings: "tnum" 1, "cv01" 1;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+.num-badge {
+  font-family: 'Chakra Petch', 'Montserrat', monospace, sans-serif !important;
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+  -webkit-font-smoothing: antialiased;
+}
+
 /* ─── Marvel Branding ────────────────────────────────── */
 .marvel-badge {
   background: #c51d24;

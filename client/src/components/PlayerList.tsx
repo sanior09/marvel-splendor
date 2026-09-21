@@ -68,7 +68,9 @@ export const PlayerList: React.FC<PlayerListProps> = ({
         <h3 className="font-display text-[11px] font-bold text-white/80 uppercase tracking-wider flex items-center gap-1">
           <span>ผู้เล่นในสมรภูมิ</span>
         </h3>
-        <span className="text-[9px] text-white/50 uppercase font-semibold">เป้าหมาย: {targetScore} แต้ม</span>
+        <span className="text-[9.5px] text-white/70 uppercase font-bold">
+          เป้าหมาย: <span className="font-num font-black text-yellow-300 text-[10.5px]">{targetScore}</span> แต้ม
+        </span>
       </div>
       <div className="divide-y divide-white/5">
         {players.map((player, index) => {
@@ -198,11 +200,11 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                       return (
                         <span
                           key={c}
-                          className="inline-flex items-center gap-0.5 bg-black/60 border border-white/15 px-1 py-0.2 rounded text-[8.5px] font-bold text-white shadow-sm"
+                          className="inline-flex items-center gap-0.5 bg-black/80 border border-white/20 px-1 py-0.2 rounded text-[10px] font-black font-num text-white shadow-sm"
                           title={`${STONE_NAMES[c]}: มี ${count} เหรียญ`}
                         >
                           <img src={`/images/tokens/${c}.png`} alt={c} className="w-3 h-3 object-contain" />
-                          <span>{count}</span>
+                          <span className="text-yellow-300 font-num font-black">{count}</span>
                         </span>
                       );
                     })}
@@ -213,13 +215,13 @@ export const PlayerList: React.FC<PlayerListProps> = ({
 
                   <span className="text-white/20 text-[9px]">•</span>
 
-                  <span className="text-[10px] text-white/50 flex items-center gap-1">
-                    <span title={`การ์ดที่เกณฑ์แล้ว (${player.ownedCards.length} ใบ)`}>🃏 {player.ownedCards.length}</span>
+                  <span className="text-[10px] text-white/70 font-semibold flex items-center gap-1">
+                    <span title={`การ์ดที่เกณฑ์แล้ว (${player.ownedCards.length} ใบ)`}>🃏 <span className="font-num font-black text-white">{player.ownedCards.length}</span></span>
                     {avengerCount > 0 && (
-                      <span className="text-red-400 font-bold" title={`Avengers Assemble: ${avengerCount} ตรา`}>🅰{avengerCount}</span>
+                      <span className="text-red-400 font-black font-num" title={`Avengers Assemble: ${avengerCount} ตรา`}>🅰{avengerCount}</span>
                     )}
                     {hasTier3 && (
-                      <span className="text-amber-400 font-bold" title="มีฮีโร่ Tier 3">★T3</span>
+                      <span className="text-amber-400 font-black font-num" title="มีฮีโร่ Tier 3">★T3</span>
                     )}
                   </span>
                 </div>
@@ -229,13 +231,13 @@ export const PlayerList: React.FC<PlayerListProps> = ({
               <div className="text-right">
                 <div
                   className={[
-                    'text-base font-black font-display leading-tight',
-                    isActive ? 'text-yellow-300' : 'text-white/80',
+                    'text-base sm:text-lg font-black font-num leading-tight drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]',
+                    isActive ? 'text-yellow-300 scale-105' : 'text-white',
                   ].join(' ')}
                 >
                   {player.score}
                 </div>
-                <div className="text-[8px] text-white/30 uppercase tracking-wider">PTS</div>
+                <div className="text-[8.5px] font-black font-num text-white/50 uppercase tracking-wider">PTS</div>
               </div>
             </div>
           );

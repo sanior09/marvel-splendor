@@ -184,7 +184,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
         {/* Left: Points & Avengers Symbol */}
         <div className="flex items-center gap-1">
           {card.points > 0 && (
-            <div className="bg-black/70 backdrop-blur-sm border border-yellow-400/50 text-yellow-300 font-black text-sm px-1.5 py-0.5 rounded shadow leading-none">
+            <div className="bg-slate-950/95 backdrop-blur-md border-2 border-yellow-400 text-yellow-300 font-black font-num text-sm sm:text-base px-2 py-0.5 rounded-lg shadow-[0_0_8px_rgba(250,204,21,0.5)] leading-none">
               {card.points}
             </div>
           )}
@@ -207,7 +207,7 @@ export const CardSlot: React.FC<CardSlotProps> = ({
                     key={idx}
                     className="w-5 h-5 rounded-full bg-gradient-to-br from-red-600 via-red-700 to-red-950 flex items-center justify-center border border-yellow-300 shadow-md ring-1 ring-black/50 relative z-[1]"
                   >
-                    <span className="text-yellow-300 font-black text-[11px] leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] select-none">
+                    <span className="text-yellow-300 font-black text-[11px] font-num leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] select-none">
                       A
                     </span>
                   </div>
@@ -241,17 +241,19 @@ export const CardSlot: React.FC<CardSlotProps> = ({
             return (
               <div
                 key={color}
-                className="w-fit flex items-center gap-0.5 bg-black/85 backdrop-blur-sm rounded-full pl-0.5 pr-1.5 py-0.5 border border-white/15 shadow"
+                className={`w-fit flex items-center gap-1 bg-slate-950/95 backdrop-blur-md rounded-full pl-0.5 pr-1.5 py-0.5 border shadow-[0_2px_4px_rgba(0,0,0,0.8)] ${
+                  short > 0 ? 'border-red-500/60 bg-red-950/60' : 'border-white/30'
+                }`}
                 title={`${STONE_NAMES[color]} Stone cost: ${costAmt} (You have: ${have})`}
               >
                 <img
                   src={`/images/tokens/${color}.png`}
                   alt={color}
-                  className="w-3.5 h-3.5 object-contain pointer-events-none flex-shrink-0"
+                  className="w-4 h-4 object-contain pointer-events-none flex-shrink-0 drop-shadow"
                 />
                 <span
-                  className={`text-[9.5px] font-black leading-none ${
-                    short > 0 ? 'text-red-300' : 'text-white'
+                  className={`text-[11px] font-black font-num leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] ${
+                    short > 0 ? 'text-rose-300' : 'text-white'
                   }`}
                 >
                   {costAmt}

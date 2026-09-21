@@ -99,7 +99,7 @@ export const GuardianRow: React.FC<GuardianRowProps> = ({ guardians, currentPlay
                 >
                   {guardian.name}
                 </h4>
-                <span className="text-yellow-300 font-black text-[10px] drop-shadow leading-none bg-black/80 border border-yellow-400/50 px-1 py-0.2 rounded flex-shrink-0">
+                <span className="text-yellow-300 font-black font-num text-[11px] drop-shadow leading-none bg-slate-950/90 border border-yellow-400/60 px-1.5 py-0.5 rounded flex-shrink-0 shadow-sm">
                   +{guardian.points}
                 </span>
               </div>
@@ -138,7 +138,7 @@ export const GuardianRow: React.FC<GuardianRowProps> = ({ guardians, currentPlay
                       </div>
 
                       {/* Number of Cards Required */}
-                      <span className={`text-[10.5px] font-black leading-none ${satisfied ? 'text-yellow-300' : 'text-white'} drop-shadow`}>
+                      <span className={`text-[11px] font-black font-num leading-none ${satisfied ? 'text-yellow-300' : 'text-white'} drop-shadow`}>
                         {String(count)}
                       </span>
                       {satisfied && (

@@ -8,6 +8,7 @@ export default {
         display: ['Montserrat', 'Chakra Petch', 'sans-serif'],
         marvel: ['"Bebas Neue"', 'Impact', 'sans-serif'],
         rank: ['"Chakra Petch"', 'Prompt', 'sans-serif'],
+        num: ['"Chakra Petch"', 'Montserrat', 'Outfit', 'monospace', 'sans-serif'],
       },
       colors: {
         // Crystal theme colors

@@ -117,14 +117,14 @@ export const GemBank: React.FC<GemBankProps> = ({
             <p className="text-[8px] text-white/50 font-medium">หยิบ 3 สีต่าง หรือ 2 สีเหมือน</p>
           </div>
           <span
-            className={`text-[9px] px-1.5 py-0.2 rounded-full font-black border ${
+            className={`text-[10px] px-2 py-0.5 rounded-full font-bold border transition-colors ${
               totalInHand >= 10
-                ? 'bg-red-500/20 text-red-400 border-red-500/40 animate-pulse'
-                : 'bg-white/10 text-white/80 border-white/10'
+                ? 'bg-red-950/80 text-red-300 border-red-500 font-black animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]'
+                : 'bg-black/70 text-slate-200 border-white/20'
             }`}
             title="ถือโทเคนในมือได้สูงสุดไม่เกิน 10 เหรียญเมื่อจบเทิร์น (Max 10 in hand)"
           >
-            ในมือ: {totalInHand}/10
+            ในมือ: <span className="font-num font-black text-yellow-300">{totalInHand}</span>/10
           </span>
         </div>
 

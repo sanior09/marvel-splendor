@@ -85,12 +85,15 @@ export const GemToken: React.FC<GemTokenProps> = ({
       {showCount && count !== undefined && (
         <span
           className={[
-            'absolute -bottom-1 -right-1 rounded-full font-black text-white shadow-xl border border-white/40 flex items-center justify-center select-none leading-none z-10',
+            'absolute -bottom-1 -right-1 rounded-full font-black font-num shadow-[0_2px_8px_rgba(0,0,0,0.95)] flex items-center justify-center select-none leading-none z-10 transition-transform',
+            count > 0
+              ? 'bg-slate-950 text-yellow-300 border-2 border-yellow-400/90'
+              : 'bg-black/90 text-white/40 border border-white/20',
             size === 'lg'
-              ? 'min-w-6 h-6 text-xs px-1.5 bg-black/90'
+              ? 'min-w-6 h-6 text-xs sm:text-sm px-1.5'
               : size === 'md'
-              ? 'min-w-5 h-5 text-[11px] px-1 bg-black/90'
-              : 'min-w-4 h-4 text-[9px] px-0.5 bg-black/90',
+              ? 'min-w-5 h-5 text-[11px] sm:text-xs px-1'
+              : 'min-w-4 h-4 text-[9.5px] px-0.5',
           ].join(' ')}
         >
           {count}

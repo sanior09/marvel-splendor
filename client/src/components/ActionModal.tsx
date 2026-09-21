@@ -71,8 +71,8 @@ export const ActionModal: React.FC<ActionModalProps> = ({ player, onDropGems }) 
             </h2>
           </div>
           <p className="text-white/80 text-xs sm:text-sm">
-            คุณมีเหรียญในมือ <span className="text-red-400 font-bold">{totalInHand}</span> เหรียญ — ต้องเลือกคืนอย่างน้อย{' '}
-            <span className="text-red-400 font-black text-sm sm:text-base underline">{mustDrop}</span> เหรียญ (ให้เหลือไม่เกิน 10)
+            คุณมีเหรียญในมือ <span className="text-red-400 font-black font-num text-sm">{totalInHand}</span> เหรียญ — ต้องเลือกคืนอย่างน้อย{' '}
+            <span className="text-red-400 font-black font-num text-sm sm:text-base underline">{mustDrop}</span> เหรียญ (ให้เหลือไม่เกิน 10)
           </p>
           {(player.crystals.emerald ?? 0) > 0 && (
             <p className="text-[10px] sm:text-[11px] text-emerald-300 font-medium bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 rounded-full inline-block">
@@ -101,7 +101,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({ player, onDropGems }) 
                     <GemToken color={color} size="sm" showCount={false} />
                     <div className="min-w-0">
                       <div className="text-xs font-bold text-white truncate">{STONE_NAMES[color]}</div>
-                      <div className="text-[10px] text-white/50">มีอยู่ (Have): {have}</div>
+                      <div className="text-[10px] text-white/50">มีอยู่ (Have): <span className="font-num font-bold text-white/80">{have}</span></div>
                     </div>
                   </div>
 
@@ -115,7 +115,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({ player, onDropGems }) 
                       −
                     </button>
                     <span
-                      className={`w-6 text-center font-mono font-black text-sm ${
+                      className={`w-6 text-center font-num font-black text-sm sm:text-base ${
                         dropping > 0 ? 'text-red-400' : 'text-white/40'
                       }`}
                     >
@@ -142,11 +142,11 @@ export const ActionModal: React.FC<ActionModalProps> = ({ player, onDropGems }) 
           <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-black/40 border border-white/10 text-xs sm:text-sm">
             <span className="text-white/70">เหรียญหลังคืน (Remaining):</span>
             <span
-              className={`font-bold font-mono text-sm ${
+              className={`font-bold font-num text-sm ${
                 afterDrop <= 10 ? 'text-emerald-400' : 'text-red-400 animate-pulse'
               }`}
             >
-              {afterDrop} / 10 เหรียญ {afterDrop > 10 && `(ต้องคืนอีก ${afterDrop - 10})`}
+              <span className="font-black">{afterDrop}</span> / 10 เหรียญ {afterDrop > 10 && `(ต้องคืนอีก ${afterDrop - 10})`}
             </span>
           </div>
 

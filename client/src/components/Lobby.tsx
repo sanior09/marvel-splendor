@@ -325,7 +325,9 @@ export const Lobby: React.FC<LobbyProps> = ({
                   title="แต้มเป้าหมายสำหรับชัยชนะในเกมนี้"
                 >
                   <span>🎯 เป้าหมาย:</span>
-                  <span className="text-yellow-300 font-black text-sm">{currentRoom.targetScore ?? 16} แต้ม</span>
+                  <span className="text-yellow-300 font-black font-num text-sm sm:text-base drop-shadow-sm">
+                    {currentRoom.targetScore ?? 16} แต้ม
+                  </span>
                 </div>
               </div>
 
@@ -342,7 +344,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                         onSetTargetScore(pts);
                       }}
                       className={[
-                        'px-2 py-0.5 rounded-lg font-black transition-all cursor-pointer border',
+                        'px-2.5 py-0.5 rounded-lg font-black font-num transition-all cursor-pointer border text-xs',
                         (currentRoom.targetScore ?? 16) === pts
                           ? 'border-yellow-400 bg-yellow-400 text-black shadow'
                           : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white',
@@ -365,8 +367,8 @@ export const Lobby: React.FC<LobbyProps> = ({
                 <span className="text-[11px] text-white/70 font-bold uppercase tracking-wider">
                   ผู้เล่นที่เข้าร่วม
                 </span>
-                <span className="text-[11px] text-white/50 font-semibold">
-                  {currentRoom.players.length}/4 คน
+                <span className="text-[11px] text-white/70 font-semibold">
+                  ผู้เล่น <span className="font-num font-black text-yellow-300">{currentRoom.players.length}</span>/4 คน
                 </span>
               </div>
               <div className="divide-y divide-white/5">
@@ -893,22 +895,22 @@ export const Lobby: React.FC<LobbyProps> = ({
                           : 'border-white/10 bg-white/5 text-white/50 hover:bg-white/10',
                       ].join(' ')}
                     >
-                      {num} บอท ({num + 1}P)
+                      <span className="font-num font-black text-sm">{num}</span> บอท (<span className="font-num font-bold">{num + 1}</span>P)
                     </button>
                   ))}
                 </div>
 
                 {/* Dynamic Token Pool info for solo */}
                 <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-xl px-2.5 py-1.5 text-center text-[10px] text-emerald-200 mt-1.5">
-                  <span className="font-bold">⚡ กองกลางเกม {botCount + 1} คน: </span>
+                  <span className="font-bold">⚡ กองกลางเกม <span className="font-num font-black text-white">{botCount + 1}</span> คน: </span>
                   <span className="text-white/80">
                     5 สีหลักละ{' '}
-                    <span className="font-black text-amber-300">
+                    <span className="font-black font-num text-amber-300">
                       {botCount === 1 ? 4 : botCount === 2 ? 5 : 7}
                     </span>{' '}
                     ก้อน • 🟢 Time Stone{' '}
-                    <span className="font-black text-emerald-300">{botCount + 1}</span> ก้อน • 🛡️ S.H.I.E.L.D.{' '}
-                    <span className="font-black text-slate-200">5</span> ก้อน
+                    <span className="font-black font-num text-emerald-300">{botCount + 1}</span> ก้อน • 🛡️ S.H.I.E.L.D.{' '}
+                    <span className="font-black font-num text-yellow-300">5</span> ก้อน
                   </span>
                 </div>
               </div>
@@ -1019,7 +1021,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     <span>แต้มชัยชนะเป้าหมาย</span>
                   </label>
                   <span className="text-[10px] text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
-                    {targetScore} แต้ม
+                    <span className="font-num font-black">{targetScore}</span> แต้ม
                   </span>
                 </div>
 
@@ -1039,7 +1041,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                           : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white font-semibold',
                       ].join(' ')}
                     >
-                      <span className="text-xs sm:text-sm font-black">{pts} แต้ม</span>
+                      <span className="text-xs sm:text-sm font-black font-num">{pts} แต้ม</span>
                       <span className="text-[8px] opacity-70">
                         {pts === 12 ? 'เร็ว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
                       </span>
@@ -1058,7 +1060,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     onChange={(e) => setTargetScore(Number(e.target.value))}
                     className="flex-1 accent-yellow-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
                   />
-                  <span className="font-mono font-black text-yellow-300 text-sm w-7 text-right">
+                  <span className="font-num font-black text-yellow-300 text-sm w-7 text-right">
                     {targetScore}
                   </span>
                 </div>
@@ -1136,7 +1138,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     <span>แต้มชัยชนะเป้าหมาย</span>
                   </label>
                   <span className="text-[10px] text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
-                    {targetScore} แต้ม
+                    <span className="font-num font-black">{targetScore}</span> แต้ม
                   </span>
                 </div>
 
@@ -1156,7 +1158,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                           : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white font-semibold',
                       ].join(' ')}
                     >
-                      <span className="text-xs sm:text-sm font-black">{pts} แต้ม</span>
+                      <span className="text-xs sm:text-sm font-black font-num">{pts} แต้ม</span>
                       <span className="text-[8px] opacity-70">
                         {pts === 12 ? 'เร็ว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
                       </span>
@@ -1175,7 +1177,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     onChange={(e) => setTargetScore(Number(e.target.value))}
                     className="flex-1 accent-yellow-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
                   />
-                  <span className="font-mono font-black text-yellow-300 text-sm w-7 text-right">
+                  <span className="font-num font-black text-yellow-300 text-sm w-7 text-right">
                     {targetScore}
                   </span>
                 </div>
@@ -1231,8 +1233,8 @@ export const Lobby: React.FC<LobbyProps> = ({
                   >
                     <div>
                       <code className="text-red-300 font-mono font-bold text-sm">{room.roomId}</code>
-                      <p className="text-[10px] text-white/50">
-                        ผู้เล่น {room.players.length}/{room.maxPlayers} คน
+                      <p className="text-[10px] text-white/60">
+                        ผู้เล่น <span className="font-num font-black text-yellow-300">{room.players.length}</span>/<span className="font-num font-bold text-white/80">{room.maxPlayers}</span> คน
                       </p>
                     </div>
                     <button
@@ -1268,10 +1270,10 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
 
         {/* Developer Credits & Non-Commercial Disclaimer Footer */}
-        <footer className="w-full max-w-lg mt-3 p-3 rounded-xl bg-slate-900/80 border border-slate-700/60 backdrop-blur-md shadow-lg flex flex-col items-center text-center space-y-1.5 font-sans">
-          <div className="flex items-center justify-center gap-2 flex-wrap text-xs">
-            <span className="text-slate-400 font-medium">พัฒนาโดย:</span>
-            <span className="font-mono font-bold text-amber-300 bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-md text-xs">
+        <footer className="w-full max-w-lg mt-3 pt-2.5 border-t border-white/10 flex flex-col items-center text-center space-y-1">
+          <div className="flex items-center justify-center gap-1.5 flex-wrap text-xs text-white/80">
+            <span className="text-[11px] text-white/60">🛠️ พัฒนาโดย:</span>
+            <span className="font-black text-yellow-300 bg-yellow-400/10 border border-yellow-400/30 px-2.5 py-0.5 rounded-full text-xs shadow-sm">
               sanior09
             </span>
             <button
@@ -1280,19 +1282,17 @@ export const Lobby: React.FC<LobbyProps> = ({
                 soundManager.playModalOpen();
                 setShowDisclaimerModal(true);
               }}
-              className="text-xs text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-2.5 py-0.5 rounded-md border border-slate-600 transition-colors cursor-pointer font-medium"
+              className="text-[11px] text-cyan-300 hover:text-cyan-200 underline transition-colors cursor-pointer ml-1 font-semibold"
               title="อ่านข้อกำหนดทางลิขสิทธิ์และวัตถุประสงค์โครงการ"
             >
-              ℹ️ ข้อมูลโครงการ & ลิขสิทธิ์
+              (ข้อกำหนดและลิขสิทธิ์)
             </button>
           </div>
-          <p className="text-xs text-slate-300 leading-normal">
-            Fan-Made Project • จัดทำขึ้นเพื่อการศึกษาและความบันเทิงเท่านั้น
+          <p className="text-[10px] text-white/50 max-w-md leading-relaxed px-2">
+            จัดทำขึ้นเพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Project เท่านั้น <br className="hidden sm:inline" />
+            <span className="text-amber-300/90 font-medium">มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น</span>
           </p>
-          <p className="text-xs text-amber-300 font-medium leading-normal">
-            มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น
-          </p>
-          <p className="text-[11px] text-slate-400 leading-normal">
+          <p className="text-[9px] text-white/30">
             Marvel และ Splendor เป็นเครื่องหมายการค้าและลิขสิทธิ์ของ MARVEL / Disney และ Space Cowboys
           </p>
         </footer>

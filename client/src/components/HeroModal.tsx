@@ -114,10 +114,10 @@ export const HeroModal: React.FC<HeroModalProps> = ({
             {/* Core Stats Pills */}
             <div className="flex items-center gap-1 shrink-0">
               <span className="text-[10px] sm:text-xs bg-white/10 text-white font-bold px-1.5 sm:px-2 py-0.5 rounded border border-white/10">
-                {cards.length} ใบ
+                <span className="font-num font-black">{cards.length}</span> ใบ
               </span>
               <span className="text-[10px] sm:text-xs bg-amber-500/20 text-amber-300 font-black px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/30">
-                +{totalPoints} PTS
+                +<span className="font-num font-black">{totalPoints}</span> PTS
               </span>
               {avengersCount > 0 && (
                 <span
@@ -127,7 +127,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({
                   <span className="w-3.5 h-3.5 bg-red-600 text-yellow-300 rounded-full flex items-center justify-center text-[8px] font-black">
                     A
                   </span>
-                  {avengersCount}
+                  <span className="font-num font-black">{avengersCount}</span>
                 </span>
               )}
             </div>
@@ -148,7 +148,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({
         <div className="px-2 sm:px-4 py-1 bg-black/60 border-b border-white/10 flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto no-scrollbar shrink-0">
           <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-white/70 whitespace-nowrap shrink-0">
             <span className="text-xs">💎</span>
-            <span className="font-bold">มณีในมือของ {player.name} ({totalTokensInHand}/10):</span>
+            <span className="font-bold">มณีในมือของ {player.name} (<span className="font-num font-black text-yellow-300">{totalTokensInHand}</span>/10):</span>
           </div>
           <div className="flex items-center gap-1 shrink-0">
             {ALL_TOKENS_LIST.map((c) => {
@@ -164,7 +164,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({
                   title={`${STONE_NAMES[c]}: มี ${count} เหรียญ`}
                 >
                   <img src={`/images/tokens/${c}.png`} alt={c} className="w-3 h-3 sm:w-3.5 sm:h-3.5 object-contain" />
-                  <span className={count > 0 ? 'text-yellow-300 font-bold' : 'text-white/30'}>{count}</span>
+                  <span className={`font-num font-black ${count > 0 ? 'text-yellow-300' : 'text-white/30'}`}>{count}</span>
                 </div>
               );
             })}
@@ -195,7 +195,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({
                   : 'bg-white/5 text-amber-300/70 hover:bg-white/10'
               }`}
             >
-              Tier III ({cards.filter((c) => c.tier === 3).length})
+              Tier III (<span className="font-num">{cards.filter((c) => c.tier === 3).length}</span>)
             </button>
             <button
               type="button"
@@ -206,7 +206,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({
                   : 'bg-white/5 text-purple-300/70 hover:bg-white/10'
               }`}
             >
-              Tier II ({cards.filter((c) => c.tier === 2).length})
+              Tier II (<span className="font-num">{cards.filter((c) => c.tier === 2).length}</span>)
             </button>
             <button
               type="button"
@@ -217,7 +217,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({
                   : 'bg-white/5 text-slate-300/70 hover:bg-white/10'
               }`}
             >
-              Tier I ({cards.filter((c) => c.tier === 1).length})
+              Tier I (<span className="font-num">{cards.filter((c) => c.tier === 1).length}</span>)
             </button>
           </div>
 
@@ -252,7 +252,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({
                   title={`${STONE_NAMES[c]} (ส่วนลด: +${bonus}) - กดเพื่อกรอง`}
                 >
                   <img src={`/images/tokens/${c}.png`} alt={c} className="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain" />
-                  <span className={`text-[9px] sm:text-[11px] font-bold ${bonus > 0 ? 'text-yellow-300 font-black' : 'text-white/40'}`}>
+                  <span className={`text-[9px] sm:text-[11px] font-num font-black ${bonus > 0 ? 'text-yellow-300' : 'text-white/40'}`}>
                     +{bonus}
                   </span>
                 </button>
@@ -299,7 +299,7 @@ export const HeroModal: React.FC<HeroModalProps> = ({
                   <div className="relative z-10 p-1 sm:p-1.5 flex items-start justify-between">
                     <div className="flex items-center gap-0.5 sm:gap-1">
                       {card.points > 0 && (
-                        <div className="bg-black/85 backdrop-blur-sm border border-yellow-400 text-yellow-300 font-black text-xs sm:text-sm md:text-base px-1 sm:px-1.5 py-0.2 rounded leading-none shadow">
+                        <div className="bg-slate-950/95 backdrop-blur-sm border-2 border-yellow-400 text-yellow-300 font-black font-num text-xs sm:text-sm md:text-base px-1.5 sm:px-2 py-0.5 rounded-lg leading-none shadow-[0_0_8px_rgba(250,204,21,0.5)]">
                           {card.points}
                         </div>
                       )}

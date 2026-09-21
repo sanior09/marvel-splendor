@@ -215,7 +215,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
               }}
             >
               <div className="text-base sm:text-lg leading-none mb-0.5 drop-shadow">🎮</div>
-              <div className="text-sm sm:text-base font-black font-display text-sky-200 tracking-tight leading-tight">
+              <div className="text-base sm:text-lg font-black font-num text-sky-200 tracking-tight leading-tight drop-shadow">
                 {profile.gamesPlayed.toLocaleString()}
               </div>
               <div className="text-[9px] sm:text-[9.5px] font-bold text-sky-400/90 uppercase tracking-wider mt-0.5">
@@ -233,7 +233,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
               }}
             >
               <div className="text-base sm:text-lg leading-none mb-0.5 drop-shadow">🏆</div>
-              <div className="text-sm sm:text-base font-black font-display text-amber-300 tracking-tight leading-tight drop-shadow-[0_1px_4px_rgba(245,158,11,0.5)]">
+              <div className="text-base sm:text-lg font-black font-num text-amber-300 tracking-tight leading-tight drop-shadow-[0_1px_4px_rgba(245,158,11,0.6)]">
                 {profile.gamesWon.toLocaleString()}
               </div>
               <div className="text-[9px] sm:text-[9.5px] font-black text-amber-400 uppercase tracking-wider mt-0.5">
@@ -251,7 +251,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
               }}
             >
               <div className="text-base sm:text-lg leading-none mb-0.5 drop-shadow">📈</div>
-              <div className="text-sm sm:text-base font-black font-display text-emerald-300 tracking-tight leading-tight">
+              <div className="text-base sm:text-lg font-black font-num text-emerald-300 tracking-tight leading-tight drop-shadow">
                 {profile.winRate}%
               </div>
               <div className="text-[9px] sm:text-[9.5px] font-bold text-emerald-400/90 uppercase tracking-wider mt-0.5">

@@ -151,7 +151,7 @@ export const GameOver: React.FC<GameOverProps> = ({
                 boxShadow: '0 0 15px rgba(245, 158, 11, 0.5)',
               }}
             >
-              <span>+{displayXpGained} EXP</span>
+              <span>+<span className="font-num font-black">{displayXpGained}</span> EXP</span>
             </div>
           </div>
 
@@ -159,18 +159,18 @@ export const GameOver: React.FC<GameOverProps> = ({
           <div className="flex flex-wrap gap-1.5 mb-3 text-[11px]">
             <span className="px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/80 flex items-center gap-1">
               <span>🎮 เล่นจบ</span>
-              <strong className="text-white font-bold">+{breakdown.baseXP}</strong>
+              <strong className="text-white font-black font-num">+{breakdown.baseXP}</strong>
             </span>
             {breakdown.winXP > 0 && (
               <span className="px-2.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-400/30 text-amber-300 font-bold flex items-center gap-1">
                 <span>🏆 ชนะเกม</span>
-                <strong>+{breakdown.winXP}</strong>
+                <strong className="font-num font-black">+{breakdown.winXP}</strong>
               </span>
             )}
             {breakdown.bonusXP > 0 && (
               <span className="px-2.5 py-0.5 rounded-md bg-purple-500/15 border border-purple-400/30 text-purple-300 flex items-center gap-1">
                 <span>✨ โบนัสการ์ด/สถานที่</span>
-                <strong>+{breakdown.bonusXP}</strong>
+                <strong className="font-num font-black">+{breakdown.bonusXP}</strong>
               </span>
             )}
           </div>
@@ -193,7 +193,7 @@ export const GameOver: React.FC<GameOverProps> = ({
                 {/* Total XP */}
                 <div className="text-right">
                   <div className="text-[10px] text-white/50">EXP รวมสะสม</div>
-                  <div className="text-sm font-black text-amber-300">
+                  <div className="text-sm font-black font-num text-amber-300">
                     {activeProfile.xp.toLocaleString()} XP
                   </div>
                 </div>
@@ -216,13 +216,13 @@ export const GameOver: React.FC<GameOverProps> = ({
                   {/* Next rank highlight banner */}
                   <div className="flex items-center justify-between text-[11px] pt-0.5">
                     <span className="text-amber-300 font-bold flex items-center gap-1 flex-wrap">
-                      <span>🚀 อีก {xpToNextRank?.toLocaleString()} XP</span>
+                      <span>🚀 อีก <span className="font-num font-black">{xpToNextRank?.toLocaleString()}</span> XP</span>
                       <span className="text-white/60">จะเลื่อนสู่ยศ</span>
                       <span className="text-white font-extrabold underline decoration-amber-400">
                         {nextRank.name} {nextRank.icon}
                       </span>
                     </span>
-                    <span className="text-white/40 text-[10px]">{xpPercent}%</span>
+                    <span className="text-white/40 text-[10px] font-num">{xpPercent}%</span>
                   </div>
                 </div>
               ) : (
@@ -292,7 +292,7 @@ export const GameOver: React.FC<GameOverProps> = ({
                       </span>
                     )}
                   </div>
-                  <span className="text-xl font-black font-display text-yellow-400">
+                  <span className="text-2xl font-black font-num text-yellow-400 drop-shadow-[0_2px_8px_rgba(250,204,21,0.5)]">
                     {player.score}
                   </span>
                   <span className="text-xs text-white/40 uppercase font-bold">แต้ม</span>

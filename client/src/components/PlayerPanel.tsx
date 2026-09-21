@@ -95,8 +95,8 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
               ถุงมืออินฟินิตี้ (Gauntlet)
             </h4>
           </div>
-          <span className="text-[10px] font-bold text-amber-400/80">
-            {totalGauntletProgress}/6 มณี (Stones)
+          <span className="text-[10px] font-bold text-amber-400/90">
+            <span className="font-num font-black text-amber-300 text-xs">{totalGauntletProgress}/6</span> มณี (Stones)
           </span>
         </div>
 
@@ -197,8 +197,8 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
           </div>
           <span className="text-[11px] font-bold text-white/80">รวมพลังอเวนเจอร์ส (Avengers)</span>
         </div>
-        <span className="text-[11px] font-black text-yellow-300 bg-black/40 px-2 py-0.5 rounded-full border border-yellow-400/30">
-          {avengersCount} สัญลักษณ์ {avengersCount >= 3 ? '(ถือไทล์)' : ''}
+        <span className="text-[11px] font-black text-yellow-300 bg-black/60 px-2.5 py-0.5 rounded-full border border-yellow-400/40 shadow-sm">
+          <span className="font-num text-xs">{avengersCount}</span> สัญลักษณ์ {avengersCount >= 3 ? '(ถือไทล์)' : ''}
         </span>
       </div>
 
@@ -214,10 +214,10 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
               </h4>
             </div>
             <span
-              className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
+              className={`text-xs font-black font-num px-2 py-0.5 rounded-full shadow-sm ${
                 totalCrystals >= 10
-                  ? 'bg-red-500/30 text-red-300 border border-red-500/40'
-                  : 'bg-white/10 text-white/50'
+                  ? 'bg-red-500/30 text-red-300 border border-red-500/50 animate-pulse'
+                  : 'bg-black/60 text-yellow-300 border border-white/20'
               }`}
             >
               {totalCrystals}/10
@@ -287,9 +287,9 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
                   <div className="flex flex-col items-center justify-center -my-0.5">
                     <span
                       className={[
-                        'font-black font-display text-base leading-none transition-all',
+                        'font-black font-num text-lg sm:text-xl leading-none transition-all',
                         isOwned
-                          ? `${theme.textColor} drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] scale-105`
+                          ? `${theme.textColor} drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] scale-105`
                           : 'text-white/30',
                       ].join(' ')}
                     >
@@ -365,14 +365,14 @@ const WinRequirementRow: React.FC<{
   current: number;
   target: number;
 }> = ({ label, met, current, target }) => (
-  <div className="flex items-center justify-between text-[11px]">
+  <div className="flex items-center justify-between text-[11px] py-0.5">
     <div className="flex items-center gap-1.5">
-      <span className={met ? 'text-emerald-400 font-bold' : 'text-white/30'}>
+      <span className={met ? 'text-emerald-400 font-black' : 'text-white/30'}>
         {met ? '✓' : '○'}
       </span>
-      <span className={met ? 'text-emerald-300 font-semibold' : 'text-white/60'}>{label}</span>
+      <span className={met ? 'text-emerald-300 font-bold' : 'text-white/70'}>{label}</span>
     </div>
-    <span className={met ? 'text-emerald-400 font-bold' : 'text-white/40'}>
+    <span className={`font-num font-black text-xs ${met ? 'text-emerald-300' : 'text-white/80'}`}>
       {Math.min(current, target)}/{target}
     </span>
   </div>

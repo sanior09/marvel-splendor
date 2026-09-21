@@ -60,9 +60,9 @@ export const CardDeck: React.FC<CardDeckProps> = ({
             style={{ bottom: i * 3, right: i * 2, zIndex: i }}
           />
         ))}
-        <div className="relative z-10 w-16 h-20 rounded-lg bg-white/10 border border-white/20 flex flex-col items-center justify-center gap-0.5 px-1">
-          <span className="text-2xl font-bold font-display text-white/90">{count}</span>
-          <span className="text-[9px] text-white/60 font-semibold text-center leading-tight">{styles.label}</span>
+        <div className="relative z-10 w-16 h-20 rounded-lg bg-black/40 backdrop-blur-sm border border-white/25 flex flex-col items-center justify-center gap-0.5 px-1 shadow-inner">
+          <span className="text-2xl sm:text-3xl font-black font-num text-yellow-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] leading-none">{count}</span>
+          <span className="text-[9px] text-white/80 font-bold text-center leading-tight">{styles.label}</span>
         </div>
       </div>
 

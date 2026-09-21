@@ -296,8 +296,8 @@ export const Board: React.FC<BoardProps> = ({
               <span className="text-[8px] bg-black/40 text-yellow-300 font-mono px-1 rounded uppercase tracking-wider">🔒 LOCKED</span>
             </div>
 
-            <span className="text-[10px] text-white/50 bg-white/5 px-2 py-0.5 rounded-full font-semibold border border-white/5">
-              รอบที่ (Round) {state.turnNumber}
+            <span className="text-[10px] text-white/70 bg-white/10 px-2 py-0.5 rounded-full font-bold border border-white/10 shadow-sm">
+              รอบที่ (Round) <span className="font-num font-black text-yellow-300">{state.turnNumber}</span>
             </span>
           </div>
 
@@ -329,7 +329,7 @@ export const Board: React.FC<BoardProps> = ({
               title="เปิดดูการ์ดฮีโร่ทั้งหมดที่คุณครอบครองแบบขยายใหญ่"
             >
               <span>คลังการ์ดฮีโร่</span>
-              <span className="bg-yellow-400 text-black text-[9px] font-black px-1.5 rounded-full shadow">
+              <span className="bg-yellow-400 text-black text-[10px] font-black font-num px-1.5 py-0.2 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
                 {myPlayer.ownedCards.length}
               </span>
             </button>
@@ -455,10 +455,10 @@ export const Board: React.FC<BoardProps> = ({
                   </div>
 
                   <div className="text-center leading-none">
-                    <span className="font-black text-[10.5px] text-white drop-shadow leading-none">
-                      ชนะ (WIN): {state.targetScore ?? 16} PTS
+                    <span className="font-black text-[11px] text-white drop-shadow leading-none">
+                      ชนะ (WIN): <span className="font-num font-black text-yellow-300 text-xs">{state.targetScore ?? 16}</span> PTS
                     </span>
-                    <div className="text-[6.5px] text-yellow-100/90 font-bold uppercase tracking-tight">
+                    <div className="text-[7px] text-yellow-200 font-bold uppercase tracking-tight mt-0.5">
                       โบนัส 5 สี + 🟢 Time Stone
                     </div>
                   </div>
@@ -491,10 +491,10 @@ export const Board: React.FC<BoardProps> = ({
                     </div>
                     {/* Remaining count badge */}
                     <span
-                      className={`absolute -top-1 -right-2 text-[8px] font-mono font-black px-1 rounded-full border leading-tight ${
+                      className={`absolute -top-1 -right-2 text-[9px] font-num font-black px-1.5 py-0.2 rounded-full border leading-tight ${
                         board.timeStoneAvailable
-                          ? 'bg-emerald-500 text-black border-emerald-300 shadow'
-                          : 'bg-slate-700 text-white/50 border-slate-600'
+                          ? 'bg-emerald-400 text-slate-950 border-emerald-200 shadow-[0_0_6px_rgba(52,211,153,0.8)]'
+                          : 'bg-slate-800 text-white/50 border-slate-600'
                       }`}
                     >
                       x{board.timeStoneCount ?? (board.timeStoneAvailable ? 1 : 0)}
@@ -503,11 +503,11 @@ export const Board: React.FC<BoardProps> = ({
 
                   <div className="text-center w-full">
                     {board.timeStoneAvailable ? (
-                      <div className="text-[6.5px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-0.5 py-0.2 rounded font-black tracking-tight uppercase">
+                      <div className="text-[7px] bg-emerald-500/25 text-emerald-300 border border-emerald-400/50 px-1 py-0.2 rounded font-black font-num tracking-tight uppercase shadow-sm">
                         เหลือ {board.timeStoneCount ?? 1} ก้อน
                       </div>
                     ) : (
-                      <div className="text-[6.5px] bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-0.5 py-0.2 rounded font-bold truncate max-w-[65px] mx-auto">
+                      <div className="text-[7px] bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-1 py-0.2 rounded font-bold font-num truncate max-w-[65px] mx-auto">
                         หมดแล้ว (0 ก้อน)
                       </div>
                     )}
@@ -529,7 +529,7 @@ export const Board: React.FC<BoardProps> = ({
                     <span className="text-yellow-300 font-black text-sm leading-none">A</span>
                   </div>
                   <div className="text-center">
-                    <span className="text-[8px] font-black text-yellow-300 bg-black/50 px-1 py-0.2 rounded-full border border-yellow-300/30">
+                    <span className="text-[9px] font-black font-num text-yellow-300 bg-slate-950/90 px-1.5 py-0.5 rounded-full border border-yellow-300/50 shadow-sm">
                       +3 PTS
                     </span>
                     {avengersHolder && (
