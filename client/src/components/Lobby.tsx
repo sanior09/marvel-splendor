@@ -1272,7 +1272,7 @@ export const Lobby: React.FC<LobbyProps> = ({
         <footer className="w-full max-w-lg mt-2.5 pt-2 border-t border-white/10 flex flex-col items-center text-center space-y-1">
           <div className="flex items-center justify-center gap-1.5 flex-wrap text-xs text-white/80">
             <span className="text-[11px] text-white/60">🛠️ พัฒนาโดย:</span>
-            <span className="font-black text-yellow-300 bg-yellow-400/10 border border-yellow-400/30 px-2.5 py-0.5 rounded-full text-xs shadow-sm">
+            <span className="font-bold text-white bg-white/15 border border-white/25 px-2.5 py-0.5 rounded-full text-xs tracking-wide shadow-sm">
               sanior09
             </span>
             <button
@@ -1287,11 +1287,11 @@ export const Lobby: React.FC<LobbyProps> = ({
               (ข้อกำหนดและลิขสิทธิ์)
             </button>
           </div>
-          <p className="text-[10px] text-white/50 max-w-md leading-relaxed px-2">
+          <p className="text-[10px] text-white/60 max-w-md leading-relaxed px-2">
             จัดทำขึ้นเพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Project เท่านั้น <br className="hidden sm:inline" />
-            <span className="text-amber-300/90 font-medium">มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น</span>
+            <span className="text-white font-semibold underline decoration-white/30">มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น</span>
           </p>
-          <p className="text-[9px] text-white/30">
+          <p className="text-[9px] text-white/40">
             Marvel และ Splendor เป็นเครื่องหมายการค้าและลิขสิทธิ์ของ MARVEL / Disney และ Space Cowboys
           </p>
         </footer>

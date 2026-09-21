@@ -63,12 +63,12 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
               <span className="text-white/60 font-bold uppercase text-[10px] tracking-wider">
                 ผู้พัฒนาเว็บไซต์ (Developer / Creator)
               </span>
-              <span className="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-300 border border-yellow-400/40 px-2.5 py-0.5 rounded-full font-black text-xs shadow-sm">
+              <span className="bg-white/15 text-white border border-white/25 px-2.5 py-0.5 rounded-full font-bold text-xs shadow-sm tracking-wide">
                 👑 sanior09
               </span>
             </div>
             <p className="text-white/80 text-[11px]">
-              โครงการนี้พัฒนาขึ้นโดย <strong>sanior09</strong> ด้วยความมุ่งมั่นในการสร้างสรรค์ระบบเว็บเกมกระดานแบบ Real-Time Multiplayer และ Solo AI บนสถาปัตยกรรม React, TypeScript, Node.js และ Web Audio API
+              โครงการนี้พัฒนาขึ้นโดย <strong className="text-white">sanior09</strong> ด้วยความมุ่งมั่นในการสร้างสรรค์ระบบเว็บเกมกระดานแบบ Real-Time Multiplayer และ Solo AI บนสถาปัตยกรรม React, TypeScript, Node.js และ Web Audio API
             </p>
           </div>
 
@@ -78,8 +78,8 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
               <span>⚠️</span>
               <span>คำชี้แจง: ไม่ได้ทำเพื่อการค้าหรือหารายได้ (Non-Commercial Notice)</span>
             </div>
-            <p className="text-white/85 text-[11px] leading-relaxed">
-              เว็บไซต์และเกมนี้สร้างขึ้นมา <strong className="text-yellow-300">เพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Tribute สำหรับแฟนบอร์ดเกม Splendor และ Marvel เท่านั้น</strong>
+            <p className="text-white/90 text-[11px] leading-relaxed">
+              เว็บไซต์และเกมนี้สร้างขึ้นมา <strong className="text-white underline decoration-white/40">เพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Tribute สำหรับแฟนบอร์ดเกม Splendor และ Marvel เท่านั้น</strong>
             </p>
             <ul className="list-disc list-inside space-y-1 text-white/75 text-[10.5px] pl-1">
               <li><strong>ไม่มีการแสวงหาผลกำไร:</strong> ไม่มีการเรียกเก็บค่าธรรมเนียมหรือค่าใช้จ่ายใดๆ จากผู้เล่นทั้งสิ้น</li>
