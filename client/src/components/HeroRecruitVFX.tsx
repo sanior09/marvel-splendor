@@ -1,9 +1,5 @@
 ﻿// ============================================================
-//  HeroRecruitVFX.tsx โ€” Cinematic Hero Recruit Visual Effect
-// ============================================================
-//  Full-screen dramatic overlay when a major Marvel hero is
-//  recruited. Features: particle burst, cinematic bars,
-//  glowing card reveal, hero-specific energy rings, scan sweep.
+//  HeroRecruitVFX.tsx -- Cinematic Hero Recruit Visual Effect
 // ============================================================
 
 import React, { useEffect, useState, useMemo } from 'react';
@@ -18,18 +14,6 @@ interface HeroRecruitVFXProps {
   isMyPlayer: boolean;
   onDismiss: () => void;
 }
-
-// โ”€โ”€ Particle symbol per VFX type โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
-const VFX_PARTICLE: Record<string, string> = {
-  lightning: 'โก',
-  repulsor:  'โ—',
-  shield:    'โ…',
-  smash:     'โ—',
-  mystic:    'โฆ',
-  web:       'โ—',
-  vibranium: 'โ—',
-  infinity:  'โง',
-};
 
 export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
   signature,
@@ -47,21 +31,20 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [onDismiss]);
 
-  // Generate random particle positions once
+  // Glowing dot particles -- no text characters, pure CSS circles
   const particles = useMemo(() =>
-    Array.from({ length: 38 }, (_, i) => ({
+    Array.from({ length: 44 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: 0.55 + Math.random() * 1.1,
-      delay: Math.random() * 1.0,
-      dur: 1.4 + Math.random() * 1.4,
-      opacity: 0.35 + Math.random() * 0.55,
+      size: 3 + Math.random() * 7,       // px
+      delay: Math.random() * 1.2,
+      dur: 1.5 + Math.random() * 1.8,
+      opacity: 0.28 + Math.random() * 0.52,
     })), []);
 
   const isEnter = phase === 'enter';
   const isExit  = phase === 'exit';
-  const particleSymbol = VFX_PARTICLE[signature.vfxType] ?? 'โฆ';
   const glow   = signature.glowColor;
   const accent = signature.accentColor;
 
@@ -75,7 +58,7 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
         transition: isExit ? 'opacity 0.32s ease-in' : 'opacity 0.28s ease-out',
       }}
     >
-      {/* โ”€โ”€ 1. Deep vignette backdrop โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      {/* 1. Deep vignette backdrop */}
       <div
         className="absolute inset-0"
         style={{
@@ -83,7 +66,7 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
         }}
       />
 
-      {/* โ”€โ”€ 2. Cinematic letterbox bars โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      {/* 2. Cinematic letterbox bars */}
       <div
         className="absolute top-0 left-0 right-0 pointer-events-none"
         style={{
@@ -103,14 +86,14 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
         }}
       />
 
-      {/* โ”€โ”€ 3. Concentric energy rings (hero-colored) โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      {/* 3. Concentric energy rings */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="absolute rounded-full animate-ping" style={{ width:'78vmin', height:'78vmin', border:`2px solid ${accent}`, opacity:0.30, animationDuration:'1.3s' }} />
         <div className="absolute rounded-full animate-ping" style={{ width:'58vmin', height:'58vmin', border:`1.5px solid ${accent}`, opacity:0.45, animationDuration:'1.05s', animationDelay:'0.12s' }} />
         <div className="absolute rounded-full animate-pulse" style={{ width:'40vmin', height:'40vmin', border:`3px solid ${accent}`, boxShadow:`0 0 28px ${glow}, inset 0 0 28px ${glow}`, opacity:0.7 }} />
       </div>
 
-      {/* โ”€โ”€ 4. Hero-type VFX signature โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      {/* 4. Hero-type VFX signature */}
       {signature.vfxType === 'lightning' && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -136,7 +119,7 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
           <div className="absolute w-[66vmin] h-[66vmin] rounded-full border-8 border-red-500 opacity-48 animate-ping" style={{ animationDuration: '1.0s' }} />
           <div className="absolute w-[50vmin] h-[50vmin] rounded-full border-4 border-blue-400 opacity-65 animate-pulse" />
           <div className="absolute w-[34vmin] h-[34vmin] rounded-full border-2 border-white opacity-80" />
-          <div className="absolute text-[10vmin] filter drop-shadow-[0_0_30px_rgba(253,224,71,1)] animate-spin" style={{ animationDuration: '12s' }}>โ…</div>
+          <div className="absolute text-[10vmin] animate-spin" style={{ animationDuration: '12s', color: '#fde047', filter: 'drop-shadow(0 0 20px rgba(253,224,71,1))' }}>&#9733;</div>
         </div>
       )}
 
@@ -150,8 +133,8 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
 
       {signature.vfxType === 'mystic' && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <div className="absolute w-[60vmin] h-[60vmin] rounded-full border-4 border-dashed border-orange-400 opacity-80 animate-spin filter drop-shadow-[0_0_20px_rgba(249,115,22,0.9)]" style={{ animationDuration: '8s' }} />
-          <div className="absolute w-[43vmin] h-[43vmin] rounded-full border-2 border-amber-300 opacity-90 animate-spin filter drop-shadow-[0_0_14px_rgba(245,158,11,0.95)]" style={{ animationDuration: '6s', animationDirection: 'reverse' }} />
+          <div className="absolute w-[60vmin] h-[60vmin] rounded-full border-4 border-dashed border-orange-400 opacity-80 animate-spin" style={{ animationDuration: '8s', filter: 'drop-shadow(0 0 20px rgba(249,115,22,0.9))' }} />
+          <div className="absolute w-[43vmin] h-[43vmin] rounded-full border-2 border-amber-300 opacity-90 animate-spin" style={{ animationDuration: '6s', animationDirection: 'reverse', filter: 'drop-shadow(0 0 14px rgba(245,158,11,0.95))' }} />
           <div className="absolute w-[29vmin] h-[29vmin] border-2 border-orange-300 opacity-55 animate-spin" style={{ transform: 'rotate(45deg)', animationDuration: '4s' }} />
         </div>
       )}
@@ -184,37 +167,48 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
       {signature.vfxType === 'infinity' && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
           <div className="absolute w-[64vmin] h-[64vmin] rounded-full border-2 border-yellow-400 opacity-58 animate-spin" style={{ animationDuration: '6s' }}>
-            {['๐ก','๐”ต','๐”ด','๐ฃ','๐ ','๐ข'].map((s, i) => (
-              <span key={i} className="absolute text-[4vmin]" style={{ top:'50%', left:'50%', transform:`rotate(${i*60}deg) translateY(-50%) translate(-50%,0)`, filter:'drop-shadow(0 0 8px white)' }}>{s}</span>
+            {[
+              { stone: 'topaz',    emoji: '#eab308' },
+              { stone: 'sapphire', emoji: '#3b82f6' },
+              { stone: 'ruby',     emoji: '#ef4444' },
+              { stone: 'amethyst', emoji: '#a855f7' },
+              { stone: 'obsidian', emoji: '#f97316' },
+              { stone: 'emerald',  emoji: '#10b981' },
+            ].map((s, i) => (
+              <div key={i} className="absolute w-4 h-4 rounded-full" style={{
+                top: '50%', left: '50%',
+                transform: `rotate(${i * 60}deg) translateY(-32vmin) translate(-50%, -50%)`,
+                background: s.emoji,
+                boxShadow: `0 0 8px 4px ${s.emoji}`,
+              }} />
             ))}
           </div>
           <div className="absolute w-[76vmin] h-[76vmin] rounded-full border-4 border-amber-400 opacity-48 animate-ping" style={{ animationDuration: '1.2s' }} />
         </div>
       )}
 
-      {/* โ”€โ”€ 5. Floating particles โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      {/* 5. Floating glowing dot particles -- pure CSS, no text characters */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {particles.map((p) => (
           <div
             key={p.id}
-            className="absolute font-bold animate-bounce"
+            className="absolute rounded-full animate-bounce"
             style={{
               left: `${p.x}%`,
               top: `${p.y}%`,
-              fontSize: `${p.size}rem`,
-              color: accent,
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              background: accent,
               opacity: p.opacity,
-              textShadow: `0 0 10px ${glow}`,
+              boxShadow: `0 0 ${Math.round(p.size * 2)}px ${Math.round(p.size)}px ${glow}`,
               animationDuration: `${p.dur}s`,
               animationDelay: `${p.delay}s`,
             }}
-          >
-            {particleSymbol}
-          </div>
+          />
         ))}
       </div>
 
-      {/* โ”€โ”€ 6. Horizontal scan-line sweep โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      {/* 6. Horizontal scan-line sweep */}
       <div
         className="absolute left-0 right-0 pointer-events-none"
         style={{
@@ -225,7 +219,7 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
         }}
       />
 
-      {/* โ”€โ”€ 7. Central hero card with cinematic entrance โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      {/* 7. Central hero card with cinematic entrance */}
       <div
         className="relative z-10 flex flex-col items-center max-w-xs w-full mx-4"
         style={{
@@ -246,7 +240,7 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
             backdropFilter: 'blur(12px)',
           }}
         >
-          <span>{isMyPlayer ? 'โญ' : '๐“ข'}</span>
+          <span>{isMyPlayer ? '\u2605' : '\u25BA'}</span>
           <span>{isMyPlayer ? 'YOU ASSEMBLED' : playerName + ' ASSEMBLED'}</span>
         </div>
 
@@ -259,7 +253,7 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
             boxShadow: `0 0 55px ${glow}, 0 0 110px ${glow.replace(/[\d.]+\)$/, '0.25)')}, 0 24px 64px rgba(0,0,0,0.9)`,
           }}
         >
-          {/* Shimmer corners */}
+          {/* Shimmer corner overlay */}
           <div className="absolute inset-0 rounded-2xl pointer-events-none animate-pulse" style={{ background: `linear-gradient(135deg, ${accent}28 0%, transparent 40%, transparent 60%, ${accent}28 100%)` }} />
 
           {/* Portrait */}
@@ -307,21 +301,21 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
             </div>
             <div className="text-white/85 text-xs font-semibold mt-1 tracking-wider">{signature.titleTh}</div>
             <div
-              className="mt-2 px-3 py-1 rounded-lg text-[11px] font-medium italic"
+              className="mt-2 px-3 py-1 rounded-lg text-xs font-medium italic"
               style={{ background: `${accent}18`, border: `1px solid ${accent}44`, color: 'rgba(255,255,220,0.9)' }}
             >
-              "{signature.tagline}"
+              {signature.tagline}
             </div>
           </div>
         </div>
 
         {/* Dismiss hint */}
-        <div className="mt-3 text-[10px] text-white/32 tracking-widest">
-          (เนเธ•เธฐเธ—เธตเนเนเธ”เธเนเนเธ”เนเน€เธเธทเนเธญเธเธดเธ” / Click to dismiss)
+        <div className="mt-3 text-xs text-white/35 tracking-widest">
+          (แตะที่ใดก็ได้เพื่อปิด / Click to dismiss)
         </div>
       </div>
 
-      {/* CSS keyframes injected via style tag */}
+      {/* Scan-down keyframe */}
       <style>{`
         @keyframes scan-down {
           0%   { top: -3px; }
@@ -333,4 +327,3 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
 
   return createPortal(content, document.body);
 };
-
