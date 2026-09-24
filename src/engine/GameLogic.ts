@@ -660,11 +660,16 @@ export function applyAction(
     bonuses: calculateBonuses(finalPlayer),
   };
 
-  // Win condition check — triggers final round
+  // Win condition check — triggers final round when ANY player reaches targetScore
   const winningPlayer = newState.players[playerIndex];
   const targetScore = newState.targetScore ?? 16;
-  if (checkWinCondition(winningPlayer, newState.board.avengersAssembleHolder === winningPlayer.id, targetScore) && newState.winTriggeredBy === null) {
-    newState.winTriggeredBy = playerId;
+  const holdsAvengers = newState.board.avengersAssembleHolder === winningPlayer.id;
+  if (newState.winTriggeredBy === null) {
+    const playerScore = winningPlayer.score; // already recalculated above
+    // Trigger final round as soon as someone hits the target score
+    if (playerScore >= targetScore || checkWinCondition(winningPlayer, holdsAvengers, targetScore)) {
+      newState.winTriggeredBy = playerId;
+    }
   }
 
   // Advance turn

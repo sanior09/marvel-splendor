@@ -535,6 +535,146 @@ class SoundManager {
     });
   }
 
+  /**
+   * 13. Final Round Alert — Cosmic Cinematic Alarm (BRAAAM + Siren + Tension)
+   * Stage 1: Dramatic sub-bass BRAAAM (0ms – 600ms)
+   * Stage 2: Ascending cosmic siren sweep (150ms – 900ms)
+   * Stage 3: Heroic brass sting fanfare (400ms – 1200ms)
+   * Stage 4: Resonant tail bloom (800ms – 2000ms)
+   */
+  public playFinalRoundAlert(): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+
+    // ── STAGE 1: Sub-Bass BRAAAM Detonation (0ms – 600ms) ──
+    // Cinematic cinematic low-end impact ala Marvel trailer
+    const braamOsc = ctx.createOscillator();
+    const braamOsc2 = ctx.createOscillator();
+    const braamGain = ctx.createGain();
+    const braamFilter = ctx.createBiquadFilter();
+
+    braamOsc.type = 'sawtooth';
+    braamOsc.frequency.setValueAtTime(65, now);
+    braamOsc.frequency.exponentialRampToValueAtTime(48, now + 0.08);
+    braamOsc.frequency.linearRampToValueAtTime(38, now + 0.55);
+
+    braamOsc2.type = 'square';
+    braamOsc2.frequency.setValueAtTime(130, now);
+    braamOsc2.frequency.exponentialRampToValueAtTime(96, now + 0.08);
+    braamOsc2.frequency.linearRampToValueAtTime(76, now + 0.55);
+
+    braamFilter.type = 'lowpass';
+    braamFilter.frequency.setValueAtTime(280, now);
+    braamFilter.frequency.exponentialRampToValueAtTime(180, now + 0.5);
+    braamFilter.Q.setValueAtTime(3.5, now);
+
+    braamGain.gain.setValueAtTime(0.001, now);
+    braamGain.gain.linearRampToValueAtTime(0.75, now + 0.025);
+    braamGain.gain.linearRampToValueAtTime(0.62, now + 0.15);
+    braamGain.gain.exponentialRampToValueAtTime(0.001, now + 0.62);
+
+    braamOsc.connect(braamFilter);
+    braamOsc2.connect(braamFilter);
+    braamFilter.connect(braamGain);
+    braamGain.connect(this.masterGain);
+
+    braamOsc.start(now);
+    braamOsc2.start(now);
+    braamOsc.stop(now + 0.65);
+    braamOsc2.stop(now + 0.65);
+
+    // ── STAGE 2: Cosmic Alert Siren Sweep (150ms – 900ms) ──
+    // Ascending high-frequency siren sweep → urgency + danger
+    const sirenOsc = ctx.createOscillator();
+    const sirenGain = ctx.createGain();
+    const sirenFilter = ctx.createBiquadFilter();
+    const sirenStart = now + 0.15;
+
+    sirenOsc.type = 'sawtooth';
+    sirenOsc.frequency.setValueAtTime(320, sirenStart);
+    sirenOsc.frequency.exponentialRampToValueAtTime(1600, sirenStart + 0.35);
+    sirenOsc.frequency.linearRampToValueAtTime(980, sirenStart + 0.65);
+
+    sirenFilter.type = 'bandpass';
+    sirenFilter.frequency.setValueAtTime(800, sirenStart);
+    sirenFilter.frequency.exponentialRampToValueAtTime(2200, sirenStart + 0.35);
+    sirenFilter.Q.setValueAtTime(2.8, sirenStart);
+
+    sirenGain.gain.setValueAtTime(0.001, sirenStart);
+    sirenGain.gain.linearRampToValueAtTime(0.32, sirenStart + 0.04);
+    sirenGain.gain.linearRampToValueAtTime(0.28, sirenStart + 0.35);
+    sirenGain.gain.exponentialRampToValueAtTime(0.001, sirenStart + 0.72);
+
+    sirenOsc.connect(sirenFilter);
+    sirenFilter.connect(sirenGain);
+    sirenGain.connect(this.masterGain);
+
+    sirenOsc.start(sirenStart);
+    sirenOsc.stop(sirenStart + 0.75);
+
+    // ── STAGE 3: Heroic Brass Sting Fanfare (400ms – 1200ms) ──
+    // Cinematic tension horn cluster — announces "something big is happening"
+    const brassNotes = [174.61, 220.00, 261.63, 329.63, 415.30]; // F3, A3, C4, E4, Ab4
+    const brassStart = now + 0.40;
+    const brassDur = 0.75;
+
+    brassNotes.forEach((freq, i) => {
+      if (!this.ctx || !this.masterGain) return;
+      const noteTime = brassStart + i * 0.025;
+      const brassOsc = ctx.createOscillator();
+      const brassGain = ctx.createGain();
+      const brassFilter = ctx.createBiquadFilter();
+
+      brassOsc.type = i % 2 === 0 ? 'sawtooth' : 'triangle';
+      brassOsc.frequency.setValueAtTime(freq, noteTime);
+      brassOsc.frequency.linearRampToValueAtTime(freq * 1.003, noteTime + brassDur);
+
+      brassFilter.type = 'lowpass';
+      brassFilter.frequency.setValueAtTime(900, noteTime);
+      brassFilter.frequency.exponentialRampToValueAtTime(2800, noteTime + 0.12);
+      brassFilter.frequency.exponentialRampToValueAtTime(1200, noteTime + brassDur);
+      brassFilter.Q.setValueAtTime(1.8, noteTime);
+
+      const peakGain = 0.14 + (brassNotes.length - i) * 0.025;
+      brassGain.gain.setValueAtTime(0.001, noteTime);
+      brassGain.gain.linearRampToValueAtTime(peakGain, noteTime + 0.04);
+      brassGain.gain.linearRampToValueAtTime(peakGain * 0.8, noteTime + 0.4);
+      brassGain.gain.exponentialRampToValueAtTime(0.001, noteTime + brassDur);
+
+      brassOsc.connect(brassFilter);
+      brassFilter.connect(brassGain);
+      brassGain.connect(this.masterGain);
+
+      brassOsc.start(noteTime);
+      brassOsc.stop(noteTime + brassDur + 0.05);
+    });
+
+    // ── STAGE 4: Resonant Cymbal Wash Tail (800ms – 2000ms) ──
+    // High-frequency shimmer resolving the tension
+    const pinkBuffer = this.createPinkNoiseBuffer(1.3);
+    if (pinkBuffer) {
+      const cymbalSource = ctx.createBufferSource();
+      cymbalSource.buffer = pinkBuffer;
+
+      const cymbalHighpass = ctx.createBiquadFilter();
+      cymbalHighpass.type = 'highpass';
+      cymbalHighpass.frequency.setValueAtTime(4000, now + 0.8);
+
+      const cymbalGain = ctx.createGain();
+      cymbalGain.gain.setValueAtTime(0.001, now + 0.8);
+      cymbalGain.gain.linearRampToValueAtTime(0.18, now + 0.88);
+      cymbalGain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+
+      cymbalSource.connect(cymbalHighpass);
+      cymbalHighpass.connect(cymbalGain);
+      cymbalGain.connect(this.masterGain);
+
+      cymbalSource.start(now + 0.8);
+      cymbalSource.stop(now + 2.05);
+    }
+  }
+
   // ────────────────────────────────────────────────────────────
   //  Audio Synthesis DSP Utilities
   // ────────────────────────────────────────────────────────────

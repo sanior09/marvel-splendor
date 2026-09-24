@@ -113,7 +113,7 @@ export class RoomManager {
             this.socketToRoom.delete(session.socketId);
             this.socketToPlayer.delete(session.socketId);
             if (session.accountId) {
-              userManager.setActiveRoom(session.accountId, null, null).catch(() => {});
+              userManager.setActiveRoom(session.accountId, null, null).catch(() => { });
             }
           }
         }
@@ -181,7 +181,7 @@ export class RoomManager {
 
     if (!room || room.status === 'finished') {
       if (accountId) {
-        userManager.setActiveRoom(accountId, null, null).catch(() => {});
+        userManager.setActiveRoom(accountId, null, null).catch(() => { });
       }
       return { success: false, error: `ห้อง ${roomId} สิ้นสุดหรือไม่มีอยู่แล้ว` };
     }
@@ -270,7 +270,7 @@ export class RoomManager {
     // Clear user active room if leaving
     const leavingSession = room.sessions.find((s) => s.id === playerId || s.socketId === socket.id);
     if (leavingSession?.accountId) {
-      userManager.setActiveRoom(leavingSession.accountId, null, null).catch(() => {});
+      userManager.setActiveRoom(leavingSession.accountId, null, null).catch(() => { });
     }
 
     // ─── Active Game AFK / Disconnect Takeover ───────────────
@@ -498,10 +498,10 @@ export class RoomManager {
     const finalBotName = botName ?? nextDefault.name;
     const resolvedAvatarUrl = avatarUrl ??
       (finalBotName.toLowerCase().includes('doom') ? '/images/avatars/doctor_doom.jpg' :
-       finalBotName.toLowerCase().includes('loki') ? '/images/avatars/loki.jpg' :
-       finalBotName.toLowerCase().includes('thanos') ? '/images/avatars/thanos.jpg' :
-       finalBotName.toLowerCase().includes('stark') || finalBotName.toLowerCase().includes('iron') ? '/images/avatars/iron_man.jpg' :
-       nextDefault.avatarUrl);
+        finalBotName.toLowerCase().includes('loki') ? '/images/avatars/loki.jpg' :
+          finalBotName.toLowerCase().includes('thanos') ? '/images/avatars/thanos.jpg' :
+            finalBotName.toLowerCase().includes('stark') || finalBotName.toLowerCase().includes('iron') ? '/images/avatars/iron_man.jpg' :
+              nextDefault.avatarUrl);
 
     room.sessions.push({
       id: botId,

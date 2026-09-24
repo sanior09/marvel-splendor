@@ -2,7 +2,7 @@
 //  Lobby.tsx — Marvel Splendor Room Creation & Solo AI Customizer
 // ============================================================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import type { RoomInfo } from '@shared/types/game.types';
 import type { UserProfile } from '../hooks/useAuth';
@@ -129,6 +129,56 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [showTutorial, setShowTutorial] = useState(false);
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
 
+  // Countdown loading state (host start game + solo)
+  const [startCountdown, setStartCountdown] = useState<number | null>(null);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // For solo mode: hold the args to pass to onCreateSolo when countdown finishes
+  const [soloContext, setSoloContext] = useState<{
+    finalName: string;
+    botCount: number;
+    botNames: string[];
+    mapId: string;
+    avatarUrl?: string;
+    targetScore: number;
+  } | null>(null);
+
+  const startCountdownTimer = (onFinish: () => void) => {
+    setStartCountdown(5);
+    countdownRef.current = setInterval(() => {
+      setStartCountdown((prev) => {
+        if (prev === null) return null;
+        if (prev <= 1) {
+          clearInterval(countdownRef.current!);
+          onFinish();
+          return null;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleStartGame = () => {
+    if (!canStart) {
+      soundManager.playError();
+      return;
+    }
+    soundManager.playCardBuy(3);
+    setSoloContext(null); // multiplayer mode
+    startCountdownTimer(() => onStartGame());
+  };
+
+  const handleCancelStart = () => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    setStartCountdown(null);
+    setSoloContext(null);
+    soundManager.playButtonClick();
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => { if (countdownRef.current) clearInterval(countdownRef.current); };
+  }, []);
+
   // Avatar / Profile picture state (Default to Iron Man so avatar is never null)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(MARVEL_AVATARS[0]?.src || null);
   const [avatarId, setAvatarId] = useState<string | null>(MARVEL_AVATARS[0]?.id || 'iron_man');
@@ -197,13 +247,23 @@ export const Lobby: React.FC<LobbyProps> = ({
       document.getElementById('player-name')?.focus();
       return;
     }
-    soundManager.playCardBuy(3);
-    setIsLoading(true);
-    setError('');
     const selectedBotNames = botNames.slice(0, botCount).map((name, idx) => {
       return name.trim() || POPULAR_MARVEL_BOTS[idx]?.name || `Marvel AI ${idx + 1}`;
     });
-    onCreateSolo(finalName, botCount, selectedBotNames, selectedMapId, avatarUrl || undefined, targetScore);
+    soundManager.playCardBuy(3);
+    setError('');
+    setSoloContext({
+      finalName,
+      botCount,
+      botNames: selectedBotNames,
+      mapId: selectedMapId,
+      avatarUrl: avatarUrl || undefined,
+      targetScore,
+    });
+    startCountdownTimer(() => {
+      setIsLoading(true);
+      onCreateSolo(finalName, botCount, selectedBotNames, selectedMapId, avatarUrl || undefined, targetScore);
+    });
   };
 
   const handleJoin = (roomId?: string): void => {
@@ -252,9 +312,168 @@ export const Lobby: React.FC<LobbyProps> = ({
     }, botAvatarUrl);
   };
 
+  // ── Countdown Overlay (always rendered via portal, works for solo + multiplayer) ──
+  const countdownOverlay = startCountdown !== null
+    ? createPortal(
+        <div
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
+          style={{
+            background: 'rgba(0,0,0,0.82)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+          }}
+        >
+          <div
+            className="flex flex-col items-center gap-6 px-8 py-10 rounded-3xl"
+            style={{
+              background: 'linear-gradient(135deg, #0a0a1a 0%, #0d0505 50%, #0a1a0a 100%)',
+              border: '1.5px solid rgba(251,191,36,0.35)',
+              boxShadow: '0 0 80px rgba(251,191,36,0.15), 0 20px 60px rgba(0,0,0,0.8)',
+              minWidth: '300px',
+              maxWidth: '90vw',
+            }}
+          >
+            {/* Marvel Splendor logo */}
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex items-center gap-2">
+                <span className="marvel-badge px-2 py-0.5 rounded text-xs tracking-wider">MARVEL</span>
+                <span className="font-display font-black text-xl text-white tracking-widest">SPLENDOR</span>
+              </div>
+              <p className="text-white/50 text-xs tracking-widest uppercase font-semibold">กำลังเริ่มการต่อสู้...</p>
+            </div>
+
+            {/* Countdown circle */}
+            <div className="relative flex items-center justify-center">
+              <svg width="110" height="110" viewBox="0 0 110 110">
+                <circle cx="55" cy="55" r="48" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
+                <circle
+                  cx="55" cy="55" r="48"
+                  fill="none"
+                  stroke="url(#countdownGrad)"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  strokeDasharray={`${2 * Math.PI * 48}`}
+                  strokeDashoffset={`${2 * Math.PI * 48 * (1 - startCountdown / 5)}`}
+                  transform="rotate(-90 55 55)"
+                  style={{ transition: 'stroke-dashoffset 0.9s linear' }}
+                />
+                <defs>
+                  <linearGradient id="countdownGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#f59e0b" />
+                    <stop offset="100%" stopColor="#ef4444" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="absolute flex flex-col items-center">
+                <span
+                  className="font-num font-black leading-none"
+                  style={{
+                    fontSize: '3rem',
+                    background: 'linear-gradient(135deg, #fbbf24, #ef4444)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    filter: 'drop-shadow(0 0 10px rgba(251,191,36,0.6))',
+                  }}
+                >
+                  {startCountdown}
+                </span>
+                <span className="text-white/40 text-[10px] tracking-widest uppercase">วินาที</span>
+              </div>
+            </div>
+
+            {/* Players summary — Solo or Multiplayer */}
+            <div className="flex items-center gap-2 flex-wrap justify-center">
+              {soloContext ? (
+                <>
+                  {/* Human player */}
+                  <div className="flex flex-col items-center gap-1">
+                    <div
+                      className="w-10 h-10 rounded-full overflow-hidden border-2"
+                      style={{ borderColor: 'rgba(251,191,36,0.8)' }}
+                    >
+                      {soloContext.avatarUrl ? (
+                        <img src={soloContext.avatarUrl} alt={soloContext.finalName} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-amber-600 text-white font-black text-sm">
+                          {soloContext.finalName[0]?.toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    <span className="text-[9px] text-yellow-300 font-bold max-w-[48px] truncate text-center">{soloContext.finalName}</span>
+                  </div>
+                  {/* Bots */}
+                  {soloContext.botNames.map((name, idx) => {
+                    const preset = POPULAR_MARVEL_BOTS.find((b) => b.name === name);
+                    const botSrc = preset?.avatarUrl;
+                    return (
+                      <div key={idx} className="flex flex-col items-center gap-1">
+                        <div
+                          className="w-10 h-10 rounded-full overflow-hidden border-2"
+                          style={{ borderColor: 'rgba(147,51,234,0.6)' }}
+                        >
+                          {botSrc ? (
+                            <img src={botSrc} alt={name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-700 to-indigo-700 text-white font-black text-sm">
+                              {preset?.avatar ?? '🤖'}
+                            </div>
+                          )}
+                        </div>
+                        <span className="text-[9px] text-white/50 max-w-[48px] truncate text-center">{name}</span>
+                      </div>
+                    );
+                  })}
+                </>
+              ) : (
+                // Multiplayer mode: show currentRoom players
+                currentRoom?.players.map((p) => {
+                  const src = resolvePlayerAvatar(p.name, p.avatarUrl);
+                  return (
+                    <div key={p.id} className="flex flex-col items-center gap-1">
+                      <div
+                        className="w-10 h-10 rounded-full overflow-hidden border-2"
+                        style={{ borderColor: p.id === myPlayerId ? 'rgba(251,191,36,0.8)' : 'rgba(255,255,255,0.2)' }}
+                      >
+                        {src ? (
+                          <img src={src} alt={p.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-amber-600 text-white font-black text-sm">
+                            {p.isBot ? '🤖' : p.name[0]?.toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                      <span className="text-[9px] text-white/60 max-w-[48px] truncate text-center">{p.name}</span>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Cancel button */}
+            <button
+              type="button"
+              id="cancel-start-game-btn"
+              onClick={handleCancelStart}
+              className="px-6 py-2.5 rounded-xl font-bold text-sm transition-all cursor-pointer hover:scale-105"
+              style={{
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'rgba(255,255,255,0.65)',
+              }}
+            >
+              ✕ ยกเลิก
+            </button>
+          </div>
+        </div>,
+        document.body,
+      )
+    : null;
+
   // ── In-Room Lobby (Waiting Room) ──────────────────────────
   if (currentRoom) {
     return (
+      <>
+        {countdownOverlay}
       <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start p-3 sm:p-6 relative select-none">
         <div className="w-full max-w-md pt-2 pb-6 sm:pb-8">
           <div className="glass-strong rounded-2xl p-3.5 sm:p-5 w-full space-y-3 sm:space-y-4 border border-white/15 shadow-2xl relative">
@@ -540,12 +759,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 <button
                   type="button"
                   onClick={() => {
-                    if (!canStart) {
-                      soundManager.playError();
-                      return;
-                    }
-                    soundManager.playCardBuy(3);
-                    onStartGame();
+                    handleStartGame();
                   }}
                   disabled={!canStart}
                   className={[
@@ -577,6 +791,8 @@ export const Lobby: React.FC<LobbyProps> = ({
               </div>
             )}
           </div>
+
+
 
           {/* Add Bot Modal */}
           {showAddBotModal &&
@@ -663,11 +879,14 @@ export const Lobby: React.FC<LobbyProps> = ({
             <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
         </div>
       </div>
+      </>
     );
   }
 
   // ── Main Lobby Screen ─────────────────────────────────────
   return (
+    <>
+      {countdownOverlay}
     <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start px-3 py-3 sm:py-5 relative">
       {/* Top-Right Control Bar: Profile Badge + Tutorial Button + Sound Toggle */}
       <div className="fixed top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 z-30 flex items-center gap-2">
@@ -1314,5 +1533,6 @@ export const Lobby: React.FC<LobbyProps> = ({
         />
       </div>
     </div>
+    </>
   );
 };

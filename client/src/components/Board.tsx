@@ -22,6 +22,7 @@ import { HeroRecruitVFX } from './HeroRecruitVFX';
 import { TutorialModal } from './TutorialModal';
 import { getHeroSignature, playHeroSignatureSound, type HeroSignature } from '../data/heroSignatures';
 import type { Card } from '@shared/types/game.types';
+import { FinalRoundModal } from './FinalRoundModal';
 
 import type { UserProfile } from '../hooks/useAuth';
 
@@ -74,6 +75,19 @@ export const Board: React.FC<BoardProps> = ({
 
   const [showTutorial, setShowTutorial] = useState(false);
   const lastLocallyBoughtCardIdRef = useRef<string | null>(null);
+
+  // Final Round alert modal state
+  const [showFinalRoundModal, setShowFinalRoundModal] = useState(false);
+  const prevWinTriggeredByRef = useRef<string | null>(state.winTriggeredBy);
+
+  // Detect when winTriggeredBy transitions from null → a player ID → show modal + play sound
+  useEffect(() => {
+    if (state.winTriggeredBy !== null && prevWinTriggeredByRef.current === null) {
+      setShowFinalRoundModal(true);
+      soundManager.playFinalRoundAlert();
+    }
+    prevWinTriggeredByRef.current = state.winTriggeredBy;
+  }, [state.winTriggeredBy]);
 
   // Play audio alert when turn transitions to this player
   const prevIsMyTurnRef = useRef<boolean>(isMyTurn);
@@ -299,6 +313,25 @@ export const Board: React.FC<BoardProps> = ({
             <span className="text-[10px] text-white/70 bg-white/10 px-2 py-0.5 rounded-full font-bold border border-white/10 shadow-sm">
               รอบที่ (Round) <span className="font-num font-black text-yellow-300">{state.turnNumber}</span>
             </span>
+
+            {/* Final Round Badge — visible during the final round */}
+            {state.winTriggeredBy !== null && state.phase !== 'finished' && (
+              <span
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider cursor-pointer"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(220,38,38,0.25), rgba(251,191,36,0.15))',
+                  border: '1.5px solid rgba(220,38,38,0.6)',
+                  color: '#fca5a5',
+                  animation: 'finalRoundBadgePulse 1.2s ease-in-out infinite',
+                  textShadow: '0 0 8px rgba(220,38,38,0.8)',
+                }}
+                onClick={() => setShowFinalRoundModal(true)}
+                title="คลิกเพื่อดูรายละเอียดตาสุดท้าย"
+              >
+                <span>🚨</span>
+                <span>ตาสุดท้าย!</span>
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -646,6 +679,19 @@ export const Board: React.FC<BoardProps> = ({
         {/* Interactive Roblox-Style Tutorial Modal */}
         <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
 
+        {/* Final Round Alert Modal — pops on every screen when winTriggeredBy first set */}
+        {showFinalRoundModal && state.winTriggeredBy !== null && (() => {
+          const triggerPlayer = players.find((p) => p.id === state.winTriggeredBy);
+          if (!triggerPlayer) return null;
+          return (
+            <FinalRoundModal
+              triggerPlayer={triggerPlayer}
+              targetScore={state.targetScore ?? 16}
+              onClose={() => setShowFinalRoundModal(false)}
+            />
+          );
+        })()}
+
         {/* Game over overlay */}
         {phase === 'finished' && (
           <GameOver
@@ -658,6 +704,15 @@ export const Board: React.FC<BoardProps> = ({
             refreshProfile={refreshProfile}
           />
         )}
+
+        {/* Keyframe: Final Round badge pulse animation */}
+        <style>{`
+          @keyframes finalRoundBadgePulse {
+            0%   { opacity: 1; box-shadow: 0 0 6px rgba(220,38,38,0.4); }
+            50%  { opacity: 0.7; box-shadow: 0 0 14px rgba(220,38,38,0.9); }
+            100% { opacity: 1; box-shadow: 0 0 6px rgba(220,38,38,0.4); }
+          }
+        `}</style>
       </div>
     </ResponsiveScaler>
   );
