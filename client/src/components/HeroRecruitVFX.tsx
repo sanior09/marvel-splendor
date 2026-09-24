@@ -1,12 +1,13 @@
+﻿// ============================================================
+//  HeroRecruitVFX.tsx โ€” Cinematic Hero Recruit Visual Effect
 // ============================================================
-//  HeroRecruitVFX.tsx — Signature Visual Effect Overlay
-// ============================================================
-//  Fires when a major Marvel hero is recruited/bought.
-//  Renders dynamic SVG/CSS particle animations, signature card,
-//  and recruiter banner without blocking background game state.
+//  Full-screen dramatic overlay when a major Marvel hero is
+//  recruited. Features: particle burst, cinematic bars,
+//  glowing card reveal, hero-specific energy rings, scan sweep.
 // ============================================================
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import type { HeroSignature } from '../data/heroSignatures';
 import type { Card } from '@shared/types/game.types';
 
@@ -18,6 +19,18 @@ interface HeroRecruitVFXProps {
   onDismiss: () => void;
 }
 
+// โ”€โ”€ Particle symbol per VFX type โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
+const VFX_PARTICLE: Record<string, string> = {
+  lightning: 'โก',
+  repulsor:  'โ—',
+  shield:    'โ…',
+  smash:     'โ—',
+  mystic:    'โฆ',
+  web:       'โ—',
+  vibranium: 'โ—',
+  infinity:  'โง',
+};
+
 export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
   signature,
   card,
@@ -25,261 +38,299 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
   isMyPlayer,
   onDismiss,
 }) => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [phase, setPhase] = useState<'enter' | 'hold' | 'exit'>('enter');
 
   useEffect(() => {
-    // Auto-dismiss after 2.3 seconds
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-      setTimeout(onDismiss, 300); // Allow fade-out transition
-    }, 2200);
-
-    return () => clearTimeout(timer);
+    const t1 = setTimeout(() => setPhase('hold'), 350);
+    const t2 = setTimeout(() => setPhase('exit'), 3000);
+    const t3 = setTimeout(() => onDismiss(), 3350);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [onDismiss]);
 
-  return (
+  // Generate random particle positions once
+  const particles = useMemo(() =>
+    Array.from({ length: 38 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: 0.55 + Math.random() * 1.1,
+      delay: Math.random() * 1.0,
+      dur: 1.4 + Math.random() * 1.4,
+      opacity: 0.35 + Math.random() * 0.55,
+    })), []);
+
+  const isEnter = phase === 'enter';
+  const isExit  = phase === 'exit';
+  const particleSymbol = VFX_PARTICLE[signature.vfxType] ?? 'โฆ';
+  const glow   = signature.glowColor;
+  const accent = signature.accentColor;
+
+  const content = (
     <div
       onClick={onDismiss}
-      className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden transition-opacity duration-300 select-none cursor-pointer ${
-        isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
-      }`}
+      className="fixed inset-0 flex items-center justify-center overflow-hidden select-none cursor-pointer"
+      style={{
+        zIndex: 9999,
+        opacity: isExit ? 0 : isEnter ? 0 : 1,
+        transition: isExit ? 'opacity 0.32s ease-in' : 'opacity 0.28s ease-out',
+      }}
     >
-      {/* ── 1. Ambient Backdrop Flash ─────────────────────────── */}
+      {/* โ”€โ”€ 1. Deep vignette backdrop โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
       <div
-        className="absolute inset-0 pointer-events-none animate-pulse duration-700"
+        className="absolute inset-0"
         style={{
-          background: `radial-gradient(circle at 50% 50%, ${signature.glowColor} 0%, rgba(0, 0, 0, 0.75) 75%)`,
+          background: `radial-gradient(ellipse at 50% 45%, ${glow} 0%, rgba(0,0,0,0.88) 65%, rgba(0,0,0,0.97) 100%)`,
         }}
       />
 
-      {/* ── 2. Signature Animated VFX by Hero Type ───────────── */}
+      {/* โ”€โ”€ 2. Cinematic letterbox bars โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      <div
+        className="absolute top-0 left-0 right-0 pointer-events-none"
+        style={{
+          height: '9vh',
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.97), transparent)',
+          transform: isEnter ? 'translateY(-100%)' : 'translateY(0)',
+          transition: 'transform 0.38s cubic-bezier(0.22,1,0.36,1)',
+        }}
+      />
+      <div
+        className="absolute bottom-0 left-0 right-0 pointer-events-none"
+        style={{
+          height: '9vh',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.97), transparent)',
+          transform: isEnter ? 'translateY(100%)' : 'translateY(0)',
+          transition: 'transform 0.38s cubic-bezier(0.22,1,0.36,1)',
+        }}
+      />
 
-      {/* A. Lightning VFX (Thor & Storm) */}
+      {/* โ”€โ”€ 3. Concentric energy rings (hero-colored) โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="absolute rounded-full animate-ping" style={{ width:'78vmin', height:'78vmin', border:`2px solid ${accent}`, opacity:0.30, animationDuration:'1.3s' }} />
+        <div className="absolute rounded-full animate-ping" style={{ width:'58vmin', height:'58vmin', border:`1.5px solid ${accent}`, opacity:0.45, animationDuration:'1.05s', animationDelay:'0.12s' }} />
+        <div className="absolute rounded-full animate-pulse" style={{ width:'40vmin', height:'40vmin', border:`3px solid ${accent}`, boxShadow:`0 0 28px ${glow}, inset 0 0 28px ${glow}`, opacity:0.7 }} />
+      </div>
+
+      {/* โ”€โ”€ 4. Hero-type VFX signature โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
       {signature.vfxType === 'lightning' && (
-        <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <filter id="lightningGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1" />
-                <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur2" />
-                <feMerge>
-                  <feMergeNode in="blur2" />
-                  <feMergeNode in="blur1" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
+              <filter id="lGlow"><feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b1"/><feGaussianBlur in="SourceGraphic" stdDeviation="11" result="b2"/><feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
             </defs>
-            {/* Branching lightning bolts */}
-            <path
-              d="M 100 0 L 250 160 L 220 220 L 450 320 L 420 370 L 560 500"
-              stroke="#e0f2fe"
-              strokeWidth="4"
-              fill="none"
-              filter="url(#lightningGlow)"
-              className="animate-ping"
-              style={{ animationDuration: '0.4s', animationIterationCount: 3 }}
-            />
-            <path
-              d="M 1100 0 L 950 180 L 980 230 L 780 340 L 810 390 L 660 500"
-              stroke="#38bdf8"
-              strokeWidth="4"
-              fill="none"
-              filter="url(#lightningGlow)"
-              className="animate-ping"
-              style={{ animationDuration: '0.5s', animationIterationCount: 3 }}
-            />
-            <path
-              d="M 200 600 L 400 480 L 370 430 L 560 380"
-              stroke="#bae6fd"
-              strokeWidth="3"
-              fill="none"
-              filter="url(#lightningGlow)"
-              className="animate-pulse"
-            />
-            <path
-              d="M 1000 600 L 800 480 L 830 430 L 660 380"
-              stroke="#38bdf8"
-              strokeWidth="3"
-              fill="none"
-              filter="url(#lightningGlow)"
-              className="animate-pulse"
-            />
+            <path d="M 80 0 L 245 195 L 205 255 L 435 375 L 390 430 L 565 600" stroke="#e0f2fe" strokeWidth="5" fill="none" filter="url(#lGlow)" className="animate-ping" style={{ animationDuration: '0.45s', animationIterationCount: '4' }} />
+            <path d="M 1100 0 L 925 195 L 965 255 L 745 368 L 785 418 L 625 600" stroke="#38bdf8" strokeWidth="5" fill="none" filter="url(#lGlow)" className="animate-ping" style={{ animationDuration: '0.5s', animationDelay: '0.08s', animationIterationCount: '4' }} />
           </svg>
         </div>
       )}
 
-      {/* B. Repulsor Blast VFX (Iron Man) */}
       {signature.vfxType === 'repulsor' && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          {/* Concentric Arc Reactor energy pulses */}
-          <div className="absolute w-[450px] h-[450px] rounded-full border-4 border-amber-400/80 animate-ping opacity-75" />
-          <div className="absolute w-[320px] h-[320px] rounded-full border-2 border-cyan-400/90 animate-pulse" />
-          {/* Repulsor laser beam flash across the screen */}
-          <div className="absolute w-full h-8 bg-gradient-to-r from-transparent via-amber-300 to-transparent blur-sm transform -rotate-12 animate-pulse" />
-          <div className="absolute w-full h-2 bg-gradient-to-r from-transparent via-cyan-200 to-transparent transform rotate-12" />
+          <div className="absolute w-[62vmin] h-[62vmin] rounded-full border-4 border-amber-400 opacity-65 animate-ping" style={{ animationDuration: '0.9s' }} />
+          <div className="absolute w-[44vmin] h-[44vmin] rounded-full border-2 border-cyan-300 opacity-80 animate-pulse" />
+          <div className="absolute w-full h-7 opacity-55 animate-pulse" style={{ background: 'linear-gradient(to right, transparent, rgba(251,191,36,0.9), transparent)', transform: 'rotate(-8deg)' }} />
         </div>
       )}
 
-      {/* C. Vibranium Shield Ricochet VFX (Captain America) */}
       {signature.vfxType === 'shield' && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          {/* Concentric red & blue shield rings */}
-          <div className="absolute w-[460px] h-[460px] rounded-full border-8 border-red-500/50 animate-ping" />
-          <div className="absolute w-[360px] h-[360px] rounded-full border-4 border-blue-400/80 animate-pulse" />
-          <div className="absolute w-[260px] h-[260px] rounded-full border-2 border-white/90" />
-          {/* Star flare glint */}
-          <div className="absolute text-8xl text-yellow-300 filter drop-shadow-[0_0_25px_rgba(253,224,71,0.9)] animate-spin-slow">
-            ★
-          </div>
+          <div className="absolute w-[66vmin] h-[66vmin] rounded-full border-8 border-red-500 opacity-48 animate-ping" style={{ animationDuration: '1.0s' }} />
+          <div className="absolute w-[50vmin] h-[50vmin] rounded-full border-4 border-blue-400 opacity-65 animate-pulse" />
+          <div className="absolute w-[34vmin] h-[34vmin] rounded-full border-2 border-white opacity-80" />
+          <div className="absolute text-[10vmin] filter drop-shadow-[0_0_30px_rgba(253,224,71,1)] animate-spin" style={{ animationDuration: '12s' }}>โ…</div>
         </div>
       )}
 
-      {/* D. Gamma Ground Smash VFX (Hulk) */}
       {signature.vfxType === 'smash' && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          {/* Expanding green shockwaves */}
-          <div className="absolute w-[600px] h-[600px] rounded-full border-8 border-emerald-500/70 animate-ping" />
-          <div className="absolute w-[400px] h-[400px] rounded-full border-4 border-green-400/90 animate-pulse" />
-          {/* Screen fissure energy bursts */}
-          <div className="absolute inset-0 bg-green-500/10 animate-pulse" />
+          <div className="absolute w-[82vmin] h-[82vmin] rounded-full border-8 border-emerald-500 opacity-58 animate-ping" style={{ animationDuration: '0.8s' }} />
+          <div className="absolute w-[56vmin] h-[56vmin] rounded-full border-4 border-green-400 opacity-75 animate-pulse" />
+          <div className="absolute inset-0 bg-emerald-500 opacity-5 animate-pulse" />
         </div>
       )}
 
-      {/* E. Mystic Mandala Rune Circles VFX (Doctor Strange) */}
       {signature.vfxType === 'mystic' && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          {/* Outer rotating Eldritch mandala ring */}
-          <div className="absolute w-[420px] h-[420px] rounded-full border-4 border-dashed border-orange-400/80 animate-spin-slow filter drop-shadow-[0_0_20px_rgba(249,115,22,0.8)]" />
-          {/* Inner counter-rotating geometric ring */}
-          <div
-            className="absolute w-[300px] h-[300px] rounded-full border-2 border-amber-300/90 animate-spin filter drop-shadow-[0_0_15px_rgba(245,158,11,0.9)]"
-            style={{ animationDirection: 'reverse', animationDuration: '6s' }}
-          />
-          {/* Mystic square runes */}
-          <div className="absolute w-[220px] h-[220px] border-2 border-orange-300/60 transform rotate-45" />
+          <div className="absolute w-[60vmin] h-[60vmin] rounded-full border-4 border-dashed border-orange-400 opacity-80 animate-spin filter drop-shadow-[0_0_20px_rgba(249,115,22,0.9)]" style={{ animationDuration: '8s' }} />
+          <div className="absolute w-[43vmin] h-[43vmin] rounded-full border-2 border-amber-300 opacity-90 animate-spin filter drop-shadow-[0_0_14px_rgba(245,158,11,0.95)]" style={{ animationDuration: '6s', animationDirection: 'reverse' }} />
+          <div className="absolute w-[29vmin] h-[29vmin] border-2 border-orange-300 opacity-55 animate-spin" style={{ transform: 'rotate(45deg)', animationDuration: '4s' }} />
         </div>
       )}
 
-      {/* F. Web Shooter Burst VFX (Spider-Man) */}
       {signature.vfxType === 'web' && (
-        <div className="absolute inset-0 pointer-events-none">
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <line x1="0" y1="0" x2="560" y2="300" stroke="white" strokeWidth="2.5" strokeDasharray="6,4" className="animate-pulse" />
-            <line x1="1200" y1="0" x2="660" y2="300" stroke="white" strokeWidth="2.5" strokeDasharray="6,4" className="animate-pulse" />
-            <line x1="0" y1="600" x2="560" y2="340" stroke="white" strokeWidth="2.5" strokeDasharray="6,4" className="animate-pulse" />
-            <line x1="1200" y1="600" x2="660" y2="340" stroke="white" strokeWidth="2.5" strokeDasharray="6,4" className="animate-pulse" />
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <svg className="w-full h-full">
+            {[0, 1, 2, 3].map(i => (
+              <line key={i}
+                x1={i < 2 ? 0 : '100%'} y1={i % 2 === 0 ? 0 : '100%'}
+                x2="50%" y2="50%"
+                stroke="white" strokeWidth="2" strokeDasharray="8,6"
+                style={{ opacity: 0.32, animation: `pulse 1.6s ease-in-out ${i * 0.22}s infinite` }}
+              />
+            ))}
+            <circle cx="50%" cy="50%" r="30%" fill="none" stroke="white" strokeWidth="1.5" strokeDasharray="10,8" className="animate-ping" style={{ opacity: 0.28, animationDuration: '1.4s' }} />
           </svg>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full border border-white/40 animate-ping" />
         </div>
       )}
 
-      {/* G. Vibranium Kinetic Pulse VFX (Black Panther) */}
       {signature.vfxType === 'vibranium' && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <div className="absolute w-[500px] h-[500px] rounded-full border-4 border-purple-500/80 animate-ping" />
-          <div className="absolute w-[340px] h-[340px] rounded-full border-2 border-fuchsia-400/90 animate-pulse" />
-          {/* Claw slash accents */}
-          <div className="absolute w-72 h-1 bg-gradient-to-r from-transparent via-purple-300 to-transparent transform -rotate-45" />
-          <div className="absolute w-72 h-1 bg-gradient-to-r from-transparent via-purple-300 to-transparent transform -rotate-30 translate-y-4" />
+          <div className="absolute w-[67vmin] h-[67vmin] rounded-full border-4 border-purple-500 opacity-62 animate-ping" style={{ animationDuration: '1.1s' }} />
+          <div className="absolute w-[47vmin] h-[47vmin] rounded-full border-2 border-fuchsia-400 opacity-80 animate-pulse" />
+          <div className="absolute w-[30vmin] h-1 opacity-58" style={{ background: 'linear-gradient(to right, transparent, rgba(192,132,252,1), transparent)', transform: 'rotate(-45deg)' }} />
+          <div className="absolute w-[30vmin] h-0.5 opacity-40" style={{ background: 'linear-gradient(to right, transparent, rgba(232,121,249,1), transparent)', transform: 'rotate(-30deg) translateY(1.2rem)' }} />
         </div>
       )}
 
-      {/* H. Cosmic Infinity Gauntlet VFX (Thanos) */}
       {signature.vfxType === 'infinity' && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          {/* 6 Infinity Stones orbiting flash */}
-          <div className="absolute w-[440px] h-[440px] rounded-full border-2 border-yellow-400/60 animate-spin-slow">
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xl drop-shadow-[0_0_10px_#eab308]">🟡</span>
-            <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 text-xl drop-shadow-[0_0_10px_#3b82f6]">🔵</span>
-            <span className="absolute top-1/2 -left-3 -translate-y-1/2 text-xl drop-shadow-[0_0_10px_#ef4444]">🔴</span>
-            <span className="absolute top-1/2 -right-3 -translate-y-1/2 text-xl drop-shadow-[0_0_10px_#a855f7]">🟣</span>
-            <span className="absolute top-1/4 left-6 text-xl drop-shadow-[0_0_10px_#f97316]">🟠</span>
-            <span className="absolute top-1/4 right-6 text-xl drop-shadow-[0_0_10px_#10b981]">🟢</span>
+          <div className="absolute w-[64vmin] h-[64vmin] rounded-full border-2 border-yellow-400 opacity-58 animate-spin" style={{ animationDuration: '6s' }}>
+            {['๐ก','๐”ต','๐”ด','๐ฃ','๐ ','๐ข'].map((s, i) => (
+              <span key={i} className="absolute text-[4vmin]" style={{ top:'50%', left:'50%', transform:`rotate(${i*60}deg) translateY(-50%) translate(-50%,0)`, filter:'drop-shadow(0 0 8px white)' }}>{s}</span>
+            ))}
           </div>
-          <div className="absolute w-[520px] h-[520px] rounded-full border-4 border-amber-400/60 animate-ping" />
+          <div className="absolute w-[76vmin] h-[76vmin] rounded-full border-4 border-amber-400 opacity-48 animate-ping" style={{ animationDuration: '1.2s' }} />
         </div>
       )}
 
-      {/* ── 3. Central Hero Splash Card & Banner ────────────────── */}
-      <div className="relative z-10 flex flex-col items-center max-w-sm w-full mx-4 transform animate-in zoom-in-95 duration-200">
-        {/* Recruiter Headline Tag */}
-        <div className="mb-2 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase backdrop-blur-md border shadow-lg bg-black/60 border-white/20 text-white flex items-center gap-1.5">
-          <span>{isMyPlayer ? '⭐ YOU ASSEMBLED' : '📢 HERO RECRUITED BY'}</span>
-          <span className="text-yellow-300 font-extrabold">{playerName}</span>
-        </div>
+      {/* โ”€โ”€ 5. Floating particles โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {particles.map((p) => (
+          <div
+            key={p.id}
+            className="absolute font-bold animate-bounce"
+            style={{
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              fontSize: `${p.size}rem`,
+              color: accent,
+              opacity: p.opacity,
+              textShadow: `0 0 10px ${glow}`,
+              animationDuration: `${p.dur}s`,
+              animationDelay: `${p.delay}s`,
+            }}
+          >
+            {particleSymbol}
+          </div>
+        ))}
+      </div>
 
-        {/* Hero Card Visual Container */}
+      {/* โ”€โ”€ 6. Horizontal scan-line sweep โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      <div
+        className="absolute left-0 right-0 pointer-events-none"
+        style={{
+          height: '3px',
+          background: `linear-gradient(to right, transparent, ${accent}cc, white, ${accent}cc, transparent)`,
+          boxShadow: `0 0 16px ${glow}`,
+          animation: 'scan-down 2.2s ease-in-out infinite',
+        }}
+      />
+
+      {/* โ”€โ”€ 7. Central hero card with cinematic entrance โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€ */}
+      <div
+        className="relative z-10 flex flex-col items-center max-w-xs w-full mx-4"
+        style={{
+          transform: isEnter ? 'scale(0.55) translateY(36px)' : 'scale(1) translateY(0)',
+          opacity: isEnter ? 0 : 1,
+          transition: 'transform 0.44s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease-out',
+          transitionDelay: isEnter ? '0.05s' : '0s',
+        }}
+      >
+        {/* Recruiter tag */}
         <div
-          className={`relative p-3 rounded-2xl border-2 backdrop-blur-xl shadow-2xl bg-gradient-to-b ${signature.bgGradient} transition-all transform hover:scale-105`}
+          className="mb-3 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase flex items-center gap-2 shadow-2xl"
           style={{
-            borderColor: signature.accentColor,
-            boxShadow: `0 0 35px ${signature.glowColor}, 0 10px 40px rgba(0,0,0,0.8)`,
+            background: 'rgba(0,0,0,0.80)',
+            border: `1.5px solid ${accent}`,
+            color: accent,
+            boxShadow: `0 0 22px ${glow}`,
+            backdropFilter: 'blur(12px)',
           }}
         >
-          {/* Card Portrait */}
-          <div className="relative w-44 h-60 sm:w-48 sm:h-64 rounded-xl overflow-hidden border border-white/20 shadow-inner bg-black/50">
+          <span>{isMyPlayer ? 'โญ' : '๐“ข'}</span>
+          <span>{isMyPlayer ? 'YOU ASSEMBLED' : playerName + ' ASSEMBLED'}</span>
+        </div>
+
+        {/* Glowing card frame */}
+        <div
+          className="relative p-3 rounded-2xl backdrop-blur-xl shadow-2xl"
+          style={{
+            background: 'linear-gradient(145deg, rgba(8,8,18,0.97), rgba(4,4,12,0.99))',
+            border: `2px solid ${accent}`,
+            boxShadow: `0 0 55px ${glow}, 0 0 110px ${glow.replace(/[\d.]+\)$/, '0.25)')}, 0 24px 64px rgba(0,0,0,0.9)`,
+          }}
+        >
+          {/* Shimmer corners */}
+          <div className="absolute inset-0 rounded-2xl pointer-events-none animate-pulse" style={{ background: `linear-gradient(135deg, ${accent}28 0%, transparent 40%, transparent 60%, ${accent}28 100%)` }} />
+
+          {/* Portrait */}
+          <div className="relative w-44 h-60 sm:w-52 sm:h-72 rounded-xl overflow-hidden border border-white/20 shadow-inner bg-black/70">
             <img
               src={`/images/cards/${card.id}.jpg`}
               alt={card.name}
-              className="w-full h-full object-cover object-center transform scale-105"
+              className="w-full h-full object-cover object-center"
+              style={{ transform: 'scale(1.07)', filter: `brightness(1.14) saturate(1.25) drop-shadow(0 0 10px ${accent})` }}
             />
-            {/* Avengers Symbol badge if present */}
+            {/* Portrait inner glow */}
+            <div className="absolute inset-0 animate-pulse" style={{ background: `radial-gradient(circle at 50% 28%, ${accent}28 0%, transparent 68%)` }} />
+
+            {/* Avengers badge */}
             {(() => {
-              const count = typeof card.avengersCount === 'number'
-                ? card.avengersCount
-                : typeof card.avengersSymbol === 'number'
-                ? card.avengersSymbol
-                : card.avengersSymbol
-                ? 1
-                : 0;
+              const count = typeof card.avengersCount === 'number' ? card.avengersCount
+                : typeof card.avengersSymbol === 'number' ? card.avengersSymbol
+                : card.avengersSymbol ? 1 : 0;
               if (count <= 0) return null;
               return (
-                <div
-                  className="absolute top-2 right-2 flex items-center -space-x-2"
-                  title={`Avengers Symbol x${count}`}
-                >
+                <div className="absolute top-2 right-2 flex items-center -space-x-2">
                   {Array.from({ length: count }).map((_, idx) => (
-                    <div
-                      key={idx}
-                      className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 via-red-700 to-red-950 border-2 border-yellow-300 flex items-center justify-center font-black text-yellow-300 shadow-xl text-base relative z-[1]"
-                    >
-                      A
-                    </div>
+                    <div key={idx} className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 via-red-700 to-red-950 border-2 border-yellow-300 flex items-center justify-center font-black text-yellow-300 shadow-xl text-base">A</div>
                   ))}
                 </div>
               );
             })()}
-            {/* Victory points badge */}
+
+            {/* VP badge */}
             {card.points > 0 && (
-              <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/75 border border-white/20 font-black text-yellow-300 text-sm shadow">
+              <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/80 border border-yellow-400/50 font-black text-yellow-300 text-sm shadow">
                 {card.points} PTS
               </div>
             )}
           </div>
 
-          {/* Hero Name & Titles */}
-          <div className="mt-3 text-center">
+          {/* Hero identity block */}
+          <div className="mt-3 text-center px-2">
             <div
-              className="font-black text-lg sm:text-xl tracking-wider uppercase drop-shadow flex items-center justify-center gap-1.5"
-              style={{ color: signature.accentColor }}
+              className="font-black text-xl sm:text-2xl tracking-widest uppercase flex items-center justify-center gap-2 animate-pulse"
+              style={{ color: accent, textShadow: `0 0 20px ${glow}, 0 0 40px ${glow}` }}
             >
-              <span>{signature.icon}</span>
+              <span className="text-2xl">{signature.icon}</span>
               <span>{signature.titleEn}</span>
             </div>
-            <div className="text-white/90 text-xs font-semibold mt-0.5">
-              {signature.titleTh}
-            </div>
-            <div className="text-[11px] text-yellow-200/80 font-medium italic mt-1 px-2">
+            <div className="text-white/85 text-xs font-semibold mt-1 tracking-wider">{signature.titleTh}</div>
+            <div
+              className="mt-2 px-3 py-1 rounded-lg text-[11px] font-medium italic"
+              style={{ background: `${accent}18`, border: `1px solid ${accent}44`, color: 'rgba(255,255,220,0.9)' }}
+            >
               "{signature.tagline}"
             </div>
           </div>
         </div>
 
-        {/* Hint text to dismiss */}
-        <div className="mt-2 text-[10px] text-white/40 tracking-wider">
-          (แตะที่ใดก็ได้เพื่อปิด / Click anywhere to dismiss)
+        {/* Dismiss hint */}
+        <div className="mt-3 text-[10px] text-white/32 tracking-widest">
+          (เนเธ•เธฐเธ—เธตเนเนเธ”เธเนเนเธ”เนเน€เธเธทเนเธญเธเธดเธ” / Click to dismiss)
         </div>
       </div>
+
+      {/* CSS keyframes injected via style tag */}
+      <style>{`
+        @keyframes scan-down {
+          0%   { top: -3px; }
+          100% { top: 100%; }
+        }
+      `}</style>
     </div>
   );
+
+  return createPortal(content, document.body);
 };
+
