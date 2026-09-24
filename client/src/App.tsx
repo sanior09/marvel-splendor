@@ -12,6 +12,7 @@ import { InactivityWarningModal } from './components/InactivityWarningModal';
 import { useGameState } from './hooks/useGameState';
 import { useInactivityTimeout } from './hooks/useInactivityTimeout';
 import { useAuth } from './hooks/useAuth';
+import { usePageTransition } from './hooks/usePageTransition';
 import type { RoomInfo } from '@shared/types/game.types';
 
 /**
@@ -70,7 +71,7 @@ function AuthGate(): React.ReactElement {
   if (auth.isLoading) {
     return (
       <div
-        className="fixed inset-0 flex items-center justify-center"
+        className="fixed inset-0 flex items-center justify-center page-enter"
         style={{ background: '#06070f', fontFamily: "'Outfit', sans-serif" }}
       >
         <div className="text-center">
@@ -96,10 +97,12 @@ function AuthGate(): React.ReactElement {
   // Show login screen if not authenticated and not guest
   if (!isAuthenticated && !isGuest) {
     return (
-      <LoginScreen
-        auth={auth}
-        onContinueAsGuest={() => setIsGuest(true)}
-      />
+      <div className="page-enter" style={{ width: '100%', height: '100%' }}>
+        <LoginScreen
+          auth={auth}
+          onContinueAsGuest={() => setIsGuest(true)}
+        />
+      </div>
     );
   }
 
@@ -126,6 +129,9 @@ interface GameRouterProps {
 function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactElement {
   const [myPlayerId, setMyPlayerId] = useState<string | null>(null);
   const [afkNotice, setAfkNotice] = useState<string | null>(null);
+  // Controls which screen is actively rendered (with key to force remount = fresh enter animation)
+  const [activeScreen, setActiveScreen] = useState<'lobby' | 'board'>('lobby');
+  const { isExiting, triggerExit } = usePageTransition(300);
 
   const accountId = auth.profile?.id ?? undefined;
 
@@ -230,51 +236,73 @@ function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactEl
 
   const handleLeave = useCallback(() => {
     const activeRoomId = gameState?.roomId || roomInfo?.roomId;
-    leaveRoom(activeRoomId && myPlayerId ? { roomId: activeRoomId, playerId: myPlayerId } : undefined);
-    setMyPlayerId(null);
-    // Refresh profile to clear active room
-    if (!isGuest) auth.refreshProfile();
-  }, [gameState?.roomId, roomInfo?.roomId, myPlayerId, leaveRoom, isGuest, auth]);
+    triggerExit(() => {
+      leaveRoom(activeRoomId && myPlayerId ? { roomId: activeRoomId, playerId: myPlayerId } : undefined);
+      setMyPlayerId(null);
+      setActiveScreen('lobby');
+      // Refresh profile to clear active room
+      if (!isGuest) auth.refreshProfile();
+    });
+  }, [gameState?.roomId, roomInfo?.roomId, myPlayerId, leaveRoom, isGuest, auth, triggerExit]);
+
+  // Sync activeScreen when gameState arrives
+  useEffect(() => {
+    if (gameState && myPlayerId) setActiveScreen('board');
+  }, [gameState, myPlayerId]);
+
+  const showBoard = activeScreen === 'board' && gameState && myPlayerId;
 
   return (
     <OrientationGuard>
       <div className="relative w-screen h-screen overflow-hidden">
-        {gameState && myPlayerId ? (
-          <Board
-            state={gameState}
-            myPlayerId={myPlayerId}
-            onSendAction={sendAction}
-            onLeave={handleLeave}
-            error={error}
-            onClearError={clearError}
-            gameOverData={gameOverData}
-            userProfile={auth.profile}
-            refreshProfile={auth.refreshProfile}
-          />
+        {showBoard ? (
+          <div
+            key="board"
+            className={isExiting ? 'page-exit' : 'page-enter-slide'}
+            style={{ width: '100%', height: '100%' }}
+          >
+            <Board
+              state={gameState}
+              myPlayerId={myPlayerId}
+              onSendAction={sendAction}
+              onLeave={handleLeave}
+              error={error}
+              onClearError={clearError}
+              gameOverData={gameOverData}
+              userProfile={auth.profile}
+              refreshProfile={auth.refreshProfile}
+            />
+          </div>
         ) : (
-          <Lobby
-            onCreateRoom={handleCreateRoom}
-            onCreateSolo={handleCreateSolo}
-            onJoinRoom={handleJoinRoom}
-            onLeaveRoom={handleLeave}
-            onStartGame={startGame}
-            onToggleReady={toggleReady}
-            onAddBot={addBot}
-            onRemoveBot={removeBot}
-            onSetTargetScore={setTargetScore}
-            onListRooms={listRooms}
-            currentRoom={roomInfo}
-            myPlayerId={myPlayerId}
-            connectionStatus={connectionStatus}
-            afkNotice={afkNotice}
-            onClearAfkNotice={() => setAfkNotice(null)}
-            // Auth / Profile props
-            userProfile={auth.profile}
-            isGuest={isGuest}
-            onLogout={onLogout}
-            onResumeRoom={handleResumeRoom}
-            onClearActiveRoom={auth.clearActiveRoom}
-          />
+          <div
+            key="lobby"
+            className={isExiting ? 'page-exit' : 'page-enter'}
+            style={{ width: '100%', height: '100%' }}
+          >
+            <Lobby
+              onCreateRoom={handleCreateRoom}
+              onCreateSolo={handleCreateSolo}
+              onJoinRoom={handleJoinRoom}
+              onLeaveRoom={handleLeave}
+              onStartGame={startGame}
+              onToggleReady={toggleReady}
+              onAddBot={addBot}
+              onRemoveBot={removeBot}
+              onSetTargetScore={setTargetScore}
+              onListRooms={listRooms}
+              currentRoom={roomInfo}
+              myPlayerId={myPlayerId}
+              connectionStatus={connectionStatus}
+              afkNotice={afkNotice}
+              onClearAfkNotice={() => setAfkNotice(null)}
+              // Auth / Profile props
+              userProfile={auth.profile}
+              isGuest={isGuest}
+              onLogout={onLogout}
+              onResumeRoom={handleResumeRoom}
+              onClearActiveRoom={auth.clearActiveRoom}
+            />
+          </div>
         )}
 
         {/* 60s Inactivity Grace Warning Modal */}
