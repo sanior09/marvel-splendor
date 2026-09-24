@@ -100,7 +100,7 @@ CANONICAL_MAPPING = {
     't2_t03': ('Mysterio', 'Quentin Beck (Earth-616)'),
     't2_t04': ('Mystique', 'Raven Darkhölme (Earth-616)'),
     't2_t05': ('Punisher', 'Francis Castle (Earth-616)'),
-    't2_t06': ('Green Goblin', 'Norman Osborn (Earth-616)'),
+    't2_t06': ('Green Goblin', 'Green Goblin'),
 
     # Tier 2 - Power (Purple) — 6 cards
     't2_a01': ('Red Skull', 'Johann Shmidt (Earth-616)'),
