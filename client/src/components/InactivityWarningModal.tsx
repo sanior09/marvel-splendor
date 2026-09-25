@@ -15,16 +15,14 @@ export const InactivityWarningModal: React.FC<InactivityWarningModalProps> = ({
   remainingSeconds,
   onStay,
 }) => {
-  const formatTime = (secs: number): string => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m}:${s.toString().padStart(2, '0')}`;
-  };
-
   const handleStayClick = () => {
     soundManager.playButtonClick();
     onStay();
   };
+
+  const urgency = remainingSeconds <= 15 ? 'critical' : remainingSeconds <= 30 ? 'warning' : 'normal';
+  const pct = Math.max(0, Math.min(100, (remainingSeconds / 60) * 100));
+  const circumference = 2 * Math.PI * 38;
 
   return createPortal(
     <div
@@ -32,43 +30,92 @@ export const InactivityWarningModal: React.FC<InactivityWarningModalProps> = ({
       onClick={handleStayClick}
     >
       <div
-        className="relative glass-strong rounded-3xl p-5 sm:p-7 max-w-sm w-full border border-amber-500/50 shadow-[0_0_60px_rgba(245,158,11,0.3)] text-center space-y-4 animate-slide-up bg-slate-950/95"
+        className="relative rounded-2xl p-6 sm:p-8 max-w-xs w-full text-center space-y-5 animate-fade-in"
+        style={{
+          background: 'linear-gradient(145deg, rgba(17,10,28,0.98) 0%, rgba(8,6,18,0.99) 100%)',
+          border: urgency === 'critical'
+            ? '1.5px solid rgba(239,68,68,0.7)'
+            : urgency === 'warning'
+            ? '1.5px solid rgba(245,158,11,0.6)'
+            : '1.5px solid rgba(245,158,11,0.4)',
+          boxShadow: urgency === 'critical'
+            ? '0 0 60px rgba(239,68,68,0.35), 0 20px 60px rgba(0,0,0,0.9)'
+            : '0 0 50px rgba(245,158,11,0.25), 0 20px 60px rgba(0,0,0,0.9)',
+        }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Animated Warning Icon */}
-        <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-3xl shadow-inner animate-pulse">
-          ⏳
+        {/* SVG Countdown Ring */}
+        <div className="relative w-24 h-24 mx-auto">
+          <svg width="96" height="96" viewBox="0 0 96 96" className="rotate-[-90deg]">
+            {/* Track */}
+            <circle
+              cx="48" cy="48" r="38"
+              fill="none"
+              stroke="rgba(255,255,255,0.07)"
+              strokeWidth="6"
+            />
+            {/* Progress */}
+            <circle
+              cx="48" cy="48" r="38"
+              fill="none"
+              stroke={urgency === 'critical' ? '#ef4444' : '#f59e0b'}
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={circumference * (1 - pct / 100)}
+              style={{ transition: 'stroke-dashoffset 0.9s linear, stroke 0.3s ease' }}
+            />
+          </svg>
+          {/* Center text */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span
+              className="font-black leading-none tabular-nums"
+              style={{
+                fontFamily: "'Chakra Petch', monospace",
+                fontSize: '2rem',
+                color: urgency === 'critical' ? '#fca5a5' : '#fbbf24',
+                filter: urgency === 'critical' ? 'drop-shadow(0 0 8px #ef4444)' : 'drop-shadow(0 0 8px #f59e0b)',
+              }}
+            >
+              {remainingSeconds}
+            </span>
+            <span className="text-[9px] text-white/40 uppercase tracking-widest">วินาที</span>
+          </div>
         </div>
 
+        {/* Text */}
         <div className="space-y-1.5">
-          <h3 className="font-display text-lg sm:text-xl font-black text-amber-400 uppercase tracking-wide">
-            เตือนความไม่เคลื่อนไหว (AFK Alert)
+          <h3
+            className="font-black text-base uppercase tracking-wide"
+            style={{ color: urgency === 'critical' ? '#fca5a5' : '#fbbf24' }}
+          >
+            {urgency === 'critical' ? '⚠️ หมดเวลาเกือบแล้ว!' : 'คุณยังอยู่ไหม?'}
           </h3>
-          <p className="text-white/70 text-xs sm:text-sm">
-            คุณไม่มีการเคลื่อนไหวเกือบ 3 นาที ระบบจะให้บอท AI เข้ามาเล่นแทนคุณอัตโนมัติในอีก:
+          <p className="text-white/55 text-xs leading-relaxed">
+            ไม่มีการเคลื่อนไหวเกือบ 3 นาที<br />
+            ระบบจะส่ง AI เข้าเล่นแทนคุณอัตโนมัติ
           </p>
         </div>
 
-        {/* Big Countdown Timer */}
-        <div className="py-2.5 px-4 rounded-2xl bg-black/60 border border-amber-500/30 flex items-center justify-center gap-2">
-          <span className="font-mono text-3xl sm:text-4xl font-black text-amber-400 tracking-wider">
-            {formatTime(remainingSeconds)}
-          </span>
-          <span className="text-xs text-amber-300/70 font-semibold uppercase">วินาที (Sec)</span>
-        </div>
-
-        <p className="text-[11px] text-white/50">
-          แตะที่หน้าจอ ขยับเมาส์ หรือกดปุ่มด้านล่างเพื่อเล่นเกมต่อ
-        </p>
-
-        {/* Action Button */}
+        {/* CTA Button */}
         <button
           type="button"
           onClick={handleStayClick}
-          className="w-full py-3 rounded-xl font-display font-bold text-sm sm:text-base text-white bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-500 hover:from-amber-500 hover:to-yellow-500 active:scale-98 transition-all shadow-lg shadow-amber-600/30 cursor-pointer"
+          className="w-full py-3 rounded-xl font-bold text-sm text-black tracking-wide transition-all active:scale-95 cursor-pointer shadow-lg"
+          style={{
+            background: urgency === 'critical'
+              ? 'linear-gradient(135deg, #ef4444, #b91c1c)'
+              : 'linear-gradient(135deg, #fbbf24, #f59e0b)',
+            boxShadow: urgency === 'critical'
+              ? '0 6px 20px rgba(239,68,68,0.4)'
+              : '0 6px 20px rgba(245,158,11,0.4)',
+            color: urgency === 'critical' ? '#fff' : '#000',
+          }}
         >
-          ✓ ฉันยังเล่นอยู่ (I'm Still Here)
+          ฉันยังเล่นอยู่
         </button>
+
+        <p className="text-[10px] text-white/25">แตะที่ใดก็ได้เพื่อเล่นต่อ</p>
       </div>
     </div>,
     document.body,

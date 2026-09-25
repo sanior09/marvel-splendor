@@ -92,12 +92,10 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
           <div className="flex items-center gap-1">
             <span className="text-sm">🧤</span>
             <h4 className="text-[11px] font-black text-amber-300 uppercase tracking-wider">
-              ถุงมืออินฟินิตี้ (Gauntlet)
+              Infinity Gauntlet
             </h4>
           </div>
-          <span className="text-[10px] font-bold text-amber-400/90">
-            <span className="font-num font-black text-amber-300 text-xs">{totalGauntletProgress}/6</span> มณี (Stones)
-          </span>
+          <span className="font-num font-black text-amber-300 text-xs">{totalGauntletProgress}<span className="text-amber-500/60 font-normal">/6</span></span>
         </div>
 
         {/* 6 Gauntlet Sockets: 5 Bonuses + 1 Time Stone */}
@@ -192,25 +190,26 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
       {/* Avengers Symbols Banner */}
       <div className="glass rounded-xl px-3 py-1.5 flex items-center justify-between border border-red-500/20 bg-red-950/20">
         <div className="flex items-center gap-2">
-          <div className="bg-red-600 w-5 h-5 rounded-full flex items-center justify-center border border-yellow-300 shadow">
+          <div className="bg-red-600 w-5 h-5 rounded-full flex items-center justify-center border border-yellow-300/80 shadow">
             <span className="text-yellow-300 font-black text-[10px]">A</span>
           </div>
-          <span className="text-[11px] font-bold text-white/80">รวมพลังอเวนเจอร์ส (Avengers)</span>
+          <span className="text-[11px] font-bold text-white/70">Avengers</span>
         </div>
-        <span className="text-[11px] font-black text-yellow-300 bg-black/60 px-2.5 py-0.5 rounded-full border border-yellow-400/40 shadow-sm">
-          <span className="font-num text-xs">{avengersCount}</span> สัญลักษณ์ {avengersCount >= 3 ? '(ถือไทล์)' : ''}
+        <span className="text-[11px] font-black text-yellow-300 bg-black/60 px-2.5 py-0.5 rounded-full border border-yellow-400/30 shadow-sm">
+          <span className="font-num text-xs">{avengersCount}</span>
+          <span className="text-white/40 font-normal ml-1 text-[9px]">{avengersCount >= 3 ? 'ไทล์' : 'สัญลักษณ์'}</span>
         </span>
       </div>
 
       {/* Stones in hand & Hero Discount Cards */}
       <div className="glass rounded-xl p-2.5 space-y-2 border border-white/10">
-        {/* Row 1: Stones in Hand (เหรียญที่เรามี) */}
+        {/* Row 1: Stones in Hand */}
         <div>
           <div className="flex justify-between items-center mb-1">
             <div className="flex items-center gap-1.5">
               <span className="text-xs">💎</span>
-              <h4 className="text-[11px] font-bold uppercase tracking-wider text-white/80">
-                มณีในมือ (Stones in Hand)
+              <h4 className="text-[11px] font-bold uppercase tracking-wider text-white/70">
+                มณีในมือ
               </h4>
             </div>
             <span
@@ -237,8 +236,10 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <span className="text-xs">🃏</span>
-              <h4 className="text-[11px] font-bold uppercase tracking-wider text-yellow-300/90">
-                ไพ่ส่วนลดซื้อการ์ด ({player.ownedCards.length} ใบ)
+              <h4 className="text-[11px] font-bold uppercase tracking-wider text-yellow-300/80">
+                ส่วนลด
+                <span className="ml-1 font-num font-black text-yellow-300">{player.ownedCards.length}</span>
+                <span className="text-white/30 font-normal"> ใบ</span>
               </h4>
             </div>
             {onViewCards && (
@@ -367,13 +368,20 @@ const WinRequirementRow: React.FC<{
 }> = ({ label, met, current, target }) => (
   <div className="flex items-center justify-between text-[11px] py-0.5">
     <div className="flex items-center gap-1.5">
-      <span className={met ? 'text-emerald-400 font-black' : 'text-white/30'}>
-        {met ? '✓' : '○'}
-      </span>
-      <span className={met ? 'text-emerald-300 font-bold' : 'text-white/70'}>{label}</span>
+      {/* Dot indicator — more visual than ASCII ✓/○ */}
+      <span
+        className="w-2.5 h-2.5 rounded-full shrink-0 transition-all duration-300"
+        style={{
+          background: met
+            ? 'radial-gradient(circle at 35% 35%, #6ee7b7, #10b981)'
+            : 'rgba(255,255,255,0.12)',
+          boxShadow: met ? '0 0 6px rgba(16,185,129,0.6)' : 'none',
+        }}
+      />
+      <span className={met ? 'text-emerald-300 font-semibold' : 'text-white/55'}>{label}</span>
     </div>
-    <span className={`font-num font-black text-xs ${met ? 'text-emerald-300' : 'text-white/80'}`}>
-      {Math.min(current, target)}/{target}
+    <span className={`font-num font-black text-xs ${met ? 'text-emerald-300' : 'text-white/60'}`}>
+      {Math.min(current, target)}<span className="text-white/30 font-normal">/{target}</span>
     </span>
   </div>
 );

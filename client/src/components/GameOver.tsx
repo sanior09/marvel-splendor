@@ -133,11 +133,8 @@ export const GameOver: React.FC<GameOverProps> = ({
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <span className="text-xl">⚡</span>
-              <div>
-                <div className="text-white font-black text-sm uppercase tracking-wider">
-                  สรุปแต้ม EXP & อันดับ
-                </div>
-                <div className="text-white/40 text-[10px]">EXP & Rank Progression</div>
+              <div className="text-white font-black text-sm uppercase tracking-wider">
+                สรุป EXP
               </div>
             </div>
 
@@ -183,7 +180,7 @@ export const GameOver: React.FC<GameOverProps> = ({
                 <div className="flex items-center gap-2.5">
                   <span className={`text-2xl ${isOwner ? 'animate-bounce' : ''}`}>{currentRank.icon}</span>
                   <div>
-                    <div className="text-[10px] text-white/50">ยศของคุณ</div>
+                    <div className="text-[10px] text-white/40">ยศปัจจุบัน</div>
                     <div className="text-sm font-black text-white flex items-center gap-1.5">
                       <span style={{ color: currentRank.color }}>{currentRank.name}</span>
                     </div>
@@ -244,8 +241,8 @@ export const GameOver: React.FC<GameOverProps> = ({
         {/* Scoreboard */}
         <div className="glass rounded-2xl overflow-hidden border border-white/10">
           <div className="px-4 py-2 border-b border-white/10 bg-black/30">
-            <span className="text-xs text-white/60 uppercase tracking-widest font-bold">
-              สรุปอันดับผลการแข่งขัน
+            <span className="text-xs text-white/50 uppercase tracking-widest font-bold">
+              ผลการแข่งขัน
             </span>
           </div>
           <div className="divide-y divide-white/5">

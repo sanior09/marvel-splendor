@@ -128,6 +128,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [targetScore, setTargetScore] = useState<number>(16);
   const [showTutorial, setShowTutorial] = useState(false);
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
+  const [roomCodeCopied, setRoomCodeCopied] = useState(false);
 
   // Countdown loading state (host start game + solo)
   const [startCountdown, setStartCountdown] = useState<number | null>(null);
@@ -514,13 +515,35 @@ export const Lobby: React.FC<LobbyProps> = ({
               <h2 className="font-display text-xl font-black text-white">
                 รวมพลเหล่าฮีโร่
               </h2>
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-white/60 text-xs uppercase tracking-wider font-semibold">
-                  รหัสห้อง:
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                <span className="text-white/50 text-xs uppercase tracking-wider font-semibold">
+                  รหัสห้อง
                 </span>
-                <code className="bg-red-500/20 text-red-300 px-2.5 py-0.5 rounded-lg font-mono font-black text-lg tracking-widest border border-red-500/40">
-                  {currentRoom.roomId}
-                </code>
+                <div className="flex items-center gap-1.5">
+                  <code
+                    className="bg-red-500/15 text-red-300 px-3 py-1 rounded-lg font-mono font-black text-xl tracking-widest border border-red-500/30"
+                    style={{ letterSpacing: '0.25em' }}
+                  >
+                    {currentRoom.roomId}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(currentRoom.roomId).catch(() => {});
+                      setRoomCodeCopied(true);
+                      setTimeout(() => setRoomCodeCopied(false), 2000);
+                    }}
+                    className="text-[10px] px-2 py-1 rounded-lg border transition-all cursor-pointer font-bold"
+                    style={{
+                      background: roomCodeCopied ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.06)',
+                      borderColor: roomCodeCopied ? 'rgba(16,185,129,0.5)' : 'rgba(255,255,255,0.15)',
+                      color: roomCodeCopied ? '#6ee7b7' : 'rgba(255,255,255,0.5)',
+                    }}
+                    title="คัดลอกรหัสห้อง"
+                  >
+                    {roomCodeCopied ? '✓ คัดลอกแล้ว' : 'คัดลอก'}
+                  </button>
+                </div>
               </div>
 
               {/* Battlefield Map & Target Score Indicators in waiting room */}
@@ -883,7 +906,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     );
   }
 
-  // ── Main Lobby Screen ─────────────────────────────────────
+  // ── Main Lobby Screen ───────────────────────────────
   return (
     <>
       {countdownOverlay}
@@ -908,7 +931,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             className="px-3 py-1.5 rounded-xl border border-white/15 text-white/50 hover:text-white text-xs transition-all"
             title="ล็อกอินเพื่อสะสมแต้ม"
           >
-            👤 ล็อกอิน
+            ล็อกอิน
           </button>
         )}
         <button
@@ -928,26 +951,36 @@ export const Lobby: React.FC<LobbyProps> = ({
       <div className="w-full max-w-lg flex flex-col items-center pt-2 sm:pt-3 pb-6 sm:pb-8">
 
         {/* Hero Header */}
-        <div className="text-center space-y-1 mb-2 sm:mb-2.5 px-2">
-          <div className="flex items-center justify-center gap-2">
-            <span className="marvel-badge px-2 sm:px-2.5 py-0.5 rounded text-lg sm:text-2xl font-black tracking-wider shadow-xl">
+        <div className="text-center space-y-1.5 mb-2 sm:mb-3 px-2">
+          <div className="flex items-center justify-center gap-2.5">
+            <span className="marvel-badge px-2.5 sm:px-3 py-1 rounded text-xl sm:text-2xl font-black tracking-wider shadow-xl">
               MARVEL
             </span>
-            <h1 className="font-display text-2xl sm:text-3xl font-black shimmer-text leading-none tracking-widest">
+            <h1 className="font-display text-3xl sm:text-4xl font-black shimmer-text leading-none tracking-widest">
               SPLENDOR
             </h1>
           </div>
-          <p className="text-white/70 text-[10px] sm:text-xs max-w-xs sm:max-w-lg mx-auto truncate">
-            แย่งชิงถุงมืออินฟินิตี้ • รวมพลฮีโร่มาร์เวล • พิชิตจักรวาล
+          <p className="text-white/50 text-[10px] sm:text-xs tracking-widest">
+            แย่งชิงถุงมืออินฟินิตี้ • รวมพลฟีโร่มาร์เวล • พิชิตจักรวาล
           </p>
-          <div className="flex items-center justify-center gap-3 pt-0.5">
-            <div className="flex items-center gap-1.5">
+          <div className="flex items-center justify-center gap-2 pt-0.5">
+            <div
+              className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border"
+              style={{
+                background: connectionStatus === 'connected' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+                borderColor: connectionStatus === 'connected' ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)',
+              }}
+            >
               <div
-                className={`w-2 h-2 rounded-full ${connectionStatus === 'connected' ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'
-                  }`}
+                className="w-1.5 h-1.5 rounded-full"
+                style={{
+                  background: connectionStatus === 'connected' ? '#34d399' : '#f87171',
+                  boxShadow: connectionStatus === 'connected' ? '0 0 5px #34d399' : '0 0 5px #f87171',
+                  animation: connectionStatus === 'connected' ? 'glow-pulse 1.5s ease-in-out infinite' : 'none',
+                }}
               />
-              <span className="text-[11px] text-white/60 font-medium">
-                {connectionStatus === 'connected' ? 'เซิร์ฟเวอร์ออนไลน์' : connectionStatus}
+              <span className="text-[10px] font-semibold" style={{ color: connectionStatus === 'connected' ? '#6ee7b7' : '#fca5a5' }}>
+                {connectionStatus === 'connected' ? 'ออนไลน์' : connectionStatus}
               </span>
             </div>
           </div>
@@ -1065,31 +1098,44 @@ export const Lobby: React.FC<LobbyProps> = ({
           </div>
 
           {/* Tabs */}
-          <div className="flex rounded-xl overflow-hidden border border-white/10 p-1 bg-black/30 gap-1.5">
-            {(['solo', 'create', 'join', 'browse'] as const).map((tab) => (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => {
-                  soundManager.playButtonClick();
-                  setActiveTab(tab);
-                }}
-                className={[
-                  'flex-1 py-1.5 sm:py-2 text-xs sm:text-sm font-bold rounded-lg transition-all capitalize cursor-pointer',
-                  activeTab === tab
-                    ? 'bg-red-600 text-white shadow-md'
-                    : 'text-white/50 hover:text-white hover:bg-white/5',
-                ].join(' ')}
-              >
-                {tab === 'solo'
-                  ? 'เล่นกับบอท'
-                  : tab === 'create'
-                    ? 'สร้างห้อง'
-                    : tab === 'join'
-                      ? 'เข้าร่วม'
-                      : 'ค้นหาห้อง'}
-              </button>
-            ))}
+          <div className="flex border-b border-white/8">
+            {(['solo', 'create', 'join', 'browse'] as const).map((tab) => {
+              const tabConfig = {
+                solo:   { label: 'เล่นกับบอท', icon: '🤖' },
+                create: { label: 'สร้างห้อง',   icon: '⚔️' },
+                join:   { label: 'เข้าร่วม',    icon: '🔑' },
+                browse: { label: 'ค้นหาห้อง',   icon: '🔍' },
+              };
+              const isActive = activeTab === tab;
+              return (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => {
+                    soundManager.playButtonClick();
+                    setActiveTab(tab);
+                  }}
+                  className="flex-1 py-2.5 text-xs font-bold transition-all duration-200 relative flex flex-col items-center gap-0.5"
+                  style={{
+                    color: isActive ? '#fbbf24' : 'rgba(255,255,255,0.35)',
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span className="text-sm leading-none">{tabConfig[tab].icon}</span>
+                  <span>{tabConfig[tab].label}</span>
+                  {/* Active underline */}
+                  <span
+                    className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full transition-all duration-300"
+                    style={{
+                      background: isActive ? 'linear-gradient(90deg, #fbbf24, #f59e0b)' : 'transparent',
+                      boxShadow: isActive ? '0 0 6px rgba(251,191,36,0.5)' : 'none',
+                    }}
+                  />
+                </button>
+              );
+            })}
           </div>
 
           {/* Solo vs AI Tab with Bot Customizer */}
