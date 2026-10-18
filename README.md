@@ -12,23 +12,6 @@
 
 เว็บแอปพลิเคชันดิจิทัลบอร์ดเกมแบบเรียลไทม์ ดัดแปลงจากเกมกระดานชื่อดัง **Splendor: Marvel** โดยรวบรวมเหล่าฮีโร่และวายร้ายจากจักรวาล Marvel Comics ครบทั้ง 90 ตัวละคร, 10 การ์ดสถานที่สำคัญ, ระบบจำลองการเล่นคนเดียวร่วมกับ **Marvel AI Bots (Tony Stark, Ultron, Thanos, F.R.I.D.A.Y.)** และระบบมัลติเพลเยอร์แบบ Synchronized Turns ผ่าน WebSockets
 
-<div align="center">
-<pre>
-================================================================================
- __  __            ______      ________ _      _____ _____  _      ____  _____  
-|  \/  |   /\     |  __ \ \   / /  ____| |    / ____|  __ \| |    / __ \|  __ \ 
-| \  / |  /  \    | |__) \ \ / /| |__  | |   | (___ | |__) | |   | |  | | |__) |
-| |\/| | / /\ \   |  _  / \ V / |  __| | |    \___ \|  ___/| |   | |  | |  _  / 
-| |  | |/ ____ \  | | \ \  | |  | |____| |____ ____) | |    | |___| |__| | | \ \ 
-|_|  |_/_/    \_\_|_|  \_\ |_|  |______|______|_____/|_|    |______\____/|_|  \_================================================================================
-                    THE INFINITY GAUNTLET BOARD GAME
-</pre>
-</div>
-
-<p align="center">
-  <img src="docs/images/marvel_splendor_banner.png" alt="SPLENDOR: MARVEL — The Infinity Gauntlet Board Game" width="100%">
-</p>
-
 <p align="center">
   <a href="#-overview--core-mechanics">🌌 Overview</a> •
   <a href="#-infinity-stones--token-matrix">💎 Infinity Stones</a> •
@@ -38,6 +21,10 @@
   <a href="#-quick-start">🚀 Quick Start</a> •
   <a href="#-system-architecture--socketio-bus">🏗️ Architecture</a> •
   <a href="#-บันทึกจากผู้พัฒนา-developers-note">📝 Dev Note</a>
+</p>
+
+<p align="center">
+  <img src="docs/images/marvel_splendor_banner.png" alt="SPLENDOR: MARVEL — The Infinity Gauntlet Board Game" width="100%">
 </p>
 
 ---
@@ -208,6 +195,27 @@ npm run dev
 - `start_game`: เริ่มแมตช์และแจกการ์ดสุ่ม
 - `game_action`: รับแอ็กชันจากผู้เล่น (`take_tokens`, `buy_card`, `reserve_card`)
 - `game_state_update`: บรอดแคสต์สถานะโต๊ะ อัญมณี และการ์ด ให้ผู้เล่นทุกคนแบบเรียลไทม์
+
+---
+
+```
+============================================================
+          __  __    _    ______     _______ _     
+         |  \/  |  / \  |  _ \ \   / / ____| |    
+         | |\/| | / _ \ | |_) \ \ / /|  _| | |    
+         | |  | |/ ___ \|  _ < \ V / | |___| |___ 
+         |_|  |_/_/   \_\_| \_\ \_/  |_____|_____|
+      ____  ____  _     _____ _   _ ____   ___  ____  
+     / ___||  _ \| |   | ____| \ | |  _ \ / _ \|  _ \ 
+     \___ \| |_) | |   |  _| |  \| | | | | | | | |_) |
+      ___) |  __/| |___| |___| |\  | |_| | |_| |  _ < 
+     |____/|_|   |_____|_____|_| \_|____/ \___/|_| \_\
+============================================================
+              THE INFINITY GAUNTLET BOARD GAME
+============================================================
+```
+*Status: INFINITY ENGINE ONLINE*  
+*Marvel Heroes Loaded: 90 Cards • 10 Locations Active*  
 
 ---
 
