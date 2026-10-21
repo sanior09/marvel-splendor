@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express, { type Request, type Response, type NextFunction } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
@@ -24,9 +25,10 @@ const corsOrigin =
     ? true
     : CLIENT_ORIGIN.split(',').map((s) => s.trim());
 
-const MONGODB_URI =
-  process.env.MONGODB_URI ||
-  'mongodb+srv://xenia5523_db_user:Marvel1234@cluster0.ggyfbtj.mongodb.net/?appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) {
+  console.warn('[Server] ⚠️ MONGODB_URI is not set in environment or .env file. Database features will be disabled.');
+}
 
 const app = express();
 
@@ -34,9 +36,11 @@ app.use(cors({ origin: corsOrigin }));
 app.use(express.json());
 
 // ── Connect MongoDB ────────────────────────────────────────────
-userManager.connect(MONGODB_URI).catch((err) => {
-  console.error('[Server] MongoDB connection error:', err);
-});
+if (MONGODB_URI) {
+  userManager.connect(MONGODB_URI).catch((err) => {
+    console.error('[Server] MongoDB connection error:', err);
+  });
+}
 
 // ── Health Check & DB Status ────────────────────────────────────
 app.get('/health', (_req: Request, res: Response): void => {

@@ -7,6 +7,7 @@ import { MaintenanceCard } from './components/MaintenanceCard';
 import { LoginScreen } from './components/LoginScreen';
 import { Lobby } from './components/Lobby';
 import { Board } from './components/Board';
+import { YouTubeMusicPlayer } from './components/YouTubeMusicPlayer';
 import { OrientationGuard } from './components/OrientationGuard';
 import { InactivityWarningModal } from './components/InactivityWarningModal';
 import { useGameState } from './hooks/useGameState';
@@ -312,6 +313,11 @@ function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactEl
             onStay={resetTimer}
           />
         )}
+
+        {/* Persistent YouTube-styled Marvel BGM Music Player */}
+        <div className="fixed top-1 right-2 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 pointer-events-auto">
+          <YouTubeMusicPlayer />
+        </div>
       </div>
     </OrientationGuard>
   );
