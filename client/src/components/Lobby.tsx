@@ -907,88 +907,115 @@ export const Lobby: React.FC<LobbyProps> = ({
   }
 
   // ── Main Lobby Screen ───────────────────────────────
+  // ── Main Lobby Screen (Tactical War Room Command Center) ──
   return (
     <>
       {countdownOverlay}
-    <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start px-3 py-3 sm:py-5 relative">
-      {/* Top-Right Control Bar: Profile Badge + Tutorial Button + Sound Toggle */}
-      <div className="fixed top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 z-30 flex items-center gap-2">
-        {/* Profile Badge */}
-        {userProfile && !isGuest && onLogout && (
-          <ProfileBadge
-            profile={userProfile}
-            onLogout={onLogout}
-            activeRoomId={userProfile.activeRoomId}
-            activePlayerId={userProfile.activePlayerId}
-            onResumeRoom={onResumeRoom}
-            onClearActiveRoom={onClearActiveRoom}
-          />
-        )}
-        {isGuest && onLogout && (
-          <button
-            type="button"
-            onClick={onLogout}
-            className="px-3 py-1.5 rounded-xl border border-white/15 text-white/50 hover:text-white text-xs transition-all"
-            title="ล็อกอินเพื่อสะสมแต้ม"
-          >
-            ล็อกอิน
-          </button>
-        )}
-        <button
-          type="button"
-          onClick={() => {
-            soundManager.playModalOpen();
-            setShowTutorial(true);
-          }}
-          className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/60 text-yellow-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
-          title="คู่มือวิธีเล่น MARVEL SPLENDOR"
-        >
-          <span>📘</span>
-          <span>วิธีเล่น</span>
-        </button>
-      </div>
 
-      <div className="w-full max-w-lg flex flex-col items-center pt-2 sm:pt-3 pb-6 sm:pb-8">
+      {/* ── Dynamic Battlefield Realm Wallpaper with Cinematic Scrim ── */}
+      <div
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 transform scale-105 pointer-events-none -z-10"
+        style={{
+          backgroundImage: `url('${getMarvelMap(selectedMapId).imageUrl}'), url('/images/maps/asgard.jpg')`,
+          filter: 'brightness(0.24) saturate(1.2) contrast(1.15)',
+        }}
+      />
+      {/* Dark Ambient Scrim */}
+      <div
+        className="fixed inset-0 pointer-events-none -z-10"
+        style={{
+          background:
+            'radial-gradient(circle at 50% 25%, rgba(6,9,19,0.72) 0%, rgba(5,7,14,0.94) 70%, #05070e 100%)',
+        }}
+      />
+      {/* Structural Technical Gridlines */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-[0.035] -z-10"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+        }}
+      />
 
-        {/* Hero Header */}
-        <div className="text-center space-y-1.5 mb-2 sm:mb-3 px-2">
-          <div className="flex items-center justify-center gap-2.5">
-            <span className="marvel-badge px-2.5 sm:px-3 py-1 rounded text-xl sm:text-2xl font-black tracking-wider shadow-xl">
-              MARVEL
+      <div className="w-full h-full overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start px-3 sm:px-6 py-3 sm:py-5 relative select-none">
+        
+        {/* Top Command Telemetry Bar */}
+        <div className="w-full max-w-6xl mx-auto flex items-center justify-between gap-3 pt-1 pb-3">
+          {/* Telemetry watermark on left */}
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
+            <span className="text-white/40 uppercase tracking-widest font-mono text-[10px] hidden sm:inline-block">
+              NACHAPOL PROTOCOL // MISSION READY
             </span>
-            <h1 className="font-display text-3xl sm:text-4xl font-black shimmer-text leading-none tracking-widest">
-              SPLENDOR
-            </h1>
-          </div>
-          <p className="text-white/50 text-[10px] sm:text-xs tracking-widest">
-            แย่งชิงถุงมืออินฟินิตี้ • รวมพลฟีโร่มาร์เวล • พิชิตจักรวาล
-          </p>
-          <div className="flex items-center justify-center gap-2 pt-0.5">
-            <div
-              className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border"
+            <span className="text-white/20 hidden sm:inline-block">•</span>
+            <span
+              className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border"
               style={{
-                background: connectionStatus === 'connected' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
-                borderColor: connectionStatus === 'connected' ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)',
+                background: connectionStatus === 'connected' ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)',
+                borderColor: connectionStatus === 'connected' ? 'rgba(16,185,129,0.35)' : 'rgba(239,68,68,0.35)',
+                color: connectionStatus === 'connected' ? '#6ee7b7' : '#fca5a5',
               }}
             >
-              <div
-                className="w-1.5 h-1.5 rounded-full"
-                style={{
-                  background: connectionStatus === 'connected' ? '#34d399' : '#f87171',
-                  boxShadow: connectionStatus === 'connected' ? '0 0 5px #34d399' : '0 0 5px #f87171',
-                  animation: connectionStatus === 'connected' ? 'glow-pulse 1.5s ease-in-out infinite' : 'none',
-                }}
-              />
-              <span className="text-[10px] font-semibold" style={{ color: connectionStatus === 'connected' ? '#6ee7b7' : '#fca5a5' }}>
-                {connectionStatus === 'connected' ? 'ออนไลน์' : connectionStatus}
-              </span>
-            </div>
+              {connectionStatus === 'connected' ? '● ONLINE' : connectionStatus}
+            </span>
           </div>
+
+          {/* Top-Right Control Bar: Profile Badge + Tutorial Guide */}
+          <div className="flex items-center gap-2">
+            {userProfile && !isGuest && onLogout && (
+              <ProfileBadge
+                profile={userProfile}
+                onLogout={onLogout}
+                activeRoomId={userProfile.activeRoomId}
+                activePlayerId={userProfile.activePlayerId}
+                onResumeRoom={onResumeRoom}
+                onClearActiveRoom={onClearActiveRoom}
+              />
+            )}
+            {isGuest && onLogout && (
+              <button
+                type="button"
+                onClick={onLogout}
+                className="px-3 py-1.5 rounded-xl border border-white/15 bg-white/[0.04] text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer"
+                title="เข้าสู่ระบบเพื่อสะสมแต้มและบันทึกประวัติ"
+              >
+                เข้าสู่ระบบ
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                soundManager.playModalOpen();
+                setShowTutorial(true);
+              }}
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/50 text-yellow-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
+              title="คู่มือวิธีเล่น MARVEL SPLENDOR"
+            >
+              <span>📘</span>
+              <span className="hidden sm:inline">วิธีเล่น</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Hero Header Title */}
+        <div className="w-full text-center space-y-1 my-2 sm:my-4">
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5">
+            <span className="px-3.5 py-1 bg-[#e23636] text-white font-black text-2xl sm:text-3xl tracking-tighter rounded shadow-[0_0_30px_rgba(226,54,54,0.45)] uppercase border border-red-400/30 font-['Bebas_Neue',sans-serif]">
+              MARVEL
+            </span>
+            <span className="text-2xl sm:text-4xl font-black tracking-wider uppercase font-['Montserrat',sans-serif] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 drop-shadow-[0_2px_12px_rgba(234,179,8,0.3)]">
+              SPLENDOR
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm font-medium text-slate-400 tracking-wide font-['Prompt',sans-serif]">
+            WAR ROOM CONSOLE • MISSION CONFIGURATION // ศูนย์บัญชาการยุทธวิธีอินฟินิตี้
+          </p>
         </div>
 
         {/* AFK / Inactivity notification banner */}
         {afkNotice && (
-          <div className="max-w-lg w-full mb-3 p-3 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-lg animate-slide-up">
+          <div className="max-w-6xl w-full mb-3 p-3 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-lg animate-slide-up">
             <div className="flex items-center gap-2 min-w-0">
               <span className="text-xl shrink-0">⏳</span>
               <span className="font-medium">{afkNotice}</span>
@@ -1005,539 +1032,706 @@ export const Lobby: React.FC<LobbyProps> = ({
           </div>
         )}
 
-        {/* Main card */}
-        <div className="glass-strong rounded-2xl p-3 sm:p-5 max-w-lg w-full space-y-2.5 sm:space-y-3 border border-white/10 shadow-2xl">
-          {/* Player name + Avatar */}
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label htmlFor="player-name" className="text-xs font-bold uppercase tracking-wider text-white/80">
-                ชื่อฮีโร่ของคุณ
-              </label>
-              {userProfile?.username && (
-                <span className="text-[10px] font-semibold flex items-center gap-1">
-                  {playerName.trim() === userProfile.username ? (
-                    <span className="text-amber-400">✨ ชื่อจากบัญชี (คลิกเพื่อเปลี่ยน)</span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => setPlayerName(userProfile.username)}
-                      className="text-white/40 hover:text-amber-300 underline cursor-pointer transition-colors"
-                      title="กดเพื่อรีเซ็ตกลับเป็นชื่อบัญชี"
-                    >
-                      ↺ คืนค่าเป็น {userProfile.username}
-                    </button>
-                  )}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2.5">
-              {/* Avatar button */}
-              <button
-                type="button"
-                onClick={() => { soundManager.playButtonClick(); setShowAvatarPicker(true); }}
-                title="เปลี่ยนรูปโปรไฟล์"
-                className="relative shrink-0 w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/20 hover:ring-red-400/70 transition-all cursor-pointer active:scale-90 group"
-              >
-                {avatarUrl ? (
-                  <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover object-center" />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center font-black text-white text-lg select-none">
-                    {avatarInitial}
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-sm">✏️</span>
+        {/* ── Main Bento Command Center Grid (Asymmetrical 2-Column Split) ── */}
+        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 pb-6">
+          
+          {/* ── Left Column: Operative Identity & Battlefield Arena (lg:col-span-5) ── */}
+          <div className="lg:col-span-5 flex flex-col gap-4 sm:gap-5">
+            
+            {/* Card 1: Operative Identification (Hero Avatar & Callsign) */}
+            <div
+              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3.5 transition-all"
+              style={{
+                background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
+                backdropFilter: 'blur(28px)',
+                boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
+              }}
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_#f59e0b]" />
+                  <span className="font-['Montserrat',sans-serif] font-bold tracking-widest text-xs uppercase text-slate-200">
+                    OPERATIVE DOSSIER
+                  </span>
                 </div>
-              </button>
+                {userProfile?.username && (
+                  <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider">
+                    ● SYNCED: {userProfile.username}
+                  </span>
+                )}
+              </div>
 
-              {/* Name input */}
-              <input
-                id="player-name"
-                type="text"
-                value={playerName}
-                onChange={(e) => {
-                  setPlayerName(e.target.value);
-                  if (error) setError('');
-                }}
-                onKeyDown={(e) => e.key === 'Enter' && (activeTab === 'solo' ? handleSolo() : handleCreate())}
-                placeholder={userProfile?.username ? `ชื่อฮีโร่ (เริ่มต้น: ${userProfile.username})` : 'เช่น Iron Man, Thor, Spider-Man...'}
-                maxLength={20}
-                className={`flex-1 bg-white/5 border rounded-xl px-3.5 py-2.5 text-white placeholder-white/30 focus:outline-none transition-all font-medium text-sm ${
-                  error
-                    ? 'border-red-500 ring-2 ring-red-500/40 bg-red-950/20 animate-pulse'
-                    : 'border-white/10 focus:border-red-500/60 focus:ring-1 focus:ring-red-500/40'
-                }`}
-              />
-            </div>
-            {/* Quick Marvel avatar row for fast pick */}
-            <div className="flex items-center gap-1.5 mt-2 overflow-x-auto pb-0.5 scrollbar-none">
-              <span className="text-[9px] text-white/35 font-bold uppercase tracking-wider shrink-0">เร็ว:</span>
-              {MARVEL_AVATARS.slice(0, 8).map((av) => (
+              {/* Avatar + Callsign input */}
+              <div className="flex items-center gap-3.5 pt-0.5">
+                {/* Tactile Avatar Badge with quick hover indicator */}
                 <button
-                  key={av.id}
-                  type="button"
-                  onClick={() => { handleAvatarSelect(av.src, av.id); soundManager.playButtonClick(); }}
-                  title={av.name}
-                  className={[
-                    'shrink-0 w-7 h-7 rounded-full overflow-hidden ring-1 transition-all cursor-pointer hover:scale-110 active:scale-90',
-                    avatarId === av.id ? `${av.color} ring-offset-1 ring-offset-black/50` : 'ring-white/15 hover:ring-white/40',
-                  ].join(' ')}
-                >
-                  <QuickAvatarThumb src={av.src} fallbackEmoji={av.id} />
-                </button>
-              ))}
-              <button
-                type="button"
-                onClick={() => { soundManager.playButtonClick(); setShowAvatarPicker(true); }}
-                className="shrink-0 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 ring-1 ring-white/15 flex items-center justify-center text-xs text-white/60 hover:text-white transition-all cursor-pointer hover:scale-110"
-                title="ดูทั้งหมด"
-              >
-                ＋
-              </button>
-            </div>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex border-b border-white/8">
-            {(['solo', 'create', 'join', 'browse'] as const).map((tab) => {
-              const tabConfig = {
-                solo:   { label: 'เล่นกับบอท', icon: '🤖' },
-                create: { label: 'สร้างห้อง',   icon: '⚔️' },
-                join:   { label: 'เข้าร่วม',    icon: '🔑' },
-                browse: { label: 'ค้นหาห้อง',   icon: '🔍' },
-              };
-              const isActive = activeTab === tab;
-              return (
-                <button
-                  key={tab}
                   type="button"
                   onClick={() => {
                     soundManager.playButtonClick();
-                    setActiveTab(tab);
+                    setShowAvatarPicker(true);
                   }}
-                  className="flex-1 py-2.5 text-xs font-bold transition-all duration-200 relative flex flex-col items-center gap-0.5"
-                  style={{
-                    color: isActive ? '#fbbf24' : 'rgba(255,255,255,0.35)',
-                    background: 'transparent',
-                    border: 'none',
-                    cursor: 'pointer',
-                  }}
+                  title="เปลี่ยนรูปโปรไฟล์มาร์เวล (Change Avatar)"
+                  className="relative shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-amber-400/60 shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:border-amber-300 hover:scale-105 transition-all cursor-pointer group active:scale-95"
                 >
-                  <span className="text-sm leading-none">{tabConfig[tab].icon}</span>
-                  <span>{tabConfig[tab].label}</span>
-                  {/* Active underline */}
-                  <span
-                    className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full transition-all duration-300"
-                    style={{
-                      background: isActive ? 'linear-gradient(90deg, #fbbf24, #f59e0b)' : 'transparent',
-                      boxShadow: isActive ? '0 0 6px rgba(251,191,36,0.5)' : 'none',
-                    }}
-                  />
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover object-center" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center font-black text-white text-xl">
+                      {avatarInitial}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/55 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-sm">✏️</span>
+                    <span className="text-[8px] text-white font-bold tracking-tight">เปลี่ยน</span>
+                  </div>
                 </button>
-              );
-            })}
-          </div>
 
-          {/* Solo vs AI Tab with Bot Customizer */}
-          {activeTab === 'solo' && (
-            <div className="space-y-3">
-              {/* Number of bots */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-white/70 uppercase tracking-wider block">
-                  จำนวนคู่ต่อสู้บอท AI
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {[1, 2, 3].map((num) => (
-                    <button
-                      key={num}
-                      type="button"
-                      onClick={() => setBotCount(num)}
-                      className={[
-                        'py-1.5 px-3 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer',
-                        botCount === num
-                          ? 'border-red-500 bg-red-600/30 text-white ring-1 ring-red-400'
-                          : 'border-white/10 bg-white/5 text-white/50 hover:bg-white/10',
-                      ].join(' ')}
-                    >
-                      <span className="font-num font-black text-sm">{num}</span> บอท (<span className="font-num font-bold">{num + 1}</span>P)
-                    </button>
-                  ))}
-                </div>
-
-                {/* Dynamic Token Pool info for solo */}
-                <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-xl px-2.5 py-1.5 text-center text-[10px] text-emerald-200 mt-1.5">
-                  <span className="font-bold">⚡ กองกลางเกม <span className="font-num font-black text-white">{botCount + 1}</span> คน: </span>
-                  <span className="text-white/80">
-                    5 สีหลักละ{' '}
-                    <span className="font-black font-num text-amber-300">
-                      {botCount === 1 ? 4 : botCount === 2 ? 5 : 7}
-                    </span>{' '}
-                    ก้อน • 🟢 Time Stone{' '}
-                    <span className="font-black font-num text-emerald-300">{botCount + 1}</span> ก้อน • 🛡️ S.H.I.E.L.D.{' '}
-                    <span className="font-black font-num text-yellow-300">5</span> ก้อน
-                  </span>
-                </div>
-              </div>
-
-              {/* Custom Bot Names List */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-white/70 uppercase tracking-wider block">
-                    เลือกหรือระบุชื่อคู่ต่อสู้ AI
-                  </label>
-                  <span className="text-[10px] text-white/40">เลือกด่วนหรือพิมพ์เอง</span>
-                </div>
-                <div className="space-y-1.5">
-                  {Array.from({ length: botCount }).map((_, idx) => (
-                    <div key={idx} className="flex items-center gap-2 bg-black/30 px-2.5 py-1.5 rounded-xl border border-white/10">
-                      <span className="text-xs font-bold text-purple-300 shrink-0 w-6 text-center">
-                        #{idx + 1}
-                      </span>
-
-                      {/* Quick Marvel preset select */}
-                      <select
-                        value={POPULAR_MARVEL_BOTS.some((b) => b.name === botNames[idx]) ? botNames[idx] : 'custom'}
-                        onChange={(e) => {
-                          if (e.target.value !== 'custom') {
-                            updateBotName(idx, e.target.value);
-                          }
-                        }}
-                        className="bg-neutral-900 border border-white/15 rounded-lg px-2 py-1 text-xs sm:text-sm text-white focus:outline-none focus:border-red-400 font-medium shrink-0 max-w-[155px]"
+                {/* Hero Name Input */}
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="player-name" className="text-xs font-semibold text-slate-300 font-['Prompt',sans-serif]">
+                      ชื่อฮีโร่ของคุณ (Hero Callsign)
+                    </label>
+                    {userProfile?.username && playerName.trim() !== userProfile.username && (
+                      <button
+                        type="button"
+                        onClick={() => setPlayerName(userProfile.username)}
+                        className="text-[10px] text-amber-300/80 hover:text-amber-200 underline cursor-pointer"
+                        title="กดเพื่อรีเซ็ตกลับเป็นชื่อบัญชี"
                       >
-                        {POPULAR_MARVEL_BOTS.map((bot) => (
-                          <option key={bot.name} value={bot.name} className="bg-neutral-900 text-white">
-                            {bot.avatar} {bot.name}
-                          </option>
-                        ))}
-                        <option value="custom" className="bg-neutral-900 text-purple-300">
-                          ✍️ พิมพ์ชื่อเอง
-                        </option>
-                      </select>
-
-                      <input
-                        type="text"
-                        value={botNames[idx] ?? ''}
-                        onChange={(e) => updateBotName(idx, e.target.value)}
-                        placeholder={`ชื่อบอท ${idx + 1}...`}
-                        maxLength={20}
-                        className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-xs sm:text-sm text-white placeholder-white/30 focus:outline-none focus:border-red-400 font-semibold"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Marvel Battlefield Map Selector for Solo Mode (Compact Dropdown Bar matching Bot selector) */}
-              <div className="space-y-1.5 pt-1 border-t border-white/10">
-                <div className="flex items-center justify-between gap-2">
-                  <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
-                    <span>🗺️</span>
-                    <span className="truncate">สมรภูมิรบมาร์เวล</span>
-                  </label>
-                  <span className="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/30 shrink-0 whitespace-nowrap">
-                    🔒 ล็อกตลอดทั้งเกม
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 bg-black/30 px-2.5 py-1.5 rounded-xl border border-white/10">
-                  <span className="text-sm shrink-0 w-6 text-center">
-                    {getMarvelMap(selectedMapId).icon}
-                  </span>
-
-                  {/* Dropdown Select matching Bot preset select */}
-                  <select
-                    value={selectedMapId}
+                        ↺ คืนค่า
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    id="player-name"
+                    type="text"
+                    value={playerName}
                     onChange={(e) => {
-                      soundManager.playButtonClick();
-                      setSelectedMapId(e.target.value);
+                      setPlayerName(e.target.value);
+                      if (error) setError('');
                     }}
-                    className="bg-neutral-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:border-red-400 font-bold min-w-0 flex-1 cursor-pointer truncate"
-                  >
-                    {MARVEL_MAPS.map((map) => (
-                      <option key={map.id} value={map.id} className="bg-neutral-900 text-white">
-                        {map.icon} {map.name} ({map.nameEn})
-                      </option>
-                    ))}
-                  </select>
-
-                  <span className="text-[10px] font-bold text-yellow-300 bg-yellow-400/15 border border-yellow-400/30 px-2 py-1 rounded-lg shrink-0 whitespace-nowrap">
-                    {getMarvelMap(selectedMapId).realm}
-                  </span>
+                    onKeyDown={(e) => e.key === 'Enter' && (activeTab === 'solo' ? handleSolo() : handleCreate())}
+                    maxLength={20}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    placeholder={userProfile?.username ? userProfile.username : 'ระบุชื่อฮีโร่ของคุณ...'}
+                    className={`w-full px-3.5 py-2.5 rounded-xl bg-black/40 border text-base sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-all font-['Prompt',sans-serif] ${
+                      error
+                        ? 'border-red-500 ring-2 ring-red-500/40 bg-red-950/25'
+                        : 'border-white/10 focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20'
+                    }`}
+                  />
                 </div>
-
-                {/* Compact Map Description Hint */}
-                {(() => {
-                  const currentMap = getMarvelMap(selectedMapId);
-                  return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[10px] text-white/60 overflow-hidden">
-                      <span className="font-semibold text-white/80 shrink-0 whitespace-nowrap">{currentMap.subtitle}:</span>
-                      <span className="truncate min-w-0">{currentMap.description}</span>
-                    </div>
-                  );
-                })()}
               </div>
 
-              {/* Target Winning Points Selector (Solo Mode) */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between gap-2">
-                  <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>🎯</span>
-                    <span>แต้มชัยชนะเป้าหมาย</span>
-                  </label>
-                  <span className="text-[10px] text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
-                    <span className="font-num font-black">{targetScore}</span> แต้ม
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-4 gap-1.5">
-                  {[12, 16, 20, 24].map((pts) => (
+              {/* Quick Marvel Avatars Reel */}
+              <div className="space-y-1.5 pt-1">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
+                  เลือกอวตารด่วน (QUICK CALLSIGN):
+                </span>
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                  {MARVEL_AVATARS.slice(0, 8).map((av) => (
                     <button
-                      key={pts}
+                      key={av.id}
                       type="button"
                       onClick={() => {
+                        handleAvatarSelect(av.src, av.id);
                         soundManager.playButtonClick();
-                        setTargetScore(pts);
                       }}
+                      title={av.name}
                       className={[
-                        'py-1.5 px-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center',
-                        targetScore === pts
-                          ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow'
-                          : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white font-semibold',
+                        'shrink-0 w-8 h-8 rounded-xl overflow-hidden border transition-all cursor-pointer hover:scale-110 active:scale-95',
+                        avatarId === av.id
+                          ? 'border-amber-400 ring-2 ring-amber-400/40 shadow-lg scale-105'
+                          : 'border-white/10 opacity-70 hover:opacity-100',
                       ].join(' ')}
                     >
-                      <span className="text-xs sm:text-sm font-black font-num">{pts} แต้ม</span>
-                      <span className="text-[8px] opacity-70">
-                        {pts === 12 ? 'เร็ว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
-                      </span>
+                      <QuickAvatarThumb src={av.src} fallbackEmoji={av.id} />
                     </button>
                   ))}
-                </div>
-
-                <div className="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
-                  <span className="text-white/50 text-[10px] font-semibold whitespace-nowrap">ปรับละเอียด (10-50):</span>
-                  <input
-                    type="range"
-                    min={10}
-                    max={50}
-                    step={1}
-                    value={targetScore}
-                    onChange={(e) => setTargetScore(Number(e.target.value))}
-                    className="flex-1 accent-yellow-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
-                  />
-                  <span className="font-num font-black text-yellow-300 text-sm w-7 text-right">
-                    {targetScore}
-                  </span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleSolo}
-                disabled={isLoading}
-                className="w-full py-3 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
-              >
-                {isLoading ? 'กำลังเตรียมสมรภูมิ...' : 'เข้าสู่สมรภูมิเดี่ยว'}
-              </button>
-            </div>
-          )}
-
-          {/* Create Multiplayer Room Tab */}
-          {activeTab === 'create' && (
-            <div className="space-y-3">
-              {/* Marvel Battlefield Map Selector for Multiplayer Room (Compact Dropdown Bar matching Bot selector) */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between gap-2">
-                  <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5 min-w-0 truncate">
-                    <span>🗺️</span>
-                    <span className="truncate">สมรภูมิรบมาร์เวล</span>
-                  </label>
-                  <span className="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/30 shrink-0 whitespace-nowrap">
-                    🔒 ล็อกตลอดทั้งเกม
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 bg-black/30 px-2.5 py-1.5 rounded-xl border border-white/10">
-                  <span className="text-sm shrink-0 w-6 text-center">
-                    {getMarvelMap(selectedMapId).icon}
-                  </span>
-
-                  {/* Dropdown Select matching Bot preset select */}
-                  <select
-                    value={selectedMapId}
-                    onChange={(e) => {
+                  <button
+                    type="button"
+                    onClick={() => {
                       soundManager.playButtonClick();
-                      setSelectedMapId(e.target.value);
+                      setShowAvatarPicker(true);
                     }}
-                    className="bg-neutral-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:border-red-400 font-bold min-w-0 flex-1 cursor-pointer truncate"
+                    className="shrink-0 w-8 h-8 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-xs text-white/70 hover:text-white transition-all cursor-pointer hover:scale-105"
+                    title="ดูฮีโร่ทั้งหมด"
                   >
-                    {MARVEL_MAPS.map((map) => (
-                      <option key={map.id} value={map.id} className="bg-neutral-900 text-white">
-                         {map.icon} {map.name} ({map.nameEn})
-                      </option>
-                    ))}
-                  </select>
-
-                  <span className="text-[10px] font-bold text-yellow-300 bg-yellow-400/15 border border-yellow-400/30 px-2 py-1 rounded-lg shrink-0 whitespace-nowrap">
-                    {getMarvelMap(selectedMapId).realm}
-                  </span>
-                </div>
-
-                {/* Compact Map Description Hint */}
-                {(() => {
-                  const currentMap = getMarvelMap(selectedMapId);
-                  return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 border border-white/5 text-[10px] text-white/60 overflow-hidden">
-                      <span className="font-semibold text-white/80 shrink-0 whitespace-nowrap">{currentMap.subtitle}:</span>
-                      <span className="truncate min-w-0">{currentMap.description}</span>
-                    </div>
-                  );
-                })()}
-              </div>
-
-              {/* Target Winning Points Selector (Multiplayer Room) */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between gap-2">
-                  <label className="text-xs font-bold text-white/70 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>🎯</span>
-                    <span>แต้มชัยชนะเป้าหมาย</span>
-                  </label>
-                  <span className="text-[10px] text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
-                    <span className="font-num font-black">{targetScore}</span> แต้ม
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-4 gap-1.5">
-                  {[12, 16, 20, 24].map((pts) => (
-                    <button
-                      key={pts}
-                      type="button"
-                      onClick={() => {
-                        soundManager.playButtonClick();
-                        setTargetScore(pts);
-                      }}
-                      className={[
-                        'py-1.5 px-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center',
-                        targetScore === pts
-                          ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow'
-                          : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white font-semibold',
-                      ].join(' ')}
-                    >
-                      <span className="text-xs sm:text-sm font-black font-num">{pts} แต้ม</span>
-                      <span className="text-[8px] opacity-70">
-                        {pts === 12 ? 'เร็ว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
-                  <span className="text-white/50 text-[10px] font-semibold whitespace-nowrap">ปรับละเอียด (10-50):</span>
-                  <input
-                    type="range"
-                    min={10}
-                    max={50}
-                    step={1}
-                    value={targetScore}
-                    onChange={(e) => setTargetScore(Number(e.target.value))}
-                    className="flex-1 accent-yellow-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
-                  />
-                  <span className="font-num font-black text-yellow-300 text-sm w-7 text-right">
-                    {targetScore}
-                  </span>
+                    ＋
+                  </button>
                 </div>
               </div>
-
-              <button
-                type="button"
-                onClick={handleCreate}
-                disabled={isLoading}
-                className="w-full py-3 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
-              >
-                {isLoading ? 'กำลังสร้างห้อง...' : 'สร้างห้องใหม่'}
-              </button>
             </div>
-          )}
 
-          {/* Join Room Tab */}
-          {activeTab === 'join' && (
-            <div className="space-y-3">
-              <input
-                id="room-code"
-                type="text"
-                value={joinCode}
-                onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
-                placeholder="กรอกรหัสห้อง 6 หลัก"
-                maxLength={6}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-red-500/60 focus:ring-1 focus:ring-red-500/40 transition-colors font-mono tracking-widest text-center text-lg uppercase font-black"
-              />
-              <button
-                type="button"
-                onClick={() => handleJoin()}
-                disabled={isLoading || !joinCode.trim()}
-                className="w-full py-3 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 active:scale-95 cursor-pointer uppercase tracking-wider"
-              >
-                {isLoading ? 'กำลังเชื่อมต่อ...' : 'เข้าร่วมห้อง'}
-              </button>
-            </div>
-          )}
-
-          {/* Browse Rooms Tab */}
-          {activeTab === 'browse' && (
-            <div className="space-y-2 max-h-40 overflow-y-auto">
-              {openRooms.length === 0 ? (
-                <div className="text-center py-5 text-white/40 text-xs">
-                  ขณะนี้ยังไม่มีห้องเปิดอยู่ สร้างห้องใหม่เพื่อเริ่มเล่นได้ทันที
+            {/* Card 2: Battlefield Holo-Deck Preview */}
+            <div
+              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3 transition-all"
+              style={{
+                background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
+                backdropFilter: 'blur(28px)',
+                boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
+              }}
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">🗺️</span>
+                  <span className="font-['Montserrat',sans-serif] font-bold tracking-widest text-xs uppercase text-slate-200">
+                    BATTLEFIELD THEATER
+                  </span>
                 </div>
-              ) : (
-                openRooms.map((room) => (
-                  <div
-                    key={room.roomId}
-                    className="flex items-center justify-between glass rounded-xl px-3.5 py-2.5 border border-white/5"
-                  >
-                    <div>
-                      <code className="text-red-300 font-mono font-bold text-sm">{room.roomId}</code>
-                      <p className="text-[10px] text-white/60">
-                        ผู้เล่น <span className="font-num font-black text-yellow-300">{room.players.length}</span>/<span className="font-num font-bold text-white/80">{room.maxPlayers}</span> คน
+                <span className="text-[10px] font-mono text-amber-400/90 tracking-wider">
+                  🔒 LOCKED REALM
+                </span>
+              </div>
+
+              {/* Selected Battlefield Visual Hero Card */}
+              {(() => {
+                const currentMap = getMarvelMap(selectedMapId);
+                return (
+                  <div className="relative rounded-2xl overflow-hidden border border-white/15 h-32 sm:h-36 group shadow-lg">
+                    <img
+                      src={currentMap.imageUrl}
+                      alt={currentMap.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent flex flex-col justify-end p-3 sm:p-3.5">
+                      <div className="flex items-center gap-1.5 text-[9px] font-mono font-bold tracking-wider text-amber-300 uppercase">
+                        <span>{currentMap.icon}</span>
+                        <span>{currentMap.realm}</span>
+                      </div>
+                      <h4 className="font-display font-black text-base sm:text-lg text-white leading-tight">
+                        {currentMap.name}
+                      </h4>
+                      <p className="text-[10px] text-slate-300/80 truncate leading-tight pt-0.5">
+                        {currentMap.subtitle} — {currentMap.description}
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => handleJoin(room.roomId)}
-                      disabled={isLoading}
-                      className="text-xs bg-red-600 hover:bg-red-500 disabled:bg-white/10 text-white px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer"
-                    >
-                      เข้าร่วม
-                    </button>
                   </div>
-                ))
-              )}
-            </div>
-          )}
+                );
+              })()}
 
-          {/* Error message */}
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-2 text-xs text-red-300 text-center font-medium">
-              {error}
+              {/* Quick Interactive Map Switcher Chips */}
+              <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+                {MARVEL_MAPS.map((map) => {
+                  const isSelected = selectedMapId === map.id;
+                  return (
+                    <button
+                      key={map.id}
+                      type="button"
+                      onClick={() => {
+                        soundManager.playButtonClick();
+                        setSelectedMapId(map.id);
+                      }}
+                      className={[
+                        'py-1.5 px-2 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-1.5 min-w-0',
+                        isSelected
+                          ? 'bg-amber-500/20 border-amber-400 text-white shadow-[0_0_15px_rgba(245,158,11,0.25)] font-bold'
+                          : 'bg-white/[0.03] border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.06]',
+                      ].join(' ')}
+                    >
+                      <span className="text-xs shrink-0">{map.icon}</span>
+                      <span className="text-[10px] font-['Prompt',sans-serif] truncate leading-tight">
+                        {map.name.split(' ')[0]}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* Decorative 6 Infinity Stones */}
-        <div className="flex gap-2.5 mt-2.5 items-center justify-center">
-          {['ruby', 'sapphire', 'emerald', 'obsidian', 'topaz', 'amethyst'].map((c) => (
+            {/* Card 3: Infinity Gauntlet Stockpile Telemetry */}
             <div
-              key={c}
-              className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full crystal-${c} shadow-md border border-white/20 transition-transform hover:scale-125 cursor-pointer`}
-            />
-          ))}
+              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3 transition-all"
+              style={{
+                background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
+                backdropFilter: 'blur(28px)',
+                boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
+              }}
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">🧤</span>
+                  <span className="font-['Montserrat',sans-serif] font-bold tracking-widest text-xs uppercase text-slate-200">
+                    INFINITY STOCKPILE
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider">
+                  {botCount + 1} OPERATIVES
+                </span>
+              </div>
+
+              {/* Dynamic Tokens Summary */}
+              <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-2.5 sm:p-3 space-y-1.5 text-xs text-slate-300">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-slate-400 font-medium">มณี 5 สีหลัก (Base Stones):</span>
+                  <span className="font-num font-black text-amber-300">
+                    สีละ {botCount === 1 ? 4 : botCount === 2 ? 5 : 7} ก้อน
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-slate-400 font-medium">🟢 Time Stone (มณีเวลาสีเขียว):</span>
+                  <span className="font-num font-black text-emerald-400">
+                    {botCount + 1} ก้อน
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-slate-400 font-medium">🛡️ S.H.I.E.L.D. ทอง (จองการ์ด):</span>
+                  <span className="font-num font-black text-slate-200">
+                    5 ก้อน
+                  </span>
+                </div>
+              </div>
+
+              {/* 6 Infinity Stones glowing dock */}
+              <div className="flex items-center justify-between px-2 pt-1">
+                {['ruby', 'sapphire', 'emerald', 'obsidian', 'topaz', 'amethyst'].map((stone) => (
+                  <div
+                    key={stone}
+                    className={`w-4 h-4 rounded-full crystal-${stone} shadow-md border border-white/20 transition-transform hover:scale-125 cursor-default`}
+                  />
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          {/* ── Right Column: Mission Deployment Console (lg:col-span-7) ───────── */}
+          <div className="lg:col-span-7 flex flex-col gap-4 sm:gap-5">
+            
+            <div
+              className="rounded-3xl border border-white/[0.12] p-5 sm:p-6 space-y-5 transition-all"
+              style={{
+                background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
+                backdropFilter: 'blur(28px)',
+                boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
+              }}
+            >
+              {/* Segmented Mode Switcher Tab Bar */}
+              <div className="p-1 rounded-2xl bg-black/45 border border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-1">
+                {(['solo', 'create', 'join', 'browse'] as const).map((tab) => {
+                  const tabConfig = {
+                    solo:   { label: 'เล่นกับ AI', icon: '🤖', sub: 'Solo Skirmish' },
+                    create: { label: 'สร้างห้อง',  icon: '⚔️', sub: 'Multiplayer' },
+                    join:   { label: 'เข้ารหัสห้อง', icon: '🔑', sub: 'Join PIN' },
+                    browse: { label: 'ค้นหาห้อง',  icon: '🔍', sub: 'Open Lobbies' },
+                  };
+                  const isActive = activeTab === tab;
+                  return (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => {
+                        soundManager.playButtonClick();
+                        setActiveTab(tab);
+                      }}
+                      className={`py-2 px-1.5 rounded-xl text-center transition-all duration-200 cursor-pointer flex flex-col items-center justify-center min-h-[44px] ${
+                        isActive
+                          ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold shadow-md scale-[1.02]'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
+                      }`}
+                    >
+                      <span className="text-sm">{tabConfig[tab].icon}</span>
+                      <span className="text-xs tracking-tight font-bold">{tabConfig[tab].label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* ── Tab 1: Solo AI Skirmish (Customizable Bot Matrix) ─────────────── */}
+              {activeTab === 'solo' && (
+                <div className="space-y-4 pt-1 animate-fadeIn">
+                  
+                  {/* Bot Opponents Count Selector */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif] block">
+                      จำนวนคู่ต่อสู้บอท AI (OPPONENTS COUNT)
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[1, 2, 3].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => {
+                            soundManager.playButtonClick();
+                            setBotCount(num);
+                          }}
+                          className={[
+                            'py-2 px-3 rounded-2xl border text-xs sm:text-sm font-bold transition-all cursor-pointer flex flex-col items-center justify-center min-h-[44px]',
+                            botCount === num
+                              ? 'border-amber-400 bg-amber-500/20 text-yellow-300 ring-1 ring-amber-400 shadow-md font-black'
+                              : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white',
+                          ].join(' ')}
+                        >
+                          <span className="font-num text-sm">{num} บอท</span>
+                          <span className="text-[9px] opacity-70">
+                            {num === 1 ? 'ดวลเดี่ยว (1v1)' : num === 2 ? 'ไตรภาคี (3P)' : 'สังเวียนใหญ่ (4P)'}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bot Combatants Roster Cards */}
+                  <div className="space-y-2 pt-1">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif]">
+                        เลือกหรือปรับแต่งคู่ต่อสู้ AI (AI ROSTER)
+                      </label>
+                      <span className="text-[10px] font-mono text-slate-400">เลือกด่วนหรือพิมพ์ชื่อเอง</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      {Array.from({ length: botCount }).map((_, idx) => {
+                        const currentName = botNames[idx] ?? '';
+                        const matchedPreset = POPULAR_MARVEL_BOTS.find((b) => b.name === currentName);
+                        const botAvatarSrc = matchedPreset?.avatarUrl || (currentName.toLowerCase().includes('doom') ? '/images/avatars/doctor_doom.jpg' : undefined);
+                        const fallbackEmoji = matchedPreset?.avatar ?? '🤖';
+                        const tacticDesc = matchedPreset?.desc ?? 'Custom Marvel AI';
+
+                        return (
+                          <div
+                            key={idx}
+                            className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 bg-black/40 p-2.5 sm:p-3 rounded-2xl border border-white/10 hover:border-white/20 transition-all"
+                          >
+                            {/* Bot Slot Indicator & Avatar */}
+                            <div className="flex items-center gap-2.5 shrink-0">
+                              <span className="w-5 text-center text-xs font-mono font-bold text-amber-400">
+                                #{idx + 1}
+                              </span>
+                              <div className="w-9 h-9 rounded-xl overflow-hidden border border-white/20 bg-neutral-900 flex items-center justify-center shrink-0 shadow">
+                                {botAvatarSrc ? (
+                                  <img src={botAvatarSrc} alt={currentName} className="w-full h-full object-cover" />
+                                ) : (
+                                  <span className="text-sm">{fallbackEmoji}</span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Preset Selector Dropdown */}
+                            <div className="shrink-0 w-full sm:w-44">
+                              <select
+                                value={matchedPreset ? matchedPreset.name : 'custom'}
+                                onChange={(e) => {
+                                  soundManager.playButtonClick();
+                                  if (e.target.value !== 'custom') {
+                                    updateBotName(idx, e.target.value);
+                                  }
+                                }}
+                                className="w-full bg-neutral-900 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400 font-semibold cursor-pointer"
+                              >
+                                {POPULAR_MARVEL_BOTS.map((bot) => (
+                                  <option key={bot.name} value={bot.name} className="bg-neutral-900 text-white">
+                                    {bot.avatar} {bot.name}
+                                  </option>
+                                ))}
+                                <option value="custom" className="bg-neutral-900 text-amber-300">
+                                  ✍️ พิมพ์ชื่อเอง
+                                </option>
+                              </select>
+                            </div>
+
+                            {/* Name Input & Tactical Trait Badge */}
+                            <div className="flex-1 min-w-0 flex items-center gap-2">
+                              <input
+                                type="text"
+                                value={botNames[idx] ?? ''}
+                                onChange={(e) => updateBotName(idx, e.target.value)}
+                                placeholder={`ชื่อบอท ${idx + 1}...`}
+                                maxLength={20}
+                                autoCapitalize="none"
+                                autoCorrect="off"
+                                spellCheck={false}
+                                className="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-1.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-semibold"
+                              />
+                              <span className="hidden xl:inline-block text-[9px] font-mono text-slate-400 bg-white/5 border border-white/10 px-2 py-1 rounded-lg shrink-0 whitespace-nowrap">
+                                {tacticDesc}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Target Winning Points Selector */}
+                  <div className="space-y-1.5 pt-2 border-t border-white/[0.08]">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif] flex items-center gap-1.5">
+                        <span>🎯</span>
+                        <span>เป้าหมายแต้มชัยชนะ (TARGET SCORE)</span>
+                      </label>
+                      <span className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-lg">
+                        {targetScore} แต้ม
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-1.5">
+                      {[12, 16, 20, 24].map((pts) => (
+                        <button
+                          key={pts}
+                          type="button"
+                          onClick={() => {
+                            soundManager.playButtonClick();
+                            setTargetScore(pts);
+                          }}
+                          className={[
+                            'py-1.5 px-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[42px]',
+                            targetScore === pts
+                              ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow'
+                              : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white font-semibold',
+                          ].join(' ')}
+                        >
+                          <span className="text-xs sm:text-sm font-black font-num">{pts} แต้ม</span>
+                          <span className="text-[8px] opacity-70">
+                            {pts === 12 ? 'เร็ว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-2 bg-black/35 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
+                      <span className="text-slate-400 text-[10px] font-semibold whitespace-nowrap">ปรับละเอียด (10–50):</span>
+                      <input
+                        type="range"
+                        min={10}
+                        max={50}
+                        step={1}
+                        value={targetScore}
+                        onChange={(e) => setTargetScore(Number(e.target.value))}
+                        className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
+                      />
+                      <span className="font-num font-black text-yellow-300 text-sm w-7 text-right">
+                        {targetScore}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Primary Launch Action Button */}
+                  <button
+                    type="button"
+                    onClick={handleSolo}
+                    disabled={isLoading}
+                    className="w-full py-3.5 px-6 rounded-2xl font-extrabold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] shadow-xl min-h-[48px] mt-2"
+                    style={{
+                      background: isLoading
+                        ? 'rgba(255, 255, 255, 0.1)'
+                        : 'linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%)',
+                      color: isLoading ? 'rgba(255, 255, 255, 0.4)' : '#05070d',
+                      boxShadow: isLoading ? 'none' : '0 10px 30px -4px rgba(245, 158, 11, 0.5)',
+                    }}
+                  >
+                    <span>🚀 เข้าสู่สมรภูมิเดี่ยว (LAUNCH MISSION)</span>
+                  </button>
+                </div>
+              )}
+
+              {/* ── Tab 2: Create Multiplayer Room ────────────────────────────────── */}
+              {activeTab === 'create' && (
+                <div className="space-y-4 pt-1 animate-fadeIn">
+                  
+                  {/* Target Winning Points Selector */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif] flex items-center gap-1.5">
+                        <span>🎯</span>
+                        <span>เป้าหมายแต้มชัยชนะ (TARGET SCORE)</span>
+                      </label>
+                      <span className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-lg">
+                        {targetScore} แต้ม
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-1.5">
+                      {[12, 16, 20, 24].map((pts) => (
+                        <button
+                          key={pts}
+                          type="button"
+                          onClick={() => {
+                            soundManager.playButtonClick();
+                            setTargetScore(pts);
+                          }}
+                          className={[
+                            'py-1.5 px-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[42px]',
+                            targetScore === pts
+                              ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow'
+                              : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white font-semibold',
+                          ].join(' ')}
+                        >
+                          <span className="text-xs sm:text-sm font-black font-num">{pts} แต้ม</span>
+                          <span className="text-[8px] opacity-70">
+                            {pts === 12 ? 'เร็ว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-2 bg-black/35 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
+                      <span className="text-slate-400 text-[10px] font-semibold whitespace-nowrap">ปรับละเอียด (10–50):</span>
+                      <input
+                        type="range"
+                        min={10}
+                        max={50}
+                        step={1}
+                        value={targetScore}
+                        onChange={(e) => setTargetScore(Number(e.target.value))}
+                        className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
+                      />
+                      <span className="font-num font-black text-yellow-300 text-sm w-7 text-right">
+                        {targetScore}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Room Deployment Note */}
+                  <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-3.5 space-y-1 text-xs text-slate-300">
+                    <p className="font-bold text-amber-300 flex items-center gap-1.5">
+                      <span>🛡️</span> ศูนย์ควบคุมห้องออนไลน์ (S.H.I.E.L.D. Arena Dispatch)
+                    </p>
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      เมื่อสร้างห้องเสร็จ ระบบจะสร้างรหัสห้อง 6 ตัวอักษร คุณสามารถชวนเพื่อนมาร่วมประลอง หรือเพิ่มบอท Marvel AI เข้ามาร่วมเล่นจนครบ 4 คนได้ในห้องรอ
+                    </p>
+                  </div>
+
+                  {/* Primary Create Action Button */}
+                  <button
+                    type="button"
+                    onClick={handleCreate}
+                    disabled={isLoading}
+                    className="w-full py-3.5 px-6 rounded-2xl font-extrabold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] shadow-xl min-h-[48px]"
+                    style={{
+                      background: isLoading
+                        ? 'rgba(255, 255, 255, 0.1)'
+                        : 'linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%)',
+                      color: isLoading ? 'rgba(255, 255, 255, 0.4)' : '#05070d',
+                      boxShadow: isLoading ? 'none' : '0 10px 30px -4px rgba(245, 158, 11, 0.5)',
+                    }}
+                  >
+                    <span>⚔️ เปิดห้องต่อสู้ออนไลน์ (DEPLOY ARENA)</span>
+                  </button>
+                </div>
+              )}
+
+              {/* ── Tab 3: Join Room with Code ────────────────────────────────────── */}
+              {activeTab === 'join' && (
+                <div className="space-y-4 pt-1 animate-fadeIn">
+                  <div className="space-y-2">
+                    <label htmlFor="room-code" className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif] block text-center">
+                      กรอกรหัสห้อง 6 หลัก (ENTER 6-DIGIT ROOM PIN)
+                    </label>
+                    <input
+                      id="room-code"
+                      type="text"
+                      value={joinCode}
+                      onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
+                      placeholder="ABC123"
+                      maxLength={6}
+                      autoCapitalize="characters"
+                      autoCorrect="off"
+                      spellCheck={false}
+                      className="w-full bg-black/45 border border-white/15 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all font-mono tracking-[0.25em] text-center text-2xl uppercase font-black"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleJoin()}
+                    disabled={isLoading || !joinCode.trim()}
+                    className="w-full py-3.5 px-6 rounded-2xl font-extrabold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] shadow-xl min-h-[48px]"
+                    style={{
+                      background: isLoading || !joinCode.trim()
+                        ? 'rgba(255, 255, 255, 0.1)'
+                        : 'linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%)',
+                      color: isLoading || !joinCode.trim() ? 'rgba(255, 255, 255, 0.4)' : '#05070d',
+                      boxShadow: isLoading || !joinCode.trim() ? 'none' : '0 10px 30px -4px rgba(245, 158, 11, 0.5)',
+                    }}
+                  >
+                    <span>🔑 เข้าร่วมห้องทันที (ENTER ARENA)</span>
+                  </button>
+                </div>
+              )}
+
+              {/* ── Tab 4: Browse Open Rooms ──────────────────────────────────────── */}
+              {activeTab === 'browse' && (
+                <div className="space-y-3 pt-1 animate-fadeIn">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif]">
+                      ห้องที่กำลังรอผู้เล่น (ACTIVE LOBBIES)
+                    </span>
+                    <span className="text-[10px] font-mono text-emerald-400">
+                      {openRooms.length} ห้องเปิดอยู่
+                    </span>
+                  </div>
+
+                  <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                    {openRooms.length === 0 ? (
+                      <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 text-center space-y-2">
+                        <span className="text-2xl block animate-pulse">📡</span>
+                        <p className="text-xs text-slate-400">
+                          ขณะนี้ยังไม่มีห้องเปิดอยู่ สร้างห้องใหม่เพื่อเริ่มเล่นได้ทันที
+                        </p>
+                      </div>
+                    ) : (
+                      openRooms.map((room) => {
+                        const roomMap = getMarvelMap(room.mapId);
+                        return (
+                          <div
+                            key={room.roomId}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-white/10 hover:border-amber-400/50 transition-all"
+                          >
+                            <div className="space-y-0.5">
+                              <div className="flex items-center gap-2">
+                                <code className="text-amber-300 font-mono font-bold text-sm tracking-wider">
+                                  {room.roomId}
+                                </code>
+                                <span className="text-[10px] text-white/50 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                                  {roomMap.icon} {roomMap.name.split(' ')[0]}
+                                </span>
+                              </div>
+                              <p className="text-[10px] text-slate-400">
+                                ผู้เล่น <span className="font-num font-black text-amber-300">{room.players.length}</span>/<span className="font-num font-bold text-white/80">{room.maxPlayers}</span> คน • เป้าหมาย {room.targetScore ?? 16}P
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleJoin(room.roomId)}
+                              disabled={isLoading}
+                              className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition-all cursor-pointer shadow active:scale-95"
+                            >
+                              เข้าร่วม
+                            </button>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Error Message Notification */}
+              {error && (
+                <div className="p-3 rounded-xl bg-red-950/60 border border-red-500/30 text-red-200 text-xs flex items-start gap-2.5 animate-fadeIn">
+                  <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="leading-relaxed font-medium">{error}</span>
+                </div>
+              )}
+
+            </div>
+
+          </div>
+
         </div>
 
-        {/* Developer Credits & Non-Commercial Disclaimer Footer */}
-        <footer className="w-full max-w-lg mt-2.5 pt-2 border-t border-white/10 flex flex-col items-center text-center space-y-1">
-          <div className="flex items-center justify-center gap-1.5 flex-wrap text-xs text-white/80">
-            <span className="text-[11px] text-white/60">🛠️ พัฒนาโดย:</span>
-            <span className="font-bold text-amber-200 bg-gradient-to-r from-amber-950/90 via-yellow-950/80 to-amber-950/90 border border-amber-400/60 px-2.5 py-0.5 rounded-full text-xs tracking-wider shadow-[0_1px_6px_rgba(245,158,11,0.25)] drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+        {/* ── Developer Credits & Non-Commercial Disclaimer Footer ────────── */}
+        <footer className="w-full max-w-6xl mx-auto mt-2 pt-4 border-t border-white/[0.08] flex flex-col items-center text-center space-y-1.5">
+          <div className="flex items-center justify-center gap-2 flex-wrap text-xs text-slate-400">
+            <span className="text-[11px] text-slate-400">🛠️ พัฒนาโดย:</span>
+            <span className="font-bold text-amber-200 bg-amber-950/60 border border-amber-400/40 px-3 py-0.5 rounded-full text-xs tracking-wider shadow-inner">
               sanior09
             </span>
             <button
@@ -1546,31 +1740,29 @@ export const Lobby: React.FC<LobbyProps> = ({
                 soundManager.playModalOpen();
                 setShowDisclaimerModal(true);
               }}
-              className="text-[11px] text-cyan-300 hover:text-cyan-200 underline transition-colors cursor-pointer ml-1 font-semibold"
+              className="text-[11px] text-cyan-400 hover:text-cyan-300 underline transition-colors cursor-pointer ml-1 font-semibold"
               title="อ่านข้อกำหนดทางลิขสิทธิ์และวัตถุประสงค์โครงการ"
             >
               (ข้อกำหนดและลิขสิทธิ์)
             </button>
           </div>
-          <p className="text-[10.5px] text-white/60 max-w-md leading-relaxed px-2">
+          <p className="text-[11px] text-slate-400 max-w-lg leading-relaxed px-2 font-['Prompt',sans-serif]">
             จัดทำขึ้นเพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Project เท่านั้น <br className="hidden sm:inline" />
-            <span className="text-amber-200 font-semibold drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)]">
+            <span className="text-amber-200/90 font-medium">
               มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น
             </span>
           </p>
-          <p className="text-[9px] text-white/40">
-            Marvel และ Splendor เป็นเครื่องหมายการค้าและลิขสิทธิ์ของ MARVEL / Disney และ Space Cowboys
+          <p className="text-[9.5px] text-slate-400 font-mono uppercase tracking-wider">
+            NACHAPOL PROTOCOL // MARVEL SPLENDOR FAN EXPERIENCE
           </p>
         </footer>
 
-        {/* Interactive Roblox-Style Tutorial Modal */}
+        {/* Interactive Modals */}
         <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
-        {/* Developer Credits & Non-Commercial Disclaimer Modal */}
         <AboutDisclaimerModal
           isOpen={showDisclaimerModal}
           onClose={() => setShowDisclaimerModal(false)}
         />
-        {/* Avatar Picker Modal */}
         <AvatarPicker
           isOpen={showAvatarPicker}
           currentAvatarId={avatarId}
@@ -1578,7 +1770,6 @@ export const Lobby: React.FC<LobbyProps> = ({
           onClose={() => setShowAvatarPicker(false)}
         />
       </div>
-    </div>
     </>
   );
 };
