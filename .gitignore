@@ -8,3 +8,5 @@ client/node_modules/
 .DS_Store
 Thumbs.db
 *.timestamp-*.mjs
+__pycache__/
+*.pyc

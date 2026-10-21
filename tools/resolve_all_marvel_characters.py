@@ -8,7 +8,7 @@ session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)
 
 CANONICAL_MAPPING = {
     # Tier 1 - Reality (Red)
-    't1_r01': ('A-Bomb', 'Richard Jones (Earth-616)'),
+    't1_r01': ('A-Bomb', 'A-Bomb'),
     't1_r02': ('Abomination', 'Emil Blonsky (Earth-616)'),
     't1_r03': ('Agent Anti-Venom', 'Eugene Thompson (Earth-616)'),
     't1_r04': ('Agent Coulson', 'Phillip Coulson (Earth-616)'),
@@ -32,9 +32,9 @@ CANONICAL_MAPPING = {
     't1_o02': ('Jubilee', 'Jubilation Lee (Earth-616)'),
     't1_o03': ('Kamala Khan', 'Kamala Khan (Earth-616)'),
     't1_o04': ('Kraven', 'Sergei Kravinoff (Earth-616)'),
-    't1_o05': ('Lizard', 'Curtis Connors (Earth-616)'),
+    't1_o05': ('Lizard', 'Lizard'),
     't1_o06': ('Luke Cage', 'Lucas Cage (Earth-616)'),
-    't1_o07': ('M.O.D.O.K.', 'George Tarleton (Earth-616)'),
+    't1_o07': ('M.O.D.O.K.', 'M.O.D.O.K.'),
     't1_o08': ('Hammerhead', 'Hammerhead (Earth-616)'),
 
     # Tier 1 - Mind (Yellow)
@@ -49,10 +49,10 @@ CANONICAL_MAPPING = {
 
     # Tier 1 - Power (Purple)
     't1_a01': ('Polaris', 'Lorna Dane (Earth-616)'),
-    't1_a02': ('Prowler', 'Hobie Brown (Earth-616)'),
+    't1_a02': ('Prowler', 'Prowler'),
     't1_a03': ('Squirrel Girl', 'Doreen Green (Earth-616)'),
     't1_a04': ('Taskmaster', 'Tony Masters (Earth-616)'),
-    't1_a05': ('Taskmaster (Variant)', 'Tony Masters (Earth-616)'),
+    't1_a05': ('Taskmaster (Variant)', 'Taskmaster'),
     't1_a06': ('Spider-Woman', 'Jessica Drew (Earth-616)'),
     't1_a07': ('Gwen Stacy', 'Gwendolyn Stacy (Earth-616)'),
     't1_a08': ('Gwenpool', 'Gwendolyn Poole (Earth-616)'),
@@ -76,7 +76,7 @@ CANONICAL_MAPPING = {
     # Tier 2 - Soul (Orange)
     't2_o01': ('Hela', 'Hela (Earth-616)'),
     't2_o02': ('Invisible Woman', 'Susan Storm (Earth-616)'),
-    't2_o03': ('Iron Fist (Level 2)', 'Daniel Rand (Earth-616)'),
+    't2_o03': ('Iron Fist (Level 2)', 'Immortal Iron Fist'),
     't2_o04': ('Juggernaut', 'Cain Marko (Earth-616)'),
     't2_o05': ('Kingpin', 'Wilson Fisk (Earth-616)'),
     't2_o06': ('Ghost Rider', 'Johnathon Blaze (Earth-616)'),
