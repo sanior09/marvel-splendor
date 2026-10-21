@@ -314,10 +314,8 @@ function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactEl
           />
         )}
 
-        {/* Persistent YouTube-styled Marvel BGM Music Player */}
-        <div className="fixed top-1 right-2 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 pointer-events-auto">
-          <YouTubeMusicPlayer />
-        </div>
+        {/* Persistent Draggable Marvel BGM Music Player */}
+        <YouTubeMusicPlayer />
       </div>
     </OrientationGuard>
   );

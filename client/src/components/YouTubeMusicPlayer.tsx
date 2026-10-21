@@ -26,6 +26,37 @@ declare global {
   }
 }
 
+const STORAGE_KEY = 'marvel_music_player_pos';
+
+function getInitialPosition(): { x: number; y: number } {
+  if (typeof window === 'undefined') {
+    return { x: 16, y: 12 };
+  }
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (typeof parsed?.x === 'number' && typeof parsed?.y === 'number') {
+        const maxX = Math.max(8, window.innerWidth - 160);
+        const maxY = Math.max(8, window.innerHeight - 40);
+        return {
+          x: Math.min(Math.max(8, parsed.x), maxX),
+          y: Math.min(Math.max(8, parsed.y), maxY),
+        };
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  // Safe default: Top right corner, leaving top center completely clear
+  const isMobile = window.innerWidth < 640;
+  return {
+    x: Math.max(12, window.innerWidth - (isMobile ? 220 : 420)),
+    y: isMobile ? 8 : 12,
+  };
+}
+
 function formatTime(seconds: number): string {
   if (isNaN(seconds) || seconds < 0) return '0:00';
   const mins = Math.floor(seconds / 60);
@@ -60,16 +91,123 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
     return false;
   });
 
+  // Draggable positioning state
+  const [position, setPosition] = useState<{ x: number; y: number }>(getInitialPosition);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const isDraggingRef = useRef<boolean>(false);
+  const dragStartOffsetRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Reset to default top-right corner
+  const resetToDefaultPosition = useCallback(() => {
+    const isMobile = window.innerWidth < 640;
+    const defaultPos = {
+      x: Math.max(12, window.innerWidth - (isMobile ? 220 : 420)),
+      y: isMobile ? 8 : 12,
+    };
+    setPosition(defaultPos);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPos));
+    } catch (e) {}
+  }, []);
+
+  // Clamp within viewport on window resize or when toggling collapsed state
   useEffect(() => {
-    const handleResize = () => {
+    const clampPosition = () => {
       if (window.innerHeight <= 600) {
         setIsCollapsed(true);
       }
+      setPosition((prev) => {
+        const width = containerRef.current?.offsetWidth || 200;
+        const height = containerRef.current?.offsetHeight || 50;
+        const maxX = Math.max(8, window.innerWidth - width - 8);
+        const maxY = Math.max(8, window.innerHeight - height - 8);
+        const clampedX = Math.min(Math.max(8, prev.x), maxX);
+        const clampedY = Math.min(Math.max(8, prev.y), maxY);
+        if (clampedX !== prev.x || clampedY !== prev.y) {
+          return { x: clampedX, y: clampedY };
+        }
+        return prev;
+      });
     };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    clampPosition();
+    window.addEventListener('resize', clampPosition);
+    return () => window.removeEventListener('resize', clampPosition);
   }, []);
+
+  // Re-clamp position after collapsing/expanding transition
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const maxX = Math.max(8, window.innerWidth - rect.width - 8);
+      const maxY = Math.max(8, window.innerHeight - rect.height - 8);
+      setPosition((prev) => {
+        const clampedX = Math.min(Math.max(8, prev.x), maxX);
+        const clampedY = Math.min(Math.max(8, prev.y), maxY);
+        if (clampedX !== prev.x || clampedY !== prev.y) {
+          return { x: clampedX, y: clampedY };
+        }
+        return prev;
+      });
+    }, 60);
+    return () => clearTimeout(timer);
+  }, [isCollapsed]);
+
+  // Pointer drag event handlers
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+    // Don't drag if interacting with buttons, inputs, links, or marked controls
+    if (target.closest('button, input, a, [data-no-drag]')) {
+      return;
+    }
+    if (e.button !== 0) return; // Left mouse click or touch only
+
+    isDraggingRef.current = true;
+    setIsDragging(true);
+    dragStartOffsetRef.current = {
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    };
+
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch (err) {}
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current) return;
+
+    const newX = e.clientX - dragStartOffsetRef.current.x;
+    const newY = e.clientY - dragStartOffsetRef.current.y;
+
+    const width = containerRef.current?.offsetWidth || 200;
+    const height = containerRef.current?.offsetHeight || 50;
+
+    const clampedX = Math.max(8, Math.min(window.innerWidth - width - 8, newX));
+    const clampedY = Math.max(8, Math.min(window.innerHeight - height - 8, newY));
+
+    setPosition({ x: clampedX, y: clampedY });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    setIsDragging(false);
+
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch (err) {}
+
+    setPosition((current) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+      } catch (err) {}
+      return current;
+    });
+  };
 
   const playerRef = useRef<any>(null);
   const timerRef = useRef<any>(null);
@@ -263,7 +401,25 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
   const progressPercent = duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
 
   return (
-    <div className={`relative z-40 ${className}`}>
+    <div
+      ref={containerRef}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      style={{
+        position: 'fixed',
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        touchAction: 'none',
+        zIndex: 50,
+      }}
+      className={`select-none transition-shadow ${
+        isDragging
+          ? 'cursor-grabbing opacity-95 scale-[1.02] shadow-[0_0_35px_rgba(239,68,68,0.65)]'
+          : 'cursor-grab'
+      } ${className}`}
+    >
       {/* ── Offscreen YouTube Player Container ────────────────── */}
       <div
         style={{
@@ -282,16 +438,33 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
 
       {/* ── Collapsed Mini Pill (Mobile Landscape / Low Height) ── */}
       {isCollapsed ? (
-        <div className="flex items-center gap-1.5 bg-neutral-950/95 border border-red-500/50 rounded-full px-2.5 py-1 shadow-2xl backdrop-blur-md transition-all">
+        <div className="flex items-center gap-1.5 bg-neutral-950/95 border border-red-500/50 rounded-full pl-2 pr-2.5 py-1 shadow-2xl backdrop-blur-md transition-all hover:border-red-400">
+          {/* Drag Grip Handle */}
+          <div
+            onDoubleClick={resetToDefaultPosition}
+            className="flex items-center text-white/40 hover:text-white/80 cursor-grab active:cursor-grabbing px-0.5 select-none"
+            title="ลากเพื่อย้ายตำแหน่ง (ดับเบิลคลิกเพื่อรีเซ็ตไปมุมขวาบน)"
+          >
+            <svg className="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
+              <circle cx="5" cy="3.5" r="1.5" />
+              <circle cx="11" cy="3.5" r="1.5" />
+              <circle cx="5" cy="8" r="1.5" />
+              <circle cx="11" cy="8" r="1.5" />
+              <circle cx="5" cy="12.5" r="1.5" />
+              <circle cx="11" cy="12.5" r="1.5" />
+            </svg>
+          </div>
+
           <button
             type="button"
+            data-no-drag
             onClick={togglePlay}
             className="w-6 h-6 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-xs font-bold cursor-pointer shadow"
             title={isPlaying ? 'หยุดชั่วคราว (Pause)' : 'เล่นเพลง (Play)'}
           >
             {isPlaying ? '⏸' : '▶'}
           </button>
-          <div className="flex flex-col min-w-0 max-w-[100px]">
+          <div className="flex flex-col min-w-0 max-w-[105px]">
             <span className="text-[10px] font-bold text-white truncate leading-tight">
               {currentSong.title}
             </span>
@@ -301,6 +474,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
           </div>
           <button
             type="button"
+            data-no-drag
             onClick={() => setIsCollapsed(false)}
             className="text-[10px] text-white/50 hover:text-white px-1 cursor-pointer"
             title="ขยายเครื่องเล่น (Expand player)"
@@ -310,8 +484,24 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
         </div>
       ) : (
         /* ── Expanded Full YouTube-Styled Control Bar ───────────── */
-        <div className="flex flex-col bg-neutral-950/95 hover:bg-neutral-950 border border-red-500/40 hover:border-red-500/60 rounded-2xl p-1.5 sm:px-3 sm:py-2 shadow-[0_0_30px_rgba(0,0,0,0.8)] backdrop-blur-md transition-all">
-          <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex flex-col bg-neutral-950/95 hover:bg-neutral-950 border border-red-500/40 hover:border-red-500/60 rounded-2xl p-1.5 sm:px-3 sm:py-2 shadow-[0_0_30px_rgba(0,0,0,0.85)] backdrop-blur-md transition-all">
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
+            {/* Drag Grip Handle */}
+            <div
+              onDoubleClick={resetToDefaultPosition}
+              className="flex items-center text-white/35 hover:text-white/80 cursor-grab active:cursor-grabbing px-0.5 select-none"
+              title="ลากเพื่อย้ายตำแหน่ง (ดับเบิลคลิกเพื่อรีเซ็ตไปมุมขวาบน)"
+            >
+              <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor">
+                <circle cx="5" cy="3.5" r="1.5" />
+                <circle cx="11" cy="3.5" r="1.5" />
+                <circle cx="5" cy="8" r="1.5" />
+                <circle cx="11" cy="8" r="1.5" />
+                <circle cx="5" cy="12.5" r="1.5" />
+                <circle cx="11" cy="12.5" r="1.5" />
+              </svg>
+            </div>
+
             {/* Track Thumbnail Art */}
             <div className="relative shrink-0 rounded-lg overflow-hidden border border-red-500/30 w-9 h-7 sm:w-11 sm:h-8 bg-black flex items-center justify-center shadow">
               <img
@@ -330,7 +520,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
             </div>
 
             {/* Track Info & Live Timer */}
-            <div className="min-w-0 max-w-[105px] sm:max-w-[170px]">
+            <div className="min-w-0 max-w-[105px] sm:max-w-[165px]">
               <div className="flex items-center gap-1">
                 <span className="bg-red-600 text-white font-black text-[7px] sm:text-[8px] px-1 py-0.2 rounded font-sans uppercase tracking-wider shrink-0 hidden sm:inline-block">
                   BGM
@@ -350,9 +540,10 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
             </div>
 
             {/* Playback Controls (Prev, Play/Pause, Next) */}
-            <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+            <div className="flex items-center gap-0.5 sm:gap-1 shrink-0" data-no-drag>
               <button
                 type="button"
+                data-no-drag
                 onClick={handlePrev}
                 className="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors text-[10px] sm:text-xs cursor-pointer"
                 title="เพลงก่อนหน้า (Previous)"
@@ -361,6 +552,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
               </button>
               <button
                 type="button"
+                data-no-drag
                 onClick={togglePlay}
                 className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-[10px] sm:text-xs font-bold shadow-md hover:scale-105 transition-all cursor-pointer"
                 title={isPlaying ? 'หยุดชั่วคราว (Pause)' : 'เล่นเพลง (Play)'}
@@ -369,6 +561,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
               </button>
               <button
                 type="button"
+                data-no-drag
                 onClick={handleNext}
                 className="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors text-[10px] sm:text-xs cursor-pointer"
                 title="เพลงถัดไป (Next)"
@@ -378,9 +571,10 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
             </div>
 
             {/* Volume Controls: Mute Toggle + Horizontal Slider */}
-            <div className="flex items-center gap-1 shrink-0 pl-1 border-l border-white/10">
+            <div className="flex items-center gap-1 shrink-0 pl-1 border-l border-white/10" data-no-drag>
               <button
                 type="button"
+                data-no-drag
                 onClick={toggleMute}
                 className="text-white/70 hover:text-white text-xs p-0.5 sm:p-1 rounded hover:bg-white/10 transition-colors cursor-pointer"
                 title={isMuted ? 'เปิดเสียง (Unmute)' : 'ปิดเสียง (Mute)'}
@@ -388,9 +582,10 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
                 {isMuted || volume === 0 ? '🔇' : volume < 50 ? '🔉' : '🔊'}
               </button>
 
-              <div className="hidden sm:flex items-center gap-1">
+              <div className="hidden sm:flex items-center gap-1" data-no-drag>
                 <input
                   type="range"
+                  data-no-drag
                   min="0"
                   max="100"
                   value={isMuted ? 0 : volume}
@@ -407,6 +602,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
             {/* Playlist Drawer Button */}
             <button
               type="button"
+              data-no-drag
               onClick={() => setShowPlaylist(true)}
               className="flex items-center gap-1 bg-white/5 hover:bg-red-600/30 border border-white/10 hover:border-red-500/40 rounded-xl px-1.5 py-0.5 sm:px-2 sm:py-1 text-white text-[9px] sm:text-[10px] font-bold transition-all cursor-pointer shrink-0 shadow"
               title="เลือกเพลงจากเพลย์ลิสต์ (Select Songs)"
@@ -418,6 +614,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
             {/* Minimize toggle button */}
             <button
               type="button"
+              data-no-drag
               onClick={() => setIsCollapsed(true)}
               className="text-[9px] text-white/40 hover:text-white px-0.5 cursor-pointer"
               title="ย่อเครื่องเล่น (Minimize player)"
