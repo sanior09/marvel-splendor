@@ -113,13 +113,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
             </p>
           </div>
 
-          {/* Infinity Stones Bar (Tactile Showcase) */}
-          <div className="w-full max-w-lg pt-2">
-            <div className="flex items-center justify-center lg:justify-start gap-2.5 sm:gap-3 flex-wrap">
+          {/* Infinity Stones Bar (Unified Gauntlet Socket Dock — Clean 1-Row Grid) */}
+          <div className="w-full max-w-lg pt-1">
+            <div className="grid grid-cols-6 gap-1.5 sm:gap-2 w-full p-1.5 rounded-2xl bg-white/[0.02] border border-white/[0.07] backdrop-blur-md shadow-inner">
               {INFINITY_STONES.map((stone) => (
                 <div
                   key={stone.name}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-semibold backdrop-blur-md transition-transform hover:scale-105"
+                  className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 py-1.5 px-1 sm:px-2 rounded-xl border text-center transition-all duration-200 hover:scale-[1.06] hover:shadow-lg cursor-default"
                   style={{
                     backgroundColor: stone.bg,
                     borderColor: stone.border,
@@ -127,8 +127,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                   }}
                   title={`${stone.name} Stone`}
                 >
-                  <span className="text-xs">{stone.icon}</span>
-                  <span className="font-['Montserrat',sans-serif] tracking-wider text-[11px] uppercase">
+                  <span className="text-xs sm:text-sm">{stone.icon}</span>
+                  <span className="font-['Montserrat',sans-serif] tracking-wider text-[9px] sm:text-[10px] font-extrabold uppercase">
                     {stone.name}
                   </span>
                 </div>
