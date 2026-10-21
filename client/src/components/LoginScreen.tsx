@@ -293,7 +293,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
                       autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                       required
                       className="w-full pl-10 pr-11 py-3 rounded-xl bg-black/35 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all"
@@ -334,7 +333,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                         type={showPassword ? 'text' : 'password'}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="พิมพ์รหัสผ่านอีกครั้ง"
                         autoComplete="new-password"
                         required
                         className="w-full pl-10 pr-4 py-3 rounded-xl bg-black/35 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all"
