@@ -156,7 +156,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
           <div className="hidden lg:flex items-center gap-2 pt-4 text-[11px] text-slate-400 font-mono tracking-widest uppercase">
             <span>NACHAPOL INDUSTRIES</span>
             <span>//</span>
-            <span className="text-amber-400/90 font-semibold">NACHAPOL PROTOCOL VERIFIED</span>
+            <span>NACHAPOL PROTOCOL VERIFIED</span>
           </div>
         </div>
 
