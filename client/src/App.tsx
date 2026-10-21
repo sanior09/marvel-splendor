@@ -7,7 +7,6 @@ import { MaintenanceCard } from './components/MaintenanceCard';
 import { LoginScreen } from './components/LoginScreen';
 import { Lobby } from './components/Lobby';
 import { Board } from './components/Board';
-import { YouTubeMusicPlayer } from './components/YouTubeMusicPlayer';
 import { OrientationGuard } from './components/OrientationGuard';
 import { InactivityWarningModal } from './components/InactivityWarningModal';
 import { useGameState } from './hooks/useGameState';
@@ -95,30 +94,23 @@ function AuthGate(): React.ReactElement {
     );
   }
 
-  // Render login screen or game router, with persistent Marvel BGM player across all views
-  return (
-    <>
-      {!isAuthenticated && !isGuest ? (
-        <div className="page-enter" style={{ width: '100%', height: '100%' }}>
-          <LoginScreen
-            auth={auth}
-            onContinueAsGuest={() => setIsGuest(true)}
-          />
-        </div>
-      ) : (
-        <GameRouter
-          auth={auth}
-          isGuest={isGuest}
-          onLogout={() => {
-            auth.logout();
-            setIsGuest(false);
-          }}
-        />
-      )}
-
-      {/* Persistent Draggable Marvel BGM Music Player across all views */}
-      <YouTubeMusicPlayer />
-    </>
+  // Render login screen or game router
+  return !isAuthenticated && !isGuest ? (
+    <div className="page-enter" style={{ width: '100%', height: '100%' }}>
+      <LoginScreen
+        auth={auth}
+        onContinueAsGuest={() => setIsGuest(true)}
+      />
+    </div>
+  ) : (
+    <GameRouter
+      auth={auth}
+      isGuest={isGuest}
+      onLogout={() => {
+        auth.logout();
+        setIsGuest(false);
+      }}
+    />
   );
 }
 
