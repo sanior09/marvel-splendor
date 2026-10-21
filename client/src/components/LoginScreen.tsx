@@ -136,19 +136,48 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
             </div>
           </div>
 
-          {/* Feature Highlights Bento Box */}
+          {/* Feature Highlights Bento Box — Gemstone Interactive Matrix */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-lg pt-2 text-left">
-            <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-              <div className="text-amber-400 font-bold text-lg font-['Montserrat',sans-serif]">90 CARDS</div>
-              <div className="text-[11px] text-slate-400 leading-tight pt-0.5">ฮีโร่และวายร้ายครบ 3 Tiers</div>
+            {/* Card 1: Mind/Reality Stone Radiant Gold */}
+            <div className="group relative overflow-hidden p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-amber-400/70 hover:bg-amber-950/20 hover:shadow-[0_0_30px_rgba(245,158,11,0.35),inset_0_0_20px_rgba(245,158,11,0.15)] cursor-pointer">
+              <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-amber-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="flex items-center justify-between">
+                <div className="text-amber-400 group-hover:text-amber-300 font-bold text-lg font-['Montserrat',sans-serif] transition-colors drop-shadow-[0_0_8px_rgba(245,158,11,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.8)]">
+                  90 CARDS
+                </div>
+                <span className="text-xs opacity-40 group-hover:opacity-100 transition-opacity transform group-hover:scale-110">🟡</span>
+              </div>
+              <div className="text-[11px] text-slate-400 group-hover:text-amber-100/90 leading-tight pt-1 transition-colors">
+                ฮีโร่และวายร้ายครบ 3 Tiers
+              </div>
             </div>
-            <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
-              <div className="text-cyan-400 font-bold text-lg font-['Montserrat',sans-serif]">MARVEL AI</div>
-              <div className="text-[11px] text-slate-400 leading-tight pt-0.5">บอท Stark, Thanos, Ultron</div>
+
+            {/* Card 2: Space Stone Radiant Cyan */}
+            <div className="group relative overflow-hidden p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-cyan-400/70 hover:bg-cyan-950/20 hover:shadow-[0_0_30px_rgba(6,182,212,0.35),inset_0_0_20px_rgba(6,182,212,0.15)] cursor-pointer">
+              <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-cyan-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="flex items-center justify-between">
+                <div className="text-cyan-400 group-hover:text-cyan-200 font-bold text-lg font-['Montserrat',sans-serif] transition-colors drop-shadow-[0_0_8px_rgba(6,182,212,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]">
+                  MARVEL AI
+                </div>
+                <span className="text-xs opacity-40 group-hover:opacity-100 transition-opacity transform group-hover:scale-110">🔵</span>
+              </div>
+              <div className="text-[11px] text-slate-400 group-hover:text-cyan-100/90 leading-tight pt-1 transition-colors">
+                บอท Stark, Thanos, Ultron
+              </div>
             </div>
-            <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md col-span-2 sm:col-span-1">
-              <div className="text-emerald-400 font-bold text-lg font-['Montserrat',sans-serif]">REAL-TIME</div>
-              <div className="text-[11px] text-slate-400 leading-tight pt-0.5">เล่นออนไลน์ 2–4 ผู้เล่น</div>
+
+            {/* Card 3: Time Stone Radiant Emerald */}
+            <div className="group relative overflow-hidden p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md col-span-2 sm:col-span-1 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-emerald-400/70 hover:bg-emerald-950/20 hover:shadow-[0_0_30px_rgba(16,185,129,0.35),inset_0_0_20px_rgba(16,185,129,0.15)] cursor-pointer">
+              <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-emerald-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="flex items-center justify-between">
+                <div className="text-emerald-400 group-hover:text-emerald-200 font-bold text-lg font-['Montserrat',sans-serif] transition-colors drop-shadow-[0_0_8px_rgba(16,185,129,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(16,185,129,0.8)]">
+                  REAL-TIME
+                </div>
+                <span className="text-xs opacity-40 group-hover:opacity-100 transition-opacity transform group-hover:scale-110">🟢</span>
+              </div>
+              <div className="text-[11px] text-slate-400 group-hover:text-emerald-100/90 leading-tight pt-1 transition-colors">
+                เล่นออนไลน์ 2–4 ผู้เล่น
+              </div>
             </div>
           </div>
 
