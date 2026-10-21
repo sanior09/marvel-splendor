@@ -553,9 +553,9 @@ export class RoomManager {
     if (!room) return { success: false, error: 'Failed to create room' };
 
     const botTemplates = [
-      { name: 'Doctor Doom', personality: 'stark', avatarUrl: '/images/avatars/doctor_doom.jpg' },
-      { name: 'Loki', personality: 'ultron', avatarUrl: '/images/avatars/loki.jpg' },
-      { name: 'Thanos Bot', personality: 'thanos', avatarUrl: '/images/avatars/thanos.jpg' },
+      { name: 'Doctor Doom', personality: 'stark', avatarKey: 'doctor_doom' },
+      { name: 'Loki', personality: 'ultron', avatarKey: 'loki' },
+      { name: 'Thanos Bot', personality: 'thanos', avatarKey: 'thanos' },
     ];
 
     const actualCount = Math.min(Math.max(1, botCount), 3);
@@ -568,7 +568,7 @@ export class RoomManager {
         id: botId,
         name: finalBotName,
         socketId: `bot_${botId}`,
-        avatarUrl: template.avatarUrl,
+        avatarUrl: customName ? undefined : template.avatarKey,
         isBot: true,
         botPersonality: template.personality,
       });

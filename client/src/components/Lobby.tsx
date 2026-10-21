@@ -13,18 +13,11 @@ import { TutorialModal } from './TutorialModal';
 import { AboutDisclaimerModal } from './AboutDisclaimerModal';
 import { AvatarPicker, MARVEL_AVATARS } from './AvatarPicker';
 import { ProfileBadge } from './ProfileBadge';
-import marvelAvatarsData from '../data/marvelAvatarsData.json';
 import { RankBadge } from './RankBadge';
+import { resolveMarvelAvatar, getMarvelFallbackEmoji } from '../utils/avatarUtils';
 
 const resolvePlayerAvatar = (name: string, avatarUrl?: string): string | undefined => {
-  if (avatarUrl) return avatarUrl;
-  const lower = name.toLowerCase();
-  const avatarMap = marvelAvatarsData as Record<string, string>;
-  if (lower.includes('doom')) return avatarMap['doctor_doom'] || '/images/avatars/doctor_doom.jpg';
-  if (lower.includes('loki')) return avatarMap['loki'] || '/images/avatars/loki.jpg';
-  if (lower.includes('thanos')) return avatarMap['thanos'] || '/images/avatars/thanos.jpg';
-  if (lower.includes('stark') || lower.includes('iron')) return avatarMap['iron_man'] || '/images/avatars/iron_man.jpg';
-  return undefined;
+  return resolveMarvelAvatar(name, avatarUrl);
 };
 
 interface LobbyProps {
@@ -60,16 +53,20 @@ interface MarvelBotPreset {
 }
 
 const POPULAR_MARVEL_BOTS: MarvelBotPreset[] = [
-  { name: 'Doctor Doom', personality: 'stark', avatar: '👑', desc: 'Tactical Mastermind', avatarUrl: '/images/avatars/doctor_doom.jpg' },
-  { name: 'Loki', personality: 'ultron', avatar: '🐍', desc: 'Trickster & Schemer', avatarUrl: '/images/avatars/loki.jpg' },
-  { name: 'Kang the Conqueror', personality: 'stark', avatar: '⏳', desc: 'Time Traveler' },
-  { name: 'Hela', personality: 'ultron', avatar: '⚔️', desc: 'Goddess of Death' },
-  { name: 'Magneto', personality: 'stark', avatar: '🧲', desc: 'Mutant Leader' },
-  { name: 'J.A.R.V.I.S.', personality: 'friday', avatar: '🤖', desc: 'Stark AI Assistant' },
-  { name: 'Thanos Bot', personality: 'thanos', avatar: '🧤', desc: 'Infinity Gauntlet Seeker', avatarUrl: '/images/avatars/thanos.jpg' },
-  { name: 'Ultron', personality: 'ultron', avatar: '⚡', desc: 'Vengeful AI' },
-  { name: 'Tony Stark AI', personality: 'stark', avatar: '🦾', desc: 'Armored Strategist', avatarUrl: '/images/avatars/iron_man.jpg' },
-  { name: 'Green Goblin', personality: 'ultron', avatar: '🎃', desc: 'Chaotic Threat' },
+  { name: 'Doctor Doom', personality: 'stark', avatar: '👑', desc: 'Tactical Mastermind', avatarUrl: resolveMarvelAvatar('doctor_doom') },
+  { name: 'Loki', personality: 'ultron', avatar: '🐍', desc: 'Trickster & Schemer', avatarUrl: resolveMarvelAvatar('loki') },
+  { name: 'Thanos Bot', personality: 'thanos', avatar: '🧤', desc: 'Infinity Gauntlet Seeker', avatarUrl: resolveMarvelAvatar('thanos') },
+  { name: 'Tony Stark AI', personality: 'stark', avatar: '🦾', desc: 'Armored Strategist', avatarUrl: resolveMarvelAvatar('iron_man') },
+  { name: 'Spider-Man', personality: 'stark', avatar: '🕷️', desc: 'Agile Tactician', avatarUrl: resolveMarvelAvatar('spider_man') },
+  { name: 'Thor Odinson', personality: 'thanos', avatar: '⚡', desc: 'God of Thunder', avatarUrl: resolveMarvelAvatar('thor') },
+  { name: 'Wolverine', personality: 'thanos', avatar: '🐺', desc: 'Berserker Instinct', avatarUrl: resolveMarvelAvatar('wolverine') },
+  { name: 'Deadpool', personality: 'ultron', avatar: '⚔️', desc: 'Unpredictable Chaos', avatarUrl: resolveMarvelAvatar('deadpool') },
+  { name: 'Doctor Strange', personality: 'stark', avatar: '✨', desc: 'Sorcerer Supreme', avatarUrl: resolveMarvelAvatar('doctor_strange') },
+  { name: 'Black Panther', personality: 'stark', avatar: '🐾', desc: 'Wakandan Mastermind', avatarUrl: resolveMarvelAvatar('black_panther') },
+  { name: 'Vision (J.A.R.V.I.S.)', personality: 'friday', avatar: '🤖', desc: 'Synthetic AI Core', avatarUrl: resolveMarvelAvatar('vision') },
+  { name: 'Scarlet Witch', personality: 'ultron', avatar: '🔮', desc: 'Reality Warper', avatarUrl: resolveMarvelAvatar('scarlet_witch') },
+  { name: 'Captain America', personality: 'stark', avatar: '🛡️', desc: 'Tactical Leader', avatarUrl: resolveMarvelAvatar('captain_america') },
+  { name: 'Hulk', personality: 'thanos', avatar: '💚', desc: 'Smash Powerhouse', avatarUrl: resolveMarvelAvatar('hulk') },
 ];
 
 // ── QuickAvatarThumb: tiny avatar with error fallback ─────────
@@ -405,7 +402,8 @@ export const Lobby: React.FC<LobbyProps> = ({
                   {/* Bots */}
                   {soloContext.botNames.map((name, idx) => {
                     const preset = POPULAR_MARVEL_BOTS.find((b) => b.name === name);
-                    const botSrc = preset?.avatarUrl;
+                    const botSrc = resolveMarvelAvatar(name, preset?.avatarUrl);
+                    const fallbackEmoji = getMarvelFallbackEmoji(name, true);
                     return (
                       <div key={idx} className="flex flex-col items-center gap-1">
                         <div
@@ -413,12 +411,22 @@ export const Lobby: React.FC<LobbyProps> = ({
                           style={{ borderColor: 'rgba(147,51,234,0.6)' }}
                         >
                           {botSrc ? (
-                            <img src={botSrc} alt={name} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-700 to-indigo-700 text-white font-black text-sm">
-                              {preset?.avatar ?? '🤖'}
-                            </div>
-                          )}
+                            <img
+                              src={botSrc}
+                              alt={name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                if (target.nextElementSibling) {
+                                  (target.nextElementSibling as HTMLElement).style.display = 'flex';
+                                }
+                              }}
+                            />
+                          ) : null}
+                          <div className={`${botSrc ? 'hidden' : 'flex'} w-full h-full items-center justify-center bg-gradient-to-br from-purple-700 to-indigo-700 text-white font-black text-sm`}>
+                            {fallbackEmoji}
+                          </div>
                         </div>
                         <span className="text-[9px] text-white/50 max-w-[48px] truncate text-center">{name}</span>
                       </div>
@@ -436,12 +444,22 @@ export const Lobby: React.FC<LobbyProps> = ({
                         style={{ borderColor: p.id === myPlayerId ? 'rgba(251,191,36,0.8)' : 'rgba(255,255,255,0.2)' }}
                       >
                         {src ? (
-                          <img src={src} alt={p.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-amber-600 text-white font-black text-sm">
-                            {p.isBot ? '🤖' : p.name[0]?.toUpperCase()}
-                          </div>
-                        )}
+                          <img
+                            src={src}
+                            alt={p.name}
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              if (target.nextElementSibling) {
+                                (target.nextElementSibling as HTMLElement).style.display = 'flex';
+                              }
+                            }}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : null}
+                        <div className={`${src ? 'hidden' : 'flex'} w-full h-full items-center justify-center bg-gradient-to-br from-red-600 to-amber-600 text-white font-black text-sm`}>
+                          {getMarvelFallbackEmoji(p.name, p.isBot)}
+                        </div>
                       </div>
                       <span className="text-[9px] text-white/60 max-w-[48px] truncate text-center">{p.name}</span>
                     </div>
@@ -619,8 +637,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-amber-600 flex items-center justify-center font-bold text-xs text-white shadow shrink-0 overflow-hidden border border-white/20">
                       {(() => {
                         const avatarSrc = resolvePlayerAvatar(p.name, p.avatarUrl);
-                        const isDoom = p.name.toLowerCase().includes('doom');
-                        const fallbackEmoji = isDoom ? '👑' : p.isBot ? '🤖' : p.name.charAt(0).toUpperCase();
+                        const fallbackEmoji = getMarvelFallbackEmoji(p.name, p.isBot);
                         return (
                           <>
                             {avatarSrc ? (
@@ -629,11 +646,6 @@ export const Lobby: React.FC<LobbyProps> = ({
                                 alt={p.name}
                                 onError={(e) => {
                                   const target = e.target as HTMLImageElement;
-                                  const doomBase64 = (marvelAvatarsData as Record<string, string>)['doctor_doom'];
-                                  if (isDoom && doomBase64 && target.src !== doomBase64) {
-                                    target.src = doomBase64;
-                                    return;
-                                  }
                                   target.style.display = 'none';
                                   if (target.nextElementSibling) {
                                     (target.nextElementSibling as HTMLElement).style.display = 'block';
@@ -1387,8 +1399,8 @@ export const Lobby: React.FC<LobbyProps> = ({
                       {Array.from({ length: botCount }).map((_, idx) => {
                         const currentName = botNames[idx] ?? '';
                         const matchedPreset = POPULAR_MARVEL_BOTS.find((b) => b.name === currentName);
-                        const botAvatarSrc = matchedPreset?.avatarUrl || (currentName.toLowerCase().includes('doom') ? '/images/avatars/doctor_doom.jpg' : undefined);
-                        const fallbackEmoji = matchedPreset?.avatar ?? '🤖';
+                        const botAvatarSrc = resolveMarvelAvatar(currentName, matchedPreset?.avatarUrl);
+                        const fallbackEmoji = getMarvelFallbackEmoji(currentName, true);
                         const tacticDesc = matchedPreset?.desc ?? 'Custom Marvel AI';
 
                         return (
@@ -1403,10 +1415,22 @@ export const Lobby: React.FC<LobbyProps> = ({
                               </span>
                               <div className="w-9 h-9 rounded-xl overflow-hidden border border-white/20 bg-neutral-900 flex items-center justify-center shrink-0 shadow">
                                 {botAvatarSrc ? (
-                                  <img src={botAvatarSrc} alt={currentName} className="w-full h-full object-cover" />
-                                ) : (
-                                  <span className="text-sm">{fallbackEmoji}</span>
-                                )}
+                                  <img
+                                    src={botAvatarSrc}
+                                    alt={currentName}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      const target = e.target as HTMLImageElement;
+                                      target.style.display = 'none';
+                                      if (target.nextElementSibling) {
+                                        (target.nextElementSibling as HTMLElement).style.display = 'block';
+                                      }
+                                    }}
+                                  />
+                                ) : null}
+                                <span className={botAvatarSrc ? 'hidden text-sm' : 'block text-sm'}>
+                                  {fallbackEmoji}
+                                </span>
                               </div>
                             </div>
 

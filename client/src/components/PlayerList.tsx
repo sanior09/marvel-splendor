@@ -7,18 +7,11 @@ import type { Player, CrystalColor } from '@shared/types/game.types';
 import { ALL_CRYSTAL_COLORS } from '@shared/types/game.types';
 import { countAvengersSymbols } from '../../../src/engine/WinConditions';
 import { STONE_NAMES } from './GemToken';
-import marvelAvatarsData from '../data/marvelAvatarsData.json';
 import { RankBadge } from './RankBadge';
+import { resolveMarvelAvatar, getMarvelFallbackEmoji } from '../utils/avatarUtils';
 
 const resolvePlayerAvatar = (player: Player): string | undefined => {
-  if (player.avatarUrl) return player.avatarUrl;
-  const lower = player.name.toLowerCase();
-  const avatarMap = marvelAvatarsData as Record<string, string>;
-  if (lower.includes('doom')) return avatarMap['doctor_doom'] || '/images/avatars/doctor_doom.jpg';
-  if (lower.includes('loki')) return avatarMap['loki'] || '/images/avatars/loki.jpg';
-  if (lower.includes('thanos')) return avatarMap['thanos'] || '/images/avatars/thanos.jpg';
-  if (lower.includes('stark') || lower.includes('iron')) return avatarMap['iron_man'] || '/images/avatars/iron_man.jpg';
-  return undefined;
+  return resolveMarvelAvatar(player.name, player.avatarUrl);
 };
 
 interface PlayerListProps {
@@ -104,8 +97,7 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                 >
                 {(() => {
                   const avatarSrc = resolvePlayerAvatar(player);
-                  const isDoom = player.name.toLowerCase().includes('doom');
-                  const fallbackEmoji = isDoom ? '👑' : player.isBot ? '🤖' : player.name.charAt(0).toUpperCase();
+                  const fallbackEmoji = getMarvelFallbackEmoji(player.name, player.isBot);
                   return (
                     <>
                       {avatarSrc ? (
@@ -114,11 +106,6 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                           alt={player.name}
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            const doomBase64 = (marvelAvatarsData as Record<string, string>)['doctor_doom'];
-                            if (isDoom && doomBase64 && target.src !== doomBase64) {
-                              target.src = doomBase64;
-                              return;
-                            }
                             target.style.display = 'none';
                             if (target.nextElementSibling) {
                               (target.nextElementSibling as HTMLElement).style.display = 'block';
