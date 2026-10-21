@@ -152,11 +152,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
             </div>
           </div>
 
-          {/* Stark Industries Telemetry Footer */}
+          {/* Nachapol Industries Telemetry Footer */}
           <div className="hidden lg:flex items-center gap-2 pt-4 text-[11px] text-slate-400 font-mono tracking-widest uppercase">
             <span>NACHAPOL INDUSTRIES</span>
             <span>//</span>
-            <span>STARK PROTOCOL VERIFIED</span>
+            <span className="text-amber-400/90 font-semibold">NACHAPOL PROTOCOL VERIFIED</span>
           </div>
         </div>
 
