@@ -95,27 +95,30 @@ function AuthGate(): React.ReactElement {
     );
   }
 
-  // Show login screen if not authenticated and not guest
-  if (!isAuthenticated && !isGuest) {
-    return (
-      <div className="page-enter" style={{ width: '100%', height: '100%' }}>
-        <LoginScreen
-          auth={auth}
-          onContinueAsGuest={() => setIsGuest(true)}
-        />
-      </div>
-    );
-  }
-
+  // Render login screen or game router, with persistent Marvel BGM player across all views
   return (
-    <GameRouter
-      auth={auth}
-      isGuest={isGuest}
-      onLogout={() => {
-        auth.logout();
-        setIsGuest(false);
-      }}
-    />
+    <>
+      {!isAuthenticated && !isGuest ? (
+        <div className="page-enter" style={{ width: '100%', height: '100%' }}>
+          <LoginScreen
+            auth={auth}
+            onContinueAsGuest={() => setIsGuest(true)}
+          />
+        </div>
+      ) : (
+        <GameRouter
+          auth={auth}
+          isGuest={isGuest}
+          onLogout={() => {
+            auth.logout();
+            setIsGuest(false);
+          }}
+        />
+      )}
+
+      {/* Persistent Draggable Marvel BGM Music Player across all views */}
+      <YouTubeMusicPlayer />
+    </>
   );
 }
 
@@ -313,9 +316,6 @@ function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactEl
             onStay={resetTimer}
           />
         )}
-
-        {/* Persistent Draggable Marvel BGM Music Player */}
-        <YouTubeMusicPlayer />
       </div>
     </OrientationGuard>
   );

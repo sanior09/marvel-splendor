@@ -59,7 +59,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
   const displayError = localError || auth.error;
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-x-hidden bg-[#05070d] text-slate-100 select-none">
+    <div className="relative min-h-screen w-full h-full overflow-y-auto overflow-x-hidden flex items-center justify-center bg-[#05070d] text-slate-100 select-none py-6 sm:py-12">
       {/* ── Background: Cinematic Battlefield Artwork with Deep Scrim ────────────────── */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 transform scale-105 pointer-events-none"
@@ -89,13 +89,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
       />
 
       {/* ── Main Stage Container (Asymmetrical Split Architecture) ───────────────── */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-16">
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-16">
         
         {/* ── Left Hero Side: Marvel Identity & Game Features ─────────────────────── */}
-        <div className="w-full lg:w-7/12 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
+        <div className="w-full lg:w-7/12 flex flex-col items-center lg:items-start text-center lg:text-left space-y-4 sm:space-y-6">
           
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md shadow-inner text-xs font-medium tracking-wider text-slate-300">
+          <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md shadow-inner text-xs font-medium tracking-wider text-slate-300">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
             <span className="text-white/50 uppercase tracking-widest font-mono text-[10px]">SYSTEM READY</span>
             <span className="text-white/20">•</span>
@@ -104,26 +104,26 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
 
           {/* Epic Brand Title */}
           <div className="space-y-1">
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5">
-              <span className="px-3.5 py-1 bg-[#e23636] text-white font-black text-3xl sm:text-4xl tracking-tighter rounded shadow-[0_0_30px_rgba(226,54,54,0.45)] uppercase border border-red-400/30 font-['Bebas_Neue',sans-serif]">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3.5">
+              <span className="px-3 sm:px-3.5 py-0.5 sm:py-1 bg-[#e23636] text-white font-black text-2xl sm:text-4xl tracking-tighter rounded shadow-[0_0_30px_rgba(226,54,54,0.45)] uppercase border border-red-400/30 font-['Bebas_Neue',sans-serif]">
                 MARVEL
               </span>
-              <span className="text-3xl sm:text-5xl font-black tracking-wider uppercase font-['Montserrat',sans-serif] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 drop-shadow-[0_2px_12px_rgba(234,179,8,0.3)]">
+              <span className="text-2xl sm:text-5xl font-black tracking-wider uppercase font-['Montserrat',sans-serif] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 drop-shadow-[0_2px_12px_rgba(234,179,8,0.3)]">
                 SPLENDOR
               </span>
             </div>
-            <p className="text-base sm:text-lg font-medium text-slate-300 tracking-wide pt-2 font-['Prompt',sans-serif]">
+            <p className="text-xs sm:text-base font-medium text-slate-300 tracking-wide pt-1 sm:pt-2 font-['Prompt',sans-serif]">
               ศึกชิงอัญมณีอินฟินิตี้ • ดิจิทัลบอร์ดเกมยุทธวิธีระดับพรีเมียม
             </p>
           </div>
 
           {/* Infinity Stones Bar (Unified Gauntlet Socket Dock — Clean 1-Row Grid) */}
-          <div className="w-full max-w-lg pt-1">
-            <div className="grid grid-cols-6 gap-1.5 sm:gap-2 w-full p-1.5 rounded-2xl bg-white/[0.02] border border-white/[0.07] backdrop-blur-md shadow-inner">
+          <div className="w-full max-w-lg pt-0.5 sm:pt-1">
+            <div className="grid grid-cols-6 gap-1 sm:gap-2 w-full p-1 sm:p-1.5 rounded-2xl bg-white/[0.02] border border-white/[0.07] backdrop-blur-md shadow-inner">
               {INFINITY_STONES.map((stone) => (
                 <div
                   key={stone.name}
-                  className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 py-1.5 px-1 sm:px-2 rounded-xl border text-center transition-all duration-200 hover:scale-[1.06] hover:shadow-lg cursor-default"
+                  className="flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-1 sm:py-1.5 px-0.5 sm:px-2 rounded-xl border text-center transition-all duration-200 hover:scale-[1.06] hover:shadow-lg cursor-default"
                   style={{
                     backgroundColor: stone.bg,
                     borderColor: stone.border,
@@ -132,7 +132,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                   title={`${stone.name} Stone`}
                 >
                   <span className="text-xs sm:text-sm">{stone.icon}</span>
-                  <span className="font-['Montserrat',sans-serif] tracking-wider text-[9px] sm:text-[10px] font-extrabold uppercase">
+                  <span className="font-['Montserrat',sans-serif] tracking-wider text-[8px] sm:text-[10px] font-extrabold uppercase">
                     {stone.name}
                   </span>
                 </div>
@@ -140,8 +140,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
             </div>
           </div>
 
-          {/* Feature Highlights Bento Box — Gemstone Interactive Matrix */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-lg pt-2 text-left">
+          {/* Feature Highlights Bento Box — Desktop Only (Left Column) */}
+          <div className="hidden lg:grid grid-cols-3 gap-3 w-full max-w-lg pt-2 text-left">
             {/* Card 1: Mind/Reality Stone Radiant Gold */}
             <div className="group relative overflow-hidden p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-amber-400/70 hover:bg-amber-950/20 hover:shadow-[0_0_30px_rgba(245,158,11,0.35),inset_0_0_20px_rgba(245,158,11,0.15)] cursor-pointer">
               <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-amber-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -171,7 +171,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
             </div>
 
             {/* Card 3: Time Stone Radiant Emerald */}
-            <div className="group relative overflow-hidden p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md col-span-2 sm:col-span-1 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-emerald-400/70 hover:bg-emerald-950/20 hover:shadow-[0_0_30px_rgba(16,185,129,0.35),inset_0_0_20px_rgba(16,185,129,0.15)] cursor-pointer">
+            <div className="group relative overflow-hidden p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:border-emerald-400/70 hover:bg-emerald-950/20 hover:shadow-[0_0_30px_rgba(16,185,129,0.35),inset_0_0_20px_rgba(16,185,129,0.15)] cursor-pointer">
               <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-emerald-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               <div className="flex items-center justify-between">
                 <div className="text-emerald-400 group-hover:text-emerald-200 font-bold text-lg font-['Montserrat',sans-serif] transition-colors drop-shadow-[0_0_8px_rgba(16,185,129,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(16,185,129,0.8)]">
@@ -185,7 +185,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
             </div>
           </div>
 
-          {/* Nachapol Industries Telemetry Footer */}
+          {/* Nachapol Industries Telemetry Footer — Desktop Only */}
           <div className="hidden lg:flex items-center gap-2 pt-4 text-[11px] text-slate-400 font-mono tracking-widest uppercase">
             <span>NACHAPOL INDUSTRIES</span>
             <span>//</span>
@@ -194,9 +194,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
         </div>
 
         {/* ── Right Side: Tactile Access Terminal ──────────────────────────────────── */}
-        <div className="w-full lg:w-5/12 max-w-md">
+        <div className="w-full lg:w-5/12 max-w-md flex flex-col items-center">
           <div
-            className="rounded-3xl border border-white/[0.12] overflow-hidden transition-all duration-300"
+            className="w-full rounded-3xl border border-white/[0.12] overflow-hidden transition-all duration-300"
             style={{
               background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
               backdropFilter: 'blur(28px)',
@@ -205,8 +205,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
             }}
           >
             {/* Terminal Header & Mode Selector Pill */}
-            <div className="p-6 pb-2">
-              <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+            <div className="p-4 sm:p-6 pb-2">
+              <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/[0.08]">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_#f59e0b]" />
                   <span className="font-['Montserrat',sans-serif] font-bold tracking-widest text-xs uppercase text-slate-200">
@@ -219,7 +219,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
               </div>
 
               {/* Segmented Mode Pill Switcher */}
-              <div className="mt-5 p-1 rounded-2xl bg-black/40 border border-white/[0.06] flex items-center gap-1">
+              <div className="mt-3 sm:mt-5 p-1 rounded-2xl bg-black/40 border border-white/[0.06] flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => {
@@ -227,7 +227,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                     setLocalError('');
                     auth.clearError();
                   }}
-                  className={`flex-1 py-2.5 rounded-xl text-xs font-bold tracking-wider transition-all duration-200 ${
+                  className={`flex-1 py-2 sm:py-2.5 rounded-xl text-xs font-bold tracking-wider transition-all duration-200 min-h-[40px] ${
                     mode === 'login'
                       ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md font-extrabold'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.02]'
@@ -242,7 +242,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                     setLocalError('');
                     auth.clearError();
                   }}
-                  className={`flex-1 py-2.5 rounded-xl text-xs font-bold tracking-wider transition-all duration-200 ${
+                  className={`flex-1 py-2 sm:py-2.5 rounded-xl text-xs font-bold tracking-wider transition-all duration-200 min-h-[40px] ${
                     mode === 'register'
                       ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md font-extrabold'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.02]'
@@ -254,7 +254,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
             </div>
 
             {/* Form Container */}
-            <div className="p-6 pt-3">
+            <div className="p-4 sm:p-6 pt-2 sm:pt-3">
               <form onSubmit={handleSubmit} className="space-y-4">
                 
                 {/* Username Input Field */}
@@ -275,8 +275,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                       onChange={(e) => setUsername(e.target.value)}
                       maxLength={20}
                       autoComplete="username"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
                       required
-                      className="w-full pl-10 pr-4 py-3 rounded-xl bg-black/35 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all font-['Prompt',sans-serif]"
+                      className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl bg-black/35 border border-white/10 text-base sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all font-['Prompt',sans-serif]"
                     />
                   </div>
                 </div>
@@ -298,13 +301,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
                       required
-                      className="w-full pl-10 pr-11 py-3 rounded-xl bg-black/35 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all"
+                      className="w-full pl-10 pr-12 py-2.5 sm:py-3 rounded-xl bg-black/35 border border-white/10 text-base sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 transition-colors"
+                      className="absolute inset-y-0 right-0 pr-3.5 pl-2 flex items-center text-slate-400 hover:text-slate-200 transition-colors cursor-pointer min-w-[44px] min-h-[44px] justify-center"
                       title={showPassword ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน'}
                     >
                       {showPassword ? (
@@ -338,8 +344,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         autoComplete="new-password"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
                         required
-                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-black/35 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl bg-black/35 border border-white/10 text-base sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all"
                       />
                     </div>
                   </div>
@@ -359,7 +368,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                 <button
                   type="submit"
                   disabled={auth.isLoading}
-                  className="w-full py-3.5 px-6 rounded-xl font-extrabold text-sm tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] shadow-lg"
+                  className="w-full py-3 sm:py-3.5 px-6 rounded-xl font-extrabold text-sm tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] shadow-lg min-h-[46px]"
                   style={{
                     background: auth.isLoading
                       ? 'rgba(255, 255, 255, 0.1)'
@@ -388,7 +397,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
               </form>
 
               {/* Divider */}
-              <div className="relative my-5 flex items-center justify-center">
+              <div className="relative my-4 sm:my-5 flex items-center justify-center">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-white/[0.08]" />
                 </div>
@@ -401,7 +410,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
               <button
                 type="button"
                 onClick={onContinueAsGuest}
-                className="w-full py-3 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/20 text-slate-200 text-xs font-semibold tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+                className="w-full py-2.5 sm:py-3 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/20 text-slate-200 text-xs font-semibold tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] min-h-[44px]"
               >
                 <span className="text-sm">🛡️</span>
                 <span className="font-['Prompt',sans-serif]">เข้าเล่นเป็นผู้เยี่ยมชม (Guest Clearance)</span>
@@ -414,6 +423,55 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                   : '✨ สมัครฟรี บันทึกประวัติการแข่งขัน อัปเกรดฉายา และสะสมสถิติ'}
               </p>
             </div>
+          </div>
+
+          {/* Feature Highlights Bento Box on Mobile (Renders neatly below the terminal) */}
+          <div className="grid lg:hidden grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 w-full pt-6 text-left">
+            {/* Card 1: Mind/Reality Stone Radiant Gold */}
+            <div className="group relative overflow-hidden p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md transition-all duration-300 hover:border-amber-400/70 hover:bg-amber-950/20">
+              <div className="flex items-center justify-between">
+                <div className="text-amber-400 font-bold text-base font-['Montserrat',sans-serif]">
+                  90 CARDS
+                </div>
+                <span className="text-xs opacity-60">🟡</span>
+              </div>
+              <div className="text-[10px] text-slate-400 leading-tight pt-1">
+                ฮีโร่และวายร้ายครบ 3 Tiers
+              </div>
+            </div>
+
+            {/* Card 2: Space Stone Radiant Cyan */}
+            <div className="group relative overflow-hidden p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md transition-all duration-300 hover:border-cyan-400/70 hover:bg-cyan-950/20">
+              <div className="flex items-center justify-between">
+                <div className="text-cyan-400 font-bold text-base font-['Montserrat',sans-serif]">
+                  MARVEL AI
+                </div>
+                <span className="text-xs opacity-60">🔵</span>
+              </div>
+              <div className="text-[10px] text-slate-400 leading-tight pt-1">
+                บอท Stark, Thanos, Ultron
+              </div>
+            </div>
+
+            {/* Card 3: Time Stone Radiant Emerald */}
+            <div className="group relative overflow-hidden p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md col-span-2 sm:col-span-1 transition-all duration-300 hover:border-emerald-400/70 hover:bg-emerald-950/20">
+              <div className="flex items-center justify-between">
+                <div className="text-emerald-400 font-bold text-base font-['Montserrat',sans-serif]">
+                  REAL-TIME
+                </div>
+                <span className="text-xs opacity-60">🟢</span>
+              </div>
+              <div className="text-[10px] text-slate-400 leading-tight pt-1">
+                เล่นออนไลน์ 2–4 ผู้เล่น
+              </div>
+            </div>
+          </div>
+
+          {/* Nachapol Industries Telemetry Footer on Mobile */}
+          <div className="flex lg:hidden items-center justify-center gap-2 pt-4 text-[10px] text-slate-400 font-mono tracking-widest uppercase">
+            <span>NACHAPOL INDUSTRIES</span>
+            <span>//</span>
+            <span>NACHAPOL PROTOCOL VERIFIED</span>
           </div>
         </div>
 

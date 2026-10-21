@@ -52,7 +52,7 @@ function getInitialPosition(): { x: number; y: number } {
   // Safe default: Top right corner, leaving top center completely clear
   const isMobile = window.innerWidth < 640;
   return {
-    x: Math.max(12, window.innerWidth - (isMobile ? 220 : 420)),
+    x: Math.max(8, window.innerWidth - (isMobile ? 185 : 420)),
     y: isMobile ? 8 : 12,
   };
 }
@@ -85,8 +85,10 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
   const [showPlaylist, setShowPlaylist] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
-    if (typeof window !== 'undefined' && window.innerHeight <= 600) {
-      return true;
+    if (typeof window !== 'undefined') {
+      if (window.innerHeight <= 600 || window.innerWidth < 640) {
+        return true;
+      }
     }
     return false;
   });
@@ -102,7 +104,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
   const resetToDefaultPosition = useCallback(() => {
     const isMobile = window.innerWidth < 640;
     const defaultPos = {
-      x: Math.max(12, window.innerWidth - (isMobile ? 220 : 420)),
+      x: Math.max(8, window.innerWidth - (isMobile ? 185 : 420)),
       y: isMobile ? 8 : 12,
     };
     setPosition(defaultPos);
@@ -114,7 +116,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
   // Clamp within viewport on window resize or when toggling collapsed state
   useEffect(() => {
     const clampPosition = () => {
-      if (window.innerHeight <= 600) {
+      if (window.innerHeight <= 600 || window.innerWidth < 640) {
         setIsCollapsed(true);
       }
       setPosition((prev) => {
@@ -424,12 +426,13 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
       <div
         style={{
           position: 'fixed',
-          bottom: -150,
-          right: -150,
-          width: 80,
-          height: 80,
+          top: 0,
+          left: 0,
+          width: 1,
+          height: 1,
           opacity: 0.001,
           pointerEvents: 'none',
+          overflow: 'hidden',
           zIndex: -50,
         }}
       >
@@ -442,10 +445,10 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
           {/* Drag Grip Handle */}
           <div
             onDoubleClick={resetToDefaultPosition}
-            className="flex items-center text-white/40 hover:text-white/80 cursor-grab active:cursor-grabbing px-0.5 select-none"
+            className="flex items-center text-white/40 hover:text-white/80 cursor-grab active:cursor-grabbing p-1 sm:p-0.5 select-none touch-none"
             title="ลากเพื่อย้ายตำแหน่ง (ดับเบิลคลิกเพื่อรีเซ็ตไปมุมขวาบน)"
           >
-            <svg className="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor">
               <circle cx="5" cy="3.5" r="1.5" />
               <circle cx="11" cy="3.5" r="1.5" />
               <circle cx="5" cy="8" r="1.5" />
@@ -476,7 +479,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
             type="button"
             data-no-drag
             onClick={() => setIsCollapsed(false)}
-            className="text-[10px] text-white/50 hover:text-white px-1 cursor-pointer"
+            className="text-[10px] text-white/50 hover:text-white px-1.5 py-1 cursor-pointer"
             title="ขยายเครื่องเล่น (Expand player)"
           >
             ▼
@@ -484,12 +487,12 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = ({
         </div>
       ) : (
         /* ── Expanded Full YouTube-Styled Control Bar ───────────── */
-        <div className="flex flex-col bg-neutral-950/95 hover:bg-neutral-950 border border-red-500/40 hover:border-red-500/60 rounded-2xl p-1.5 sm:px-3 sm:py-2 shadow-[0_0_30px_rgba(0,0,0,0.85)] backdrop-blur-md transition-all">
-          <div className="flex items-center gap-1.5 sm:gap-2.5">
+        <div className="flex flex-col bg-neutral-950/95 hover:bg-neutral-950 border border-red-500/40 hover:border-red-500/60 rounded-2xl p-1.5 sm:px-3 sm:py-2 shadow-[0_0_30px_rgba(0,0,0,0.85)] backdrop-blur-md transition-all max-w-[calc(100vw-16px)]">
+          <div className="flex items-center gap-1 sm:gap-2.5">
             {/* Drag Grip Handle */}
             <div
               onDoubleClick={resetToDefaultPosition}
-              className="flex items-center text-white/35 hover:text-white/80 cursor-grab active:cursor-grabbing px-0.5 select-none"
+              className="flex items-center text-white/35 hover:text-white/80 cursor-grab active:cursor-grabbing p-1 sm:p-0.5 select-none touch-none"
               title="ลากเพื่อย้ายตำแหน่ง (ดับเบิลคลิกเพื่อรีเซ็ตไปมุมขวาบน)"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor">
