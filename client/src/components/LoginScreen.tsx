@@ -269,7 +269,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      placeholder="เช่น Commander_01"
                       maxLength={20}
                       autoComplete="username"
                       required
