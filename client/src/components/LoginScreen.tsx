@@ -42,6 +42,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
         setLocalError('รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
         return;
       }
+      if (password.toLowerCase() === username.trim().toLowerCase()) {
+        setLocalError('รหัสผ่านต้องไม่ซ้ำกับชื่อผู้ใช้');
+        return;
+      }
       if (password !== confirmPassword) {
         setLocalError('รหัสผ่านยืนยันไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง');
         return;

@@ -166,8 +166,25 @@ export class UserManager {
       if (!username || username.length < 2) return { success: false, error: 'ชื่อผู้ใช้ต้องมีอย่างน้อย 2 ตัวอักษร' };
       if (!password || password.length < 6) return { success: false, error: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' };
 
+      // 1. ตรวจสอบว่ารหัสผ่านซ้ำกับชื่อผู้ใช้หรือไม่
+      if (password.toLowerCase() === username.toLowerCase()) {
+        return { success: false, error: 'รหัสผ่านต้องไม่ซ้ำกับชื่อผู้ใช้' };
+      }
+
+      // 2. ตรวจสอบว่าชื่อผู้ใช้ซ้ำกับคนอื่นหรือไม่
       const existing = await User.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
-      if (existing) return { success: false, error: 'ชื่อผู้ใช้นี้ถูกใช้แล้ว' };
+      if (existing) return { success: false, error: 'ชื่อผู้ใช้นี้ถูกใช้แล้ว กรุณาเลือกชื่ออื่น' };
+
+      // 3. ตรวจสอบว่ารหัสผ่านซ้ำกับผู้ใช้อื่นในระบบหรือไม่
+      const allUsers = await User.find({}, 'passwordHash').lean();
+      for (const u of allUsers) {
+        if (u.passwordHash) {
+          const match = await bcrypt.compare(password, u.passwordHash);
+          if (match) {
+            return { success: false, error: 'รหัสผ่านนี้มีผู้ใช้อื่นใช้งานแล้ว กรุณาตั้งรหัสผ่านใหม่' };
+          }
+        }
+      }
 
       const salt = await bcrypt.genSalt(10);
       const passwordHash = await bcrypt.hash(password, salt);
