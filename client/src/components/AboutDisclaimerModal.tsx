@@ -31,11 +31,11 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
       />
 
       {/* Modal Container */}
-      <div className="relative rounded-2xl border border-yellow-400/40 shadow-[0_20px_60px_rgba(0,0,0,0.95)] max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden animate-slide-up z-10 bg-[#0d121f] text-white font-sans">
+      <div className="relative rounded-2xl border border-white/15 shadow-[0_24px_70px_rgba(0,0,0,0.95)] max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden animate-slide-up z-10 bg-gradient-to-b from-[#0e1424] via-[#090d16] to-[#06080e] text-white font-sans">
         {/* Header */}
-        <header className="px-4 sm:px-6 py-4 border-b border-white/10 flex items-center justify-between bg-gradient-to-r from-red-950/80 via-slate-950 to-blue-950/70 shrink-0">
+        <header className="px-4 sm:px-6 py-4 border-b border-white/10 flex items-center justify-between bg-gradient-to-r from-red-600/20 via-amber-500/10 to-transparent shrink-0">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🛡️</span>
+            <span className="text-2xl drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">🛡️</span>
             <div>
               <h2 className="font-sans text-base sm:text-lg font-bold text-white tracking-wide">
                 เกี่ยวกับเว็บไซต์และข้อกำหนดลิขสิทธิ์
@@ -58,12 +58,12 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
         {/* Content Body */}
         <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-4 text-xs sm:text-[13px] leading-relaxed">
           {/* Section 1: Developer Info */}
-          <div className="bg-white/5 rounded-xl p-4 border border-white/10 space-y-2">
+          <div className="bg-gradient-to-br from-amber-500/[0.08] via-black/40 to-black/60 rounded-xl p-4 border border-amber-400/30 space-y-2">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <span className="text-amber-300 font-bold uppercase text-xs sm:text-sm tracking-wide">
+              <span className="text-amber-400 font-bold uppercase text-xs sm:text-sm tracking-wide">
                 ผู้พัฒนาเว็บไซต์ (Developer / Creator)
               </span>
-              <span className="bg-gradient-to-r from-amber-950/90 via-yellow-950/80 to-amber-950/90 text-amber-200 border border-amber-400/60 px-3.5 py-1 rounded-full font-bold text-xs sm:text-sm shadow-md tracking-wider">
+              <span className="bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-500/25 text-amber-200 border border-amber-400/50 px-3.5 py-1 rounded-full font-bold text-xs sm:text-sm shadow-[0_0_14px_rgba(245,158,11,0.25)] tracking-wider">
                 👑 sanior09
               </span>
             </div>
@@ -73,8 +73,8 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
           </div>
 
           {/* Section 2: Non-Commercial Statement (Critical Notice) */}
-          <div className="bg-red-950/40 rounded-xl p-4 border border-red-500/50 space-y-2.5">
-            <div className="flex items-center gap-2 text-red-300 font-bold text-xs sm:text-sm uppercase tracking-wide">
+          <div className="bg-gradient-to-br from-red-950/45 via-red-900/15 to-black/60 rounded-xl p-4 border border-red-500/40 shadow-[0_0_20px_rgba(220,38,38,0.12)] space-y-2.5">
+            <div className="flex items-center gap-2 text-red-400 font-bold text-xs sm:text-sm uppercase tracking-wide">
               <span>⚠️</span>
               <span>คำชี้แจง: ไม่ได้ทำเพื่อการค้าหรือหารายได้ (Non-Commercial Notice)</span>
             </div>
@@ -89,7 +89,7 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
           </div>
 
           {/* Section 3: Copyright & Trademark Notice */}
-          <div className="bg-white/5 rounded-xl p-4 border border-white/10 space-y-2">
+          <div className="bg-white/5 rounded-xl p-4 border border-white/10 space-y-2.5">
             <div className="flex items-center gap-2 text-slate-200 font-bold text-xs sm:text-sm">
               <span>⚖️</span>
               <span>ทรัพย์สินทางปัญญาและลิขสิทธิ์ (Copyright & Trademarks)</span>
@@ -100,9 +100,9 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
             <p className="text-slate-300 text-xs sm:text-[12.5px] leading-relaxed">
               กลไกและระบบกติกาเกม Splendor เป็นทรัพย์สินทางปัญญาของ <strong className="text-white">Space Cowboys / Asmodee Group</strong>
             </p>
-            <p className="text-amber-300 text-xs sm:text-[12.5px] leading-relaxed pt-1 font-medium">
+            <div className="bg-amber-500/10 border border-amber-500/25 rounded-lg p-2.5 text-amber-300/95 text-xs sm:text-[12.5px] leading-relaxed font-medium">
               หากท่านชื่นชอบความสนุกของเกม ขอแนะนำให้อุดหนุนบอร์ดเกมกล่องแท้ "Splendor: Marvel" เพื่อสนับสนุนผู้ถือลิขสิทธิ์อย่างเป็นทางการครับ
-            </p>
+            </div>
           </div>
         </div>
 
@@ -112,7 +112,7 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
           <button
             type="button"
             onClick={handleClose}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-xs sm:text-sm cursor-pointer transition-all shadow"
+            className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm cursor-pointer transition-all shadow-[0_0_20px_rgba(245,158,11,0.35)] active:scale-95"
           >
             รับทราบและปิด
           </button>

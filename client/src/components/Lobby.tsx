@@ -2012,9 +2012,9 @@ export const Lobby: React.FC<LobbyProps> = ({
 
         {/* ── Developer Credits & Non-Commercial Disclaimer Footer ────────── */}
         <footer className="w-full max-w-6xl mx-auto mt-1 pt-1.5 border-t border-white/[0.06] flex flex-col items-center text-center space-y-0.5">
-          <div className="flex items-center justify-center gap-1.5 flex-wrap text-[10px] sm:text-[10.5px] text-slate-300">
-            <span className="text-[10px] sm:text-[10.5px] text-slate-300">🛠️ พัฒนาโดย:</span>
-            <span className="font-bold text-amber-200 bg-amber-950/70 border border-amber-400/40 px-2 py-0.2 rounded-full text-[10px] sm:text-[10.5px] tracking-wider shadow-sm">
+          <div className="flex items-center justify-center gap-1.5 flex-wrap text-[10px] sm:text-[10.5px]">
+            <span className="text-slate-300 font-medium">🛠️ พัฒนาโดย:</span>
+            <span className="font-bold text-amber-200 bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/20 border border-amber-400/40 px-2 py-0.2 rounded-full text-[10px] sm:text-[10.5px] tracking-wider shadow-[0_0_10px_rgba(245,158,11,0.2)]">
               sanior09
             </span>
             <button
@@ -2023,7 +2023,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 soundManager.playModalOpen();
                 setShowDisclaimerModal(true);
               }}
-              className="text-[10px] sm:text-[10.5px] text-cyan-400 hover:text-cyan-300 underline transition-colors cursor-pointer ml-0.5 font-semibold"
+              className="text-amber-400/90 hover:text-amber-200 underline underline-offset-2 transition-colors cursor-pointer ml-0.5 font-semibold drop-shadow-[0_0_8px_rgba(245,158,11,0.3)]"
               title="อ่านข้อกำหนดทางลิขสิทธิ์และวัตถุประสงค์โครงการ"
             >
               (ข้อกำหนดและลิขสิทธิ์)
