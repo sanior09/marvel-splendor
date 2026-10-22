@@ -974,7 +974,10 @@ export const Lobby: React.FC<LobbyProps> = ({
         }}
       />
 
-      <div className="w-full h-full overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start px-3 sm:px-6 py-3 sm:py-5 relative select-none">
+      <div
+        className="w-full h-full overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start px-3 sm:px-6 py-3 sm:py-5 relative select-none touch-pan-y"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
         
         {/* Top Command Telemetry Bar */}
         <div className="w-full max-w-6xl mx-auto flex items-center justify-between gap-3 pt-1 pb-3">
@@ -1070,318 +1073,162 @@ export const Lobby: React.FC<LobbyProps> = ({
           </div>
         )}
 
-        {/* ── Main Bento Command Center Grid (Asymmetrical 2-Column Split) ── */}
-        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 pb-6">
+        {/* ── Main Bento Command Center Grid (Mobile-Optimized Order + Responsive 2-Col Bento on Desktop) ── */}
+        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 pb-6 items-start">
           
-          {/* ── Left Column: Operative Identity & Battlefield Arena (lg:col-span-5) ── */}
-          <div className="lg:col-span-5 flex flex-col gap-4 sm:gap-5">
-            
-            {/* Card 1: Operative Identification (Hero Avatar & Callsign) */}
-            <div
-              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-4 transition-all"
-              style={{
-                background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
-                backdropFilter: 'blur(28px)',
-                boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
-              }}
-            >
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_12px_#f59e0b]" />
-                  <div>
-                    <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                      // AGENT IDENTITY
-                    </span>
-                    <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
-                      ข้อมูลเจ้าหน้าที่ปฏิบัติการ
-                    </span>
+          {/* Card 1: Operative Identification (Order 1 on Mobile, Left Column Row 1 on Desktop) */}
+          <div
+            className="order-1 lg:order-1 lg:col-span-5 rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-4 transition-all self-start"
+            style={{
+              background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
+              backdropFilter: 'blur(28px)',
+              boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
+            }}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+              <div className="flex items-center gap-2.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_12px_#f59e0b]" />
+                <div>
+                  <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                    // AGENT IDENTITY
+                  </span>
+                  <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
+                    ข้อมูลเจ้าหน้าที่ปฏิบัติการ
+                  </span>
+                </div>
+              </div>
+              {userProfile?.username && (
+                <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
+                  ● SYNCED
+                </span>
+              )}
+            </div>
+
+            {/* Avatar + Callsign input */}
+            <div className="flex items-center gap-4 pt-0.5">
+              {/* Tactile Avatar Badge with quick hover indicator */}
+              <button
+                type="button"
+                onClick={() => {
+                  soundManager.playButtonClick();
+                  setShowAvatarPicker(true);
+                }}
+                title="เปลี่ยนรูปโปรไฟล์มาร์เวล"
+                className="relative shrink-0 w-16 h-16 rounded-2xl overflow-hidden border-2 border-amber-400/70 shadow-[0_0_24px_rgba(245,158,11,0.3)] hover:border-amber-300 hover:scale-105 transition-all cursor-pointer group active:scale-95"
+              >
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover object-center" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center font-black text-white text-xl">
+                    {avatarInitial}
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="text-sm">✏️</span>
+                  <span className="text-[9px] text-white font-bold tracking-tight">เปลี่ยน</span>
+                </div>
+              </button>
+
+              {/* Hero Name Input */}
+              <div className="flex-1 min-w-0 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="player-name" className="text-xs font-bold text-slate-200 font-['Prompt',sans-serif]">
+                    ชื่อเรียกขานฮีโร่ของคุณ
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[9px] font-mono text-amber-400/80 font-bold tracking-wider">CALLSIGN</span>
+                    {userProfile?.username && playerName.trim() !== userProfile.username && (
+                      <button
+                        type="button"
+                        onClick={() => setPlayerName(userProfile.username)}
+                        className="text-[10px] text-amber-300 hover:text-amber-200 underline cursor-pointer"
+                        title="กดเพื่อรีเซ็ตกลับเป็นชื่อบัญชี"
+                      >
+                        ↺ คืนค่า
+                      </button>
+                    )}
                   </div>
                 </div>
-                {userProfile?.username && (
-                  <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
-                    ● SYNCED
-                  </span>
-                )}
+                <input
+                  id="player-name"
+                  type="text"
+                  value={playerName}
+                  onChange={(e) => {
+                    setPlayerName(e.target.value);
+                    if (error) setError('');
+                  }}
+                  onKeyDown={(e) => e.key === 'Enter' && (activeTab === 'solo' ? handleSolo() : handleCreate())}
+                  maxLength={20}
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  placeholder={userProfile?.username ? userProfile.username : 'ระบุชื่อฮีโร่ของคุณ...'}
+                  className={`w-full px-3.5 py-2.5 rounded-xl bg-black/45 border text-base sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-all font-['Prompt',sans-serif] ${
+                    error
+                      ? 'border-red-500 ring-2 ring-red-500/40 bg-red-950/25'
+                      : 'border-white/10 focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20'
+                  }`}
+                />
               </div>
+            </div>
 
-              {/* Avatar + Callsign input */}
-              <div className="flex items-center gap-4 pt-0.5">
-                {/* Tactile Avatar Badge with quick hover indicator */}
+            {/* Quick Marvel Avatars Reel */}
+            <div className="space-y-2 pt-1 border-t border-white/[0.06]">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono text-slate-400 tracking-wider">
+                  เลือกอวตารด่วน:
+                </span>
                 <button
                   type="button"
                   onClick={() => {
                     soundManager.playButtonClick();
                     setShowAvatarPicker(true);
                   }}
-                  title="เปลี่ยนรูปโปรไฟล์มาร์เวล"
-                  className="relative shrink-0 w-16 h-16 rounded-2xl overflow-hidden border-2 border-amber-400/70 shadow-[0_0_24px_rgba(245,158,11,0.3)] hover:border-amber-300 hover:scale-105 transition-all cursor-pointer group active:scale-95"
+                  className="text-[10px] text-amber-400 hover:text-amber-300 font-bold cursor-pointer transition-colors"
                 >
-                  {avatarUrl ? (
-                    <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover object-center" />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center font-black text-white text-xl">
-                      {avatarInitial}
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-sm">✏️</span>
-                    <span className="text-[9px] text-white font-bold tracking-tight">เปลี่ยน</span>
-                  </div>
+                  ดูทั้งหมด ＋
                 </button>
-
-                {/* Hero Name Input */}
-                <div className="flex-1 min-w-0 space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label htmlFor="player-name" className="text-xs font-bold text-slate-200 font-['Prompt',sans-serif]">
-                      ชื่อเรียกขานฮีโร่ของคุณ
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[9px] font-mono text-amber-400/80 font-bold tracking-wider">CALLSIGN</span>
-                      {userProfile?.username && playerName.trim() !== userProfile.username && (
-                        <button
-                          type="button"
-                          onClick={() => setPlayerName(userProfile.username)}
-                          className="text-[10px] text-amber-300 hover:text-amber-200 underline cursor-pointer"
-                          title="กดเพื่อรีเซ็ตกลับเป็นชื่อบัญชี"
-                        >
-                          ↺ คืนค่า
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                  <input
-                    id="player-name"
-                    type="text"
-                    value={playerName}
-                    onChange={(e) => {
-                      setPlayerName(e.target.value);
-                      if (error) setError('');
-                    }}
-                    onKeyDown={(e) => e.key === 'Enter' && (activeTab === 'solo' ? handleSolo() : handleCreate())}
-                    maxLength={20}
-                    autoCapitalize="none"
-                    autoCorrect="off"
-                    spellCheck={false}
-                    placeholder={userProfile?.username ? userProfile.username : 'ระบุชื่อฮีโร่ของคุณ...'}
-                    className={`w-full px-3.5 py-2.5 rounded-xl bg-black/45 border text-base sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-all font-['Prompt',sans-serif] ${
-                      error
-                        ? 'border-red-500 ring-2 ring-red-500/40 bg-red-950/25'
-                        : 'border-white/10 focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20'
-                    }`}
-                  />
-                </div>
               </div>
-
-              {/* Quick Marvel Avatars Reel */}
-              <div className="space-y-2 pt-1 border-t border-white/[0.06]">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-slate-400 tracking-wider">
-                    เลือกอวตารด่วน:
-                  </span>
+              <div
+                className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none touch-pan-x"
+                style={{ WebkitOverflowScrolling: 'touch' }}
+              >
+                {MARVEL_AVATARS.slice(0, 8).map((av) => (
                   <button
+                    key={av.id}
                     type="button"
                     onClick={() => {
+                      handleAvatarSelect(av.src, av.id);
                       soundManager.playButtonClick();
-                      setShowAvatarPicker(true);
                     }}
-                    className="text-[10px] text-amber-400 hover:text-amber-300 font-bold cursor-pointer transition-colors"
+                    title={av.name}
+                    className={[
+                      'shrink-0 w-9 h-9 sm:w-8 sm:h-8 rounded-xl overflow-hidden border transition-all cursor-pointer hover:scale-110 active:scale-95',
+                      avatarId === av.id
+                        ? 'border-amber-400 ring-2 ring-amber-400/40 shadow-lg scale-105'
+                        : 'border-white/10 opacity-70 hover:opacity-100',
+                    ].join(' ')}
                   >
-                    ดูทั้งหมด ＋
+                    <QuickAvatarThumb src={av.src} fallbackEmoji={av.id} />
                   </button>
-                </div>
-                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-                  {MARVEL_AVATARS.slice(0, 8).map((av) => (
-                    <button
-                      key={av.id}
-                      type="button"
-                      onClick={() => {
-                        handleAvatarSelect(av.src, av.id);
-                        soundManager.playButtonClick();
-                      }}
-                      title={av.name}
-                      className={[
-                        'shrink-0 w-8 h-8 rounded-xl overflow-hidden border transition-all cursor-pointer hover:scale-110 active:scale-95',
-                        avatarId === av.id
-                          ? 'border-amber-400 ring-2 ring-amber-400/40 shadow-lg scale-105'
-                          : 'border-white/10 opacity-70 hover:opacity-100',
-                      ].join(' ')}
-                    >
-                      <QuickAvatarThumb src={av.src} fallbackEmoji={av.id} />
-                    </button>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      soundManager.playButtonClick();
-                      setShowAvatarPicker(true);
-                    }}
-                    className="shrink-0 w-8 h-8 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-xs text-white/70 hover:text-white transition-all cursor-pointer hover:scale-105"
-                    title="ดูฮีโร่ทั้งหมด"
-                  >
-                    ＋
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2: Battlefield Holo-Deck Preview */}
-            <div
-              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3.5 transition-all"
-              style={{
-                background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
-                backdropFilter: 'blur(28px)',
-                boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
-              }}
-            >
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <div className="flex items-center gap-2.5">
-                  <span className="text-sm">🗺️</span>
-                  <div>
-                    <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                      // COMBAT THEATER
-                    </span>
-                    <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
-                      สมรภูมิรบที่เลือก
-                    </span>
-                  </div>
-                </div>
-                <span className="text-[10px] font-mono text-amber-400/90 tracking-wider bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">
-                  ACTIVE REALM
-                </span>
-              </div>
-
-              {/* Selected Battlefield Visual Hero Card */}
-              {(() => {
-                const currentMap = getMarvelMap(selectedMapId);
-                return (
-                  <div className="relative rounded-2xl overflow-hidden border border-white/15 h-32 sm:h-36 group shadow-lg">
-                    <img
-                      src={currentMap.imageUrl}
-                      alt={currentMap.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent flex flex-col justify-end p-3 sm:p-3.5">
-                      <div className="flex items-center gap-1.5 text-[9px] font-mono font-bold tracking-wider text-amber-300 uppercase">
-                        <span>{currentMap.icon}</span>
-                        <span>{currentMap.realm}</span>
-                      </div>
-                      <h4 className="font-display font-black text-base sm:text-lg text-white leading-tight">
-                        {currentMap.name}
-                      </h4>
-                      <p className="text-[10px] text-slate-300/80 truncate leading-tight pt-0.5">
-                        {currentMap.subtitle} — {currentMap.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Quick Interactive Map Switcher Chips */}
-              <div className="grid grid-cols-3 gap-1.5 pt-0.5">
-                {MARVEL_MAPS.map((map) => {
-                  const isSelected = selectedMapId === map.id;
-                  return (
-                    <button
-                      key={map.id}
-                      type="button"
-                      onClick={() => {
-                        soundManager.playButtonClick();
-                        setSelectedMapId(map.id);
-                      }}
-                      className={[
-                        'py-1.5 px-2 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-1.5 min-w-0',
-                        isSelected
-                          ? 'bg-amber-500/20 border-amber-400 text-white shadow-[0_0_15px_rgba(245,158,11,0.25)] font-bold'
-                          : 'bg-white/[0.03] border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.06]',
-                      ].join(' ')}
-                    >
-                      <span className="text-xs shrink-0">{map.icon}</span>
-                      <span className="text-[10px] font-['Prompt',sans-serif] truncate leading-tight">
-                        {map.name.split(' ')[0]}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Card 3: Infinity Stones Power Matrix & Rules Guide */}
-            <div
-              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3.5 transition-all"
-              style={{
-                background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
-                backdropFilter: 'blur(28px)',
-                boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
-              }}
-            >
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <div className="flex items-center gap-2.5">
-                  <span className="text-sm">🧤</span>
-                  <div>
-                    <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                      // INFINITY MATRIX
-                    </span>
-                    <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
-                      คลังอัญมณีอินฟินิตี้
-                    </span>
-                  </div>
-                </div>
-                <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
-                  {botCount + 1} OPERATIVES
-                </span>
-              </div>
-
-              {/* 6 Infinity Stones Interactive Power Grid */}
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { id: 'ruby', name: 'Reality', th: 'ความจริง', color: 'from-red-600/25 via-red-950/40 to-black/60', border: 'border-red-500/40 hover:border-red-400', glow: 'text-red-400', shadow: 'rgba(239,68,68,0.35)' },
-                  { id: 'sapphire', name: 'Space', th: 'อวกาศ', color: 'from-blue-600/25 via-blue-950/40 to-black/60', border: 'border-blue-500/40 hover:border-blue-400', glow: 'text-blue-400', shadow: 'rgba(59,130,246,0.35)' },
-                  { id: 'obsidian', name: 'Soul', th: 'วิญญาณ', color: 'from-amber-600/25 via-amber-950/40 to-black/60', border: 'border-amber-500/40 hover:border-amber-400', glow: 'text-amber-400', shadow: 'rgba(245,158,11,0.35)' },
-                  { id: 'topaz', name: 'Mind', th: 'จิตใจ', color: 'from-yellow-500/25 via-yellow-950/40 to-black/60', border: 'border-yellow-500/40 hover:border-yellow-400', glow: 'text-yellow-400', shadow: 'rgba(234,179,8,0.35)' },
-                  { id: 'amethyst', name: 'Power', th: 'พลัง', color: 'from-purple-600/25 via-purple-950/40 to-black/60', border: 'border-purple-500/40 hover:border-purple-400', glow: 'text-purple-400', shadow: 'rgba(168,85,247,0.35)' },
-                  { id: 'emerald', name: 'Time', th: 'เวลา (+1)', color: 'from-emerald-600/25 via-emerald-950/40 to-black/60', border: 'border-emerald-500/40 hover:border-emerald-400', glow: 'text-emerald-400', shadow: 'rgba(16,185,129,0.35)' },
-                ].map((st) => (
-                  <div
-                    key={st.id}
-                    className={`p-2.5 rounded-2xl bg-gradient-to-b ${st.color} border ${st.border} flex items-center gap-2.5 shadow-sm transition-all hover:scale-105 cursor-default group`}
-                    style={{ boxShadow: `0 4px 14px -2px ${st.shadow}` }}
-                  >
-                    <div className={`w-4 h-4 rounded-full crystal-${st.id} shrink-0 ring-2 ring-white/60 shadow-[0_0_10px_currentColor] group-hover:scale-110 transition-transform`} />
-                    <div className="min-w-0">
-                      <div className="text-[11px] font-bold text-white truncate leading-tight font-['Montserrat',sans-serif]">
-                        {st.name}
-                      </div>
-                      <div className={`text-[9.5px] ${st.glow} truncate leading-tight font-['Prompt'] font-medium`}>
-                        {st.th}
-                      </div>
-                    </div>
-                  </div>
                 ))}
-              </div>
-
-              {/* Match Rules & Inventory Quick Status Pill */}
-              <div className="bg-black/50 border border-white/10 rounded-2xl p-2.5 text-[11px] text-slate-300 flex items-center justify-between gap-2 flex-wrap">
-                <span className="text-slate-400 flex items-center gap-1 font-mono text-[10px]">
-                  <span>📦</span> สต็อกรอบนี้:
-                </span>
-                <div className="flex items-center gap-2 font-mono text-[11px] font-bold">
-                  <span className="text-white bg-white/10 px-2 py-0.5 rounded-md border border-white/10">
-                    สีละ {botCount === 1 ? 4 : botCount === 2 ? 5 : 7}
-                  </span>
-                  <span className="text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-md border border-emerald-500/25">
-                    เวลา {botCount + 1}
-                  </span>
-                  <span className="text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded-md border border-amber-500/25">
-                    ทอง 5
-                  </span>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundManager.playButtonClick();
+                    setShowAvatarPicker(true);
+                  }}
+                  className="shrink-0 w-9 h-9 sm:w-8 sm:h-8 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-xs text-white/70 hover:text-white transition-all cursor-pointer hover:scale-105"
+                  title="ดูฮีโร่ทั้งหมด"
+                >
+                  ＋
+                </button>
               </div>
             </div>
-
           </div>
 
-          {/* ── Right Column: Mission Deployment Console (lg:col-span-7) ───────── */}
-          <div className="lg:col-span-7 flex flex-col gap-4 sm:gap-5">
+          {/* ── Right Column: Mission Deployment Console (Order 2 on Mobile, Right Column Spanning 3 Rows on Desktop) ───────── */}
+          <div className="order-2 lg:order-2 lg:col-span-7 lg:row-span-3 flex flex-col gap-4 sm:gap-5">
             
             <div
               className="rounded-3xl border border-white/[0.12] p-5 sm:p-6 space-y-5 transition-all"
@@ -1489,7 +1336,10 @@ export const Lobby: React.FC<LobbyProps> = ({
                     </div>
 
                     {/* Quick Team Formation Presets Bar */}
-                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                    <div
+                      className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none touch-pan-x"
+                      style={{ WebkitOverflowScrolling: 'touch' }}
+                    >
                       <span className="text-[10px] font-mono text-slate-400 shrink-0">จัดทีมด่วน:</span>
                       {[
                         { label: 'อเวนเจอร์ส', icon: '🛡️', bots: ['Tony Stark AI', 'Captain America', 'Thor Odinson'] },
@@ -1993,6 +1843,160 @@ export const Lobby: React.FC<LobbyProps> = ({
 
           </div>
 
+          {/* Card 2: Battlefield Holo-Deck Preview (Order 3 on Mobile, Left Column middle on Desktop) */}
+          <div
+            className="order-3 lg:order-3 lg:col-span-5 rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3.5 transition-all self-start"
+            style={{
+              background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
+              backdropFilter: 'blur(28px)',
+              boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
+            }}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+              <div className="flex items-center gap-2.5">
+                <span className="text-sm">🗺️</span>
+                <div>
+                  <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                    // COMBAT THEATER
+                  </span>
+                  <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
+                    สมรภูมิรบที่เลือก
+                  </span>
+                </div>
+              </div>
+              <span className="text-[10px] font-mono text-amber-400/90 tracking-wider bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">
+                ACTIVE REALM
+              </span>
+            </div>
+
+            {/* Selected Battlefield Visual Hero Card */}
+            {(() => {
+              const currentMap = getMarvelMap(selectedMapId);
+              return (
+                <div className="relative rounded-2xl overflow-hidden border border-white/15 h-32 sm:h-36 group shadow-lg">
+                  <img
+                    src={currentMap.imageUrl}
+                    alt={currentMap.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent flex flex-col justify-end p-3 sm:p-3.5">
+                    <div className="flex items-center gap-1.5 text-[9px] font-mono font-bold tracking-wider text-amber-300 uppercase">
+                      <span>{currentMap.icon}</span>
+                      <span>{currentMap.realm}</span>
+                    </div>
+                    <h4 className="font-display font-black text-base sm:text-lg text-white leading-tight">
+                      {currentMap.name}
+                    </h4>
+                    <p className="text-[10px] text-slate-300/80 truncate leading-tight pt-0.5">
+                      {currentMap.subtitle} — {currentMap.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Quick Interactive Map Switcher Chips */}
+            <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+              {MARVEL_MAPS.map((map) => {
+                const isSelected = selectedMapId === map.id;
+                return (
+                  <button
+                    key={map.id}
+                    type="button"
+                    onClick={() => {
+                      soundManager.playButtonClick();
+                      setSelectedMapId(map.id);
+                    }}
+                    className={[
+                      'py-1.5 px-2 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-1.5 min-w-0',
+                      isSelected
+                        ? 'bg-amber-500/20 border-amber-400 text-white shadow-[0_0_15px_rgba(245,158,11,0.25)] font-bold'
+                        : 'bg-white/[0.03] border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.06]',
+                    ].join(' ')}
+                  >
+                    <span className="text-xs shrink-0">{map.icon}</span>
+                    <span className="text-[10px] font-['Prompt',sans-serif] truncate leading-tight">
+                      {map.name.split(' ')[0]}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Card 3: Infinity Stones Power Matrix & Rules Guide (Order 4 on Mobile, Left Column bottom on Desktop) */}
+          <div
+            className="order-4 lg:order-4 lg:col-span-5 rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3.5 transition-all self-start"
+            style={{
+              background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
+              backdropFilter: 'blur(28px)',
+              boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
+            }}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+              <div className="flex items-center gap-2.5">
+                <span className="text-sm">🧤</span>
+                <div>
+                  <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                    // INFINITY MATRIX
+                  </span>
+                  <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
+                    คลังอัญมณีอินฟินิตี้
+                  </span>
+                </div>
+              </div>
+              <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
+                {botCount + 1} OPERATIVES
+              </span>
+            </div>
+
+            {/* 6 Infinity Stones Interactive Power Grid */}
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { id: 'ruby', name: 'Reality', th: 'ความจริง', color: 'from-red-600/25 via-red-950/40 to-black/60', border: 'border-red-500/40 hover:border-red-400', glow: 'text-red-400', shadow: 'rgba(239,68,68,0.35)' },
+                { id: 'sapphire', name: 'Space', th: 'อวกาศ', color: 'from-blue-600/25 via-blue-950/40 to-black/60', border: 'border-blue-500/40 hover:border-blue-400', glow: 'text-blue-400', shadow: 'rgba(59,130,246,0.35)' },
+                { id: 'obsidian', name: 'Soul', th: 'วิญญาณ', color: 'from-amber-600/25 via-amber-950/40 to-black/60', border: 'border-amber-500/40 hover:border-amber-400', glow: 'text-amber-400', shadow: 'rgba(245,158,11,0.35)' },
+                { id: 'topaz', name: 'Mind', th: 'จิตใจ', color: 'from-yellow-500/25 via-yellow-950/40 to-black/60', border: 'border-yellow-500/40 hover:border-yellow-400', glow: 'text-yellow-400', shadow: 'rgba(234,179,8,0.35)' },
+                { id: 'amethyst', name: 'Power', th: 'พลัง', color: 'from-purple-600/25 via-purple-950/40 to-black/60', border: 'border-purple-500/40 hover:border-purple-400', glow: 'text-purple-400', shadow: 'rgba(168,85,247,0.35)' },
+                { id: 'emerald', name: 'Time', th: 'เวลา (+1)', color: 'from-emerald-600/25 via-emerald-950/40 to-black/60', border: 'border-emerald-500/40 hover:border-emerald-400', glow: 'text-emerald-400', shadow: 'rgba(16,185,129,0.35)' },
+              ].map((st) => (
+                <div
+                  key={st.id}
+                  className={`p-2.5 rounded-2xl bg-gradient-to-b ${st.color} border ${st.border} flex items-center gap-2.5 shadow-sm transition-all hover:scale-105 cursor-default group`}
+                  style={{ boxShadow: `0 4px 14px -2px ${st.shadow}` }}
+                >
+                  <div className={`w-4 h-4 rounded-full crystal-${st.id} shrink-0 ring-2 ring-white/60 shadow-[0_0_10px_currentColor] group-hover:scale-110 transition-transform`} />
+                  <div className="min-w-0">
+                    <div className="text-[11px] font-bold text-white truncate leading-tight font-['Montserrat',sans-serif]">
+                      {st.name}
+                    </div>
+                    <div className={`text-[9.5px] ${st.glow} truncate leading-tight font-['Prompt'] font-medium`}>
+                      {st.th}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Match Rules & Inventory Quick Status Pill */}
+            <div className="bg-black/50 border border-white/10 rounded-2xl p-2.5 text-[11px] text-slate-300 flex items-center justify-between gap-2 flex-wrap">
+              <span className="text-slate-400 flex items-center gap-1 font-mono text-[10px]">
+                <span>📦</span> สต็อกรอบนี้:
+              </span>
+              <div className="flex items-center gap-2 font-mono text-[11px] font-bold">
+                <span className="text-white bg-white/10 px-2 py-0.5 rounded-md border border-white/10">
+                  สีละ {botCount === 1 ? 4 : botCount === 2 ? 5 : 7}
+                </span>
+                <span className="text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-md border border-emerald-500/25">
+                  เวลา {botCount + 1}
+                </span>
+                <span className="text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded-md border border-amber-500/25">
+                  ทอง 5
+                </span>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         {/* ── Developer Credits & Non-Commercial Disclaimer Footer ────────── */}
@@ -2045,7 +2049,8 @@ export const Lobby: React.FC<LobbyProps> = ({
             onClick={() => setSelectingBotSlot(null)}
           >
             <div
-              className="w-full max-w-2xl bg-gradient-to-b from-[#111827] via-[#0d121c] to-[#080b12] border border-amber-400/40 rounded-3xl p-5 sm:p-6 shadow-[0_0_50px_rgba(245,158,11,0.25)] space-y-4 max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-2xl bg-gradient-to-b from-[#111827] via-[#0d121c] to-[#080b12] border border-amber-400/40 rounded-3xl p-4 sm:p-6 shadow-[0_0_50px_rgba(245,158,11,0.25)] space-y-4 max-h-[85vh] overflow-y-auto overscroll-contain touch-pan-y"
+              style={{ WebkitOverflowScrolling: 'touch' }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}

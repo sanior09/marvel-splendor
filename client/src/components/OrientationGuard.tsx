@@ -6,9 +6,10 @@ import React, { useState, useEffect } from 'react';
 
 interface OrientationGuardProps {
   children: React.ReactNode;
+  enabled?: boolean;
 }
 
-export const OrientationGuard: React.FC<OrientationGuardProps> = ({ children }) => {
+export const OrientationGuard: React.FC<OrientationGuardProps> = ({ children, enabled = true }) => {
   const [isPortrait, setIsPortrait] = useState<boolean>(false);
   const [bypassed, setBypassed] = useState<boolean>(false);
 
@@ -30,7 +31,7 @@ export const OrientationGuard: React.FC<OrientationGuardProps> = ({ children }) 
     };
   }, []);
 
-  if (isPortrait && !bypassed) {
+  if (enabled && isPortrait && !bypassed) {
     return (
       <div className="fixed inset-0 z-[10000] bg-[#07080f] flex flex-col items-center justify-center p-6 text-center select-none overflow-hidden">
         {/* Ambient cosmic glows */}

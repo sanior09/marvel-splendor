@@ -246,12 +246,12 @@ function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactEl
     if (gameState && myPlayerId) setActiveScreen('board');
   }, [gameState, myPlayerId]);
 
-  const showBoard = activeScreen === 'board' && gameState && myPlayerId;
+  const showBoard = Boolean(activeScreen === 'board' && gameState && myPlayerId);
 
   return (
-    <OrientationGuard>
+    <OrientationGuard enabled={showBoard}>
       <div className="relative w-screen h-screen overflow-hidden">
-        {showBoard ? (
+        {showBoard && gameState && myPlayerId ? (
           <div
             key="board"
             className={isExiting ? 'page-exit' : 'page-enter-slide'}
