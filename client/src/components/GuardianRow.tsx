@@ -60,7 +60,7 @@ export const GuardianRow: React.FC<GuardianRowProps> = ({ guardians, currentPlay
 
   return (
     <div className="space-y-0.5">
-      <div className="text-[8.5px] uppercase font-bold tracking-wider text-white/60 text-center leading-none flex items-center justify-center gap-1">
+      <div className="text-[10px] font-semibold tracking-wide text-white/80 text-center leading-none flex items-center justify-center gap-1">
         <span>🏛️</span>
         <span>สถานที่มาร์เวล (สะสมการ์ดฮีโร่ครบรับทันที • Marvel Locations • +3 PTS)</span>
       </div>
@@ -94,7 +94,7 @@ export const GuardianRow: React.FC<GuardianRowProps> = ({ guardians, currentPlay
               {/* Name & Points Top Bar */}
               <div className="relative z-10 px-1 py-0.5 flex items-center justify-between bg-black/75 backdrop-blur-sm border-b border-white/10">
                 <h4
-                  className="text-[8.5px] font-black uppercase tracking-normal text-white leading-tight drop-shadow truncate flex-1 pr-1"
+                  className="text-[10px] font-bold tracking-normal text-white leading-tight truncate flex-1 pr-1"
                   title={guardian.name}
                 >
                   {guardian.name}

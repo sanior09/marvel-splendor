@@ -78,7 +78,7 @@ const STONE_EFFECTS: Record<CrystalColor, { color: string; glow: string; glowAlp
   },
 };
 
-function computeAffordability(card: Card, player: Player): { canAfford: boolean; goldNeeded: number } {
+export function computeAffordability(card: Card, player: Player): { canAfford: boolean; goldNeeded: number } {
   let goldNeeded = 0;
   for (const color of ALL_CRYSTAL_COLORS) {
     const cost = card.cost[color] ?? 0;

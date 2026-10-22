@@ -108,13 +108,13 @@ export const GemBank: React.FC<GemBankProps> = ({
   return (
     <div className="glass rounded-xl p-2 flex flex-col h-full justify-between border border-white/10 shadow-2xl bg-black/40 overflow-hidden">
       {/* Bank Header */}
-      <div>
+      <div className="flex flex-col flex-1 min-h-0">
         <div className="flex items-center justify-between mb-1">
           <div>
             <h3 className="font-display text-[11px] font-black text-white uppercase tracking-wider flex items-center gap-1">
               <span>⚡ คลังมณี (Infinity Bank)</span>
             </h3>
-            <p className="text-[8px] text-white/50 font-medium">หยิบ 3 สีต่าง หรือ 2 สีเหมือน</p>
+            <p className="text-[9.5px] text-white/60 font-medium">หยิบ 3 สีต่าง หรือ 2 สีเหมือน</p>
           </div>
           <span
             className={`text-[10px] px-2 py-0.5 rounded-full font-bold border transition-colors ${
@@ -129,7 +129,7 @@ export const GemBank: React.FC<GemBankProps> = ({
         </div>
 
         {/* 2-Column Grid for the 5 Standard Stones + S.H.I.E.L.D. */}
-        <div className="grid grid-cols-2 gap-1 justify-items-center py-0.5">
+        <div className="flex-1 min-h-0 grid grid-cols-2 gap-x-1 content-evenly justify-items-center py-0.5">
           {BANK_STONE_COLORS.map((color) => (
             <div
               key={color}
@@ -138,13 +138,13 @@ export const GemBank: React.FC<GemBankProps> = ({
               <GemToken
                 color={color}
                 count={bank[color] ?? 0}
-                size="md"
+                size="lg"
                 onClick={() => handleGemClick(color)}
                 selected={selected.includes(color)}
                 disabled={!isMyTurn || (bank[color] ?? 0) === 0}
               />
-              <span className="text-[9.5px] text-white/90 font-bold tracking-tight text-center leading-tight">
-                {SHORT_NAMES[color].en} <span className="text-white/50 text-[8px]">({SHORT_NAMES[color].th})</span>
+              <span className="text-[11px] text-white font-semibold text-center leading-tight">
+                {SHORT_NAMES[color].en} <span className="text-white/70 text-[9.5px]">({SHORT_NAMES[color].th})</span>
               </span>
             </div>
           ))}
@@ -157,11 +157,11 @@ export const GemBank: React.FC<GemBankProps> = ({
             <GemToken
               color="gold"
               count={bank.gold ?? 0}
-              size="md"
+              size="lg"
               disabled
             />
-            <span className="text-[9.5px] text-white/60 font-bold tracking-tight text-center leading-tight">
-              S.H.I.E.L.D. <span className="text-white/40 text-[8px]">(ชิลด์)</span>
+            <span className="text-[11px] text-white/75 font-semibold text-center leading-tight">
+              S.H.I.E.L.D. <span className="text-white/60 text-[9.5px]">(ชิลด์)</span>
             </span>
           </div>
         </div>
@@ -170,7 +170,7 @@ export const GemBank: React.FC<GemBankProps> = ({
       {/* Selection Hint & Controls */}
       <div className="text-center pt-1 border-t border-white/10 mt-auto">
         <div className="bg-black/60 rounded-lg p-1.5 border border-white/5">
-          <p className="text-[9.5px] text-yellow-300 font-semibold leading-tight">{hint}</p>
+          <p className="text-[10.5px] text-yellow-300 font-semibold leading-tight">{hint}</p>
           {selected.length > 0 && (
             <button
               type="button"

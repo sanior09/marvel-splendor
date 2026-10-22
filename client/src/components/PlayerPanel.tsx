@@ -6,7 +6,7 @@ import React from 'react';
 import type { Player, GameAction, CrystalColor } from '@shared/types/game.types';
 import { ALL_CRYSTAL_COLORS } from '@shared/types/game.types';
 import { CrystalRow, STONE_NAMES } from './GemToken';
-import { CardSlot } from './CardSlot';
+import { computeAffordability } from './CardSlot';
 import { countAvengersSymbols } from '../../../src/engine/WinConditions';
 
 interface PlayerPanelProps {
@@ -314,43 +314,77 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
         </div>
       </div>
 
-      {/* Reserved cards */}
+      {/* Reserved cards — compact rows (full cards are too tall for the sidebar) */}
       {player.reservedCards.length > 0 && (
-        <div className="glass rounded-2xl p-4 space-y-3 border border-white/10">
-          <div className="flex items-center justify-between">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white/70">
-              ฮีโร่ที่จองไว้ (Reserved: {player.reservedCards.length}/3)
-            </h4>
-          </div>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {player.reservedCards.map((card) => (
-              <CardSlot
-                key={card.id}
-                card={card}
-                isMyTurn={isMyTurn}
-                currentPlayer={player}
-                onBuy={onBuyCard}
-                isReserved
-              />
-            ))}
+        <div className="glass rounded-xl p-2 space-y-1.5 border border-white/10">
+          <h4 className="text-[11px] font-bold tracking-wide text-white/80">
+            ฮีโร่ที่จองไว้ (Reserved: {player.reservedCards.length}/3)
+          </h4>
+          <div className="space-y-1">
+            {player.reservedCards.map((card) => {
+              const { canAfford } = computeAffordability(card, player);
+              const costs = ALL_CRYSTAL_COLORS.filter((c) => (card.cost[c] ?? 0) > 0);
+              const theme = CARD_BONUS_THEMES[card.bonusColor];
+              return (
+                <div
+                  key={card.id}
+                  className={`flex items-center gap-1.5 rounded-lg border px-1.5 py-1 bg-black/40 ${
+                    theme ? theme.border : 'border-white/15'
+                  }`}
+                >
+                  <img
+                    src={`/images/cards/${card.id}.jpg`}
+                    alt={card.name}
+                    className="w-7 h-9 rounded object-cover object-top shrink-0"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1">
+                      <span className="text-[11px] font-semibold text-white truncate">{card.name}</span>
+                      {card.points > 0 && (
+                        <span className="font-num text-[11px] font-bold text-yellow-300 shrink-0">{card.points}</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 flex-wrap">
+                      {costs.map((c) => (
+                        <span key={c} className="flex items-center gap-0.5 text-[10px] font-num text-white/80">
+                          <img src={`/images/tokens/${c}.png`} alt={c} className="w-3 h-3 object-contain" />
+                          {card.cost[c]}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={!isMyTurn || !canAfford}
+                    onClick={() => onBuyCard(card.id)}
+                    className="shrink-0 text-[10.5px] font-semibold px-2 py-1 rounded-md border transition-all bg-emerald-500/20 text-emerald-300 border-emerald-400/50 hover:bg-emerald-500/35 disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    ซื้อ
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
 
       {/* Marvel Locations Claimed */}
       {player.guardians.length > 0 && (
-        <div className="glass rounded-2xl p-4 space-y-2 border border-white/10">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-white/70">
+        <div className="glass rounded-xl p-2 space-y-1 border border-white/10">
+          <h4 className="text-[11px] font-bold tracking-wide text-white/80">
             สถานที่ที่ครอบครอง (Locations Controlled)
           </h4>
-          <div className="flex flex-wrap gap-2">
+          <div className="space-y-1">
             {player.guardians.map((g) => (
               <div
                 key={g.id}
-                className="bg-amber-500/10 border border-amber-400/30 rounded-lg px-3 py-1.5 flex items-center justify-between w-full"
+                className="bg-amber-500/10 border border-amber-400/30 rounded-md px-2 py-0.5 flex items-center justify-between"
               >
-                <div className="text-xs font-bold text-amber-200">{g.name}</div>
-                <div className="text-xs font-black text-yellow-300">+{g.points} แต้ม (PTS)</div>
+                <div className="text-[11px] font-semibold text-amber-200 truncate">{g.name}</div>
+                <div className="text-[11px] font-bold text-yellow-300 shrink-0">+{g.points} PTS</div>
               </div>
             ))}
           </div>

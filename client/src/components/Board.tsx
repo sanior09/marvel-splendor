@@ -245,7 +245,7 @@ export const Board: React.FC<BoardProps> = ({
   const activeMap = getMarvelMap(state.mapId);
 
   return (
-    <ResponsiveScaler baseWidth={1120} baseHeight={580}>
+    <ResponsiveScaler baseWidth={1120} baseHeight={600}>
       <div
         className="h-full w-full relative flex flex-col overflow-hidden select-none bg-[#070913]"
         style={{
@@ -433,19 +433,19 @@ export const Board: React.FC<BoardProps> = ({
           </aside>
 
           {/* Center: Board (Special Tiles & 3 Tiers, fully visible at a glance without scrolling) */}
-          <main className="flex-1 min-h-0 px-2 pt-2 pb-1 flex flex-col justify-between overflow-hidden">
+          <main className="flex-1 min-h-0 px-2 pt-2 pb-3 flex flex-col justify-between overflow-hidden">
             {/* Top Row: Special Tiles & Locations */}
             <div className="flex items-center justify-center gap-2">
               {/* Special Tiles (Gauntlet + Time Stone + Avengers) */}
               <div className="flex gap-1.5">
                 {/* Infinity Gauntlet Victory Tile */}
                 <div
-                  className="w-36 h-[68px] rounded-xl bg-gradient-to-br from-amber-600 via-yellow-600 to-amber-700 shadow-[0_0_12px_rgba(245,158,11,0.25)] border-2 border-yellow-300/80 flex flex-col items-center justify-between p-1 relative overflow-hidden"
+                  className="w-40 h-[68px] rounded-xl bg-gradient-to-br from-amber-600 via-yellow-600 to-amber-700 shadow-[0_0_12px_rgba(245,158,11,0.25)] border-2 border-yellow-300/80 flex flex-col items-center justify-between p-1 relative overflow-hidden"
                   title="Infinity Gauntlet Victory: รวมแต้ม 16+ PTS + โบนัสการ์ดครบ 5 สี + มณีกาลเวลา Time Stone"
                 >
                   <div className="flex items-center gap-1">
-                    <span className="text-xs">🧤</span>
-                    <span className="text-[7.5px] uppercase font-black text-yellow-100 tracking-wider">
+                    <span className="text-[13px] leading-none">🧤</span>
+                    <span className="text-[9.5px] leading-none uppercase font-bold text-yellow-50 tracking-normal">
                       ถุงมืออินฟินิตี้ (Gauntlet)
                     </span>
                   </div>
@@ -488,10 +488,10 @@ export const Board: React.FC<BoardProps> = ({
                   </div>
 
                   <div className="text-center leading-none">
-                    <span className="font-black text-[11px] text-white drop-shadow leading-none">
+                    <span className="font-bold text-[12px] text-white leading-none">
                       ชนะ (WIN): <span className="font-num font-black text-yellow-300 text-xs">{state.targetScore ?? 16}</span> PTS
                     </span>
-                    <div className="text-[7px] text-yellow-200 font-bold uppercase tracking-tight mt-0.5">
+                    <div className="text-[9px] text-yellow-100 font-semibold tracking-normal mt-0.5">
                       โบนัส 5 สี + 🟢 Time Stone
                     </div>
                   </div>
@@ -499,13 +499,13 @@ export const Board: React.FC<BoardProps> = ({
 
                 {/* Time Stone Pedestal */}
                 <div
-                  className={`w-18 h-[68px] rounded-xl bg-gradient-to-br ${board.timeStoneAvailable
+                  className={`w-[76px] h-[68px] rounded-xl bg-gradient-to-br ${board.timeStoneAvailable
                       ? 'from-emerald-900/90 via-teal-950 to-emerald-950 border-emerald-400/80 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
                       : 'from-slate-900 to-black border-slate-700 opacity-90'
                     } border-2 flex flex-col items-center justify-between p-1 relative overflow-hidden`}
                   title={`Time Stone: มอบให้ผู้เล่นคนละ 1 ก้อนเมื่อเกณฑ์การ์ด Tier-3 ใบแรก (เหลือ ${board.timeStoneCount ?? (board.timeStoneAvailable ? 1 : 0)} ก้อน)`}
                 >
-                  <div className="text-[7px] uppercase font-black text-emerald-300 tracking-wider flex items-center gap-0.5">
+                  <div className="text-[9px] leading-none uppercase font-bold text-emerald-300 tracking-normal flex items-center gap-0.5">
                     <span>🟢 Time Stone</span>
                   </div>
 
@@ -524,7 +524,7 @@ export const Board: React.FC<BoardProps> = ({
                     </div>
                     {/* Remaining count badge */}
                     <span
-                      className={`absolute -top-1 -right-2 text-[9px] font-num font-black px-1.5 py-0.2 rounded-full border leading-tight ${
+                      className={`absolute -top-1 -right-2 text-[10px] font-num font-bold px-1.5 py-0.2 rounded-full border leading-tight ${
                         board.timeStoneAvailable
                           ? 'bg-emerald-400 text-slate-950 border-emerald-200 shadow-[0_0_6px_rgba(52,211,153,0.8)]'
                           : 'bg-slate-800 text-white/50 border-slate-600'
@@ -536,11 +536,11 @@ export const Board: React.FC<BoardProps> = ({
 
                   <div className="text-center w-full">
                     {board.timeStoneAvailable ? (
-                      <div className="text-[7px] bg-emerald-500/25 text-emerald-300 border border-emerald-400/50 px-1 py-0.2 rounded font-black font-num tracking-tight uppercase shadow-sm">
+                      <div className="text-[9px] leading-tight bg-emerald-500/25 text-emerald-300 border border-emerald-400/50 px-1 py-0.2 rounded font-bold font-num shadow-sm">
                         เหลือ {board.timeStoneCount ?? 1} ก้อน
                       </div>
                     ) : (
-                      <div className="text-[7px] bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-1 py-0.2 rounded font-bold font-num truncate max-w-[65px] mx-auto">
+                      <div className="text-[9px] leading-tight bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-1 py-0.2 rounded font-semibold font-num truncate max-w-[70px] mx-auto">
                         หมดแล้ว (0 ก้อน)
                       </div>
                     )}
@@ -555,18 +555,18 @@ export const Board: React.FC<BoardProps> = ({
                     } shadow-xl border-2 flex flex-col items-center justify-between p-1 relative overflow-hidden`}
                   title="Avengers Assemble: มอบ +3 แต้มให้ผู้ที่มีสัญลักษณ์ Avengers มากที่สุด (3 สัญลักษณ์ขึ้นไป)"
                 >
-                  <div className="text-[7px] uppercase font-bold text-white/70 tracking-wider">
+                  <div className="text-[9px] leading-none uppercase font-semibold text-white/85 tracking-normal">
                     Avengers
                   </div>
                   <div className="bg-red-600 w-6 h-6 rounded-full flex items-center justify-center border-2 border-yellow-300 shadow-md">
                     <span className="text-yellow-300 font-black text-sm leading-none">A</span>
                   </div>
                   <div className="text-center">
-                    <span className="text-[9px] font-black font-num text-yellow-300 bg-slate-950/90 px-1.5 py-0.5 rounded-full border border-yellow-300/50 shadow-sm">
+                    <span className="text-[10px] font-bold font-num text-yellow-300 bg-slate-950/90 px-1.5 py-0.5 rounded-full border border-yellow-300/50 shadow-sm">
                       +3 PTS
                     </span>
                     {avengersHolder && (
-                      <div className="text-[6.5px] text-yellow-300 font-bold truncate max-w-[58px] mt-0.5">
+                      <div className="text-[9px] leading-none text-yellow-300 font-semibold truncate max-w-[56px] mt-0.5">
                         {avengersHolder.name}
                       </div>
                     )}
@@ -583,7 +583,7 @@ export const Board: React.FC<BoardProps> = ({
 
             {/* Tier 3 Characters */}
             <div>
-              <div className="text-[9px] text-amber-400 uppercase tracking-wider font-extrabold text-center flex items-center justify-center gap-1.5 mb-0.5 leading-none">
+              <div className="text-[10.5px] text-amber-300 tracking-wide font-bold text-center flex items-center justify-center gap-1.5 mb-0.5 leading-none">
                 <span className="w-6 h-[1px] bg-amber-400/30" />
                 <span>ระดับ 3 (Tier III) • Cosmic Entities • 4-6 PTS</span>
                 <span className="w-6 h-[1px] bg-amber-400/30" />
@@ -593,7 +593,7 @@ export const Board: React.FC<BoardProps> = ({
 
             {/* Tier 2 Characters */}
             <div>
-              <div className="text-[9px] text-purple-400 uppercase tracking-wider font-extrabold text-center flex items-center justify-center gap-1.5 mb-0.5 leading-none">
+              <div className="text-[10.5px] text-purple-300 tracking-wide font-bold text-center flex items-center justify-center gap-1.5 mb-0.5 leading-none">
                 <span className="w-6 h-[1px] bg-purple-400/30" />
                 <span>ระดับ 2 (Tier II) • Heroes & Villains • 1-3 PTS</span>
                 <span className="w-6 h-[1px] bg-purple-400/30" />
@@ -603,7 +603,7 @@ export const Board: React.FC<BoardProps> = ({
 
             {/* Tier 1 Characters */}
             <div>
-              <div className="text-[9px] text-slate-400 uppercase tracking-wider font-extrabold text-center flex items-center justify-center gap-1.5 mb-0.5 leading-none">
+              <div className="text-[10.5px] text-slate-200 tracking-wide font-bold text-center flex items-center justify-center gap-1.5 mb-0.5 leading-none">
                 <span className="w-6 h-[1px] bg-slate-400/30" />
                 <span>ระดับ 1 (Tier I) • Street Allies & Recruits • 0-1 PTS</span>
                 <span className="w-6 h-[1px] bg-slate-400/30" />
