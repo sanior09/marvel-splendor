@@ -84,5 +84,5 @@ export const XP_GAIN_RULES = [
   { label: 'เล่นจบเกม', xp: '+50 EXP', icon: '🎮' },
   { label: 'ชนะอันดับที่ 1', xp: '+150 EXP', icon: '🏆' },
   { label: 'ซื้อการ์ด Tier 3', xp: '+15 EXP', icon: '⭐' },
-  { label: 'เชิญการ์เดียน', xp: '+25 EXP', icon: '✨' },
+  { label: 'ยึดสถานที่สำคัญ', xp: '+25 EXP', icon: '🏛️' },
 ];
