@@ -1875,11 +1875,11 @@ export const Lobby: React.FC<LobbyProps> = ({
             <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
               <div className="flex items-center gap-2.5">
                 <span className="text-base">🗺️</span>
-                <span className="font-['Prompt',sans-serif] font-bold tracking-wide text-sm text-white block">
+                <span className="font-sans font-bold tracking-wide text-sm text-white block">
                   สมรภูมิรบที่เลือก
                 </span>
               </div>
-              <span className="text-[10px] font-['Prompt',sans-serif] text-amber-400/90 tracking-wider bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">
+              <span className="text-[10px] font-sans text-amber-400/90 tracking-wider bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">
                 แผนที่ปัจจุบัน
               </span>
             </div>
@@ -1890,19 +1890,20 @@ export const Lobby: React.FC<LobbyProps> = ({
               return (
                 <div className="relative rounded-2xl overflow-hidden border border-white/15 h-32 sm:h-36 group shadow-lg">
                   <img
+                    key={currentMap.id}
                     src={currentMap.imageUrl}
                     alt={currentMap.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 animate-fadeIn"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent flex flex-col justify-end p-3 sm:p-3.5">
                     <div className="flex items-center gap-1.5 text-[9px] font-mono font-bold tracking-wider text-amber-300 uppercase">
                       <span>{currentMap.icon}</span>
                       <span>{currentMap.realm}</span>
                     </div>
-                    <h4 className="font-display font-black text-base sm:text-lg text-white leading-tight">
+                    <h4 className="font-sans font-bold text-base sm:text-lg text-white leading-tight">
                       {currentMap.name}
                     </h4>
-                    <p className="text-[10px] text-slate-300/80 truncate leading-tight pt-0.5">
+                    <p className="text-[10.5px] text-slate-300/80 truncate leading-tight pt-0.5 font-sans">
                       {currentMap.subtitle} — {currentMap.description}
                     </p>
                   </div>
@@ -1930,7 +1931,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     ].join(' ')}
                   >
                     <span className="text-xs shrink-0">{map.icon}</span>
-                    <span className="text-[10px] font-['Prompt',sans-serif] truncate leading-tight">
+                    <span className="text-[10.5px] font-sans truncate leading-tight">
                       {map.name.split(' ')[0]}
                     </span>
                   </button>

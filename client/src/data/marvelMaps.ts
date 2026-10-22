@@ -50,7 +50,7 @@ export const MARVEL_MAPS: MarvelMapDefinition[] = [
     badgeColor: 'from-cyan-500 to-blue-700',
     accentBorder: 'border-cyan-400/50',
     ambientColor: '#0ea5e9',
-    imageUrl: '/images/maps/avengers_tower.jpg?v=5',
+    imageUrl: '/images/maps/avengers_tower.jpg?v=6',
     description: 'ศูนย์บัญชาการสตาร์ค ทิวทัศน์มหานครนิวยอร์ก เทคโนโลยีโฮโลกราฟิกสีฟ้าล้ำยุค',
     bgStyle: `
       radial-gradient(ellipse at 15% 15%, rgba(6, 182, 212, 0.18) 0%, transparent 50%),
