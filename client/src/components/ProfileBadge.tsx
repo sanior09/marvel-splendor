@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import type { UserProfile } from '../hooks/useAuth';
 import { RankBadge } from './RankBadge';
+import { GAME_RANKS, XP_GAIN_RULES } from '../data/ranks';
 
 interface ProfileBadgeProps {
   profile: UserProfile;
@@ -27,6 +28,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
   avatarUrl,
 }) => {
   const [expanded, setExpanded] = useState(false);
+  const [viewMode, setViewMode] = useState<'stats' | 'roadmap'>('stats');
 
   const xpPercent = profile.nextRank
     ? Math.min(100, Math.round(
@@ -180,55 +182,184 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                   <span className="text-slate-300 text-[11px]">
                     เป้าหมาย: <span className="text-amber-300 font-bold">{profile.nextRank.name}</span>
                   </span>
-                  <span className="text-amber-200 font-bold font-num text-[11px]">
-                    อีก {profile.xpToNextRank?.toLocaleString()} XP
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode('roadmap')}
+                    className="text-amber-200 hover:text-amber-100 font-bold font-num text-[11px] underline decoration-amber-400/50 hover:decoration-amber-300 cursor-pointer"
+                    title="คลิกเพื่อดูตารางยศทั้งหมด"
+                  >
+                    อีก {profile.xpToNextRank?.toLocaleString()} XP ▾
+                  </button>
                 </>
               ) : (
-                <div className="w-full text-center text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 pt-0.5 drop-shadow-[0_0_8px_rgba(245,158,11,0.35)]">
+                <button
+                  type="button"
+                  onClick={() => setViewMode(viewMode === 'roadmap' ? 'stats' : 'roadmap')}
+                  className="w-full text-center text-amber-300 hover:text-amber-200 text-xs font-bold flex items-center justify-center gap-1.5 pt-0.5 drop-shadow-[0_0_8px_rgba(245,158,11,0.35)] cursor-pointer"
+                  title="คลิกเพื่อดูตารางยศทั้งหมด"
+                >
                   <span>✨</span>
                   <span>บรรลุขีดสุดพลังจักรวาลแล้ว (MAX RANK)</span>
+                  <span className="text-[10px] text-amber-400/90 underline ml-1 font-normal">ดูตารางยศ ▾</span>
                   <span>✨</span>
-                </div>
+                </button>
               )}
             </div>
           </div>
 
-          {/* ── 3 Thematic Stat Cards (Stark Cyber-Gold Triumvirate) ── */}
-          <div className="grid grid-cols-3 gap-2 mb-3">
-            {/* Card 1: Matches Played */}
-            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-amber-400/40 rounded-xl p-2.5 text-center transition-all shadow-md group hover:-translate-y-0.5">
-              <div className="text-base leading-none mb-1 group-hover:scale-110 transition-transform">🎮</div>
-              <div className="text-lg font-black font-num text-white tracking-tight leading-tight drop-shadow">
-                {profile.gamesPlayed.toLocaleString()}
-              </div>
-              <div className="text-[10px] font-medium text-slate-400 uppercase tracking-wide mt-1 font-['Prompt']">
-                เกมที่เล่น
-              </div>
-            </div>
-
-            {/* Card 2: Victories */}
-            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-amber-400/40 rounded-xl p-2.5 text-center transition-all shadow-md group hover:-translate-y-0.5">
-              <div className="text-base leading-none mb-1 group-hover:scale-110 transition-transform">🏆</div>
-              <div className="text-lg font-black font-num text-amber-300 tracking-tight leading-tight drop-shadow-[0_1px_6px_rgba(245,158,11,0.5)]">
-                {profile.gamesWon.toLocaleString()}
-              </div>
-              <div className="text-[10px] font-bold text-amber-400/90 uppercase tracking-wide mt-1 font-['Prompt']">
-                ชนะ
-              </div>
-            </div>
-
-            {/* Card 3: Win Rate */}
-            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-amber-400/40 rounded-xl p-2.5 text-center transition-all shadow-md group hover:-translate-y-0.5">
-              <div className="text-base leading-none mb-1 group-hover:scale-110 transition-transform">📈</div>
-              <div className="text-lg font-black font-num text-emerald-400 tracking-tight leading-tight drop-shadow-[0_1px_6px_rgba(52,211,153,0.4)]">
-                {profile.winRate}%
-              </div>
-              <div className="text-[10px] font-bold text-emerald-400/80 uppercase tracking-wide mt-1 font-['Prompt']">
-                WIN RATE
-              </div>
-            </div>
+          {/* ── View Switcher: Stats vs Rank Roadmap ── */}
+          <div className="grid grid-cols-2 p-1 bg-black/50 border border-white/10 rounded-xl mb-3 gap-1 shadow-inner">
+            <button
+              type="button"
+              onClick={() => setViewMode('stats')}
+              className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none ${
+                viewMode === 'stats'
+                  ? 'bg-gradient-to-r from-amber-500/25 to-yellow-500/20 border border-amber-400/50 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+              }`}
+            >
+              <span>📊</span>
+              <span>สถิติการเล่น</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('roadmap')}
+              className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none ${
+                viewMode === 'roadmap'
+                  ? 'bg-gradient-to-r from-amber-500/25 to-yellow-500/20 border border-amber-400/50 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+              }`}
+            >
+              <span>🏆</span>
+              <span>ตารางยศ & EXP</span>
+            </button>
           </div>
+
+          {viewMode === 'stats' ? (
+            /* ── 3 Thematic Stat Cards (Stark Cyber-Gold Triumvirate) ── */
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              {/* Card 1: Matches Played */}
+              <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-amber-400/40 rounded-xl p-2.5 text-center transition-all shadow-md group hover:-translate-y-0.5">
+                <div className="text-base leading-none mb-1 group-hover:scale-110 transition-transform">🎮</div>
+                <div className="text-lg font-black font-num text-white tracking-tight leading-tight drop-shadow">
+                  {profile.gamesPlayed.toLocaleString()}
+                </div>
+                <div className="text-[10px] font-medium text-slate-400 uppercase tracking-wide mt-1 font-['Prompt']">
+                  เกมที่เล่น
+                </div>
+              </div>
+
+              {/* Card 2: Victories */}
+              <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-amber-400/40 rounded-xl p-2.5 text-center transition-all shadow-md group hover:-translate-y-0.5">
+                <div className="text-base leading-none mb-1 group-hover:scale-110 transition-transform">🏆</div>
+                <div className="text-lg font-black font-num text-amber-300 tracking-tight leading-tight drop-shadow-[0_1px_6px_rgba(245,158,11,0.5)]">
+                  {profile.gamesWon.toLocaleString()}
+                </div>
+                <div className="text-[10px] font-bold text-amber-400/90 uppercase tracking-wide mt-1 font-['Prompt']">
+                  ชนะ
+                </div>
+              </div>
+
+              {/* Card 3: Win Rate */}
+              <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-amber-400/40 rounded-xl p-2.5 text-center transition-all shadow-md group hover:-translate-y-0.5">
+                <div className="text-base leading-none mb-1 group-hover:scale-110 transition-transform">📈</div>
+                <div className="text-lg font-black font-num text-emerald-400 tracking-tight leading-tight drop-shadow-[0_1px_6px_rgba(52,211,153,0.4)]">
+                  {profile.winRate}%
+                </div>
+                <div className="text-[10px] font-bold text-emerald-400/80 uppercase tracking-wide mt-1 font-['Prompt']">
+                  WIN RATE
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* ── Rank Roadmap (All 8 Tiers + Remaining EXP) ── */
+            <div className="mb-3 space-y-2">
+              <div className="space-y-1.5 max-h-[230px] overflow-y-auto pr-1">
+                {GAME_RANKS.map((r) => {
+                  const isCurrent = profile.rank.name === r.name;
+                  const isPassed = profile.xp >= r.minXP && !isCurrent;
+                  const isLocked = profile.xp < r.minXP;
+                  const remainingXP = isLocked ? r.minXP - profile.xp : 0;
+
+                  return (
+                    <div
+                      key={r.name}
+                      className={`p-2 rounded-xl border transition-all flex items-center justify-between gap-2 ${
+                        isCurrent
+                          ? 'bg-gradient-to-r from-amber-500/25 via-yellow-500/15 to-amber-600/20 border-amber-400/70 shadow-[0_0_12px_rgba(245,158,11,0.3)] ring-1 ring-amber-400/30'
+                          : isPassed
+                          ? 'bg-white/[0.04] border-white/10 opacity-85'
+                          : 'bg-black/50 border-white/5 opacity-70 hover:opacity-100 hover:border-white/15'
+                      }`}
+                    >
+                      {/* Left: Icon & Names */}
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div
+                          className="w-7 h-7 rounded-lg flex items-center justify-center text-sm shrink-0 border shadow-xs"
+                          style={{
+                            borderColor: isCurrent ? r.color : `${r.color}55`,
+                            backgroundColor: `${r.color}15`,
+                          }}
+                        >
+                          {r.icon}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span
+                              className="text-xs font-bold truncate leading-tight tracking-wide font-display"
+                              style={{ color: isCurrent ? '#fef08a' : r.color }}
+                            >
+                              {r.name}
+                            </span>
+                          </div>
+                          <div className="text-[10px] text-slate-400 truncate">
+                            {r.nameEn} • <span className="font-num text-slate-300 font-semibold">{r.minXP.toLocaleString()} XP</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Status Tag */}
+                      <div className="shrink-0 text-right">
+                        {isCurrent ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-950 shadow-sm animate-pulse">
+                            <span>👑</span>
+                            <span>ยศปัจจุบัน</span>
+                          </span>
+                        ) : isPassed ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 border border-emerald-400/30 text-emerald-300">
+                            <span>✓</span>
+                            <span>ปลดล็อกแล้ว</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 border border-amber-400/40 text-amber-300 font-num">
+                            <span>🔒 อีก</span>
+                            <strong className="font-black text-amber-200">{remainingXP.toLocaleString()}</strong>
+                            <span>XP</span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* XP Gain Rules Footer */}
+              <div className="p-2 rounded-xl bg-black/40 border border-white/10 text-[10px] text-slate-300 space-y-1">
+                <div className="font-bold text-amber-300 flex items-center gap-1">
+                  <span>⚡</span>
+                  <span>วิธีเก็บ EXP ในการเล่น:</span>
+                </div>
+                <div className="grid grid-cols-2 gap-1 text-[10px]">
+                  {XP_GAIN_RULES.map((rule) => (
+                    <div key={rule.label} className="flex items-center justify-between px-1.5 py-0.5 rounded bg-white/[0.04]">
+                      <span>{rule.icon} {rule.label}</span>
+                      <span className="font-bold text-amber-300 font-num">{rule.xp}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Resume Room Banner (If active room exists) */}
           {activeRoomId && activePlayerId && onResumeRoom && (
