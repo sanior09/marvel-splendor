@@ -2012,9 +2012,9 @@ export const Lobby: React.FC<LobbyProps> = ({
 
         {/* ── Developer Credits & Non-Commercial Disclaimer Footer ────────── */}
         <footer className="w-full max-w-6xl mx-auto mt-2 pt-4 border-t border-white/[0.08] flex flex-col items-center text-center space-y-1.5">
-          <div className="flex items-center justify-center gap-2 flex-wrap text-xs text-slate-400">
-            <span className="text-[11px] text-slate-400">🛠️ พัฒนาโดย:</span>
-            <span className="font-bold text-amber-200 bg-amber-950/60 border border-amber-400/40 px-3 py-0.5 rounded-full text-xs tracking-wider shadow-inner">
+          <div className="flex items-center justify-center gap-2 flex-wrap text-xs sm:text-sm text-slate-300">
+            <span className="text-xs sm:text-sm text-slate-300">🛠️ พัฒนาโดย:</span>
+            <span className="font-bold text-amber-200 bg-amber-950/70 border border-amber-400/50 px-3.5 py-0.5 rounded-full text-xs sm:text-sm tracking-wider shadow-md">
               sanior09
             </span>
             <button
@@ -2023,19 +2023,19 @@ export const Lobby: React.FC<LobbyProps> = ({
                 soundManager.playModalOpen();
                 setShowDisclaimerModal(true);
               }}
-              className="text-[11px] text-cyan-400 hover:text-cyan-300 underline transition-colors cursor-pointer ml-1 font-semibold"
+              className="text-xs sm:text-sm text-cyan-400 hover:text-cyan-300 underline transition-colors cursor-pointer ml-1 font-semibold"
               title="อ่านข้อกำหนดทางลิขสิทธิ์และวัตถุประสงค์โครงการ"
             >
               (ข้อกำหนดและลิขสิทธิ์)
             </button>
           </div>
-          <p className="text-[11.5px] text-slate-300/90 max-w-lg leading-relaxed px-2 font-sans">
+          <p className="text-xs sm:text-[13px] text-slate-200 max-w-lg leading-relaxed px-2 font-sans">
             จัดทำขึ้นเพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Project เท่านั้น <br className="hidden sm:inline" />
-            <span className="text-amber-200/95 font-medium">
+            <span className="text-amber-300/95 font-medium">
               มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น
             </span>
           </p>
-          <p className="text-[10px] text-slate-400 font-['Montserrat',sans-serif] tracking-wider uppercase opacity-80 pt-0.5">
+          <p className="text-[10px] sm:text-[11px] text-slate-400 font-sans tracking-widest uppercase opacity-80 pt-0.5">
             NACHAPOL PROTOCOL • MARVEL SPLENDOR FAN EXPERIENCE
           </p>
         </footer>

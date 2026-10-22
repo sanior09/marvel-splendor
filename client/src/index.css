@@ -33,9 +33,8 @@ body {
   color: #f1f5f9;
   overflow-x: hidden;
   overscroll-behavior: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga' 1, 'kern' 1;
 }
 
 /* ─── Scrollbar ──────────────────────────────────────── */
