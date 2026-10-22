@@ -79,7 +79,7 @@ body {
 
 /* ─── Rank Badge Font & Sharp Rendering ───────────────── */
 .rank-badge {
-  font-family: 'Chakra Petch', 'Prompt', sans-serif !important;
+  font-family: 'Prompt', 'Kanit', sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -87,19 +87,19 @@ body {
 
 /* ─── High-Visibility Numerical Typography (คมชัดทุกหน้าจอทั้ง PC และมือถือ) ── */
 .font-num {
-  font-family: 'Chakra Petch', 'Montserrat', 'Outfit', monospace, sans-serif !important;
-  font-feature-settings: "tnum" 1, "cv01" 1;
+  font-family: 'Outfit', 'Prompt', 'Kanit', sans-serif !important;
+  font-feature-settings: "tnum" 1;
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: geometricPrecision;
+  text-rendering: optimizeLegibility;
 }
 
 .num-badge {
-  font-family: 'Chakra Petch', 'Montserrat', monospace, sans-serif !important;
+  font-family: 'Outfit', 'Prompt', sans-serif !important;
   font-feature-settings: "tnum" 1;
   font-variant-numeric: tabular-nums;
-  font-weight: 900;
+  font-weight: 800;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
   -webkit-font-smoothing: antialiased;
 }

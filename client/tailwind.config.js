@@ -4,11 +4,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Kanit', 'Prompt', 'Outfit', 'Inter', 'sans-serif'],
-        display: ['Montserrat', 'Kanit', 'sans-serif'],
+        sans: ['Prompt', 'Kanit', 'Outfit', 'Inter', 'sans-serif'],
+        display: ['Outfit', 'Prompt', 'Kanit', 'sans-serif'],
         marvel: ['"Bebas Neue"', 'Impact', 'sans-serif'],
-        rank: ['"Chakra Petch"', 'Kanit', 'sans-serif'],
-        num: ['"Chakra Petch"', 'Montserrat', 'Kanit', 'sans-serif'],
+        rank: ['"Prompt"', 'Kanit', 'sans-serif'],
+        num: ['"Outfit"', '"Prompt"', 'Kanit', 'sans-serif'],
       },
       colors: {
         // Crystal theme colors
