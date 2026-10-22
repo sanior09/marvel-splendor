@@ -192,17 +192,11 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                   </button>
                 </>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => setViewMode(viewMode === 'roadmap' ? 'stats' : 'roadmap')}
-                  className="w-full text-center text-amber-300 hover:text-amber-200 text-xs font-bold flex items-center justify-center gap-1.5 pt-0.5 drop-shadow-[0_0_8px_rgba(245,158,11,0.35)] cursor-pointer"
-                  title="คลิกเพื่อดูตารางยศทั้งหมด"
-                >
+                <div className="w-full text-center text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 pt-0.5 drop-shadow-[0_0_8px_rgba(245,158,11,0.35)]">
                   <span>✨</span>
                   <span>บรรลุขีดสุดพลังจักรวาลแล้ว (MAX RANK)</span>
-                  <span className="text-[10px] text-amber-400/90 underline ml-1 font-normal">ดูตารางยศ ▾</span>
                   <span>✨</span>
-                </button>
+                </div>
               )}
             </div>
           </div>
