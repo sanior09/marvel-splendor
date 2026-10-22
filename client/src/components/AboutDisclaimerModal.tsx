@@ -30,8 +30,8 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
         onClick={handleClose}
       />
 
-      {/* Modal Container */}
-      <div className="relative rounded-2xl border border-white/15 shadow-[0_24px_70px_rgba(0,0,0,0.95)] max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden animate-slide-up z-10 bg-gradient-to-b from-[#0e1424] via-[#090d16] to-[#06080e] text-white font-sans">
+      {/* Modal Container — Using animate-fade-in to maintain crisp Windows ClearType subpixel rendering */}
+      <div className="relative rounded-2xl border border-white/15 shadow-[0_24px_70px_rgba(0,0,0,0.95)] max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden animate-fade-in z-10 bg-gradient-to-b from-[#0e1424] via-[#090d16] to-[#06080e] text-white font-sans">
         {/* Header */}
         <header className="px-4 sm:px-6 py-4 border-b border-white/10 flex items-center justify-between bg-gradient-to-r from-red-600/20 via-amber-500/10 to-transparent shrink-0">
           <div className="flex items-center gap-3">
@@ -56,7 +56,7 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
         </header>
 
         {/* Content Body */}
-        <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-4 text-xs sm:text-[13px] leading-relaxed">
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-4 text-xs sm:text-sm leading-relaxed">
           {/* Section 1: Developer Info */}
           <div className="bg-gradient-to-br from-amber-500/[0.08] via-black/40 to-black/60 rounded-xl p-4 border border-amber-400/30 space-y-2">
             <div className="flex items-center justify-between flex-wrap gap-2">
@@ -67,7 +67,7 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
                 👑 sanior09
               </span>
             </div>
-            <p className="text-slate-200 text-xs sm:text-[13px] leading-relaxed">
+            <p className="text-slate-100 text-xs sm:text-sm leading-relaxed font-normal">
               โครงการนี้พัฒนาขึ้นโดย <strong className="text-amber-300 font-bold">sanior09</strong> ด้วยความมุ่งมั่นในการสร้างสรรค์ระบบเว็บเกมกระดานแบบ Real-Time Multiplayer และ Solo AI บนสถาปัตยกรรม React, TypeScript, Node.js และ Web Audio API
             </p>
           </div>
@@ -78,41 +78,43 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
               <span>⚠️</span>
               <span>คำชี้แจง: ไม่ได้ทำเพื่อการค้าหรือหารายได้ (Non-Commercial Notice)</span>
             </div>
-            <p className="text-white text-xs sm:text-[13px] leading-relaxed">
+            <p className="text-white text-xs sm:text-sm leading-relaxed">
               เว็บไซต์และเกมนี้สร้างขึ้นมา <strong className="text-amber-300 font-bold">เพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Tribute สำหรับแฟนบอร์ดเกม Splendor และ Marvel เท่านั้น</strong>
             </p>
-            <ul className="list-disc list-inside space-y-1.5 text-slate-200 text-xs sm:text-[12.5px] pl-1 leading-relaxed">
-              <li><strong className="text-white">ไม่มีการแสวงหาผลกำไร:</strong> ไม่มีการเรียกเก็บค่าธรรมเนียมหรือค่าใช้จ่ายใดๆ จากผู้เล่นทั้งสิ้น</li>
-              <li><strong className="text-white">ไม่มีระบบเติมเงิน:</strong> ไม่มีการขายสินค้า การซื้อขายไอเทม หรือระบบ Microtransactions ใดๆ</li>
-              <li><strong className="text-white">ไม่มีโฆษณา:</strong> ไม่มีการติดแบนเนอร์โฆษณา (No Ads) หรือสร้างรายได้จากการเข้าชมเว็บไซต์</li>
+            <ul className="list-disc list-inside space-y-1.5 text-slate-100 text-xs sm:text-sm pl-1 leading-relaxed font-normal">
+              <li><strong className="text-white font-bold">ไม่มีการแสวงหาผลกำไร:</strong> ไม่มีการเรียกเก็บค่าธรรมเนียมหรือค่าใช้จ่ายใดๆ จากผู้เล่นทั้งสิ้น</li>
+              <li><strong className="text-white font-bold">ไม่มีระบบเติมเงิน:</strong> ไม่มีการขายสินค้า การซื้อขายไอเทม หรือระบบ Microtransactions ใดๆ</li>
+              <li><strong className="text-white font-bold">ไม่มีโฆษณา:</strong> ไม่มีการติดแบนเนอร์โฆษณา (No Ads) หรือสร้างรายได้จากการเข้าชมเว็บไซต์</li>
             </ul>
           </div>
 
           {/* Section 3: Copyright & Trademark Notice */}
           <div className="bg-white/5 rounded-xl p-4 border border-white/10 space-y-2.5">
-            <div className="flex items-center gap-2 text-slate-200 font-bold text-xs sm:text-sm">
+            <div className="flex items-center gap-2 text-slate-100 font-bold text-xs sm:text-sm">
               <span>⚖️</span>
               <span>ทรัพย์สินทางปัญญาและลิขสิทธิ์ (Copyright & Trademarks)</span>
             </div>
-            <p className="text-slate-300 text-xs sm:text-[12.5px] leading-relaxed">
-              เครื่องหมายการค้า ตัวละคร ฮีโร่ รูปภาพ โลโก้ และเนื้อหาจักรวาลมาร์เวลทั้งหมด เป็นลิขสิทธิ์และทรัพย์สินทางปัญญาของ <strong className="text-white">MARVEL Entertainment / The Walt Disney Company</strong>
+            <p className="text-slate-200 text-xs sm:text-sm leading-relaxed">
+              เครื่องหมายการค้า ตัวละคร ฮีโร่ รูปภาพ โลโก้ และเนื้อหาจักรวาลมาร์เวลทั้งหมด เป็นลิขสิทธิ์และทรัพย์สินทางปัญญาของ <strong className="text-white font-bold">MARVEL Entertainment / The Walt Disney Company</strong>
             </p>
-            <p className="text-slate-300 text-xs sm:text-[12.5px] leading-relaxed">
-              กลไกและระบบกติกาเกม Splendor เป็นทรัพย์สินทางปัญญาของ <strong className="text-white">Space Cowboys / Asmodee Group</strong>
+            <p className="text-slate-200 text-xs sm:text-sm leading-relaxed">
+              กลไกและระบบกติกาเกม Splendor เป็นทรัพย์สินทางปัญญาของ <strong className="text-white font-bold">Space Cowboys / Asmodee Group</strong>
             </p>
-            <div className="bg-amber-500/10 border border-amber-500/25 rounded-lg p-2.5 text-amber-300/95 text-xs sm:text-[12.5px] leading-relaxed font-medium">
-              หากท่านชื่นชอบความสนุกของเกม ขอแนะนำให้อุดหนุนบอร์ดเกมกล่องแท้ "Splendor: Marvel" เพื่อสนับสนุนผู้ถือลิขสิทธิ์อย่างเป็นทางการครับ
+            
+            {/* High-Contrast Clear Recommendation Callout */}
+            <div className="bg-black/60 border border-amber-400/40 rounded-xl p-3 sm:p-3.5 text-slate-100 text-xs sm:text-sm leading-relaxed font-normal shadow-sm">
+              หากท่านชื่นชอบความสนุกของเกม ขอแนะนำให้อุดหนุนบอร์ดเกมกล่องแท้ <span className="text-amber-300 font-bold">"Splendor: Marvel"</span> เพื่อสนับสนุนผู้ถือลิขสิทธิ์อย่างเป็นทางการครับ
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <footer className="px-5 py-3 bg-black/80 border-t border-white/10 flex items-center justify-between text-xs text-slate-300 shrink-0">
-          <span>Made with ❤️ for Marvel Splendor Fans</span>
+        <footer className="px-5 py-3.5 bg-black/80 border-t border-white/10 flex items-center justify-between text-xs text-slate-300 shrink-0">
+          <span className="text-xs sm:text-sm text-slate-300">Made with ❤️ for Marvel Splendor Fans</span>
           <button
             type="button"
             onClick={handleClose}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm cursor-pointer transition-all shadow-[0_0_20px_rgba(245,158,11,0.35)] active:scale-95"
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-bold text-sm sm:text-base tracking-wide cursor-pointer transition-all shadow-[0_0_20px_rgba(245,158,11,0.35)] border border-amber-300/50 active:scale-95"
           >
             รับทราบและปิด
           </button>
