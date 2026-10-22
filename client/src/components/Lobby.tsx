@@ -2011,10 +2011,10 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
 
         {/* ── Developer Credits & Non-Commercial Disclaimer Footer ────────── */}
-        <footer className="w-full max-w-6xl mx-auto mt-0.5 pt-1.5 border-t border-white/[0.08] flex flex-col items-center text-center space-y-0.5">
-          <div className="flex items-center justify-center gap-1.5 flex-wrap text-[10px] sm:text-[11px] text-slate-300">
-            <span className="text-[10px] sm:text-[11px] text-slate-300">🛠️ พัฒนาโดย:</span>
-            <span className="font-bold text-amber-200 bg-amber-950/70 border border-amber-400/50 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] tracking-wider shadow-sm">
+        <footer className="w-full max-w-6xl mx-auto mt-1 pt-1.5 border-t border-white/[0.06] flex flex-col items-center text-center space-y-0.5">
+          <div className="flex items-center justify-center gap-1.5 flex-wrap text-[10px] sm:text-[10.5px] text-slate-300">
+            <span className="text-[10px] sm:text-[10.5px] text-slate-300">🛠️ พัฒนาโดย:</span>
+            <span className="font-bold text-amber-200 bg-amber-950/70 border border-amber-400/40 px-2 py-0.2 rounded-full text-[10px] sm:text-[10.5px] tracking-wider shadow-sm">
               sanior09
             </span>
             <button
@@ -2023,19 +2023,19 @@ export const Lobby: React.FC<LobbyProps> = ({
                 soundManager.playModalOpen();
                 setShowDisclaimerModal(true);
               }}
-              className="text-[10px] sm:text-[11px] text-cyan-400 hover:text-cyan-300 underline transition-colors cursor-pointer ml-1 font-semibold"
+              className="text-[10px] sm:text-[10.5px] text-cyan-400 hover:text-cyan-300 underline transition-colors cursor-pointer ml-0.5 font-semibold"
               title="อ่านข้อกำหนดทางลิขสิทธิ์และวัตถุประสงค์โครงการ"
             >
               (ข้อกำหนดและลิขสิทธิ์)
             </button>
           </div>
-          <p className="text-[9.5px] sm:text-[10px] text-slate-300/80 max-w-md leading-normal px-2 font-sans">
+          <p className="text-[9px] sm:text-[9.5px] text-slate-400/90 max-w-md leading-tight px-2 font-sans">
             จัดทำขึ้นเพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Project เท่านั้น <br className="hidden sm:inline" />
             <span className="text-amber-300/90 font-medium">
               มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น
             </span>
           </p>
-          <p className="text-[8.5px] sm:text-[9px] text-slate-400/80 font-sans tracking-widest uppercase opacity-75">
+          <p className="text-[8px] sm:text-[8.5px] text-slate-500 font-sans tracking-wider uppercase opacity-70">
             NACHAPOL PROTOCOL • MARVEL SPLENDOR FAN EXPERIENCE
           </p>
         </footer>
