@@ -1077,7 +1077,7 @@ export const Lobby: React.FC<LobbyProps> = ({
         {/* Hero Header Title */}
         <div className="w-full text-center space-y-1 my-1 lg:my-1.5">
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-            <span className="px-2.5 py-0.5 bg-[#e23636] text-white font-black text-xl lg:text-2xl tracking-tighter rounded shadow-[0_0_24px_rgba(226,54,54,0.45)] uppercase border border-red-400/30 font-['Bebas_Neue',sans-serif]">
+            <span className="px-3 py-0.5 bg-[#e23636] text-white font-black text-xl lg:text-2xl tracking-[0.06em] rounded shadow-[0_0_24px_rgba(226,54,54,0.45)] uppercase border border-red-400/30 font-['Bebas_Neue',sans-serif]">
               MARVEL
             </span>
             <span className="text-xl lg:text-3xl font-black tracking-wider uppercase font-['Montserrat',sans-serif] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 drop-shadow-[0_2px_12px_rgba(234,179,8,0.3)]">
