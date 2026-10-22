@@ -2028,13 +2028,13 @@ export const Lobby: React.FC<LobbyProps> = ({
               (ข้อกำหนดและลิขสิทธิ์)
             </button>
           </div>
-          <p className="text-[11px] text-slate-400 max-w-lg leading-relaxed px-2 font-['Prompt',sans-serif]">
+          <p className="text-[11.5px] text-slate-300/90 max-w-lg leading-relaxed px-2 font-sans">
             จัดทำขึ้นเพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Project เท่านั้น <br className="hidden sm:inline" />
-            <span className="text-amber-200/90 font-medium">
+            <span className="text-amber-200/95 font-medium">
               มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น
             </span>
           </p>
-          <p className="text-[9.5px] text-slate-400 font-mono uppercase tracking-wider">
+          <p className="text-[10px] text-slate-400 font-['Montserrat',sans-serif] tracking-wider uppercase opacity-80 pt-0.5">
             NACHAPOL PROTOCOL • MARVEL SPLENDOR FAN EXPERIENCE
           </p>
         </footer>
