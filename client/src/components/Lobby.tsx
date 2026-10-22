@@ -53,21 +53,57 @@ interface MarvelBotPreset {
 }
 
 const POPULAR_MARVEL_BOTS: MarvelBotPreset[] = [
-  { name: 'Doctor Doom', personality: 'stark', avatar: '👑', desc: 'จอมบงการยุทธวิธี (Tactical Mastermind)', avatarUrl: resolveMarvelAvatar('doctor_doom') },
-  { name: 'Loki', personality: 'ultron', avatar: '🐍', desc: 'เจ้าเล่ห์ ขัดจังหวะเก่ง (Trickster & Schemer)', avatarUrl: resolveMarvelAvatar('loki') },
-  { name: 'Thanos Bot', personality: 'thanos', avatar: '🧤', desc: 'มุ่งชิงถุงมืออินฟินิตี้ (Gauntlet Seeker)', avatarUrl: resolveMarvelAvatar('thanos') },
-  { name: 'Tony Stark AI', personality: 'stark', avatar: '🦾', desc: 'อัจฉริยะเกราะเหล็ก (Armored Strategist)', avatarUrl: resolveMarvelAvatar('iron_man') },
-  { name: 'Spider-Man', personality: 'stark', avatar: '🕷️', desc: 'รวดเร็วและคล่องตัว (Agile Tactician)', avatarUrl: resolveMarvelAvatar('spider_man') },
-  { name: 'Thor Odinson', personality: 'thanos', avatar: '⚡', desc: 'พลังเทพเจ้าสายฟ้า (God of Thunder)', avatarUrl: resolveMarvelAvatar('thor') },
-  { name: 'Wolverine', personality: 'thanos', avatar: '🐺', desc: 'สัญชาตญาณดุดัน (Berserker Instinct)', avatarUrl: resolveMarvelAvatar('wolverine') },
-  { name: 'Deadpool', personality: 'ultron', avatar: '⚔️', desc: 'คาดเดายาก กวนประสาท (Unpredictable Chaos)', avatarUrl: resolveMarvelAvatar('deadpool') },
-  { name: 'Doctor Strange', personality: 'stark', avatar: '✨', desc: 'จอมเวทย์สูงสุด (Sorcerer Supreme)', avatarUrl: resolveMarvelAvatar('doctor_strange') },
-  { name: 'Black Panther', personality: 'stark', avatar: '🐾', desc: 'กษัตริย์แห่งวากานด้า (Wakandan King)', avatarUrl: resolveMarvelAvatar('black_panther') },
-  { name: 'Vision (J.A.R.V.I.S.)', personality: 'friday', avatar: '🤖', desc: 'ปัญญาประดิษฐ์อัจฉริยะ (AI Core)', avatarUrl: resolveMarvelAvatar('vision') },
-  { name: 'Scarlet Witch', personality: 'ultron', avatar: '🔮', desc: 'บิดเบือนความเป็นจริง (Reality Warper)', avatarUrl: resolveMarvelAvatar('scarlet_witch') },
-  { name: 'Captain America', personality: 'stark', avatar: '🛡️', desc: 'ผู้นำทีมอเวนเจอร์ส (Tactical Leader)', avatarUrl: resolveMarvelAvatar('captain_america') },
-  { name: 'Hulk', personality: 'thanos', avatar: '💚', desc: 'จอมพลังทุบแหลก (Smash Powerhouse)', avatarUrl: resolveMarvelAvatar('hulk') },
+  { name: 'Doctor Doom', personality: 'stark', avatar: '👑', desc: 'จอมบงการยุทธวิธี เน้นสะสมแต้มใหญ่', avatarUrl: resolveMarvelAvatar('doctor_doom') },
+  { name: 'Loki', personality: 'ultron', avatar: '🐍', desc: 'เจ้าเล่ห์ ขัดจังหวะและแย่งจองการ์ด', avatarUrl: resolveMarvelAvatar('loki') },
+  { name: 'Thanos Bot', personality: 'thanos', avatar: '🧤', desc: 'มุ่งชิงถุงมือและกวาดอัญมณีทุกสี', avatarUrl: resolveMarvelAvatar('thanos') },
+  { name: 'Tony Stark AI', personality: 'stark', avatar: '🦾', desc: 'อัจฉริยะเกราะเหล็ก บริหารเหรียญคุ้มค่า', avatarUrl: resolveMarvelAvatar('iron_man') },
+  { name: 'Spider-Man', personality: 'stark', avatar: '🕷️', desc: 'รวดเร็วและคล่องตัว เน้นปิดเกมไว', avatarUrl: resolveMarvelAvatar('spider_man') },
+  { name: 'Thor Odinson', personality: 'thanos', avatar: '⚡', desc: 'พลังเทพเจ้าสายฟ้า มุ่งเป้าหมายใหญ่', avatarUrl: resolveMarvelAvatar('thor') },
+  { name: 'Wolverine', personality: 'thanos', avatar: '🐺', desc: 'สัญชาตญาณดุดัน ตัดแต้มคู่แข่งทันที', avatarUrl: resolveMarvelAvatar('wolverine') },
+  { name: 'Deadpool', personality: 'ultron', avatar: '⚔️', desc: 'คาดเดายาก กวนประสาท ป่วนกระดาน', avatarUrl: resolveMarvelAvatar('deadpool') },
+  { name: 'Doctor Strange', personality: 'stark', avatar: '✨', desc: 'จอมเวทย์สูงสุด วางแผนล่วงหน้าหลายก้าว', avatarUrl: resolveMarvelAvatar('doctor_strange') },
+  { name: 'Black Panther', personality: 'stark', avatar: '🐾', desc: 'กษัตริย์วากานด้า เน้นทรัพยากรหนาแน่น', avatarUrl: resolveMarvelAvatar('black_panther') },
+  { name: 'Vision (J.A.R.V.I.S.)', personality: 'friday', avatar: '🤖', desc: 'ปัญญาประดิษฐ์อัจฉริยะ เดินเกมสมดุลแม่นยำ', avatarUrl: resolveMarvelAvatar('vision') },
+  { name: 'Scarlet Witch', personality: 'ultron', avatar: '🔮', desc: 'บิดเบือนความเป็นจริง ชิงจังหวะการ์ดสำคัญ', avatarUrl: resolveMarvelAvatar('scarlet_witch') },
+  { name: 'Captain America', personality: 'stark', avatar: '🛡️', desc: 'ผู้นำทีมอเวนเจอร์ส เล่นรอบคอบรัดกุม', avatarUrl: resolveMarvelAvatar('captain_america') },
+  { name: 'Hulk', personality: 'thanos', avatar: '💚', desc: 'จอมพลังทุบแหลก บุกทะลวงแต้มตรงไปตรงมา', avatarUrl: resolveMarvelAvatar('hulk') },
 ];
+
+export const AI_PERSONALITY_META: Record<string, { label: string; icon: string; bg: string; text: string; border: string }> = {
+  stark: {
+    label: 'สายกลยุทธ์',
+    icon: '🧠',
+    bg: 'bg-amber-500/15',
+    text: 'text-amber-300',
+    border: 'border-amber-500/35',
+  },
+  ultron: {
+    label: 'สายก่อกวน',
+    icon: '⚡',
+    bg: 'bg-cyan-500/15',
+    text: 'text-cyan-300',
+    border: 'border-cyan-500/35',
+  },
+  thanos: {
+    label: 'สายดุดัน',
+    icon: '🔥',
+    bg: 'bg-red-500/15',
+    text: 'text-red-300',
+    border: 'border-red-500/35',
+  },
+  friday: {
+    label: 'สายสมดุล',
+    icon: '🤖',
+    bg: 'bg-emerald-500/15',
+    text: 'text-emerald-300',
+    border: 'border-emerald-500/35',
+  },
+};
+
+export const getBotPersonalityInfo = (personality?: string) => {
+  const p = personality?.toLowerCase() || 'stark';
+  return AI_PERSONALITY_META[p] || AI_PERSONALITY_META['stark'];
+};
 
 // ── QuickAvatarThumb: tiny avatar with error fallback ─────────
 const QUICK_EMOJI: Record<string, string> = {
@@ -1493,11 +1529,15 @@ export const Lobby: React.FC<LobbyProps> = ({
                                       <h4 className="text-sm font-bold text-white group-hover:text-amber-200 transition-colors truncate font-display">
                                         {currentName}
                                       </h4>
-                                      {matchedPreset && (
-                                        <span className="hidden sm:inline-block text-[9px] px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-300 font-mono font-bold shrink-0">
-                                          {matchedPreset.avatar} {matchedPreset.personality.toUpperCase()}
-                                        </span>
-                                      )}
+                                      {matchedPreset && (() => {
+                                        const pInfo = getBotPersonalityInfo(matchedPreset.personality);
+                                        return (
+                                          <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full ${pInfo.bg} border ${pInfo.border} ${pInfo.text} font-['Prompt',sans-serif] font-semibold shrink-0 shadow-sm`}>
+                                            <span>{pInfo.icon}</span>
+                                            <span>{pInfo.label}</span>
+                                          </span>
+                                        );
+                                      })()}
                                     </div>
                                     <p className="text-[11px] text-slate-400 truncate leading-tight pt-0.5 font-['Prompt']">
                                       {tacticDesc}
@@ -2087,9 +2127,15 @@ export const Lobby: React.FC<LobbyProps> = ({
                         <p className="text-[10px] text-slate-400 truncate leading-tight pt-0.5 font-['Prompt']">
                           {bot.desc}
                         </p>
-                        <span className="text-[9px] font-mono text-amber-400/80 uppercase tracking-wider block pt-0.5">
-                          AI: {bot.personality}
-                        </span>
+                        {(() => {
+                          const pInfo = getBotPersonalityInfo(bot.personality);
+                          return (
+                            <span className={`inline-flex items-center gap-1 text-[10px] font-['Prompt',sans-serif] ${pInfo.text} font-medium pt-0.5`}>
+                              <span>{pInfo.icon}</span>
+                              <span>{pInfo.label}</span>
+                            </span>
+                          );
+                        })()}
                       </div>
                     </button>
                   );
