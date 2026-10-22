@@ -19,11 +19,12 @@ export const RankBadge: React.FC<RankBadgeProps> = ({
 
   const isOwner = Boolean(
     rank.isOwner ||
-    rank.nameEn === 'The One Above All' ||
-    rank.name.includes('THE ONE ABOVE ALL')
+    rank.nameEn === 'Chief Architect // Game Owner' ||
+    rank.name.includes('CHIEF ARCHITECT') ||
+    rank.name.includes('GAME OWNER')
   );
 
-  // Strip any leading emoji from rank name to prevent duplicate icons (e.g. "👑 THE ONE ABOVE ALL" -> "THE ONE ABOVE ALL")
+  // Strip any leading emoji from rank name to prevent duplicate icons (e.g. "👑 CHIEF ARCHITECT // GAME OWNER" -> "CHIEF ARCHITECT // GAME OWNER")
   const cleanName = rank.name.replace(/^[\p{Emoji}\s]+/u, '').trim() || rank.name;
 
   if (isOwner) {
@@ -38,17 +39,17 @@ export const RankBadge: React.FC<RankBadgeProps> = ({
       <span
         className={`rank-badge font-black inline-flex items-center rounded-md border select-none transition-all duration-200 ${sizeClasses} ${className}`}
         style={{
-          background: 'linear-gradient(135deg, rgba(20, 14, 4, 0.96) 0%, rgba(38, 25, 6, 0.96) 100%)',
-          borderColor: '#ffd700',
-          boxShadow: '0 0 10px rgba(255, 215, 0, 0.45), inset 0 0 5px rgba(255, 215, 0, 0.15)',
+          background: 'linear-gradient(135deg, rgba(6, 18, 36, 0.96) 0%, rgba(10, 26, 48, 0.96) 55%, rgba(28, 20, 6, 0.96) 100%)',
+          borderColor: '#38bdf8',
+          boxShadow: '0 0 12px rgba(56, 189, 248, 0.5), 0 0 4px rgba(255, 215, 0, 0.35), inset 0 0 6px rgba(56, 189, 248, 0.25)',
         }}
-        title={`ยศสูงสุดแห่งจักรวาล: ${cleanName}`}
+        title={`ยศสถาปนิกและเจ้าของเกม: ${cleanName}`}
       >
         <span className="text-[12px] leading-none drop-shadow">👑</span>
         <span
-          className="tracking-wider uppercase font-black text-amber-300"
+          className="tracking-wider uppercase font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-100 to-amber-300"
           style={{
-            textShadow: '0 1px 3px rgba(0, 0, 0, 0.95), 0 0 8px rgba(255, 215, 0, 0.4)',
+            filter: 'drop-shadow(0 1px 3px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 6px rgba(56, 189, 248, 0.45))',
           }}
         >
           {cleanName}

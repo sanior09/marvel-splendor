@@ -18,6 +18,17 @@ export interface Rank {
   isOwner?: boolean;
 }
 
+export const OWNER_USERNAMES = ['SANIOR'];
+
+export const OWNER_RANK: Rank = {
+  name: 'CHIEF ARCHITECT // GAME OWNER',
+  nameEn: 'Chief Architect // Game Owner',
+  minXP: 50000,
+  icon: '👑',
+  color: '#38bdf8',
+  isOwner: true,
+};
+
 export const RANKS: Rank[] = [
   { name: 'นักสู้ใหม่',         nameEn: 'Recruit',             minXP: 0,      icon: '🥉', color: '#cd7f32' },
   { name: 'เจ้าหน้าที่ S.H.I.E.L.D.', nameEn: 'S.H.I.E.L.D. Agent', minXP: 300,  icon: '🥈', color: '#94a3b8' },
@@ -26,7 +37,7 @@ export const RANKS: Rank[] = [
   { name: 'ผู้พิทักษ์กาแล็กซี',   nameEn: 'Guardian',            minXP: 3500,   icon: '💎', color: '#a855f7' },
   { name: 'จอมเวทสูงสุด',       nameEn: 'Sorcerer Supreme',     minXP: 6500,   icon: '🌌', color: '#06b6d4' },
   { name: 'ผู้ถือครองอินฟินิตี้', nameEn: 'Infinity Wielder',   minXP: 12000,  icon: '🔥', color: '#ff6a00' },
-  { name: 'THE ONE ABOVE ALL',    nameEn: 'The One Above All',   minXP: 50000,  icon: '👑', color: '#ffd700', isOwner: true },
+  { name: 'THE ONE ABOVE ALL',    nameEn: 'The One Above All',   minXP: 50000,  icon: '👑', color: '#ffd700' },
 ];
 
 export function getRank(xp: number): Rank {
@@ -309,8 +320,9 @@ export class UserManager {
   }
 
   private toProfile(user: IUser): UserProfile {
-    const rank = getRank(user.xp);
-    const nextRank = getNextRank(user.xp);
+    const isOwnerUser = OWNER_USERNAMES.includes(user.username.trim().toUpperCase());
+    const rank: Rank = isOwnerUser ? { ...OWNER_RANK } : getRank(user.xp);
+    const nextRank = isOwnerUser ? null : getNextRank(user.xp);
     const winRate = user.gamesPlayed > 0 ? Math.round((user.gamesWon / user.gamesPlayed) * 100) : 0;
     const profile: UserProfile = {
       id: (user._id as any).toString(),
@@ -322,7 +334,7 @@ export class UserManager {
       winRate,
       rank,
       nextRank,
-      xpToNextRank: nextRank ? nextRank.minXP - user.xp : null,
+      xpToNextRank: isOwnerUser ? null : (nextRank ? nextRank.minXP - user.xp : null),
       activeRoomId: user.activeRoomId || undefined,
       activePlayerId: user.activePlayerId || undefined,
       createdAt: user.createdAt.toISOString(),

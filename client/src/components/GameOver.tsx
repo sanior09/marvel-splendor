@@ -62,7 +62,11 @@ export const GameOver: React.FC<GameOverProps> = ({
   const currentRank = activeProfile?.rank;
   const nextRank = activeProfile?.nextRank;
   const xpToNextRank = activeProfile?.xpToNextRank;
-  const isOwner = Boolean(currentRank?.isOwner || (activeProfile && activeProfile.xp >= 50000));
+  const isOwner = Boolean(
+    currentRank?.isOwner ||
+    currentRank?.name.includes('CHIEF ARCHITECT') ||
+    currentRank?.name.includes('GAME OWNER')
+  );
 
   const xpPercent = (activeProfile && nextRank)
     ? Math.min(
@@ -115,10 +119,12 @@ export const GameOver: React.FC<GameOverProps> = ({
         <div
           className="rounded-2xl p-4 sm:p-5 text-left border relative overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, rgba(30, 20, 50, 0.85) 0%, rgba(12, 10, 24, 0.95) 100%)',
-            borderColor: isOwner ? 'rgba(255, 215, 0, 0.6)' : 'rgba(168, 85, 247, 0.4)',
+            background: isOwner
+              ? 'linear-gradient(135deg, rgba(8, 18, 36, 0.95) 0%, rgba(12, 10, 24, 0.95) 100%)'
+              : 'linear-gradient(135deg, rgba(30, 20, 50, 0.85) 0%, rgba(12, 10, 24, 0.95) 100%)',
+            borderColor: isOwner ? 'rgba(56, 189, 248, 0.6)' : 'rgba(168, 85, 247, 0.4)',
             boxShadow: isOwner
-              ? '0 10px 30px rgba(255, 0, 128, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.15)'
+              ? '0 10px 30px rgba(56, 189, 248, 0.25), inset 0 0 20px rgba(255, 215, 0, 0.15)'
               : '0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(168, 85, 247, 0.12)',
           }}
         >
@@ -216,10 +222,16 @@ export const GameOver: React.FC<GameOverProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="py-1.5 px-3 rounded-lg bg-gradient-to-r from-amber-500/20 to-pink-500/20 border border-amber-400/40 text-center">
-                  <span className="text-xs font-black text-amber-300 flex items-center justify-center gap-1.5">
+                <div className={`py-1.5 px-3 rounded-lg border text-center ${
+                  isOwner
+                    ? 'bg-gradient-to-r from-cyan-950/40 via-sky-900/30 to-amber-950/40 border-cyan-400/50'
+                    : 'bg-gradient-to-r from-amber-500/20 to-pink-500/20 border-amber-400/40'
+                }`}>
+                  <span className={`text-xs font-black flex items-center justify-center gap-1.5 ${
+                    isOwner ? 'text-cyan-200' : 'text-amber-300'
+                  }`}>
                     <span>👑</span>
-                    <span>ท่านอยู่ในระดับสูงสุดแห่งจักรวาลแล้ว (MAX RANK)</span>
+                    <span>{isOwner ? 'สถาปนิกและเจ้าของเกม (CHIEF ARCHITECT // GAME OWNER)' : 'ท่านอยู่ในระดับสูงสุดแห่งจักรวาลแล้ว (MAX RANK)'}</span>
                   </span>
                 </div>
               )}
