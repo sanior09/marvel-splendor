@@ -53,20 +53,20 @@ interface MarvelBotPreset {
 }
 
 const POPULAR_MARVEL_BOTS: MarvelBotPreset[] = [
-  { name: 'Doctor Doom', personality: 'stark', avatar: '👑', desc: 'Tactical Mastermind', avatarUrl: resolveMarvelAvatar('doctor_doom') },
-  { name: 'Loki', personality: 'ultron', avatar: '🐍', desc: 'Trickster & Schemer', avatarUrl: resolveMarvelAvatar('loki') },
-  { name: 'Thanos Bot', personality: 'thanos', avatar: '🧤', desc: 'Infinity Gauntlet Seeker', avatarUrl: resolveMarvelAvatar('thanos') },
-  { name: 'Tony Stark AI', personality: 'stark', avatar: '🦾', desc: 'Armored Strategist', avatarUrl: resolveMarvelAvatar('iron_man') },
-  { name: 'Spider-Man', personality: 'stark', avatar: '🕷️', desc: 'Agile Tactician', avatarUrl: resolveMarvelAvatar('spider_man') },
-  { name: 'Thor Odinson', personality: 'thanos', avatar: '⚡', desc: 'God of Thunder', avatarUrl: resolveMarvelAvatar('thor') },
-  { name: 'Wolverine', personality: 'thanos', avatar: '🐺', desc: 'Berserker Instinct', avatarUrl: resolveMarvelAvatar('wolverine') },
-  { name: 'Deadpool', personality: 'ultron', avatar: '⚔️', desc: 'Unpredictable Chaos', avatarUrl: resolveMarvelAvatar('deadpool') },
-  { name: 'Doctor Strange', personality: 'stark', avatar: '✨', desc: 'Sorcerer Supreme', avatarUrl: resolveMarvelAvatar('doctor_strange') },
-  { name: 'Black Panther', personality: 'stark', avatar: '🐾', desc: 'Wakandan Mastermind', avatarUrl: resolveMarvelAvatar('black_panther') },
-  { name: 'Vision (J.A.R.V.I.S.)', personality: 'friday', avatar: '🤖', desc: 'Synthetic AI Core', avatarUrl: resolveMarvelAvatar('vision') },
-  { name: 'Scarlet Witch', personality: 'ultron', avatar: '🔮', desc: 'Reality Warper', avatarUrl: resolveMarvelAvatar('scarlet_witch') },
-  { name: 'Captain America', personality: 'stark', avatar: '🛡️', desc: 'Tactical Leader', avatarUrl: resolveMarvelAvatar('captain_america') },
-  { name: 'Hulk', personality: 'thanos', avatar: '💚', desc: 'Smash Powerhouse', avatarUrl: resolveMarvelAvatar('hulk') },
+  { name: 'Doctor Doom', personality: 'stark', avatar: '👑', desc: 'จอมบงการยุทธวิธี (Tactical Mastermind)', avatarUrl: resolveMarvelAvatar('doctor_doom') },
+  { name: 'Loki', personality: 'ultron', avatar: '🐍', desc: 'เจ้าเล่ห์ ขัดจังหวะเก่ง (Trickster & Schemer)', avatarUrl: resolveMarvelAvatar('loki') },
+  { name: 'Thanos Bot', personality: 'thanos', avatar: '🧤', desc: 'มุ่งชิงถุงมืออินฟินิตี้ (Gauntlet Seeker)', avatarUrl: resolveMarvelAvatar('thanos') },
+  { name: 'Tony Stark AI', personality: 'stark', avatar: '🦾', desc: 'อัจฉริยะเกราะเหล็ก (Armored Strategist)', avatarUrl: resolveMarvelAvatar('iron_man') },
+  { name: 'Spider-Man', personality: 'stark', avatar: '🕷️', desc: 'รวดเร็วและคล่องตัว (Agile Tactician)', avatarUrl: resolveMarvelAvatar('spider_man') },
+  { name: 'Thor Odinson', personality: 'thanos', avatar: '⚡', desc: 'พลังเทพเจ้าสายฟ้า (God of Thunder)', avatarUrl: resolveMarvelAvatar('thor') },
+  { name: 'Wolverine', personality: 'thanos', avatar: '🐺', desc: 'สัญชาตญาณดุดัน (Berserker Instinct)', avatarUrl: resolveMarvelAvatar('wolverine') },
+  { name: 'Deadpool', personality: 'ultron', avatar: '⚔️', desc: 'คาดเดายาก กวนประสาท (Unpredictable Chaos)', avatarUrl: resolveMarvelAvatar('deadpool') },
+  { name: 'Doctor Strange', personality: 'stark', avatar: '✨', desc: 'จอมเวทย์สูงสุด (Sorcerer Supreme)', avatarUrl: resolveMarvelAvatar('doctor_strange') },
+  { name: 'Black Panther', personality: 'stark', avatar: '🐾', desc: 'กษัตริย์แห่งวากานด้า (Wakandan King)', avatarUrl: resolveMarvelAvatar('black_panther') },
+  { name: 'Vision (J.A.R.V.I.S.)', personality: 'friday', avatar: '🤖', desc: 'ปัญญาประดิษฐ์อัจฉริยะ (AI Core)', avatarUrl: resolveMarvelAvatar('vision') },
+  { name: 'Scarlet Witch', personality: 'ultron', avatar: '🔮', desc: 'บิดเบือนความเป็นจริง (Reality Warper)', avatarUrl: resolveMarvelAvatar('scarlet_witch') },
+  { name: 'Captain America', personality: 'stark', avatar: '🛡️', desc: 'ผู้นำทีมอเวนเจอร์ส (Tactical Leader)', avatarUrl: resolveMarvelAvatar('captain_america') },
+  { name: 'Hulk', personality: 'thanos', avatar: '💚', desc: 'จอมพลังทุบแหลก (Smash Powerhouse)', avatarUrl: resolveMarvelAvatar('hulk') },
 ];
 
 // ── QuickAvatarThumb: tiny avatar with error fallback ─────────
@@ -984,8 +984,8 @@ export const Lobby: React.FC<LobbyProps> = ({
           {/* Telemetry watermark on left */}
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
-            <span className="text-white/40 uppercase tracking-widest font-mono text-[10px] hidden sm:inline-block">
-              NACHAPOL PROTOCOL // MISSION READY
+            <span className="text-white/40 uppercase tracking-wider font-['Prompt',sans-serif] text-[10px] hidden sm:inline-block">
+              MARVEL SPLENDOR ONLINE
             </span>
             <span className="text-white/20 hidden sm:inline-block">•</span>
             <span
@@ -1048,9 +1048,9 @@ export const Lobby: React.FC<LobbyProps> = ({
             </span>
           </div>
           <div className="flex items-center justify-center gap-2 text-[11px] sm:text-xs font-medium text-slate-300 font-['Prompt',sans-serif]">
-            <span className="text-amber-400 font-mono tracking-widest uppercase font-bold">// TACTICAL WAR ROOM</span>
+            <span className="text-amber-400 font-bold">ศูนย์บัญชาการยุทธวิธี</span>
             <span className="text-white/30">•</span>
-            <span>ศูนย์บัญชาการยุทธวิธี • ปรับแต่งทีมฮีโร่และเลือกสมรภูมิรบ</span>
+            <span>เลือกโหมดการเล่น ปรับแต่งทีมฮีโร่ และเข้าสู่สมรภูมิรบ</span>
           </div>
         </div>
 
@@ -1088,18 +1088,17 @@ export const Lobby: React.FC<LobbyProps> = ({
             <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
               <div className="flex items-center gap-2.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_12px_#f59e0b]" />
-                <div>
-                  <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                    // AGENT IDENTITY
-                  </span>
-                  <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
-                    ข้อมูลเจ้าหน้าที่ปฏิบัติการ
-                  </span>
-                </div>
+                <span className="font-['Prompt',sans-serif] font-bold tracking-wide text-sm text-white block">
+                  ข้อมูลฮีโร่ของคุณ
+                </span>
               </div>
-              {userProfile?.username && (
+              {userProfile?.username ? (
                 <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
                   ● SYNCED
+                </span>
+              ) : (
+                <span className="text-[10px] font-['Prompt',sans-serif] text-slate-400/90 tracking-wider bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full">
+                  โหมดผู้มาเยือน
                 </span>
               )}
             </div>
@@ -1133,21 +1132,18 @@ export const Lobby: React.FC<LobbyProps> = ({
               <div className="flex-1 min-w-0 space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label htmlFor="player-name" className="text-xs font-bold text-slate-200 font-['Prompt',sans-serif]">
-                    ชื่อเรียกขานฮีโร่ของคุณ
+                    ชื่อฮีโร่ของคุณ
                   </label>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-mono text-amber-400/80 font-bold tracking-wider">CALLSIGN</span>
-                    {userProfile?.username && playerName.trim() !== userProfile.username && (
-                      <button
-                        type="button"
-                        onClick={() => setPlayerName(userProfile.username)}
-                        className="text-[10px] text-amber-300 hover:text-amber-200 underline cursor-pointer"
-                        title="กดเพื่อรีเซ็ตกลับเป็นชื่อบัญชี"
-                      >
-                        ↺ คืนค่า
-                      </button>
-                    )}
-                  </div>
+                  {userProfile?.username && playerName.trim() !== userProfile.username && (
+                    <button
+                      type="button"
+                      onClick={() => setPlayerName(userProfile.username)}
+                      className="text-[10px] text-amber-300 hover:text-amber-200 underline cursor-pointer"
+                      title="กดเพื่อรีเซ็ตกลับเป็นชื่อบัญชี"
+                    >
+                      ↺ คืนค่า
+                    </button>
+                  )}
                 </div>
                 <input
                   id="player-name"
@@ -1242,10 +1238,10 @@ export const Lobby: React.FC<LobbyProps> = ({
               <div className="p-1 rounded-2xl bg-black/45 border border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-1">
                 {(['solo', 'create', 'join', 'browse'] as const).map((tab) => {
                   const tabConfig = {
-                    solo:   { label: 'เล่นกับ AI', icon: '🤖', sub: 'Solo Skirmish' },
-                    create: { label: 'สร้างห้อง',  icon: '⚔️', sub: 'Multiplayer' },
-                    join:   { label: 'เข้ารหัสห้อง', icon: '🔑', sub: 'Join PIN' },
-                    browse: { label: 'ค้นหาห้อง',  icon: '🔍', sub: 'Open Lobbies' },
+                    solo:   { label: 'เล่นกับ AI', icon: '🤖', sub: 'สู้กับบอท' },
+                    create: { label: 'สร้างห้อง',  icon: '⚔️', sub: 'เล่นกับเพื่อน' },
+                    join:   { label: 'เข้ารหัสห้อง', icon: '🔑', sub: 'ใส่รหัส PIN' },
+                    browse: { label: 'ค้นหาห้อง',  icon: '🔍', sub: 'ห้องเปิดอยู่' },
                   };
                   const isActive = activeTab === tab;
                   return (
@@ -1276,16 +1272,14 @@ export const Lobby: React.FC<LobbyProps> = ({
                   {/* Bot Opponents Count Selector */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                          // SQUAD FORMATION
-                        </span>
-                        <label className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">👥</span>
+                        <label className="text-sm font-bold text-white font-['Prompt',sans-serif]">
                           จำนวนคู่ต่อสู้ AI
                         </label>
                       </div>
-                      <span className="text-[10px] font-mono text-amber-400/80 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">
-                        {botCount === 1 ? 'DUEL 1v1' : botCount === 2 ? 'TRIAD 3P' : 'ARENA 4P'}
+                      <span className="text-[10px] font-['Prompt',sans-serif] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">
+                        {botCount === 1 ? 'ดวล 1v1' : botCount === 2 ? 'แข่ง 3 คน' : 'เต็มสนาม 4 คน'}
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
@@ -1322,16 +1316,14 @@ export const Lobby: React.FC<LobbyProps> = ({
                   {/* Bot Combatants Roster Cards */}
                   <div className="space-y-2.5 pt-1">
                     <div className="flex items-center justify-between pb-0.5">
-                      <div>
-                        <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                          // AI SQUADRON
-                        </span>
-                        <label className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">🦸</span>
+                        <label className="text-sm font-bold text-white font-['Prompt',sans-serif]">
                           จัดทัพคู่ต่อสู้ AI
                         </label>
                       </div>
-                      <span className="text-[10px] font-mono text-slate-400 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full">
-                        {botCount} COMBATANTS
+                      <span className="text-[10px] font-['Prompt',sans-serif] text-slate-300 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full">
+                        {botCount} บอท AI
                       </span>
                     </div>
 
@@ -1547,11 +1539,9 @@ export const Lobby: React.FC<LobbyProps> = ({
                   {/* Target Winning Points Selector */}
                   <div className="space-y-1.5 pt-2 border-t border-white/[0.08]">
                     <div className="flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                          // VICTORY CRITERIA
-                        </span>
-                        <label className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">🏆</span>
+                        <label className="text-sm font-bold text-white font-['Prompt',sans-serif]">
                           เป้าหมายแต้มชัยชนะ
                         </label>
                       </div>
@@ -1634,11 +1624,9 @@ export const Lobby: React.FC<LobbyProps> = ({
                   {/* Target Winning Points Selector */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                          // VICTORY CRITERIA
-                        </span>
-                        <label className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">🏆</span>
+                        <label className="text-sm font-bold text-white font-['Prompt',sans-serif]">
                           เป้าหมายแต้มชัยชนะ
                         </label>
                       </div>
@@ -1690,14 +1678,9 @@ export const Lobby: React.FC<LobbyProps> = ({
 
                   {/* Room Deployment Note */}
                   <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-3.5 space-y-1.5 text-xs text-slate-300">
-                    <div>
-                      <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                        // S.H.I.E.L.D. DISPATCH
-                      </span>
-                      <p className="font-bold text-amber-300 flex items-center gap-1.5 pt-1">
-                        <span>🛡️</span> ศูนย์ควบคุมห้องออนไลน์
-                      </p>
-                    </div>
+                    <p className="font-bold text-amber-300 flex items-center gap-2 text-xs font-['Prompt',sans-serif]">
+                      <span>🛡️</span> ศูนย์ควบคุมห้องออนไลน์
+                    </p>
                     <p className="text-[11px] text-slate-400 leading-relaxed">
                       เมื่อสร้างห้องเสร็จ ระบบจะสร้างรหัสห้อง 6 ตัวอักษร คุณสามารถชวนเพื่อนมาร่วมประลอง หรือเพิ่มบอท Marvel AI เข้ามาร่วมเล่นจนครบ 4 คนได้ในห้องรอ
                     </p>
@@ -1726,12 +1709,10 @@ export const Lobby: React.FC<LobbyProps> = ({
               {activeTab === 'join' && (
                 <div className="space-y-4 pt-1 animate-fadeIn">
                   <div className="space-y-2 text-center">
-                    <div>
-                      <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                        // ACCESS AUTHENTICATION
-                      </span>
-                      <label htmlFor="room-code" className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
-                        กรอกรหัสห้อง 6 หลัก
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="text-base">🔑</span>
+                      <label htmlFor="room-code" className="text-sm font-bold text-white font-['Prompt',sans-serif]">
+                        กรอกรหัสห้อง 6 หลัก (PIN)
                       </label>
                     </div>
                     <input
@@ -1771,11 +1752,9 @@ export const Lobby: React.FC<LobbyProps> = ({
               {activeTab === 'browse' && (
                 <div className="space-y-3 pt-1 animate-fadeIn">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                        // RADAR SCAN
-                      </span>
-                      <span className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base">📡</span>
+                      <span className="text-sm font-bold text-white font-['Prompt',sans-serif]">
                         ห้องที่กำลังรอผู้เล่น
                       </span>
                     </div>
@@ -1854,18 +1833,13 @@ export const Lobby: React.FC<LobbyProps> = ({
           >
             <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
               <div className="flex items-center gap-2.5">
-                <span className="text-sm">🗺️</span>
-                <div>
-                  <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                    // COMBAT THEATER
-                  </span>
-                  <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
-                    สมรภูมิรบที่เลือก
-                  </span>
-                </div>
+                <span className="text-base">🗺️</span>
+                <span className="font-['Prompt',sans-serif] font-bold tracking-wide text-sm text-white block">
+                  สมรภูมิรบที่เลือก
+                </span>
               </div>
-              <span className="text-[10px] font-mono text-amber-400/90 tracking-wider bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">
-                ACTIVE REALM
+              <span className="text-[10px] font-['Prompt',sans-serif] text-amber-400/90 tracking-wider bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">
+                แผนที่ปัจจุบัน
               </span>
             </div>
 
@@ -1935,18 +1909,13 @@ export const Lobby: React.FC<LobbyProps> = ({
           >
             <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
               <div className="flex items-center gap-2.5">
-                <span className="text-sm">🧤</span>
-                <div>
-                  <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                    // INFINITY MATRIX
-                  </span>
-                  <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
-                    คลังอัญมณีอินฟินิตี้
-                  </span>
-                </div>
+                <span className="text-base">🧤</span>
+                <span className="font-['Prompt',sans-serif] font-bold tracking-wide text-sm text-white block">
+                  คลังอัญมณีอินฟินิตี้
+                </span>
               </div>
-              <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
-                {botCount + 1} OPERATIVES
+              <span className="text-[10px] font-['Prompt',sans-serif] text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
+                {botCount + 1} ผู้เล่นในเกม
               </span>
             </div>
 
@@ -2025,7 +1994,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             </span>
           </p>
           <p className="text-[9.5px] text-slate-400 font-mono uppercase tracking-wider">
-            NACHAPOL PROTOCOL // MARVEL SPLENDOR FAN EXPERIENCE
+            NACHAPOL PROTOCOL • MARVEL SPLENDOR FAN EXPERIENCE
           </p>
         </footer>
 
@@ -2060,12 +2029,12 @@ export const Lobby: React.FC<LobbyProps> = ({
                     ⚡
                   </span>
                   <div>
-                    <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
-                      // S.H.I.E.L.D. COMBAT ARCHIVE
-                    </span>
-                    <h3 className="text-base sm:text-lg font-display font-black text-white pt-0.5">
-                      เลือกคู่ต่อสู้ AI สำหรับ SLOT #{selectingBotSlot + 1}
+                    <h3 className="text-base sm:text-lg font-['Prompt',sans-serif] font-bold text-white">
+                      เลือกคู่ต่อสู้ AI สำหรับช่อง #{selectingBotSlot + 1}
                     </h3>
+                    <p className="text-xs text-amber-300/90 font-medium font-['Prompt',sans-serif]">
+                      เลือกฮีโร่หรือวายร้ายที่คุณต้องการประลองฝีมือ
+                    </p>
                   </div>
                 </div>
                 <button
