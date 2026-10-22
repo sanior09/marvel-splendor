@@ -1,5 +1,5 @@
 // ============================================================
-//  ResponsiveScaler.tsx — Viewport Scaler with In-App Zoom & Pan
+//  ResponsiveScaler.tsx โ€” Viewport Scaler with In-App Zoom & Pan
 //  Features:
 //   - Edge-to-edge dynamic aspect ratio scaling (zero black bars)
 //   - In-app interactive Zoom In / Out (75% to 150%)
@@ -26,9 +26,6 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
   const [scale, setScale] = useState<number>(1);
   const [contentWidth, setContentWidth] = useState<number>(baseWidth);
   const [isScaled, setIsScaled] = useState<boolean>(false);
-  // Portrait phones get a rotate hint (dismissible)
-  const [isPortraitPhone, setIsPortraitPhone] = useState<boolean>(false);
-  const [rotateDismissed, setRotateDismissed] = useState<boolean>(false);
 
   // User interactive zoom level (1.0 = default fit, 0.75x = 75%, 1.5x = 150%)
   const [userZoom, setUserZoom] = useState<number>(() => {
@@ -72,7 +69,6 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
     const handleResize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      setIsPortraitPhone(h > w && w < 700);
 
       if (w < baseWidth || h < baseHeight || h <= 680) {
         let newScale = h / baseHeight;
@@ -235,27 +231,6 @@ export const ResponsiveScaler: React.FC<ResponsiveScalerProps> = ({
       >
         {children}
       </div>
-
-      {isPortraitPhone && !rotateDismissed && (
-        <div
-          className="absolute inset-0 z-[9999] flex flex-col items-center justify-center gap-4 bg-[#07080f]/95 px-8 text-center"
-          style={{ touchAction: 'auto' }}
-        >
-          <div className="text-6xl" style={{ transform: 'rotate(90deg)' }}>📱</div>
-          <h2 className="text-xl font-bold text-yellow-300">กรุณาหมุนจอเป็นแนวนอน</h2>
-          <p className="text-sm text-white/75 leading-relaxed">
-            กระดานเกมออกแบบมาให้เล่นแนวนอน
-            หากหมุนแล้วยังไม่เปลี่ยน ให้เปิดการล็อกการหมุนหน้าจอในเครื่อง
-          </p>
-          <button
-            type="button"
-            onClick={() => setRotateDismissed(true)}
-            className="mt-2 px-4 py-2 rounded-lg border border-white/25 text-xs text-white/70 hover:bg-white/10 cursor-pointer"
-          >
-            เล่นแนวตั้งต่อไป
-          </button>
-        </div>
-      )}
     </div>
   );
 };
