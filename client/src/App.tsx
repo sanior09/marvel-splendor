@@ -16,7 +16,7 @@ import { usePageTransition } from './hooks/usePageTransition';
 import type { RoomInfo } from '@shared/types/game.types';
 
 /**
- * 🔒 J.A.R.V.I.S. PROTOCOL: MAINTENANCE MODE
+ * 🔒 PROTOCOL: MAINTENANCE MODE
  * ตั้งเป็น true: ปิดปรับปรุงระบบ (Systems Offline / Maintenance Mode)
  * ตั้งเป็น false: เปิดระบบให้เข้าเล่นเกม Marvel Splendor ตามคำสั่งของเจ้านาย
  */

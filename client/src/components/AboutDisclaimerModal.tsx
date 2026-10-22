@@ -23,24 +23,24 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 select-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 select-none">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/85 backdrop-blur-md transition-opacity"
         onClick={handleClose}
       />
 
-      {/* Modal Container — Using animate-fade-in to maintain crisp Windows ClearType subpixel rendering */}
-      <div className="relative rounded-2xl border border-white/15 shadow-[0_24px_70px_rgba(0,0,0,0.95)] max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden animate-fade-in z-10 bg-gradient-to-b from-[#0e1424] via-[#090d16] to-[#06080e] text-white font-sans">
+      {/* Modal Container — Fits comfortably in viewport without scrolling */}
+      <div className="relative rounded-2xl border border-white/15 shadow-[0_24px_70px_rgba(0,0,0,0.95)] max-w-2xl w-full flex flex-col overflow-hidden animate-fade-in z-10 bg-gradient-to-b from-[#0e1424] via-[#090d16] to-[#06080e] text-white font-sans">
         {/* Header */}
-        <header className="px-4 sm:px-6 py-4 border-b border-white/10 flex items-center justify-between bg-gradient-to-r from-red-600/20 via-amber-500/10 to-transparent shrink-0">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">🛡️</span>
+        <header className="px-5 py-3 border-b border-white/10 flex items-center justify-between bg-gradient-to-r from-red-600/20 via-amber-500/10 to-transparent shrink-0">
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl sm:text-2xl drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">🛡️</span>
             <div>
-              <h2 className="font-sans text-base sm:text-lg font-bold text-white tracking-wide">
+              <h2 className="font-sans text-sm sm:text-base font-bold text-white tracking-wide leading-tight">
                 เกี่ยวกับเว็บไซต์และข้อกำหนดลิขสิทธิ์
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300">
+              <p className="text-[11px] sm:text-xs text-slate-300">
                 Splendor: Marvel Fan-Made Project • ข้อมูลผู้พัฒนา
               </p>
             </div>
@@ -48,40 +48,40 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
           <button
             type="button"
             onClick={handleClose}
-            className="w-8 h-8 rounded-xl bg-white/10 hover:bg-red-600/80 text-white flex items-center justify-center text-sm transition-colors cursor-pointer border border-white/15"
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white/10 hover:bg-red-600/80 text-white flex items-center justify-center text-xs sm:text-sm transition-colors cursor-pointer border border-white/15"
             aria-label="Close"
           >
             ✕
           </button>
         </header>
 
-        {/* Content Body */}
-        <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-4 text-xs sm:text-sm leading-relaxed">
+        {/* Content Body — Compact vertical rhythm to avoid scrolling */}
+        <div className="p-3.5 sm:p-4 space-y-2.5 text-xs sm:text-[13px] leading-relaxed">
           {/* Section 1: Developer Info */}
-          <div className="bg-gradient-to-br from-amber-500/[0.08] via-black/40 to-black/60 rounded-xl p-4 border border-amber-400/30 space-y-2">
+          <div className="bg-gradient-to-br from-amber-500/[0.08] via-black/40 to-black/60 rounded-xl p-3 border border-amber-400/30 space-y-1.5">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <span className="text-amber-400 font-bold uppercase text-xs sm:text-sm tracking-wide">
+              <span className="text-amber-400 font-bold uppercase text-[11px] sm:text-xs tracking-wide">
                 ผู้พัฒนาเว็บไซต์ (Developer / Creator)
               </span>
-              <span className="bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-500/25 text-amber-200 border border-amber-400/50 px-3.5 py-1 rounded-full font-bold text-xs sm:text-sm shadow-[0_0_14px_rgba(245,158,11,0.25)] tracking-wider">
+              <span className="bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-500/25 text-amber-200 border border-amber-400/50 px-3 py-0.5 rounded-full font-bold text-[11px] sm:text-xs shadow-[0_0_14px_rgba(245,158,11,0.25)] tracking-wider">
                 👑 sanior09
               </span>
             </div>
-            <p className="text-slate-100 text-xs sm:text-sm leading-relaxed font-normal">
+            <p className="text-slate-100 text-xs sm:text-[12.5px] leading-relaxed font-normal">
               โครงการนี้พัฒนาขึ้นโดย <strong className="text-amber-300 font-bold">sanior09</strong> ด้วยความมุ่งมั่นในการสร้างสรรค์ระบบเว็บเกมกระดานแบบ Real-Time Multiplayer และ Solo AI บนสถาปัตยกรรม React, TypeScript, Node.js และ Web Audio API
             </p>
           </div>
 
           {/* Section 2: Non-Commercial Statement (Critical Notice) */}
-          <div className="bg-gradient-to-br from-red-950/45 via-red-900/15 to-black/60 rounded-xl p-4 border border-red-500/40 shadow-[0_0_20px_rgba(220,38,38,0.12)] space-y-2.5">
-            <div className="flex items-center gap-2 text-red-400 font-bold text-xs sm:text-sm uppercase tracking-wide">
+          <div className="bg-gradient-to-br from-red-950/45 via-red-900/15 to-black/60 rounded-xl p-3 border border-red-500/40 shadow-[0_0_20px_rgba(220,38,38,0.12)] space-y-2">
+            <div className="flex items-center gap-2 text-red-400 font-bold text-[11px] sm:text-xs uppercase tracking-wide">
               <span>⚠️</span>
               <span>คำชี้แจง: ไม่ได้ทำเพื่อการค้าหรือหารายได้ (Non-Commercial Notice)</span>
             </div>
-            <p className="text-white text-xs sm:text-sm leading-relaxed">
+            <p className="text-white text-xs sm:text-[12.5px] leading-relaxed">
               เว็บไซต์และเกมนี้สร้างขึ้นมา <strong className="text-amber-300 font-bold">เพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Tribute สำหรับแฟนบอร์ดเกม Splendor และ Marvel เท่านั้น</strong>
             </p>
-            <ul className="list-disc list-inside space-y-1.5 text-slate-100 text-xs sm:text-sm pl-1 leading-relaxed font-normal">
+            <ul className="list-disc list-inside space-y-1 text-slate-100 text-xs sm:text-[12px] pl-1 leading-relaxed font-normal">
               <li><strong className="text-white font-bold">ไม่มีการแสวงหาผลกำไร:</strong> ไม่มีการเรียกเก็บค่าธรรมเนียมหรือค่าใช้จ่ายใดๆ จากผู้เล่นทั้งสิ้น</li>
               <li><strong className="text-white font-bold">ไม่มีระบบเติมเงิน:</strong> ไม่มีการขายสินค้า การซื้อขายไอเทม หรือระบบ Microtransactions ใดๆ</li>
               <li><strong className="text-white font-bold">ไม่มีโฆษณา:</strong> ไม่มีการติดแบนเนอร์โฆษณา (No Ads) หรือสร้างรายได้จากการเข้าชมเว็บไซต์</li>
@@ -89,32 +89,32 @@ export const AboutDisclaimerModal: React.FC<AboutDisclaimerModalProps> = ({
           </div>
 
           {/* Section 3: Copyright & Trademark Notice */}
-          <div className="bg-white/5 rounded-xl p-4 border border-white/10 space-y-2.5">
-            <div className="flex items-center gap-2 text-slate-100 font-bold text-xs sm:text-sm">
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10 space-y-2">
+            <div className="flex items-center gap-2 text-slate-100 font-bold text-[11px] sm:text-xs">
               <span>⚖️</span>
               <span>ทรัพย์สินทางปัญญาและลิขสิทธิ์ (Copyright & Trademarks)</span>
             </div>
-            <p className="text-slate-200 text-xs sm:text-sm leading-relaxed">
+            <p className="text-slate-200 text-[11.5px] sm:text-xs leading-relaxed">
               เครื่องหมายการค้า ตัวละคร ฮีโร่ รูปภาพ โลโก้ และเนื้อหาจักรวาลมาร์เวลทั้งหมด เป็นลิขสิทธิ์และทรัพย์สินทางปัญญาของ <strong className="text-white font-bold">MARVEL Entertainment / The Walt Disney Company</strong>
             </p>
-            <p className="text-slate-200 text-xs sm:text-sm leading-relaxed">
+            <p className="text-slate-200 text-[11.5px] sm:text-xs leading-relaxed">
               กลไกและระบบกติกาเกม Splendor เป็นทรัพย์สินทางปัญญาของ <strong className="text-white font-bold">Space Cowboys / Asmodee Group</strong>
             </p>
             
             {/* High-Contrast Clear Recommendation Callout */}
-            <div className="bg-black/60 border border-amber-400/40 rounded-xl p-3 sm:p-3.5 text-slate-100 text-xs sm:text-sm leading-relaxed font-normal shadow-sm">
+            <div className="bg-black/60 border border-amber-400/40 rounded-xl p-2.5 text-slate-100 text-xs sm:text-[12.5px] leading-relaxed font-normal shadow-sm">
               หากท่านชื่นชอบความสนุกของเกม ขอแนะนำให้อุดหนุนบอร์ดเกมกล่องแท้ <span className="text-amber-300 font-bold">"Splendor: Marvel"</span> เพื่อสนับสนุนผู้ถือลิขสิทธิ์อย่างเป็นทางการครับ
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <footer className="px-5 py-3.5 bg-black/80 border-t border-white/10 flex items-center justify-between text-xs text-slate-300 shrink-0">
-          <span className="text-xs sm:text-sm text-slate-300">Made with ❤️ for Marvel Splendor Fans</span>
+        <footer className="px-5 py-2.5 bg-black/80 border-t border-white/10 flex items-center justify-between text-xs text-slate-300 shrink-0">
+          <span className="text-[11px] sm:text-xs text-slate-400">Made with ❤️ for Marvel Splendor Fans</span>
           <button
             type="button"
             onClick={handleClose}
-            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-bold text-sm sm:text-base tracking-wide cursor-pointer transition-all shadow-[0_0_20px_rgba(245,158,11,0.35)] border border-amber-300/50 active:scale-95"
+            className="px-6 py-2 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-bold text-xs sm:text-sm tracking-wide cursor-pointer transition-all shadow-[0_0_20px_rgba(245,158,11,0.35)] border border-amber-300/50 active:scale-95"
           >
             รับทราบและปิด
           </button>
