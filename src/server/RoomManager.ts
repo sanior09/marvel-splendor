@@ -23,7 +23,7 @@ import {
   sanitizeStateForPlayer,
 } from '../engine/GameLogic';
 import { computeBotAction } from '../engine/BotLogic';
-import { userManager } from './UserManager';
+import { userManager, XP_AWARDS } from './UserManager';
 
 // ─── Internal Types ───────────────────────────────────────────
 
@@ -704,7 +704,7 @@ export class RoomManager {
       const isRankOne = won;
       const tier3Count = pState ? pState.ownedCards.filter((c) => c.tier === 3).length : 0;
       const guardianCount = pState?.guardians?.length ?? 0;
-      const bonusXP = (tier3Count * 3) + (guardianCount * 5);
+      const bonusXP = (tier3Count * XP_AWARDS.BUY_TIER3) + (guardianCount * XP_AWARDS.CLAIM_GUARDIAN);
 
       if (session.accountId && !session.isBot) {
         try {
@@ -727,9 +727,9 @@ export class RoomManager {
           console.error(`[RoomManager] Error recording game result for user ${session.accountId}:`, err);
         }
       } else {
-        const baseXP = 15;
-        const winXP = won ? 35 : 0;
-        const rankXP = isRankOne ? 20 : 0;
+        const baseXP = XP_AWARDS.GAME_PLAYED;
+        const winXP = won ? XP_AWARDS.GAME_WIN : 0;
+        const rankXP = isRankOne ? XP_AWARDS.RANK_1 : 0;
         const totalXP = baseXP + winXP + rankXP + bonusXP;
         xpData[session.id] = {
           xpGained: totalXP,

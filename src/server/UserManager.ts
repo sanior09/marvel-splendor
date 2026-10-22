@@ -46,11 +46,11 @@ export function getNextRank(xp: number): Rank | null {
 // ─── XP Awards ───────────────────────────────────────────────
 
 export const XP_AWARDS = {
-  GAME_PLAYED:    15,
-  GAME_WIN:       35,
-  RANK_1:         20,
-  BUY_TIER3:       3,
-  CLAIM_GUARDIAN:  5,
+  GAME_PLAYED:    50,
+  GAME_WIN:       150,
+  RANK_1:         50,
+  BUY_TIER3:      15,
+  CLAIM_GUARDIAN: 25,
 };
 
 // ─── User Document ────────────────────────────────────────────
