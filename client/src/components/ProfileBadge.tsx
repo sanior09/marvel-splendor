@@ -34,28 +34,22 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
       ))
     : 100;
 
-  const isOwner = Boolean(
-    profile.rank.isOwner ||
-    profile.rank.name.includes('CHIEF ARCHITECT') ||
-    profile.rank.name.includes('GAME OWNER')
-  );
+  const isOwner = Boolean(profile.rank.isOwner || profile.rank.minXP >= 50000);
 
   return (
     <div className="relative">
-      {/* ── Badge Button Trigger (Stark Arc Reactor / Gold Cyber Header) ── */}
+      {/* ── Badge Button Trigger (Stark Gold Cyber Header) ── */}
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
         className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all cursor-pointer backdrop-blur-md ${
           isOwner
-            ? 'border-cyan-400/60 bg-gradient-to-r from-cyan-950/40 via-sky-950/30 to-amber-950/40 hover:from-cyan-900/50 hover:to-amber-900/50 shadow-[0_0_18px_rgba(56,189,248,0.3)] hover:shadow-[0_0_24px_rgba(56,189,248,0.5)] hover:scale-105 active:scale-95'
+            ? 'border-amber-400/60 bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/20 hover:from-amber-500/25 hover:to-amber-600/30 shadow-[0_0_16px_rgba(245,158,11,0.25)] hover:shadow-[0_0_22px_rgba(245,158,11,0.4)] hover:scale-105 active:scale-95'
             : 'border-white/15 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/30 hover:scale-105 active:scale-95'
         }`}
       >
         {/* Tiny Hero Portrait or Crown Icon */}
-        <div className={`relative w-6 h-6 rounded-full overflow-hidden border shrink-0 bg-neutral-900 shadow-sm flex items-center justify-center ${
-          isOwner ? 'border-cyan-400/80 shadow-[0_0_8px_rgba(56,189,248,0.4)]' : 'border-amber-400/80'
-        }`}>
+        <div className="relative w-6 h-6 rounded-full overflow-hidden border border-amber-400/80 shrink-0 bg-neutral-900 shadow-sm flex items-center justify-center">
           {avatarUrl ? (
             <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
           ) : (
@@ -71,17 +65,11 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
               {profile.username}
             </span>
           </div>
-          <div className={`text-[10px] font-bold leading-tight tracking-wide ${
-            isOwner
-              ? 'text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-amber-300 drop-shadow-[0_0_6px_rgba(56,189,248,0.4)]'
-              : 'text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-400 drop-shadow-sm'
-          }`}>
+          <div className="text-[10px] font-bold leading-tight tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-400 drop-shadow-sm">
             {profile.rank.name}
           </div>
         </div>
-        <div className={isOwner ? 'text-cyan-400/80 text-xs ml-0.5' : 'text-amber-400/60 text-xs ml-0.5'}>
-          {expanded ? '▲' : '▼'}
-        </div>
+        <div className="text-amber-400/60 text-xs ml-0.5">{expanded ? '▲' : '▼'}</div>
       </button>
 
       {/* Click outside backdrop */}
@@ -92,18 +80,16 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
         />
       )}
 
-      {/* ── Dropdown Popup Modal (Stark Obsidian Arc Reactor Console) ── */}
+      {/* ── Dropdown Popup Modal (Stark Obsidian Gold Console) ── */}
       {expanded && (
         <div
           className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:translate-x-0 sm:translate-y-0 sm:mt-2.5 w-[min(92vw,340px)] sm:w-80 max-h-[92vh] sm:max-h-[85vh] overflow-y-auto rounded-2xl p-3.5 sm:p-4 z-50 border animate-fade-in shadow-2xl select-none"
           style={{
-            background: isOwner
-              ? 'linear-gradient(165deg, rgba(8, 16, 32, 0.98) 0%, rgba(12, 24, 46, 0.98) 55%, rgba(24, 18, 6, 0.98) 100%)'
-              : 'linear-gradient(165deg, rgba(16, 22, 36, 0.98) 0%, rgba(8, 11, 20, 0.99) 100%)',
+            background: 'linear-gradient(165deg, rgba(16, 22, 36, 0.98) 0%, rgba(8, 11, 20, 0.99) 100%)',
             backdropFilter: 'blur(28px)',
-            borderColor: isOwner ? 'rgba(56, 189, 248, 0.55)' : 'rgba(255, 255, 255, 0.15)',
+            borderColor: isOwner ? 'rgba(245, 158, 11, 0.45)' : 'rgba(255, 255, 255, 0.15)',
             boxShadow: isOwner
-              ? '0 24px 50px rgba(0,0,0,0.95), 0 0 35px rgba(56,189,248,0.25), inset 0 0 1px rgba(255, 215, 0, 0.3)'
+              ? '0 24px 50px rgba(0,0,0,0.95), 0 0 30px rgba(245,158,11,0.2)'
               : '0 24px 50px rgba(0,0,0,0.85)',
           }}
         >
@@ -114,22 +100,20 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
               <div
                 className="relative w-12 h-12 rounded-2xl flex items-center justify-center border-2 shrink-0 overflow-hidden bg-neutral-900 shadow-md"
                 style={{
-                  borderColor: isOwner ? '#38bdf8' : profile.rank.color,
-                  boxShadow: isOwner ? '0 0 16px rgba(56, 189, 248, 0.5), inset 0 0 8px rgba(255, 215, 0, 0.3)' : undefined,
+                  borderColor: isOwner ? '#f59e0b' : profile.rank.color,
+                  boxShadow: isOwner ? '0 0 16px rgba(245, 158, 11, 0.4)' : undefined,
                 }}
               >
                 {avatarUrl ? (
                   <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
                 ) : (
-                  <div className={`w-full h-full flex items-center justify-center text-2xl ${
-                    isOwner ? 'bg-cyan-500/15' : 'bg-amber-500/15'
-                  }`}>
+                  <div className="w-full h-full flex items-center justify-center text-2xl bg-amber-500/15">
                     {profile.rank.icon}
                   </div>
                 )}
                 {/* Crown watermark badge */}
                 {isOwner && (
-                  <span className="absolute bottom-0 right-0 text-[10px] bg-black/80 px-1 py-0.2 rounded-tl-md border-t border-l border-cyan-400/60 leading-none">
+                  <span className="absolute bottom-0 right-0 text-[10px] bg-black/80 px-1 py-0.2 rounded-tl-md border-t border-l border-amber-400/50 leading-none">
                     👑
                   </span>
                 )}
@@ -156,25 +140,17 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
             </button>
           </div>
 
-          {/* ── EXP Progress Card (Arc Reactor Core) ── */}
-          <div className={`mb-3 p-3 rounded-xl border shadow-inner relative overflow-hidden ${
-            isOwner
-              ? 'border-cyan-400/35 bg-gradient-to-br from-cyan-950/30 via-black/50 to-amber-950/25'
-              : 'border-amber-400/30 bg-gradient-to-br from-amber-500/[0.08] via-black/40 to-black/60'
-          }`}>
+          {/* ── EXP Progress Card (Infinity Arc Energy Core) ── */}
+          <div className="mb-3 p-3 rounded-xl border border-amber-400/30 bg-gradient-to-br from-amber-500/[0.08] via-black/40 to-black/60 shadow-inner relative overflow-hidden">
             {/* Top row: Label + Badge */}
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-1.5">
-                <span className={isOwner ? 'text-cyan-400 text-xs' : 'text-amber-400 text-xs'}>⚡</span>
+                <span className="text-amber-400 text-xs">⚡</span>
                 <span className="text-xs font-bold text-slate-200 uppercase tracking-wide font-['Prompt',sans-serif]">
                   EXP สะสม
                 </span>
               </div>
-              <span className={`text-xs font-bold font-num px-2.5 py-0.5 rounded-full border ${
-                isOwner
-                  ? 'border-cyan-400/40 bg-cyan-500/15 text-cyan-200 shadow-[0_0_10px_rgba(56,189,248,0.25)]'
-                  : 'border-amber-400/40 bg-amber-500/15 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
-              }`}>
+              <span className="text-xs font-bold font-num px-2.5 py-0.5 rounded-full border border-amber-400/40 bg-amber-500/15 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
                 {profile.xp.toLocaleString()} XP
               </span>
             </div>
@@ -186,10 +162,10 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                 style={{
                   width: `${xpPercent}%`,
                   background: isOwner
-                    ? 'linear-gradient(90deg, #38bdf8 0%, #7dd3fc 40%, #ffd700 80%, #f59e0b 100%)'
+                    ? 'linear-gradient(90deg, #f59e0b 0%, #ffd700 50%, #ea580c 100%)'
                     : `linear-gradient(90deg, ${profile.rank.color}, ${profile.nextRank?.color ?? '#ffd700'})`,
                   boxShadow: isOwner
-                    ? '0 0 14px rgba(56, 189, 248, 0.8), 0 0 6px rgba(255, 215, 0, 0.5)'
+                    ? '0 0 12px rgba(245, 158, 11, 0.75)'
                     : `0 0 10px ${profile.rank.color}88`,
                 }}
               >
@@ -209,14 +185,10 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                   </span>
                 </>
               ) : (
-                <div className={`w-full text-center text-xs font-bold flex items-center justify-center gap-1.5 pt-0.5 ${
-                  isOwner
-                    ? 'text-cyan-200 drop-shadow-[0_0_8px_rgba(56,189,248,0.45)]'
-                    : 'text-amber-300 drop-shadow-[0_0_8px_rgba(245,158,11,0.35)]'
-                }`}>
-                  <span>⚡</span>
-                  <span>{isOwner ? 'สถาปนิกและเจ้าของเกม (ARC REACTOR PRIME)' : 'บรรลุขีดสุดพลังจักรวาลแล้ว (MAX RANK)'}</span>
-                  <span>👑</span>
+                <div className="w-full text-center text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 pt-0.5 drop-shadow-[0_0_8px_rgba(245,158,11,0.35)]">
+                  <span>✨</span>
+                  <span>บรรลุขีดสุดพลังจักรวาลแล้ว (MAX RANK)</span>
+                  <span>✨</span>
                 </div>
               )}
             </div>
