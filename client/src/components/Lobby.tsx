@@ -1011,12 +1011,12 @@ export const Lobby: React.FC<LobbyProps> = ({
       />
 
       <div
-        className="w-full h-full overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start px-3 sm:px-6 py-3 sm:py-5 relative select-none touch-pan-y"
+        className="w-full h-full overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start px-3 sm:px-6 py-1.5 lg:py-2.5 relative select-none touch-pan-y"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         
         {/* Top Command Telemetry Bar */}
-        <div className="w-full max-w-6xl mx-auto flex items-center justify-between gap-3 pt-1 pb-3">
+        <div className="w-full max-w-6xl mx-auto flex items-center justify-between gap-3 pt-0.5 pb-1 lg:pb-1.5">
           {/* Telemetry watermark on left */}
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
@@ -1044,7 +1044,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 soundManager.playModalOpen();
                 setShowTutorial(true);
               }}
-              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/50 text-yellow-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
+              className="px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/50 text-yellow-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
               title="คู่มือวิธีเล่น MARVEL SPLENDOR"
             >
               <span>📘</span>
@@ -1065,7 +1065,7 @@ export const Lobby: React.FC<LobbyProps> = ({
               <button
                 type="button"
                 onClick={onLogout}
-                className="px-3 py-1.5 rounded-xl border border-white/15 bg-white/[0.04] text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer"
+                className="px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-xl border border-white/15 bg-white/[0.04] text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer"
                 title="เข้าสู่ระบบเพื่อสะสมแต้มและบันทึกประวัติ"
               >
                 เข้าสู่ระบบ
@@ -1075,16 +1075,16 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
 
         {/* Hero Header Title */}
-        <div className="w-full text-center space-y-1.5 my-2 sm:my-3">
-          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5">
-            <span className="px-3.5 py-1 bg-[#e23636] text-white font-black text-2xl sm:text-3xl tracking-tighter rounded-md shadow-[0_0_30px_rgba(226,54,54,0.5)] uppercase border border-red-400/30 font-['Bebas_Neue',sans-serif]">
+        <div className="w-full text-center space-y-1 my-1 lg:my-1.5">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+            <span className="px-2.5 py-0.5 bg-[#e23636] text-white font-black text-xl lg:text-2xl tracking-tighter rounded shadow-[0_0_24px_rgba(226,54,54,0.45)] uppercase border border-red-400/30 font-['Bebas_Neue',sans-serif]">
               MARVEL
             </span>
-            <span className="text-2xl sm:text-4xl font-black tracking-wider uppercase font-['Montserrat',sans-serif] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 drop-shadow-[0_2px_14px_rgba(234,179,8,0.35)]">
+            <span className="text-xl lg:text-3xl font-black tracking-wider uppercase font-['Montserrat',sans-serif] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 drop-shadow-[0_2px_12px_rgba(234,179,8,0.3)]">
               SPLENDOR
             </span>
           </div>
-          <div className="flex items-center justify-center gap-2 text-[11px] sm:text-xs font-medium text-slate-300 font-['Prompt',sans-serif]">
+          <div className="flex items-center justify-center gap-2 text-[10.5px] lg:text-xs font-medium text-slate-300 font-['Prompt',sans-serif]">
             <span className="text-amber-400 font-bold">ศูนย์บัญชาการยุทธวิธี</span>
             <span className="text-white/30">•</span>
             <span>เลือกโหมดการเล่น ปรับแต่งทีมฮีโร่ และเข้าสู่สมรภูมิรบ</span>
@@ -1093,9 +1093,9 @@ export const Lobby: React.FC<LobbyProps> = ({
 
         {/* AFK / Inactivity notification banner */}
         {afkNotice && (
-          <div className="max-w-6xl w-full mb-3 p-3 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-lg animate-slide-up">
+          <div className="max-w-6xl w-full mb-2 p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs flex items-center justify-between gap-3 shadow-lg animate-slide-up">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-xl shrink-0">⏳</span>
+              <span className="text-lg shrink-0">⏳</span>
               <span className="font-medium">{afkNotice}</span>
             </div>
             {onClearAfkNotice && (
@@ -1110,38 +1110,38 @@ export const Lobby: React.FC<LobbyProps> = ({
           </div>
         )}
 
-        {/* ── Main Bento Command Center Grid (Mobile-Optimized Order + Responsive 2-Col Bento on Desktop) ── */}
-        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 pb-6 items-start">
+        {/* ── Main Bento Command Center Grid (Responsive 2-Col Bento on Desktop) ── */}
+        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-3.5 pb-2 items-start">
           
           {/* Card 1: Operative Identification (Order 1 on Mobile, Left Column Row 1 on Desktop) */}
           <div
-            className="order-1 lg:order-1 lg:col-span-5 rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-4 transition-all self-start"
+            className="order-1 lg:order-1 lg:col-span-5 rounded-2xl lg:rounded-3xl border border-white/[0.12] p-3 lg:p-3.5 space-y-2 lg:space-y-2.5 transition-all self-start"
             style={{
               background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
               backdropFilter: 'blur(28px)',
-              boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
+              boxShadow: '0 16px 40px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
             }}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-              <div className="flex items-center gap-2.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_12px_#f59e0b]" />
-                <span className="font-['Prompt',sans-serif] font-bold tracking-wide text-sm text-white block">
+            <div className="flex items-center justify-between pb-1.5 border-b border-white/[0.08]">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_10px_#f59e0b]" />
+                <span className="font-['Prompt',sans-serif] font-bold tracking-wide text-xs lg:text-sm text-white block">
                   ข้อมูลฮีโร่ของคุณ
                 </span>
               </div>
               {userProfile?.username ? (
-                <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
+                <span className="text-[9px] lg:text-[10px] font-mono text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
                   ● SYNCED
                 </span>
               ) : (
-                <span className="text-[10px] font-['Prompt',sans-serif] text-slate-400/90 tracking-wider bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full">
+                <span className="text-[9px] lg:text-[10px] font-['Prompt',sans-serif] text-slate-400/90 tracking-wider bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">
                   โหมดผู้มาเยือน
                 </span>
               )}
             </div>
 
             {/* Avatar + Callsign input */}
-            <div className="flex items-center gap-4 pt-0.5">
+            <div className="flex items-center gap-3 pt-0.5">
               {/* Tactile Avatar Badge with quick hover indicator */}
               <button
                 type="button"
@@ -1150,32 +1150,32 @@ export const Lobby: React.FC<LobbyProps> = ({
                   setShowAvatarPicker(true);
                 }}
                 title="เปลี่ยนรูปโปรไฟล์มาร์เวล"
-                className="relative shrink-0 w-16 h-16 rounded-2xl overflow-hidden border-2 border-amber-400/70 shadow-[0_0_24px_rgba(245,158,11,0.3)] hover:border-amber-300 hover:scale-105 transition-all cursor-pointer group active:scale-95"
+                className="relative shrink-0 w-12 h-12 lg:w-13 lg:h-13 rounded-xl overflow-hidden border-2 border-amber-400/70 shadow-[0_0_16px_rgba(245,158,11,0.25)] hover:border-amber-300 hover:scale-105 transition-all cursor-pointer group active:scale-95"
               >
                 {avatarUrl ? (
                   <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover object-center" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center font-black text-white text-xl">
+                  <div className="w-full h-full bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center font-black text-white text-lg">
                     {avatarInitial}
                   </div>
                 )}
                 <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-sm">✏️</span>
-                  <span className="text-[9px] text-white font-bold tracking-tight">เปลี่ยน</span>
+                  <span className="text-xs">✏️</span>
+                  <span className="text-[8px] text-white font-bold tracking-tight">เปลี่ยน</span>
                 </div>
               </button>
 
               {/* Hero Name Input */}
-              <div className="flex-1 min-w-0 space-y-1.5">
+              <div className="flex-1 min-w-0 space-y-1">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="player-name" className="text-xs font-bold text-slate-200 font-['Prompt',sans-serif]">
+                  <label htmlFor="player-name" className="text-[11px] lg:text-xs font-bold text-slate-200 font-['Prompt',sans-serif]">
                     ชื่อฮีโร่ของคุณ
                   </label>
                   {userProfile?.username && playerName.trim() !== userProfile.username && (
                     <button
                       type="button"
                       onClick={() => setPlayerName(userProfile.username)}
-                      className="text-[10px] text-amber-300 hover:text-amber-200 underline cursor-pointer"
+                      className="text-[9px] text-amber-300 hover:text-amber-200 underline cursor-pointer"
                       title="กดเพื่อรีเซ็ตกลับเป็นชื่อบัญชี"
                     >
                       ↺ คืนค่า
@@ -1196,7 +1196,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                   autoCorrect="off"
                   spellCheck={false}
                   placeholder={userProfile?.username ? userProfile.username : 'ระบุชื่อฮีโร่ของคุณ...'}
-                  className={`w-full px-3.5 py-2.5 rounded-xl bg-black/45 border text-base sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-all font-['Prompt',sans-serif] ${
+                  className={`w-full px-3 py-1.5 lg:py-2 rounded-xl bg-black/45 border text-sm text-white placeholder-slate-500 focus:outline-none transition-all font-['Prompt',sans-serif] ${
                     error
                       ? 'border-red-500 ring-2 ring-red-500/40 bg-red-950/25'
                       : 'border-white/10 focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20'
@@ -1206,9 +1206,9 @@ export const Lobby: React.FC<LobbyProps> = ({
             </div>
 
             {/* Quick Marvel Avatars Reel */}
-            <div className="space-y-2 pt-1 border-t border-white/[0.06]">
+            <div className="space-y-1 pt-1 border-t border-white/[0.06]">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono text-slate-400 tracking-wider">
+                <span className="text-[9.5px] font-mono text-slate-400 tracking-wider">
                   เลือกอวตารด่วน:
                 </span>
                 <button
@@ -1217,13 +1217,13 @@ export const Lobby: React.FC<LobbyProps> = ({
                     soundManager.playButtonClick();
                     setShowAvatarPicker(true);
                   }}
-                  className="text-[10px] text-amber-400 hover:text-amber-300 font-bold cursor-pointer transition-colors"
+                  className="text-[9.5px] text-amber-400 hover:text-amber-300 font-bold cursor-pointer transition-colors"
                 >
                   ดูทั้งหมด ＋
                 </button>
               </div>
               <div
-                className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none touch-pan-x"
+                className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none touch-pan-x"
                 style={{ WebkitOverflowScrolling: 'touch' }}
               >
                 {MARVEL_AVATARS.slice(0, 8).map((av) => (
@@ -1236,7 +1236,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     }}
                     title={av.name}
                     className={[
-                      'shrink-0 w-9 h-9 sm:w-8 sm:h-8 rounded-xl overflow-hidden border transition-all cursor-pointer hover:scale-110 active:scale-95',
+                      'shrink-0 w-7 h-7 sm:w-7 sm:h-7 rounded-lg overflow-hidden border transition-all cursor-pointer hover:scale-110 active:scale-95',
                       avatarId === av.id
                         ? 'border-amber-400 ring-2 ring-amber-400/40 shadow-lg scale-105'
                         : 'border-white/10 opacity-70 hover:opacity-100',
@@ -1251,7 +1251,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     soundManager.playButtonClick();
                     setShowAvatarPicker(true);
                   }}
-                  className="shrink-0 w-9 h-9 sm:w-8 sm:h-8 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-xs text-white/70 hover:text-white transition-all cursor-pointer hover:scale-105"
+                  className="shrink-0 w-7 h-7 sm:w-7 sm:h-7 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-[10px] text-white/70 hover:text-white transition-all cursor-pointer hover:scale-105"
                   title="ดูฮีโร่ทั้งหมด"
                 >
                   ＋
@@ -1261,10 +1261,10 @@ export const Lobby: React.FC<LobbyProps> = ({
           </div>
 
           {/* ── Right Column: Mission Deployment Console (Order 2 on Mobile, Right Column Spanning 3 Rows on Desktop) ───────── */}
-          <div className="order-2 lg:order-2 lg:col-span-7 lg:row-span-3 flex flex-col gap-4 sm:gap-5">
+          <div className="order-2 lg:order-2 lg:col-span-7 lg:row-span-3 flex flex-col gap-3">
             
             <div
-              className="rounded-3xl border border-white/[0.12] p-5 sm:p-6 space-y-5 transition-all"
+              className="rounded-2xl lg:rounded-3xl border border-white/[0.12] p-3.5 lg:p-4 space-y-3 lg:space-y-3.5 transition-all"
               style={{
                 background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
                 backdropFilter: 'blur(28px)',
@@ -1272,7 +1272,7 @@ export const Lobby: React.FC<LobbyProps> = ({
               }}
             >
               {/* Segmented Mode Switcher Tab Bar */}
-              <div className="p-1 rounded-2xl bg-black/45 border border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-1">
+              <div className="p-0.5 rounded-xl bg-black/45 border border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-1">
                 {(['solo', 'create', 'join', 'browse'] as const).map((tab) => {
                   const tabConfig = {
                     solo:   { label: 'เล่นกับ AI', icon: '🤖', sub: 'สู้กับบอท' },
@@ -1289,14 +1289,14 @@ export const Lobby: React.FC<LobbyProps> = ({
                         soundManager.playButtonClick();
                         setActiveTab(tab);
                       }}
-                      className={`py-2 px-1.5 rounded-xl text-center transition-all duration-200 cursor-pointer flex flex-col items-center justify-center min-h-[44px] ${
+                      className={`py-1.5 px-1 rounded-lg text-center transition-all duration-200 cursor-pointer flex flex-col items-center justify-center min-h-[38px] ${
                         isActive
-                          ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold shadow-md scale-[1.02]'
+                          ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold shadow-md scale-[1.01]'
                           : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
                       }`}
                     >
-                      <span className="text-sm">{tabConfig[tab].icon}</span>
-                      <span className="text-xs tracking-tight font-bold">{tabConfig[tab].label}</span>
+                      <span className="text-xs">{tabConfig[tab].icon}</span>
+                      <span className="text-[11px] tracking-tight font-bold">{tabConfig[tab].label}</span>
                     </button>
                   );
                 })}
@@ -1304,22 +1304,22 @@ export const Lobby: React.FC<LobbyProps> = ({
 
               {/* ── Tab 1: Solo AI Skirmish (Marvel Character Roster Console) ──────── */}
               {activeTab === 'solo' && (
-                <div className="space-y-4 pt-1 animate-fadeIn">
+                <div className="space-y-2.5 lg:space-y-3 pt-0.5 animate-fadeIn">
                   
                   {/* Bot Opponents Count Selector */}
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base">👥</span>
-                        <label className="text-sm font-bold text-white font-['Prompt',sans-serif]">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm">👥</span>
+                        <label className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
                           จำนวนคู่ต่อสู้ AI
                         </label>
                       </div>
-                      <span className="text-[10px] font-['Prompt',sans-serif] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">
+                      <span className="text-[9.5px] font-['Prompt',sans-serif] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full font-bold">
                         {botCount === 1 ? 'ดวล 1v1' : botCount === 2 ? 'แข่ง 3 คน' : 'เต็มสนาม 4 คน'}
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-3 gap-1.5">
                       {[
                         { num: 1, title: '1 บอท', sub: 'ดวลเดี่ยว 1v1', icon: '⚔️' },
                         { num: 2, title: '2 บอท', sub: 'ไตรภาคี 3 คน', icon: '⚡' },
@@ -1333,16 +1333,16 @@ export const Lobby: React.FC<LobbyProps> = ({
                             setBotCount(item.num);
                           }}
                           className={[
-                            'p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[50px] relative overflow-hidden group',
+                            'p-1.5 lg:p-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[42px] relative overflow-hidden group',
                             botCount === item.num
-                              ? 'border-amber-400 bg-gradient-to-b from-amber-500/25 to-amber-600/10 text-yellow-300 ring-1 ring-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.25)] font-black scale-[1.02]'
+                              ? 'border-amber-400 bg-gradient-to-b from-amber-500/25 to-amber-600/10 text-yellow-300 ring-1 ring-amber-400 shadow-[0_0_16px_rgba(245,158,11,0.25)] font-black scale-[1.01]'
                               : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white font-medium hover:border-white/20',
                           ].join(' ')}
                         >
-                          <span className="text-sm font-black font-num flex items-center gap-1.5">
+                          <span className="text-xs font-black font-num flex items-center gap-1">
                             <span>{item.icon}</span> {item.title}
                           </span>
-                          <span className="text-[10px] opacity-75 pt-0.5">
+                          <span className="text-[9px] opacity-75 pt-0.5">
                             {item.sub}
                           </span>
                         </button>
@@ -1351,25 +1351,25 @@ export const Lobby: React.FC<LobbyProps> = ({
                   </div>
 
                   {/* Bot Combatants Roster Cards */}
-                  <div className="space-y-2.5 pt-1">
+                  <div className="space-y-1.5 pt-0.5">
                     <div className="flex items-center justify-between pb-0.5">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base">🦸</span>
-                        <label className="text-sm font-bold text-white font-['Prompt',sans-serif]">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm">🦸</span>
+                        <label className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
                           จัดทัพคู่ต่อสู้ AI
                         </label>
                       </div>
-                      <span className="text-[10px] font-['Prompt',sans-serif] text-slate-300 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full">
+                      <span className="text-[9.5px] font-['Prompt',sans-serif] text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">
                         {botCount} บอท AI
                       </span>
                     </div>
 
                     {/* Quick Team Formation Presets Bar */}
                     <div
-                      className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none touch-pan-x"
+                      className="flex items-center gap-1 overflow-x-auto pb-0.5 scrollbar-none touch-pan-x"
                       style={{ WebkitOverflowScrolling: 'touch' }}
                     >
-                      <span className="text-[10px] font-mono text-slate-400 shrink-0">จัดทีมด่วน:</span>
+                      <span className="text-[9.5px] font-mono text-slate-400 shrink-0">จัดทีมด่วน:</span>
                       {[
                         { label: 'อเวนเจอร์ส', icon: '🛡️', bots: ['Tony Stark AI', 'Captain America', 'Thor Odinson'] },
                         { label: 'วายร้าย', icon: '👑', bots: ['Doctor Doom', 'Loki', 'Thanos Bot'] },
@@ -1390,7 +1390,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                             });
                             setCustomBotSlots({});
                           }}
-                          className="px-2.5 py-1 rounded-xl bg-white/[0.04] hover:bg-amber-500/20 border border-white/10 hover:border-amber-400/40 text-[11px] text-slate-300 hover:text-amber-200 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 shrink-0 active:scale-95"
+                          className="px-2 py-0.5 rounded-lg bg-white/[0.04] hover:bg-amber-500/20 border border-white/10 hover:border-amber-400/40 text-[10px] text-slate-300 hover:text-amber-200 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 shrink-0 active:scale-95"
                         >
                           <span>{preset.icon}</span>
                           <span className="font-['Prompt'] font-medium">{preset.label}</span>
@@ -1400,7 +1400,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                         type="button"
                         onClick={handleRandomizeAllBots}
                         title="สุ่มคู่ต่อสู้ใหม่ทั้งทีม"
-                        className="px-2.5 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/25 border border-amber-400/30 text-[11px] text-amber-300 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 shrink-0 ml-auto active:scale-95"
+                        className="px-2 py-0.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/25 border border-amber-400/30 text-[10px] text-amber-300 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 shrink-0 ml-auto active:scale-95"
                       >
                         <span>🎲</span>
                         <span className="font-['Prompt'] font-bold">สุ่มทั้งทีม</span>
@@ -1408,7 +1408,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     </div>
 
                     {/* Character Cards List */}
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                       {Array.from({ length: botCount }).map((_, idx) => {
                         const currentName = botNames[idx] ?? '';
                         const isCustom = Boolean(customBotSlots[idx]);
@@ -1420,16 +1420,16 @@ export const Lobby: React.FC<LobbyProps> = ({
                         return (
                           <div
                             key={idx}
-                            className="bg-gradient-to-r from-black/60 to-black/35 hover:from-amber-500/[0.07] hover:to-transparent p-3 rounded-2xl border border-white/10 hover:border-amber-400/40 transition-all shadow-sm flex items-center justify-between gap-3 group"
+                            className="bg-gradient-to-r from-black/60 to-black/35 hover:from-amber-500/[0.07] hover:to-transparent p-2 lg:p-2.5 rounded-xl border border-white/10 hover:border-amber-400/40 transition-all shadow-sm flex items-center justify-between gap-2.5 group"
                           >
                             {isCustom ? (
                               /* Custom Bot Name Mode */
-                              <div className="flex items-center gap-2.5 w-full">
-                                <div className="flex items-center gap-2 shrink-0">
-                                  <span className="text-xs font-mono font-bold text-amber-400">
+                              <div className="flex items-center gap-2 w-full">
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                  <span className="text-[11px] font-mono font-bold text-amber-400">
                                     #{idx + 1}
                                   </span>
-                                  <div className="w-10 h-10 rounded-xl overflow-hidden border border-amber-400/50 bg-neutral-900 flex items-center justify-center shrink-0 shadow">
+                                  <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-lg overflow-hidden border border-amber-400/50 bg-neutral-900 flex items-center justify-center shrink-0 shadow">
                                     {botAvatarSrc ? (
                                       <img
                                         src={botAvatarSrc}
@@ -1444,7 +1444,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                                         }}
                                       />
                                     ) : null}
-                                    <span className={botAvatarSrc ? 'hidden text-base' : 'block text-base'}>
+                                    <span className={botAvatarSrc ? 'hidden text-sm' : 'block text-sm'}>
                                       {fallbackEmoji}
                                     </span>
                                   </div>
@@ -1461,7 +1461,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                                     autoCapitalize="none"
                                     autoCorrect="off"
                                     spellCheck={false}
-                                    className="w-full bg-neutral-900/90 border border-amber-400/60 rounded-xl px-3 py-1.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400/30 font-semibold"
+                                    className="w-full bg-neutral-900/90 border border-amber-400/60 rounded-lg px-2.5 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400/30 font-semibold"
                                   />
                                 </div>
 
@@ -1473,7 +1473,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                                     const fallbackPreset = POPULAR_MARVEL_BOTS[idx % POPULAR_MARVEL_BOTS.length];
                                     updateBotName(idx, fallbackPreset.name);
                                   }}
-                                  className="shrink-0 px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-[11px] text-amber-300 hover:text-amber-200 transition-all cursor-pointer flex items-center gap-1 active:scale-95"
+                                  className="shrink-0 px-2 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] text-amber-300 hover:text-amber-200 transition-all cursor-pointer flex items-center gap-1 active:scale-95"
                                   title="กลับไปเลือกจากรายชื่อฮีโร่สำเร็จรูป"
                                 >
                                   <span>↺</span>
@@ -1483,11 +1483,11 @@ export const Lobby: React.FC<LobbyProps> = ({
                             ) : (
                               /* AAA Game Character Roster Tile */
                               <>
-                                <div className="flex items-center gap-3 min-w-0 flex-1">
+                                <div className="flex items-center gap-2.5 min-w-0 flex-1">
                                   {/* Slot Index */}
-                                  <div className="flex flex-col items-center shrink-0 w-6 text-center">
-                                    <span className="text-[9px] font-mono font-bold text-amber-400/70">SLOT</span>
-                                    <span className="text-xs font-num font-black text-amber-300">#{idx + 1}</span>
+                                  <div className="flex flex-col items-center shrink-0 w-5 text-center">
+                                    <span className="text-[8px] font-mono font-bold text-amber-400/70">SLOT</span>
+                                    <span className="text-[11px] font-num font-black text-amber-300">#{idx + 1}</span>
                                   </div>
 
                                   {/* Character Avatar with Stark Ring */}
@@ -1496,7 +1496,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                                       soundManager.playButtonClick();
                                       setSelectingBotSlot(idx);
                                     }}
-                                    className="relative w-11 h-11 rounded-xl overflow-hidden border-2 border-white/20 bg-neutral-900 shrink-0 shadow cursor-pointer group-hover:border-amber-400 transition-all"
+                                    className="relative w-9 h-9 lg:w-10 lg:h-10 rounded-lg overflow-hidden border border-white/20 bg-neutral-900 shrink-0 shadow cursor-pointer group-hover:border-amber-400 transition-all"
                                     title="คลิกเพื่อเลือกตัวละครนี้"
                                   >
                                     {botAvatarSrc ? (
@@ -1513,7 +1513,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                                         }}
                                       />
                                     ) : null}
-                                    <span className={botAvatarSrc ? 'hidden text-base' : 'flex items-center justify-center w-full h-full text-base'}>
+                                    <span className={botAvatarSrc ? 'hidden text-sm' : 'flex items-center justify-center w-full h-full text-sm'}>
                                       {fallbackEmoji}
                                     </span>
                                   </div>
@@ -1526,36 +1526,36 @@ export const Lobby: React.FC<LobbyProps> = ({
                                     }}
                                     className="min-w-0 flex-1 cursor-pointer"
                                   >
-                                    <div className="flex items-center gap-2">
-                                      <h4 className="text-sm font-bold text-white group-hover:text-amber-200 transition-colors truncate font-display">
+                                    <div className="flex items-center gap-1.5">
+                                      <h4 className="text-xs lg:text-sm font-bold text-white group-hover:text-amber-200 transition-colors truncate font-display">
                                         {currentName}
                                       </h4>
                                       {matchedPreset && (() => {
                                         const pInfo = getBotPersonalityInfo(matchedPreset.personality);
                                         return (
-                                          <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full ${pInfo.bg} border ${pInfo.border} ${pInfo.text} font-['Prompt',sans-serif] font-semibold shrink-0 shadow-sm`}>
+                                          <span className={`inline-flex items-center gap-1 text-[9px] px-1.5 py-0.2 rounded-full ${pInfo.bg} border ${pInfo.border} ${pInfo.text} font-['Prompt',sans-serif] font-semibold shrink-0 shadow-sm`}>
                                             <span>{pInfo.icon}</span>
                                             <span>{pInfo.label}</span>
                                           </span>
                                         );
                                       })()}
                                     </div>
-                                    <p className="text-[11px] text-slate-400 truncate leading-tight pt-0.5 font-['Prompt']">
+                                    <p className="text-[10px] text-slate-400 truncate leading-tight pt-0.5 font-['Prompt']">
                                       {tacticDesc}
                                     </p>
                                   </div>
                                 </div>
 
                                 {/* Right Side Actions */}
-                                <div className="flex items-center gap-1.5 shrink-0">
+                                <div className="flex items-center gap-1 shrink-0">
                                   <button
                                     type="button"
                                     onClick={() => handleShuffleBot(idx)}
                                     title="สุ่มเปลี่ยนตัวละครนี้ (Random Roll)"
-                                    className="p-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-slate-300 hover:text-white transition-all cursor-pointer hover:scale-105 active:scale-95 text-xs flex items-center gap-1"
+                                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-slate-300 hover:text-white transition-all cursor-pointer hover:scale-105 active:scale-95 text-xs flex items-center gap-1"
                                   >
                                     <span>🎲</span>
-                                    <span className="hidden lg:inline text-[10px]">สุ่ม</span>
+                                    <span className="hidden lg:inline text-[9.5px]">สุ่ม</span>
                                   </button>
                                   <button
                                     type="button"
@@ -1563,7 +1563,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                                       soundManager.playButtonClick();
                                       setSelectingBotSlot(idx);
                                     }}
-                                    className="px-3 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/40 hover:border-amber-400 text-amber-300 font-bold text-xs transition-all cursor-pointer hover:scale-105 active:scale-95 flex items-center gap-1 shadow"
+                                    className="px-2.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/40 hover:border-amber-400 text-amber-300 font-bold text-xs transition-all cursor-pointer hover:scale-105 active:scale-95 flex items-center gap-1 shadow"
                                   >
                                     <span>🔄</span>
                                     <span>เลือกตัว</span>
@@ -1578,20 +1578,20 @@ export const Lobby: React.FC<LobbyProps> = ({
                   </div>
 
                   {/* Target Winning Points Selector */}
-                  <div className="space-y-1.5 pt-2 border-t border-white/[0.08]">
+                  <div className="space-y-1.5 pt-1.5 border-t border-white/[0.08]">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base">🏆</span>
-                        <label className="text-sm font-bold text-white font-['Prompt',sans-serif]">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm">🏆</span>
+                        <label className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
                           เป้าหมายแต้มชัยชนะ
                         </label>
                       </div>
-                      <span className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-lg">
+                      <span className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-lg">
                         {targetScore} แต้ม
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-1.5">
+                    <div className="grid grid-cols-4 gap-1">
                       {[
                         { pts: 12, label: 'จบไว' },
                         { pts: 16, label: 'มาตรฐาน' },
@@ -1606,22 +1606,22 @@ export const Lobby: React.FC<LobbyProps> = ({
                             setTargetScore(item.pts);
                           }}
                           className={[
-                            'py-1.5 px-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[44px]',
+                            'py-1 px-1.5 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[38px]',
                             targetScore === item.pts
                               ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow'
                               : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white font-semibold',
                           ].join(' ')}
                         >
-                          <span className="text-xs sm:text-sm font-black font-num">{item.pts} แต้ม</span>
-                          <span className="text-[8px] opacity-70">
+                          <span className="text-xs lg:text-sm font-black font-num">{item.pts} แต้ม</span>
+                          <span className="text-[7.5px] lg:text-[8px] opacity-70">
                             {item.label}
                           </span>
                         </button>
                       ))}
                     </div>
 
-                    <div className="flex items-center gap-2 bg-black/35 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
-                      <span className="text-slate-400 text-[10px] font-semibold whitespace-nowrap">ปรับละเอียด (10–50):</span>
+                    <div className="flex items-center gap-2 bg-black/35 px-2.5 py-1 rounded-xl border border-white/10 text-xs">
+                      <span className="text-slate-400 text-[9.5px] font-semibold whitespace-nowrap">ปรับละเอียด (10–50):</span>
                       <input
                         type="range"
                         min={10}
@@ -1631,7 +1631,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                         onChange={(e) => setTargetScore(Number(e.target.value))}
                         className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
                       />
-                      <span className="font-num font-black text-yellow-300 text-sm w-7 text-right">
+                      <span className="font-num font-black text-yellow-300 text-xs lg:text-sm w-6 text-right">
                         {targetScore}
                       </span>
                     </div>
@@ -1642,41 +1642,41 @@ export const Lobby: React.FC<LobbyProps> = ({
                     type="button"
                     onClick={handleSolo}
                     disabled={isLoading}
-                    className="relative group w-full py-4 px-6 rounded-2xl font-display font-black text-base sm:text-lg tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer active:scale-[0.98] shadow-2xl overflow-hidden mt-3"
+                    className="relative group w-full py-2.5 lg:py-3 px-5 rounded-xl lg:rounded-2xl font-display font-black text-sm lg:text-base tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer active:scale-[0.98] shadow-2xl overflow-hidden mt-1.5 min-h-[44px]"
                     style={{
                       background: isLoading
                         ? 'rgba(255, 255, 255, 0.1)'
                         : 'linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #b45309 100%)',
                       color: isLoading ? 'rgba(255, 255, 255, 0.4)' : '#05070d',
-                      boxShadow: isLoading ? 'none' : '0 12px 36px -4px rgba(234, 88, 12, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                      boxShadow: isLoading ? 'none' : '0 10px 30px -4px rgba(234, 88, 12, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
                     }}
                   >
-                    <span className="text-xl group-hover:scale-125 transition-transform duration-300">⚡</span>
+                    <span className="text-lg group-hover:scale-125 transition-transform duration-300">⚡</span>
                     <span>เข้าสู่สมรภูมิเดี่ยว</span>
-                    <span className="text-xl group-hover:translate-x-1 transition-transform duration-300">➔</span>
+                    <span className="text-lg group-hover:translate-x-1 transition-transform duration-300">➔</span>
                   </button>
                 </div>
               )}
 
               {/* ── Tab 2: Create Multiplayer Room ────────────────────────────────── */}
               {activeTab === 'create' && (
-                <div className="space-y-4 pt-1 animate-fadeIn">
+                <div className="space-y-3 pt-0.5 animate-fadeIn">
                   
                   {/* Target Winning Points Selector */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base">🏆</span>
-                        <label className="text-sm font-bold text-white font-['Prompt',sans-serif]">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm">🏆</span>
+                        <label className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
                           เป้าหมายแต้มชัยชนะ
                         </label>
                       </div>
-                      <span className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-lg">
+                      <span className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-lg">
                         {targetScore} แต้ม
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-1.5">
+                    <div className="grid grid-cols-4 gap-1">
                       {[12, 16, 20, 24].map((pts) => (
                         <button
                           key={pts}
@@ -1686,22 +1686,22 @@ export const Lobby: React.FC<LobbyProps> = ({
                             setTargetScore(pts);
                           }}
                           className={[
-                            'py-1.5 px-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[42px]',
+                            'py-1 px-1.5 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[38px]',
                             targetScore === pts
                               ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow'
                               : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white font-semibold',
                           ].join(' ')}
                         >
-                          <span className="text-xs sm:text-sm font-black font-num">{pts} แต้ม</span>
-                          <span className="text-[8px] opacity-70">
+                          <span className="text-xs lg:text-sm font-black font-num">{pts} แต้ม</span>
+                          <span className="text-[7.5px] lg:text-[8px] opacity-70">
                             {pts === 12 ? 'จบไว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
                           </span>
                         </button>
                       ))}
                     </div>
 
-                    <div className="flex items-center gap-2 bg-black/35 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
-                      <span className="text-slate-400 text-[10px] font-semibold whitespace-nowrap">ปรับละเอียด (10–50):</span>
+                    <div className="flex items-center gap-2 bg-black/35 px-2.5 py-1 rounded-xl border border-white/10 text-xs">
+                      <span className="text-slate-400 text-[9.5px] font-semibold whitespace-nowrap">ปรับละเอียด (10–50):</span>
                       <input
                         type="range"
                         min={10}
@@ -1711,18 +1711,18 @@ export const Lobby: React.FC<LobbyProps> = ({
                         onChange={(e) => setTargetScore(Number(e.target.value))}
                         className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
                       />
-                      <span className="font-num font-black text-yellow-300 text-sm w-7 text-right">
+                      <span className="font-num font-black text-yellow-300 text-xs lg:text-sm w-6 text-right">
                         {targetScore}
                       </span>
                     </div>
                   </div>
 
                   {/* Room Deployment Note */}
-                  <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-3.5 space-y-1.5 text-xs text-slate-300">
-                    <p className="font-bold text-amber-300 flex items-center gap-2 text-xs font-['Prompt',sans-serif]">
+                  <div className="bg-white/[0.03] border border-white/10 rounded-xl p-2.5 space-y-1 text-xs text-slate-300">
+                    <p className="font-bold text-amber-300 flex items-center gap-1.5 text-xs font-['Prompt',sans-serif]">
                       <span>🛡️</span> ศูนย์ควบคุมห้องออนไลน์
                     </p>
-                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                    <p className="text-[10.5px] text-slate-400 leading-relaxed">
                       เมื่อสร้างห้องเสร็จ ระบบจะสร้างรหัสห้อง 6 ตัวอักษร คุณสามารถชวนเพื่อนมาร่วมประลอง หรือเพิ่มบอท Marvel AI เข้ามาร่วมเล่นจนครบ 4 คนได้ในห้องรอ
                     </p>
                   </div>
@@ -1732,7 +1732,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     type="button"
                     onClick={handleCreate}
                     disabled={isLoading}
-                    className="w-full py-3.5 px-6 rounded-2xl font-extrabold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] shadow-xl min-h-[48px]"
+                    className="w-full py-2.5 lg:py-3 px-5 rounded-xl lg:rounded-2xl font-extrabold text-sm lg:text-base tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] shadow-xl min-h-[44px]"
                     style={{
                       background: isLoading
                         ? 'rgba(255, 255, 255, 0.1)'
@@ -1748,11 +1748,11 @@ export const Lobby: React.FC<LobbyProps> = ({
 
               {/* ── Tab 3: Join Room with Code ────────────────────────────────────── */}
               {activeTab === 'join' && (
-                <div className="space-y-4 pt-1 animate-fadeIn">
-                  <div className="space-y-2 text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <span className="text-base">🔑</span>
-                      <label htmlFor="room-code" className="text-sm font-bold text-white font-['Prompt',sans-serif]">
+                <div className="space-y-3 pt-0.5 animate-fadeIn">
+                  <div className="space-y-1.5 text-center">
+                    <div className="flex items-center justify-center gap-1.5">
+                      <span className="text-sm">🔑</span>
+                      <label htmlFor="room-code" className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
                         กรอกรหัสห้อง 6 หลัก (PIN)
                       </label>
                     </div>
@@ -1767,7 +1767,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                       autoCapitalize="characters"
                       autoCorrect="off"
                       spellCheck={false}
-                      className="w-full bg-black/45 border border-white/15 rounded-2xl px-4 py-3.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all font-mono tracking-[0.25em] text-center text-2xl uppercase font-black"
+                      className="w-full bg-black/45 border border-white/15 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all font-mono tracking-[0.25em] text-center text-xl uppercase font-black"
                     />
                   </div>
 
@@ -1775,7 +1775,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     type="button"
                     onClick={() => handleJoin()}
                     disabled={isLoading || !joinCode.trim()}
-                    className="w-full py-3.5 px-6 rounded-2xl font-extrabold text-sm sm:text-base tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] shadow-xl min-h-[48px]"
+                    className="w-full py-2.5 lg:py-3 px-5 rounded-xl lg:rounded-2xl font-extrabold text-sm lg:text-base tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] shadow-xl min-h-[44px]"
                     style={{
                       background: isLoading || !joinCode.trim()
                         ? 'rgba(255, 255, 255, 0.1)'
@@ -1791,23 +1791,23 @@ export const Lobby: React.FC<LobbyProps> = ({
 
               {/* ── Tab 4: Browse Open Rooms ──────────────────────────────────────── */}
               {activeTab === 'browse' && (
-                <div className="space-y-3 pt-1 animate-fadeIn">
+                <div className="space-y-2.5 pt-0.5 animate-fadeIn">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-base">📡</span>
-                      <span className="text-sm font-bold text-white font-['Prompt',sans-serif]">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm">📡</span>
+                      <span className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
                         ห้องที่กำลังรอผู้เล่น
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
+                    <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
                       {openRooms.length} ห้องเปิดอยู่
                     </span>
                   </div>
 
-                  <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                  <div className="space-y-1.5 max-h-52 overflow-y-auto pr-1">
                     {openRooms.length === 0 ? (
-                      <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 text-center space-y-2">
-                        <span className="text-2xl block animate-pulse">📡</span>
+                      <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center space-y-1.5">
+                        <span className="text-xl block animate-pulse">📡</span>
                         <p className="text-xs text-slate-400">
                           ขณะนี้ยังไม่มีห้องเปิดอยู่ สร้างห้องใหม่เพื่อเริ่มเล่นได้ทันที
                         </p>
@@ -1818,18 +1818,18 @@ export const Lobby: React.FC<LobbyProps> = ({
                         return (
                           <div
                             key={room.roomId}
-                            className="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-white/10 hover:border-amber-400/50 transition-all"
+                            className="flex items-center justify-between p-2.5 rounded-xl bg-black/40 border border-white/10 hover:border-amber-400/50 transition-all"
                           >
                             <div className="space-y-0.5">
-                              <div className="flex items-center gap-2">
-                                <code className="text-amber-300 font-mono font-bold text-sm tracking-wider">
+                              <div className="flex items-center gap-1.5">
+                                <code className="text-amber-300 font-mono font-bold text-xs tracking-wider">
                                   {room.roomId}
                                 </code>
-                                <span className="text-[10px] text-white/50 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                                <span className="text-[9.5px] text-white/50 bg-white/5 px-1.5 py-0.2 rounded-full border border-white/10">
                                   {roomMap.icon} {roomMap.name.split(' ')[0]}
                                 </span>
                               </div>
-                              <p className="text-[10px] text-slate-400">
+                              <p className="text-[9.5px] text-slate-400">
                                 ผู้เล่น <span className="font-num font-black text-amber-300">{room.players.length}</span>/<span className="font-num font-bold text-white/80">{room.maxPlayers}</span> คน • เป้าหมาย {room.targetScore ?? 16}P
                               </p>
                             </div>
@@ -1837,7 +1837,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                               type="button"
                               onClick={() => handleJoin(room.roomId)}
                               disabled={isLoading}
-                              className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition-all cursor-pointer shadow active:scale-95"
+                              className="px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition-all cursor-pointer shadow active:scale-95"
                             >
                               เข้าร่วม
                             </button>
@@ -1851,11 +1851,11 @@ export const Lobby: React.FC<LobbyProps> = ({
 
               {/* Error Message Notification */}
               {error && (
-                <div className="p-3 rounded-xl bg-red-950/60 border border-red-500/30 text-red-200 text-xs flex items-start gap-2.5 animate-fadeIn">
-                  <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="p-2.5 rounded-xl bg-red-950/60 border border-red-500/30 text-red-200 text-xs flex items-start gap-2 animate-fadeIn">
+                  <svg className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span className="leading-relaxed font-medium">{error}</span>
+                  <span className="leading-relaxed font-medium text-xs">{error}</span>
                 </div>
               )}
 
@@ -1865,21 +1865,21 @@ export const Lobby: React.FC<LobbyProps> = ({
 
           {/* Card 2: Battlefield Holo-Deck Preview (Order 3 on Mobile, Left Column middle on Desktop) */}
           <div
-            className="order-3 lg:order-3 lg:col-span-5 rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3.5 transition-all self-start"
+            className="order-3 lg:order-3 lg:col-span-5 rounded-2xl lg:rounded-3xl border border-white/[0.12] p-3 lg:p-3.5 space-y-2 lg:space-y-2.5 transition-all self-start"
             style={{
               background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
               backdropFilter: 'blur(28px)',
-              boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
+              boxShadow: '0 16px 40px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
             }}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-              <div className="flex items-center gap-2.5">
-                <span className="text-base">🗺️</span>
-                <span className="font-sans font-bold tracking-wide text-sm text-white block">
+            <div className="flex items-center justify-between pb-1.5 border-b border-white/[0.08]">
+              <div className="flex items-center gap-2">
+                <span className="text-sm">🗺️</span>
+                <span className="font-sans font-bold tracking-wide text-xs lg:text-sm text-white block">
                   สมรภูมิรบที่เลือก
                 </span>
               </div>
-              <span className="text-[10px] font-sans text-amber-400/90 tracking-wider bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">
+              <span className="text-[9px] lg:text-[10px] font-sans text-amber-400/90 tracking-wider bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full font-bold">
                 แผนที่ปัจจุบัน
               </span>
             </div>
@@ -1888,22 +1888,22 @@ export const Lobby: React.FC<LobbyProps> = ({
             {(() => {
               const currentMap = getMarvelMap(selectedMapId);
               return (
-                <div className="relative rounded-2xl overflow-hidden border border-white/15 h-32 sm:h-36 group shadow-lg">
+                <div className="relative rounded-xl overflow-hidden border border-white/15 h-24 lg:h-26 group shadow-md">
                   <img
                     key={currentMap.id}
                     src={currentMap.imageUrl}
                     alt={currentMap.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 animate-fadeIn"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent flex flex-col justify-end p-3 sm:p-3.5">
-                    <div className="flex items-center gap-1.5 text-[9px] font-mono font-bold tracking-wider text-amber-300 uppercase">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent flex flex-col justify-end p-2.5">
+                    <div className="flex items-center gap-1.5 text-[8.5px] font-mono font-bold tracking-wider text-amber-300 uppercase">
                       <span>{currentMap.icon}</span>
                       <span>{currentMap.realm}</span>
                     </div>
-                    <h4 className="font-sans font-bold text-base sm:text-lg text-white leading-tight">
+                    <h4 className="font-sans font-bold text-sm lg:text-base text-white leading-tight">
                       {currentMap.name}
                     </h4>
-                    <p className="text-[10.5px] text-slate-300/80 truncate leading-tight pt-0.5 font-sans">
+                    <p className="text-[10px] text-slate-300/80 truncate leading-tight pt-0.5 font-sans">
                       {currentMap.subtitle} — {currentMap.description}
                     </p>
                   </div>
@@ -1912,7 +1912,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             })()}
 
             {/* Quick Interactive Map Switcher Chips */}
-            <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+            <div className="grid grid-cols-3 gap-1 pt-0.5">
               {MARVEL_MAPS.map((map) => {
                 const isSelected = selectedMapId === map.id;
                 return (
@@ -1924,14 +1924,14 @@ export const Lobby: React.FC<LobbyProps> = ({
                       setSelectedMapId(map.id);
                     }}
                     className={[
-                      'py-1.5 px-2 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-1.5 min-w-0',
+                      'py-1 px-1.5 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-1 min-w-0',
                       isSelected
-                        ? 'bg-amber-500/20 border-amber-400 text-white shadow-[0_0_15px_rgba(245,158,11,0.25)] font-bold'
+                        ? 'bg-amber-500/20 border-amber-400 text-white shadow-[0_0_12px_rgba(245,158,11,0.25)] font-bold'
                         : 'bg-white/[0.03] border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.06]',
                     ].join(' ')}
                   >
                     <span className="text-xs shrink-0">{map.icon}</span>
-                    <span className="text-[10.5px] font-sans truncate leading-tight">
+                    <span className="text-[10px] font-sans truncate leading-tight">
                       {map.name.split(' ')[0]}
                     </span>
                   </button>
@@ -1942,27 +1942,27 @@ export const Lobby: React.FC<LobbyProps> = ({
 
           {/* Card 3: Infinity Stones Power Matrix & Rules Guide (Order 4 on Mobile, Left Column bottom on Desktop) */}
           <div
-            className="order-4 lg:order-4 lg:col-span-5 rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3.5 transition-all self-start"
+            className="order-4 lg:order-4 lg:col-span-5 rounded-2xl lg:rounded-3xl border border-white/[0.12] p-3 lg:p-3.5 space-y-2 transition-all self-start"
             style={{
               background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
               backdropFilter: 'blur(28px)',
-              boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
+              boxShadow: '0 16px 40px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
             }}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-              <div className="flex items-center gap-2.5">
-                <span className="text-base">🧤</span>
-                <span className="font-['Prompt',sans-serif] font-bold tracking-wide text-sm text-white block">
+            <div className="flex items-center justify-between pb-1.5 border-b border-white/[0.08]">
+              <div className="flex items-center gap-2">
+                <span className="text-sm">🧤</span>
+                <span className="font-['Prompt',sans-serif] font-bold tracking-wide text-xs lg:text-sm text-white block">
                   คลังอัญมณีอินฟินิตี้
                 </span>
               </div>
-              <span className="text-[10px] font-['Prompt',sans-serif] text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
+              <span className="text-[9px] lg:text-[10px] font-['Prompt',sans-serif] text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
                 {botCount + 1} ผู้เล่นในเกม
               </span>
             </div>
 
             {/* 6 Infinity Stones Interactive Power Grid */}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-1.5">
               {[
                 { id: 'ruby', name: 'Reality', th: 'ความจริง', color: 'from-red-600/25 via-red-950/40 to-black/60', border: 'border-red-500/40 hover:border-red-400', glow: 'text-red-400', shadow: 'rgba(239,68,68,0.35)' },
                 { id: 'sapphire', name: 'Space', th: 'อวกาศ', color: 'from-blue-600/25 via-blue-950/40 to-black/60', border: 'border-blue-500/40 hover:border-blue-400', glow: 'text-blue-400', shadow: 'rgba(59,130,246,0.35)' },
@@ -1973,15 +1973,15 @@ export const Lobby: React.FC<LobbyProps> = ({
               ].map((st) => (
                 <div
                   key={st.id}
-                  className={`p-2.5 rounded-2xl bg-gradient-to-b ${st.color} border ${st.border} flex items-center gap-2.5 shadow-sm transition-all hover:scale-105 cursor-default group`}
-                  style={{ boxShadow: `0 4px 14px -2px ${st.shadow}` }}
+                  className={`p-1.5 lg:p-2 rounded-xl bg-gradient-to-b ${st.color} border ${st.border} flex items-center gap-1.5 shadow-sm transition-all hover:scale-105 cursor-default group`}
+                  style={{ boxShadow: `0 4px 12px -2px ${st.shadow}` }}
                 >
-                  <div className={`w-4 h-4 rounded-full crystal-${st.id} shrink-0 ring-2 ring-white/60 shadow-[0_0_10px_currentColor] group-hover:scale-110 transition-transform`} />
+                  <div className={`w-3.5 h-3.5 rounded-full crystal-${st.id} shrink-0 ring-1.5 ring-white/60 shadow-[0_0_8px_currentColor] group-hover:scale-110 transition-transform`} />
                   <div className="min-w-0">
-                    <div className="text-[11px] font-bold text-white truncate leading-tight font-['Montserrat',sans-serif]">
+                    <div className="text-[10px] font-bold text-white truncate leading-tight font-['Montserrat',sans-serif]">
                       {st.name}
                     </div>
-                    <div className={`text-[9.5px] ${st.glow} truncate leading-tight font-['Prompt'] font-medium`}>
+                    <div className={`text-[8.5px] ${st.glow} truncate leading-tight font-['Prompt'] font-medium`}>
                       {st.th}
                     </div>
                   </div>
@@ -1990,18 +1990,18 @@ export const Lobby: React.FC<LobbyProps> = ({
             </div>
 
             {/* Match Rules & Inventory Quick Status Pill */}
-            <div className="bg-black/50 border border-white/10 rounded-2xl p-2.5 text-[11px] text-slate-300 flex items-center justify-between gap-2 flex-wrap">
-              <span className="text-slate-400 flex items-center gap-1 font-mono text-[10px]">
+            <div className="bg-black/50 border border-white/10 rounded-xl p-2 text-[10px] text-slate-300 flex items-center justify-between gap-1.5 flex-wrap">
+              <span className="text-slate-400 flex items-center gap-1 font-mono text-[9.5px]">
                 <span>📦</span> สต็อกรอบนี้:
               </span>
-              <div className="flex items-center gap-2 font-mono text-[11px] font-bold">
-                <span className="text-white bg-white/10 px-2 py-0.5 rounded-md border border-white/10">
+              <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold">
+                <span className="text-white bg-white/10 px-1.5 py-0.5 rounded border border-white/10">
                   สีละ {botCount === 1 ? 4 : botCount === 2 ? 5 : 7}
                 </span>
-                <span className="text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-md border border-emerald-500/25">
+                <span className="text-emerald-300 bg-emerald-500/15 px-1.5 py-0.5 rounded border border-emerald-500/25">
                   เวลา {botCount + 1}
                 </span>
-                <span className="text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded-md border border-amber-500/25">
+                <span className="text-amber-300 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/25">
                   ทอง 5
                 </span>
               </div>
@@ -2011,10 +2011,10 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
 
         {/* ── Developer Credits & Non-Commercial Disclaimer Footer ────────── */}
-        <footer className="w-full max-w-6xl mx-auto mt-2 pt-4 border-t border-white/[0.08] flex flex-col items-center text-center space-y-1.5">
-          <div className="flex items-center justify-center gap-2 flex-wrap text-xs sm:text-sm text-slate-300">
-            <span className="text-xs sm:text-sm text-slate-300">🛠️ พัฒนาโดย:</span>
-            <span className="font-bold text-amber-200 bg-amber-950/70 border border-amber-400/50 px-3.5 py-0.5 rounded-full text-xs sm:text-sm tracking-wider shadow-md">
+        <footer className="w-full max-w-6xl mx-auto mt-1 pt-2 border-t border-white/[0.08] flex flex-col items-center text-center space-y-1">
+          <div className="flex items-center justify-center gap-1.5 flex-wrap text-[11px] sm:text-xs text-slate-300">
+            <span className="text-[11px] sm:text-xs text-slate-300">🛠️ พัฒนาโดย:</span>
+            <span className="font-bold text-amber-200 bg-amber-950/70 border border-amber-400/50 px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs tracking-wider shadow-md">
               sanior09
             </span>
             <button
@@ -2023,19 +2023,19 @@ export const Lobby: React.FC<LobbyProps> = ({
                 soundManager.playModalOpen();
                 setShowDisclaimerModal(true);
               }}
-              className="text-xs sm:text-sm text-cyan-400 hover:text-cyan-300 underline transition-colors cursor-pointer ml-1 font-semibold"
+              className="text-[11px] sm:text-xs text-cyan-400 hover:text-cyan-300 underline transition-colors cursor-pointer ml-1 font-semibold"
               title="อ่านข้อกำหนดทางลิขสิทธิ์และวัตถุประสงค์โครงการ"
             >
               (ข้อกำหนดและลิขสิทธิ์)
             </button>
           </div>
-          <p className="text-xs sm:text-[13px] text-slate-200 max-w-lg leading-relaxed px-2 font-sans">
+          <p className="text-[10px] sm:text-[11px] text-slate-300/90 max-w-md leading-normal px-2 font-sans">
             จัดทำขึ้นเพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Project เท่านั้น <br className="hidden sm:inline" />
             <span className="text-amber-300/95 font-medium">
               มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น
             </span>
           </p>
-          <p className="text-[10px] sm:text-[11px] text-slate-400 font-sans tracking-widest uppercase opacity-80 pt-0.5">
+          <p className="text-[9px] sm:text-[9.5px] text-slate-400 font-sans tracking-widest uppercase opacity-75">
             NACHAPOL PROTOCOL • MARVEL SPLENDOR FAN EXPERIENCE
           </p>
         </footer>
