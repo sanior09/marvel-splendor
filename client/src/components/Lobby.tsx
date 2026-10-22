@@ -197,6 +197,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     'Loki',
     'Thanos Bot',
   ]);
+  const [customBotSlots, setCustomBotSlots] = useState<Record<number, boolean>>({});
 
   // Modal state for adding bot in waiting room
   const [showAddBotModal, setShowAddBotModal] = useState(false);
@@ -1011,18 +1012,20 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
 
         {/* Hero Header Title */}
-        <div className="w-full text-center space-y-1 my-2 sm:my-4">
+        <div className="w-full text-center space-y-1.5 my-2 sm:my-3">
           <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5">
-            <span className="px-3.5 py-1 bg-[#e23636] text-white font-black text-2xl sm:text-3xl tracking-tighter rounded shadow-[0_0_30px_rgba(226,54,54,0.45)] uppercase border border-red-400/30 font-['Bebas_Neue',sans-serif]">
+            <span className="px-3.5 py-1 bg-[#e23636] text-white font-black text-2xl sm:text-3xl tracking-tighter rounded-md shadow-[0_0_30px_rgba(226,54,54,0.5)] uppercase border border-red-400/30 font-['Bebas_Neue',sans-serif]">
               MARVEL
             </span>
-            <span className="text-2xl sm:text-4xl font-black tracking-wider uppercase font-['Montserrat',sans-serif] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 drop-shadow-[0_2px_12px_rgba(234,179,8,0.3)]">
+            <span className="text-2xl sm:text-4xl font-black tracking-wider uppercase font-['Montserrat',sans-serif] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 drop-shadow-[0_2px_14px_rgba(234,179,8,0.35)]">
               SPLENDOR
             </span>
           </div>
-          <p className="text-xs sm:text-sm font-medium text-slate-400 tracking-wide font-['Prompt',sans-serif]">
-            WAR ROOM CONSOLE • MISSION CONFIGURATION // ศูนย์บัญชาการยุทธวิธีอินฟินิตี้
-          </p>
+          <div className="flex items-center justify-center gap-2 text-[11px] sm:text-xs font-medium text-slate-300 font-['Prompt',sans-serif]">
+            <span className="text-amber-400 font-mono tracking-widest uppercase font-bold">// TACTICAL WAR ROOM</span>
+            <span className="text-white/30">•</span>
+            <span>ศูนย์บัญชาการยุทธวิธี • ปรับแต่งทีมฮีโร่และเลือกสมรภูมิรบ</span>
+          </div>
         </div>
 
         {/* AFK / Inactivity notification banner */}
@@ -1052,7 +1055,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             
             {/* Card 1: Operative Identification (Hero Avatar & Callsign) */}
             <div
-              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3.5 transition-all"
+              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-4 transition-all"
               style={{
                 background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
                 backdropFilter: 'blur(28px)',
@@ -1060,21 +1063,26 @@ export const Lobby: React.FC<LobbyProps> = ({
               }}
             >
               <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_#f59e0b]" />
-                  <span className="font-['Montserrat',sans-serif] font-bold tracking-widest text-xs uppercase text-slate-200">
-                    OPERATIVE DOSSIER
-                  </span>
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_12px_#f59e0b]" />
+                  <div>
+                    <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                      // AGENT IDENTITY
+                    </span>
+                    <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
+                      ข้อมูลเจ้าหน้าที่ปฏิบัติการ
+                    </span>
+                  </div>
                 </div>
                 {userProfile?.username && (
-                  <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider">
-                    ● SYNCED: {userProfile.username}
+                  <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
+                    ● SYNCED
                   </span>
                 )}
               </div>
 
               {/* Avatar + Callsign input */}
-              <div className="flex items-center gap-3.5 pt-0.5">
+              <div className="flex items-center gap-4 pt-0.5">
                 {/* Tactile Avatar Badge with quick hover indicator */}
                 <button
                   type="button"
@@ -1082,8 +1090,8 @@ export const Lobby: React.FC<LobbyProps> = ({
                     soundManager.playButtonClick();
                     setShowAvatarPicker(true);
                   }}
-                  title="เปลี่ยนรูปโปรไฟล์มาร์เวล (Change Avatar)"
-                  className="relative shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-amber-400/60 shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:border-amber-300 hover:scale-105 transition-all cursor-pointer group active:scale-95"
+                  title="เปลี่ยนรูปโปรไฟล์มาร์เวล"
+                  className="relative shrink-0 w-16 h-16 rounded-2xl overflow-hidden border-2 border-amber-400/70 shadow-[0_0_24px_rgba(245,158,11,0.3)] hover:border-amber-300 hover:scale-105 transition-all cursor-pointer group active:scale-95"
                 >
                   {avatarUrl ? (
                     <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover object-center" />
@@ -1092,28 +1100,31 @@ export const Lobby: React.FC<LobbyProps> = ({
                       {avatarInitial}
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-black/55 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <span className="text-sm">✏️</span>
-                    <span className="text-[8px] text-white font-bold tracking-tight">เปลี่ยน</span>
+                    <span className="text-[9px] text-white font-bold tracking-tight">เปลี่ยน</span>
                   </div>
                 </button>
 
                 {/* Hero Name Input */}
-                <div className="flex-1 min-w-0 space-y-1">
+                <div className="flex-1 min-w-0 space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <label htmlFor="player-name" className="text-xs font-semibold text-slate-300 font-['Prompt',sans-serif]">
-                      ชื่อฮีโร่ของคุณ (Hero Callsign)
+                    <label htmlFor="player-name" className="text-xs font-bold text-slate-200 font-['Prompt',sans-serif]">
+                      ชื่อเรียกขานฮีโร่ของคุณ
                     </label>
-                    {userProfile?.username && playerName.trim() !== userProfile.username && (
-                      <button
-                        type="button"
-                        onClick={() => setPlayerName(userProfile.username)}
-                        className="text-[10px] text-amber-300/80 hover:text-amber-200 underline cursor-pointer"
-                        title="กดเพื่อรีเซ็ตกลับเป็นชื่อบัญชี"
-                      >
-                        ↺ คืนค่า
-                      </button>
-                    )}
+                    <div className="flex items-center gap-2">
+                      <span className="text-[9px] font-mono text-amber-400/80 font-bold tracking-wider">CALLSIGN</span>
+                      {userProfile?.username && playerName.trim() !== userProfile.username && (
+                        <button
+                          type="button"
+                          onClick={() => setPlayerName(userProfile.username)}
+                          className="text-[10px] text-amber-300 hover:text-amber-200 underline cursor-pointer"
+                          title="กดเพื่อรีเซ็ตกลับเป็นชื่อบัญชี"
+                        >
+                          ↺ คืนค่า
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <input
                     id="player-name"
@@ -1129,7 +1140,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                     autoCorrect="off"
                     spellCheck={false}
                     placeholder={userProfile?.username ? userProfile.username : 'ระบุชื่อฮีโร่ของคุณ...'}
-                    className={`w-full px-3.5 py-2.5 rounded-xl bg-black/40 border text-base sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-all font-['Prompt',sans-serif] ${
+                    className={`w-full px-3.5 py-2.5 rounded-xl bg-black/45 border text-base sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-all font-['Prompt',sans-serif] ${
                       error
                         ? 'border-red-500 ring-2 ring-red-500/40 bg-red-950/25'
                         : 'border-white/10 focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20'
@@ -1139,10 +1150,22 @@ export const Lobby: React.FC<LobbyProps> = ({
               </div>
 
               {/* Quick Marvel Avatars Reel */}
-              <div className="space-y-1.5 pt-1">
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">
-                  เลือกอวตารด่วน (QUICK CALLSIGN):
-                </span>
+              <div className="space-y-2 pt-1 border-t border-white/[0.06]">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-slate-400 tracking-wider">
+                    เลือกอวตารด่วน:
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundManager.playButtonClick();
+                      setShowAvatarPicker(true);
+                    }}
+                    className="text-[10px] text-amber-400 hover:text-amber-300 font-bold cursor-pointer transition-colors"
+                  >
+                    ดูทั้งหมด ＋
+                  </button>
+                </div>
                 <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
                   {MARVEL_AVATARS.slice(0, 8).map((av) => (
                     <button
@@ -1180,7 +1203,7 @@ export const Lobby: React.FC<LobbyProps> = ({
 
             {/* Card 2: Battlefield Holo-Deck Preview */}
             <div
-              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3 transition-all"
+              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3.5 transition-all"
               style={{
                 background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
                 backdropFilter: 'blur(28px)',
@@ -1188,14 +1211,19 @@ export const Lobby: React.FC<LobbyProps> = ({
               }}
             >
               <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <span className="text-sm">🗺️</span>
-                  <span className="font-['Montserrat',sans-serif] font-bold tracking-widest text-xs uppercase text-slate-200">
-                    BATTLEFIELD THEATER
-                  </span>
+                  <div>
+                    <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                      // COMBAT THEATER
+                    </span>
+                    <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
+                      สมรภูมิรบที่เลือก
+                    </span>
+                  </div>
                 </div>
-                <span className="text-[10px] font-mono text-amber-400/90 tracking-wider">
-                  🔒 LOCKED REALM
+                <span className="text-[10px] font-mono text-amber-400/90 tracking-wider bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">
+                  ACTIVE REALM
                 </span>
               </div>
 
@@ -1254,9 +1282,9 @@ export const Lobby: React.FC<LobbyProps> = ({
               </div>
             </div>
 
-            {/* Card 3: Infinity Gauntlet Stockpile Telemetry */}
+            {/* Card 3: Infinity Stones Power Matrix & Rules Guide */}
             <div
-              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3 transition-all"
+              className="rounded-3xl border border-white/[0.12] p-4 sm:p-5 space-y-3.5 transition-all"
               style={{
                 background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
                 backdropFilter: 'blur(28px)',
@@ -1264,47 +1292,51 @@ export const Lobby: React.FC<LobbyProps> = ({
               }}
             >
               <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <span className="text-sm">🧤</span>
-                  <span className="font-['Montserrat',sans-serif] font-bold tracking-widest text-xs uppercase text-slate-200">
-                    INFINITY STOCKPILE
-                  </span>
+                  <div>
+                    <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                      // INFINITY MATRIX
+                    </span>
+                    <span className="font-['Montserrat',sans-serif] font-bold tracking-wider text-xs uppercase text-slate-200 pt-0.5 block">
+                      คลังอัญมณีอินฟินิตี้
+                    </span>
+                  </div>
                 </div>
-                <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider">
+                <span className="text-[10px] font-mono text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
                   {botCount + 1} OPERATIVES
                 </span>
               </div>
 
-              {/* Dynamic Tokens Summary */}
-              <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-2.5 sm:p-3 space-y-1.5 text-xs text-slate-300">
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-slate-400 font-medium">มณี 5 สีหลัก (Base Stones):</span>
-                  <span className="font-num font-black text-amber-300">
-                    สีละ {botCount === 1 ? 4 : botCount === 2 ? 5 : 7} ก้อน
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-slate-400 font-medium">🟢 Time Stone (มณีเวลาสีเขียว):</span>
-                  <span className="font-num font-black text-emerald-400">
-                    {botCount + 1} ก้อน
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-slate-400 font-medium">🛡️ S.H.I.E.L.D. ทอง (จองการ์ด):</span>
-                  <span className="font-num font-black text-slate-200">
-                    5 ก้อน
-                  </span>
-                </div>
+              {/* 6 Infinity Stones Interactive Power Grid */}
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: 'ruby', name: 'Reality', th: 'ความจริง', color: 'from-red-500/20 to-red-950/40', border: 'border-red-500/30', glow: 'text-red-300' },
+                  { id: 'sapphire', name: 'Space', th: 'อวกาศ', color: 'from-blue-500/20 to-blue-950/40', border: 'border-blue-500/30', glow: 'text-blue-300' },
+                  { id: 'obsidian', name: 'Soul', th: 'วิญญาณ', color: 'from-amber-500/20 to-amber-950/40', border: 'border-amber-500/30', glow: 'text-amber-300' },
+                  { id: 'topaz', name: 'Mind', th: 'จิตใจ', color: 'from-yellow-500/20 to-yellow-950/40', border: 'border-yellow-500/30', glow: 'text-yellow-300' },
+                  { id: 'amethyst', name: 'Power', th: 'พลัง', color: 'from-purple-500/20 to-purple-950/40', border: 'border-purple-500/30', glow: 'text-purple-300' },
+                  { id: 'emerald', name: 'Time', th: 'เวลา (+1)', color: 'from-emerald-500/20 to-emerald-950/40', border: 'border-emerald-500/30', glow: 'text-emerald-300' },
+                ].map((st) => (
+                  <div
+                    key={st.id}
+                    className={`p-2 rounded-xl bg-gradient-to-b ${st.color} border ${st.border} flex items-center gap-2 shadow-sm transition-all hover:scale-105 cursor-default`}
+                  >
+                    <div className={`w-3.5 h-3.5 rounded-full crystal-${st.id} shrink-0 ring-1 ring-white/50 shadow-[0_0_8px_currentColor]`} />
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-bold text-white truncate leading-tight">{st.name}</div>
+                      <div className={`text-[9px] ${st.glow} truncate leading-tight font-['Prompt']`}>{st.th}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              {/* 6 Infinity Stones glowing dock */}
-              <div className="flex items-center justify-between px-2 pt-1">
-                {['ruby', 'sapphire', 'emerald', 'obsidian', 'topaz', 'amethyst'].map((stone) => (
-                  <div
-                    key={stone}
-                    className={`w-4 h-4 rounded-full crystal-${stone} shadow-md border border-white/20 transition-transform hover:scale-125 cursor-default`}
-                  />
-                ))}
+              {/* Match Rules & Inventory Quick Status Pill */}
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-2.5 text-[11px] text-slate-300 flex items-center justify-between">
+                <span className="text-slate-400">สต็อกในรอบนี้:</span>
+                <span className="font-num font-bold text-amber-300">
+                  สีละ {botCount === 1 ? 4 : botCount === 2 ? 5 : 7} • เวลา {botCount + 1} • ทอง 5
+                </span>
               </div>
             </div>
 
@@ -1358,9 +1390,14 @@ export const Lobby: React.FC<LobbyProps> = ({
                   
                   {/* Bot Opponents Count Selector */}
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif] block">
-                      จำนวนคู่ต่อสู้บอท AI (OPPONENTS COUNT)
-                    </label>
+                    <div>
+                      <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                        // SQUAD FORMATION
+                      </span>
+                      <label className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
+                        จำนวนคู่ต่อสู้ AI
+                      </label>
+                    </div>
                     <div className="grid grid-cols-3 gap-2">
                       {[1, 2, 3].map((num) => (
                         <button
@@ -1379,7 +1416,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                         >
                           <span className="font-num text-sm">{num} บอท</span>
                           <span className="text-[9px] opacity-70">
-                            {num === 1 ? 'ดวลเดี่ยว (1v1)' : num === 2 ? 'ไตรภาคี (3P)' : 'สังเวียนใหญ่ (4P)'}
+                            {num === 1 ? 'ดวลเดี่ยว 1v1' : num === 2 ? 'ไตรภาคี 3 คน' : 'สังเวียนเต็ม 4 คน'}
                           </span>
                         </button>
                       ))}
@@ -1388,16 +1425,24 @@ export const Lobby: React.FC<LobbyProps> = ({
 
                   {/* Bot Combatants Roster Cards */}
                   <div className="space-y-2 pt-1">
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif]">
-                        เลือกหรือปรับแต่งคู่ต่อสู้ AI (AI ROSTER)
-                      </label>
-                      <span className="text-[10px] font-mono text-slate-400">เลือกด่วนหรือพิมพ์ชื่อเอง</span>
+                    <div className="flex items-center justify-between pb-1">
+                      <div>
+                        <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                          // AI SQUADRON
+                        </span>
+                        <label className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
+                          จัดทัพคู่ต่อสู้ AI
+                        </label>
+                      </div>
+                      <span className="text-[10px] font-mono text-slate-400 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full">
+                        {botCount} COMBATANTS
+                      </span>
                     </div>
 
                     <div className="space-y-2">
                       {Array.from({ length: botCount }).map((_, idx) => {
                         const currentName = botNames[idx] ?? '';
+                        const isCustom = Boolean(customBotSlots[idx]);
                         const matchedPreset = POPULAR_MARVEL_BOTS.find((b) => b.name === currentName);
                         const botAvatarSrc = resolveMarvelAvatar(currentName, matchedPreset?.avatarUrl);
                         const fallbackEmoji = getMarvelFallbackEmoji(currentName, true);
@@ -1406,74 +1451,126 @@ export const Lobby: React.FC<LobbyProps> = ({
                         return (
                           <div
                             key={idx}
-                            className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 bg-black/40 p-2.5 sm:p-3 rounded-2xl border border-white/10 hover:border-white/20 transition-all"
+                            className="bg-black/45 p-2.5 sm:p-3 rounded-2xl border border-white/10 hover:border-amber-400/40 transition-all shadow-sm"
                           >
-                            {/* Bot Slot Indicator & Avatar */}
-                            <div className="flex items-center gap-2.5 shrink-0">
-                              <span className="w-5 text-center text-xs font-mono font-bold text-amber-400">
-                                #{idx + 1}
-                              </span>
-                              <div className="w-9 h-9 rounded-xl overflow-hidden border border-white/20 bg-neutral-900 flex items-center justify-center shrink-0 shadow">
-                                {botAvatarSrc ? (
-                                  <img
-                                    src={botAvatarSrc}
-                                    alt={currentName}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                      const target = e.target as HTMLImageElement;
-                                      target.style.display = 'none';
-                                      if (target.nextElementSibling) {
-                                        (target.nextElementSibling as HTMLElement).style.display = 'block';
-                                      }
-                                    }}
+                            {isCustom ? (
+                              /* Custom Bot Name Mode */
+                              <div className="flex items-center gap-2.5">
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span className="text-xs font-mono font-bold text-amber-400">
+                                    #{idx + 1}
+                                  </span>
+                                  <div className="w-9 h-9 rounded-xl overflow-hidden border border-amber-400/50 bg-neutral-900 flex items-center justify-center shrink-0 shadow">
+                                    {botAvatarSrc ? (
+                                      <img
+                                        src={botAvatarSrc}
+                                        alt={currentName}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                          const target = e.target as HTMLImageElement;
+                                          target.style.display = 'none';
+                                          if (target.nextElementSibling) {
+                                            (target.nextElementSibling as HTMLElement).style.display = 'block';
+                                          }
+                                        }}
+                                      />
+                                    ) : null}
+                                    <span className={botAvatarSrc ? 'hidden text-sm' : 'block text-sm'}>
+                                      {fallbackEmoji}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <div className="flex-1 min-w-0">
+                                  <input
+                                    type="text"
+                                    value={botNames[idx] ?? ''}
+                                    onChange={(e) => updateBotName(idx, e.target.value)}
+                                    placeholder="พิมพ์ชื่อบอท เช่น Magneto, Ultron..."
+                                    maxLength={20}
+                                    autoFocus
+                                    autoCapitalize="none"
+                                    autoCorrect="off"
+                                    spellCheck={false}
+                                    className="w-full bg-neutral-900/90 border border-amber-400/60 rounded-xl px-3 py-1.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400/30 font-semibold"
                                   />
-                                ) : null}
-                                <span className={botAvatarSrc ? 'hidden text-sm' : 'block text-sm'}>
-                                  {fallbackEmoji}
-                                </span>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    soundManager.playButtonClick();
+                                    setCustomBotSlots((prev) => ({ ...prev, [idx]: false }));
+                                    const fallbackPreset = POPULAR_MARVEL_BOTS[idx % POPULAR_MARVEL_BOTS.length];
+                                    updateBotName(idx, fallbackPreset.name);
+                                  }}
+                                  className="shrink-0 px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-[11px] text-amber-300 hover:text-amber-200 transition-all cursor-pointer flex items-center gap-1"
+                                  title="กลับไปเลือกจากรายชื่อฮีโร่สำเร็จรูป"
+                                >
+                                  <span>↺</span>
+                                  <span className="hidden sm:inline">พรีเซ็ต</span>
+                                </button>
                               </div>
-                            </div>
+                            ) : (
+                              /* Preset Selection Mode (Streamlined Picker, No Duplicate Input) */
+                              <div className="flex items-center justify-between gap-2.5">
+                                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                  <span className="text-xs font-mono font-bold text-amber-400 shrink-0">
+                                    #{idx + 1}
+                                  </span>
 
-                            {/* Preset Selector Dropdown */}
-                            <div className="shrink-0 w-full sm:w-44">
-                              <select
-                                value={matchedPreset ? matchedPreset.name : 'custom'}
-                                onChange={(e) => {
-                                  soundManager.playButtonClick();
-                                  if (e.target.value !== 'custom') {
-                                    updateBotName(idx, e.target.value);
-                                  }
-                                }}
-                                className="w-full bg-neutral-900 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400 font-semibold cursor-pointer"
-                              >
-                                {POPULAR_MARVEL_BOTS.map((bot) => (
-                                  <option key={bot.name} value={bot.name} className="bg-neutral-900 text-white">
-                                    {bot.avatar} {bot.name}
-                                  </option>
-                                ))}
-                                <option value="custom" className="bg-neutral-900 text-amber-300">
-                                  ✍️ พิมพ์ชื่อเอง
-                                </option>
-                              </select>
-                            </div>
+                                  <div className="w-9 h-9 rounded-xl overflow-hidden border border-white/20 bg-neutral-900 flex items-center justify-center shrink-0 shadow">
+                                    {botAvatarSrc ? (
+                                      <img
+                                        src={botAvatarSrc}
+                                        alt={currentName}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                          const target = e.target as HTMLImageElement;
+                                          target.style.display = 'none';
+                                          if (target.nextElementSibling) {
+                                            (target.nextElementSibling as HTMLElement).style.display = 'block';
+                                          }
+                                        }}
+                                      />
+                                    ) : null}
+                                    <span className={botAvatarSrc ? 'hidden text-sm' : 'block text-sm'}>
+                                      {fallbackEmoji}
+                                    </span>
+                                  </div>
 
-                            {/* Name Input & Tactical Trait Badge */}
-                            <div className="flex-1 min-w-0 flex items-center gap-2">
-                              <input
-                                type="text"
-                                value={botNames[idx] ?? ''}
-                                onChange={(e) => updateBotName(idx, e.target.value)}
-                                placeholder={`ชื่อบอท ${idx + 1}...`}
-                                maxLength={20}
-                                autoCapitalize="none"
-                                autoCorrect="off"
-                                spellCheck={false}
-                                className="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-1.5 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-semibold"
-                              />
-                              <span className="hidden xl:inline-block text-[9px] font-mono text-slate-400 bg-white/5 border border-white/10 px-2 py-1 rounded-lg shrink-0 whitespace-nowrap">
-                                {tacticDesc}
-                              </span>
-                            </div>
+                                  <div className="min-w-0 flex-1">
+                                    <select
+                                      value={matchedPreset ? matchedPreset.name : 'custom'}
+                                      onChange={(e) => {
+                                        soundManager.playButtonClick();
+                                        if (e.target.value === 'custom') {
+                                          setCustomBotSlots((prev) => ({ ...prev, [idx]: true }));
+                                        } else {
+                                          updateBotName(idx, e.target.value);
+                                        }
+                                      }}
+                                      className="w-full bg-neutral-900/90 border border-white/15 rounded-xl px-2.5 py-1.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-400 font-semibold cursor-pointer truncate"
+                                    >
+                                      {POPULAR_MARVEL_BOTS.map((bot) => (
+                                        <option key={bot.name} value={bot.name} className="bg-neutral-900 text-white">
+                                          {bot.avatar} {bot.name}
+                                        </option>
+                                      ))}
+                                      <option value="custom" className="bg-neutral-900 text-amber-300 font-bold">
+                                        ✍️ กำหนดชื่อเอง (Custom)...
+                                      </option>
+                                    </select>
+                                  </div>
+                                </div>
+
+                                <div className="hidden sm:flex items-center shrink-0">
+                                  <span className="text-[10px] font-mono text-slate-300 bg-white/5 border border-white/10 px-2 py-1 rounded-lg whitespace-nowrap">
+                                    {tacticDesc}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         );
                       })}
@@ -1483,10 +1580,14 @@ export const Lobby: React.FC<LobbyProps> = ({
                   {/* Target Winning Points Selector */}
                   <div className="space-y-1.5 pt-2 border-t border-white/[0.08]">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif] flex items-center gap-1.5">
-                        <span>🎯</span>
-                        <span>เป้าหมายแต้มชัยชนะ (TARGET SCORE)</span>
-                      </label>
+                      <div>
+                        <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                          // VICTORY CRITERIA
+                        </span>
+                        <label className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
+                          เป้าหมายแต้มชัยชนะ
+                        </label>
+                      </div>
                       <span className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-lg">
                         {targetScore} แต้ม
                       </span>
@@ -1510,7 +1611,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                         >
                           <span className="text-xs sm:text-sm font-black font-num">{pts} แต้ม</span>
                           <span className="text-[8px] opacity-70">
-                            {pts === 12 ? 'เร็ว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
+                            {pts === 12 ? 'จบไว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
                           </span>
                         </button>
                       ))}
@@ -1547,7 +1648,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                       boxShadow: isLoading ? 'none' : '0 10px 30px -4px rgba(245, 158, 11, 0.5)',
                     }}
                   >
-                    <span>🚀 เข้าสู่สมรภูมิเดี่ยว (LAUNCH MISSION)</span>
+                    <span>🚀 เข้าสู่สมรภูมิเดี่ยว</span>
                   </button>
                 </div>
               )}
@@ -1559,10 +1660,14 @@ export const Lobby: React.FC<LobbyProps> = ({
                   {/* Target Winning Points Selector */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif] flex items-center gap-1.5">
-                        <span>🎯</span>
-                        <span>เป้าหมายแต้มชัยชนะ (TARGET SCORE)</span>
-                      </label>
+                      <div>
+                        <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                          // VICTORY CRITERIA
+                        </span>
+                        <label className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
+                          เป้าหมายแต้มชัยชนะ
+                        </label>
+                      </div>
                       <span className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-lg">
                         {targetScore} แต้ม
                       </span>
@@ -1586,7 +1691,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                         >
                           <span className="text-xs sm:text-sm font-black font-num">{pts} แต้ม</span>
                           <span className="text-[8px] opacity-70">
-                            {pts === 12 ? 'เร็ว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
+                            {pts === 12 ? 'จบไว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
                           </span>
                         </button>
                       ))}
@@ -1610,10 +1715,15 @@ export const Lobby: React.FC<LobbyProps> = ({
                   </div>
 
                   {/* Room Deployment Note */}
-                  <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-3.5 space-y-1 text-xs text-slate-300">
-                    <p className="font-bold text-amber-300 flex items-center gap-1.5">
-                      <span>🛡️</span> ศูนย์ควบคุมห้องออนไลน์ (S.H.I.E.L.D. Arena Dispatch)
-                    </p>
+                  <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-3.5 space-y-1.5 text-xs text-slate-300">
+                    <div>
+                      <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                        // S.H.I.E.L.D. DISPATCH
+                      </span>
+                      <p className="font-bold text-amber-300 flex items-center gap-1.5 pt-1">
+                        <span>🛡️</span> ศูนย์ควบคุมห้องออนไลน์
+                      </p>
+                    </div>
                     <p className="text-[11px] text-slate-400 leading-relaxed">
                       เมื่อสร้างห้องเสร็จ ระบบจะสร้างรหัสห้อง 6 ตัวอักษร คุณสามารถชวนเพื่อนมาร่วมประลอง หรือเพิ่มบอท Marvel AI เข้ามาร่วมเล่นจนครบ 4 คนได้ในห้องรอ
                     </p>
@@ -1633,7 +1743,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                       boxShadow: isLoading ? 'none' : '0 10px 30px -4px rgba(245, 158, 11, 0.5)',
                     }}
                   >
-                    <span>⚔️ เปิดห้องต่อสู้ออนไลน์ (DEPLOY ARENA)</span>
+                    <span>⚔️ เปิดห้องต่อสู้ออนไลน์</span>
                   </button>
                 </div>
               )}
@@ -1641,10 +1751,15 @@ export const Lobby: React.FC<LobbyProps> = ({
               {/* ── Tab 3: Join Room with Code ────────────────────────────────────── */}
               {activeTab === 'join' && (
                 <div className="space-y-4 pt-1 animate-fadeIn">
-                  <div className="space-y-2">
-                    <label htmlFor="room-code" className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif] block text-center">
-                      กรอกรหัสห้อง 6 หลัก (ENTER 6-DIGIT ROOM PIN)
-                    </label>
+                  <div className="space-y-2 text-center">
+                    <div>
+                      <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                        // ACCESS AUTHENTICATION
+                      </span>
+                      <label htmlFor="room-code" className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
+                        กรอกรหัสห้อง 6 หลัก
+                      </label>
+                    </div>
                     <input
                       id="room-code"
                       type="text"
@@ -1673,7 +1788,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                       boxShadow: isLoading || !joinCode.trim() ? 'none' : '0 10px 30px -4px rgba(245, 158, 11, 0.5)',
                     }}
                   >
-                    <span>🔑 เข้าร่วมห้องทันที (ENTER ARENA)</span>
+                    <span>🔑 เข้าร่วมห้องทันที</span>
                   </button>
                 </div>
               )}
@@ -1682,10 +1797,15 @@ export const Lobby: React.FC<LobbyProps> = ({
               {activeTab === 'browse' && (
                 <div className="space-y-3 pt-1 animate-fadeIn">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-300 uppercase tracking-wider font-['Montserrat',sans-serif]">
-                      ห้องที่กำลังรอผู้เล่น (ACTIVE LOBBIES)
-                    </span>
-                    <span className="text-[10px] font-mono text-emerald-400">
+                    <div>
+                      <span className="text-[10px] font-mono tracking-widest text-amber-400 font-bold block leading-none">
+                        // RADAR SCAN
+                      </span>
+                      <span className="text-xs font-bold text-slate-200 tracking-wider font-['Montserrat',sans-serif] block pt-1">
+                        ห้องที่กำลังรอผู้เล่น
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">
                       {openRooms.length} ห้องเปิดอยู่
                     </span>
                   </div>
