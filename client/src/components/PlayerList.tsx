@@ -95,31 +95,31 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                     isActive ? 'ring-2 ring-yellow-400 ring-offset-1 ring-offset-black' : '',
                   ].join(' ')}
                 >
-                {(() => {
-                  const avatarSrc = resolvePlayerAvatar(player);
-                  const fallbackEmoji = getMarvelFallbackEmoji(player.name, player.isBot);
-                  return (
-                    <>
-                      {avatarSrc ? (
-                        <img
-                          src={avatarSrc}
-                          alt={player.name}
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                            if (target.nextElementSibling) {
-                              (target.nextElementSibling as HTMLElement).style.display = 'block';
-                            }
-                          }}
-                          className="w-full h-full object-cover object-center"
-                        />
-                      ) : null}
-                      <span className={avatarSrc ? 'hidden' : 'block'}>
-                        {fallbackEmoji}
-                      </span>
-                    </>
-                  );
-                })()}
+                  {(() => {
+                    const avatarSrc = resolvePlayerAvatar(player);
+                    const fallbackEmoji = getMarvelFallbackEmoji(player.name, player.isBot);
+                    return (
+                      <>
+                        {avatarSrc ? (
+                          <img
+                            src={avatarSrc}
+                            alt={player.name}
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              if (target.nextElementSibling) {
+                                (target.nextElementSibling as HTMLElement).style.display = 'block';
+                              }
+                            }}
+                            className="w-full h-full object-cover object-center"
+                          />
+                        ) : null}
+                        <span className={avatarSrc ? 'hidden' : 'block'}>
+                          {fallbackEmoji}
+                        </span>
+                      </>
+                    );
+                  })()}
                 </div>
                 {isActive && (
                   <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-ping" />
@@ -130,9 +130,8 @@ export const PlayerList: React.FC<PlayerListProps> = ({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span
-                    className={`text-xs font-bold truncate ${
-                      isMe ? 'text-yellow-300' : 'text-white/90'
-                    }`}
+                    className={`text-xs font-bold truncate ${isMe ? 'text-yellow-300' : 'text-white/90'
+                      }`}
                   >
                     {player.name}
                   </span>
@@ -147,11 +146,10 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                   )}
                   {player.isBot && (
                     <span
-                      className={`text-[9px] px-1.5 py-0.5 rounded font-bold transition-all ${
-                        isActive
+                      className={`text-[9px] px-1.5 py-0.5 rounded font-bold transition-all ${isActive
                           ? 'bg-purple-500/30 text-purple-200 border border-purple-400/50 animate-pulse inline-flex items-center gap-1'
                           : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                      }`}
+                        }`}
                     >
                       {isActive ? 'กำลังคิด...' : 'AI BOT'}
                     </span>
@@ -167,11 +165,10 @@ export const PlayerList: React.FC<PlayerListProps> = ({
                       return (
                         <div
                           key={stoneColor}
-                          className={`w-2 h-2 rounded-full ${
-                            owned
+                          className={`w-2 h-2 rounded-full ${owned
                               ? `crystal-${stoneColor} ring-1 ring-white/60 shadow-sm`
                               : 'bg-white/10 border border-white/10'
-                          }`}
+                            }`}
                         />
                       );
                     })}
