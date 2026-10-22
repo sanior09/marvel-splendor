@@ -75,7 +75,7 @@ export const GAME_RANKS: RankDef[] = [
     minXP: 50000,
     icon: '👑',
     color: '#ffd700',
-    description: 'พระผู้สร้างสูงสุดแห่งจักรวาลมาร์เวล (MAX RANK)',
+    description: 'พระผู้สร้างสูงสุดแห่งจักรวาลมาร์เวล (เอกสิทธิ์เฉพาะผู้สร้างเกม)',
     isOwner: true,
   },
 ];

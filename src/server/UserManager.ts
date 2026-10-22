@@ -18,7 +18,19 @@ export interface Rank {
   isOwner?: boolean;
 }
 
-export const RANKS: Rank[] = [
+export const OWNER_USERNAMES = ['SANIOR'];
+
+export const THE_ONE_ABOVE_ALL: Rank = {
+  name: 'THE ONE ABOVE ALL',
+  nameEn: 'The One Above All',
+  minXP: 50000,
+  icon: '👑',
+  color: '#ffd700',
+  isOwner: true,
+};
+
+// 7 Public Ranks obtainable by mortal players
+export const PUBLIC_RANKS: Rank[] = [
   { name: 'นักสู้ใหม่',         nameEn: 'Recruit',             minXP: 0,      icon: '🥉', color: '#cd7f32' },
   { name: 'เจ้าหน้าที่ S.H.I.E.L.D.', nameEn: 'S.H.I.E.L.D. Agent', minXP: 300,  icon: '🥈', color: '#94a3b8' },
   { name: 'ซูเปอร์โซลเยอร์',     nameEn: 'Super Soldier',        minXP: 800,    icon: '🛡️', color: '#38bdf8' },
@@ -26,18 +38,25 @@ export const RANKS: Rank[] = [
   { name: 'ผู้พิทักษ์กาแล็กซี',   nameEn: 'Guardian',            minXP: 3500,   icon: '💎', color: '#a855f7' },
   { name: 'จอมเวทสูงสุด',       nameEn: 'Sorcerer Supreme',     minXP: 6500,   icon: '🌌', color: '#06b6d4' },
   { name: 'ผู้ถือครองอินฟินิตี้', nameEn: 'Infinity Wielder',   minXP: 12000,  icon: '🔥', color: '#ff6a00' },
-  { name: 'THE ONE ABOVE ALL',    nameEn: 'The One Above All',   minXP: 50000,  icon: '👑', color: '#ffd700', isOwner: true },
 ];
 
-export function getRank(xp: number): Rank {
-  for (let i = RANKS.length - 1; i >= 0; i--) {
-    if (xp >= RANKS[i]!.minXP) return RANKS[i]!;
+export const RANKS: Rank[] = [...PUBLIC_RANKS, THE_ONE_ABOVE_ALL];
+
+export function getRank(xp: number, username?: string): Rank {
+  if (username && OWNER_USERNAMES.includes(username.trim().toUpperCase())) {
+    return THE_ONE_ABOVE_ALL;
   }
-  return RANKS[0]!;
+  for (let i = PUBLIC_RANKS.length - 1; i >= 0; i--) {
+    if (xp >= PUBLIC_RANKS[i]!.minXP) return PUBLIC_RANKS[i]!;
+  }
+  return PUBLIC_RANKS[0]!;
 }
 
-export function getNextRank(xp: number): Rank | null {
-  for (const rank of RANKS) {
+export function getNextRank(xp: number, username?: string): Rank | null {
+  if (username && OWNER_USERNAMES.includes(username.trim().toUpperCase())) {
+    return null;
+  }
+  for (const rank of PUBLIC_RANKS) {
     if (xp < rank.minXP) return rank;
   }
   return null;
@@ -309,8 +328,9 @@ export class UserManager {
   }
 
   private toProfile(user: IUser): UserProfile {
-    const rank = getRank(user.xp);
-    const nextRank = getNextRank(user.xp);
+    const isOwnerUser = OWNER_USERNAMES.includes(user.username.trim().toUpperCase());
+    const rank = getRank(user.xp, user.username);
+    const nextRank = isOwnerUser ? null : getNextRank(user.xp, user.username);
     const winRate = user.gamesPlayed > 0 ? Math.round((user.gamesWon / user.gamesPlayed) * 100) : 0;
     const profile: UserProfile = {
       id: (user._id as any).toString(),
@@ -322,7 +342,7 @@ export class UserManager {
       winRate,
       rank,
       nextRank,
-      xpToNextRank: nextRank ? nextRank.minXP - user.xp : null,
+      xpToNextRank: isOwnerUser ? null : (nextRank ? nextRank.minXP - user.xp : null),
       activeRoomId: user.activeRoomId || undefined,
       activePlayerId: user.activePlayerId || undefined,
       createdAt: user.createdAt.toISOString(),

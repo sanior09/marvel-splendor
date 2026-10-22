@@ -313,7 +313,11 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                             </span>
                           </div>
                           <div className="text-[10px] text-slate-400 whitespace-nowrap">
-                            {r.nameEn} • <span className="font-num text-slate-300 font-semibold">{r.minXP.toLocaleString()} XP</span>
+                            {r.nameEn} • {r.isOwner && !isCurrent ? (
+                              <span className="text-amber-400 font-bold">เอกสิทธิ์เฉพาะผู้สร้าง</span>
+                            ) : (
+                              <span className="font-num text-slate-300 font-semibold">{r.minXP.toLocaleString()} XP</span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -324,6 +328,11 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-950 shadow-sm animate-pulse whitespace-nowrap">
                             <span>👑</span>
                             <span>ยศปัจจุบัน</span>
+                          </span>
+                        ) : r.isOwner ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-600/20 border border-amber-400/40 text-amber-300 shadow-xs whitespace-nowrap">
+                            <span>👑</span>
+                            <span>เฉพาะผู้สร้างเกม</span>
                           </span>
                         ) : isPassed ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 whitespace-nowrap">
