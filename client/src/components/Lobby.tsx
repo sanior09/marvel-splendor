@@ -1036,8 +1036,21 @@ export const Lobby: React.FC<LobbyProps> = ({
             </span>
           </div>
 
-          {/* Top-Right Control Bar: Profile Badge + Tutorial Guide */}
+          {/* Top-Right Control Bar: Tutorial Guide + Profile Badge */}
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                soundManager.playModalOpen();
+                setShowTutorial(true);
+              }}
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/50 text-yellow-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
+              title="คู่มือวิธีเล่น MARVEL SPLENDOR"
+            >
+              <span>📘</span>
+              <span className="hidden sm:inline">วิธีเล่น</span>
+            </button>
+
             {userProfile && !isGuest && onLogout && (
               <ProfileBadge
                 profile={userProfile}
@@ -1058,18 +1071,6 @@ export const Lobby: React.FC<LobbyProps> = ({
                 เข้าสู่ระบบ
               </button>
             )}
-            <button
-              type="button"
-              onClick={() => {
-                soundManager.playModalOpen();
-                setShowTutorial(true);
-              }}
-              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/50 text-yellow-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
-              title="คู่มือวิธีเล่น MARVEL SPLENDOR"
-            >
-              <span>📘</span>
-              <span className="hidden sm:inline">วิธีเล่น</span>
-            </button>
           </div>
         </div>
 
