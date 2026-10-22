@@ -85,7 +85,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
       {/* ── Dropdown Popup Modal (Stark Obsidian Gold Console) ── */}
       {expanded && (
         <div
-          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:translate-x-0 sm:translate-y-0 sm:mt-2.5 w-[min(92vw,340px)] sm:w-80 max-h-[92vh] sm:max-h-[85vh] overflow-y-auto rounded-2xl p-3.5 sm:p-4 z-50 border animate-fade-in shadow-2xl select-none"
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:translate-x-0 sm:translate-y-0 sm:mt-2.5 w-[min(94vw,370px)] sm:w-[370px] max-h-[92vh] sm:max-h-[85vh] overflow-y-auto rounded-2xl p-3.5 sm:p-4 z-50 border animate-fade-in shadow-2xl select-none"
           style={{
             background: 'linear-gradient(165deg, rgba(16, 22, 36, 0.98) 0%, rgba(8, 11, 20, 0.99) 100%)',
             backdropFilter: 'blur(28px)',
@@ -303,35 +303,35 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                         >
                           {r.icon}
                         </div>
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
                             <span
-                              className="text-xs font-bold truncate leading-tight tracking-wide font-display"
+                              className="text-xs font-bold leading-tight tracking-wide font-display whitespace-nowrap"
                               style={{ color: isCurrent ? '#fef08a' : r.color }}
                             >
                               {r.name}
                             </span>
                           </div>
-                          <div className="text-[10px] text-slate-400 truncate">
+                          <div className="text-[10px] text-slate-400 whitespace-nowrap">
                             {r.nameEn} • <span className="font-num text-slate-300 font-semibold">{r.minXP.toLocaleString()} XP</span>
                           </div>
                         </div>
                       </div>
 
                       {/* Right: Status Tag */}
-                      <div className="shrink-0 text-right">
+                      <div className="shrink-0 text-right pl-1">
                         {isCurrent ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-950 shadow-sm animate-pulse">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-950 shadow-sm animate-pulse whitespace-nowrap">
                             <span>👑</span>
                             <span>ยศปัจจุบัน</span>
                           </span>
                         ) : isPassed ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 border border-emerald-400/30 text-emerald-300">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 whitespace-nowrap">
                             <span>✓</span>
                             <span>ปลดล็อกแล้ว</span>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 border border-amber-400/40 text-amber-300 font-num">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 border border-amber-400/40 text-amber-300 font-num whitespace-nowrap">
                             <span>🔒 อีก</span>
                             <strong className="font-black text-amber-200">{remainingXP.toLocaleString()}</strong>
                             <span>XP</span>
