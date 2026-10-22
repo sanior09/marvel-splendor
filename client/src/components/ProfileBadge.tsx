@@ -1,6 +1,6 @@
 // ============================================================
 //  ProfileBadge.tsx — Player Profile & XP Stats widget
-//  Shows rank, XP, win rate, games played in Lobby header
+//  Stark Cyber-Gold Design System: Obsidian Glass, Clear Typography
 // ============================================================
 
 import React, { useState } from 'react';
@@ -14,6 +14,7 @@ interface ProfileBadgeProps {
   activePlayerId?: string;
   onResumeRoom?: (roomId: string, playerId: string) => void;
   onClearActiveRoom?: () => void;
+  avatarUrl?: string | null;
 }
 
 export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
@@ -23,6 +24,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
   activePlayerId,
   onResumeRoom,
   onClearActiveRoom,
+  avatarUrl,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -36,46 +38,38 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
 
   return (
     <div className="relative">
-      {/* Badge Button Trigger */}
+      {/* ── Badge Button Trigger (Stark Gold Cyber Header) ── */}
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${
+        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all cursor-pointer backdrop-blur-md ${
           isOwner
-            ? 'border-amber-400/60 shadow-[0_0_15px_rgba(255,215,0,0.4)] hover:shadow-[0_0_22px_rgba(255,0,128,0.6)]'
-            : 'border-white/15 hover:border-white/30'
+            ? 'border-amber-400/60 bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/20 hover:from-amber-500/25 hover:to-amber-600/30 shadow-[0_0_16px_rgba(245,158,11,0.25)] hover:shadow-[0_0_22px_rgba(245,158,11,0.4)] hover:scale-105 active:scale-95'
+            : 'border-white/15 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/30 hover:scale-105 active:scale-95'
         }`}
-        style={{
-          background: isOwner
-            ? 'linear-gradient(135deg, rgba(255,0,128,0.18) 0%, rgba(255,215,0,0.18) 100%)'
-            : 'rgba(255,255,255,0.06)',
-        }}
       >
-        <span className={`text-base leading-none ${isOwner ? 'animate-bounce' : ''}`}>
-          {profile.rank.icon}
-        </span>
+        {/* Tiny Hero Portrait or Crown Icon */}
+        <div className="relative w-6 h-6 rounded-full overflow-hidden border border-amber-400/80 shrink-0 bg-neutral-900 shadow-sm flex items-center justify-center">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+          ) : (
+            <span className={`text-xs leading-none ${isOwner ? 'animate-bounce' : ''}`}>
+              {profile.rank.icon}
+            </span>
+          )}
+        </div>
+
         <div className="text-left">
           <div className="flex items-center gap-1">
-            <span className="text-white text-xs font-black leading-tight tracking-wide">
+            <span className="text-white text-xs font-black leading-tight tracking-wide font-display">
               {profile.username}
             </span>
           </div>
-          <div
-            className="text-[10px] font-black leading-tight tracking-wide"
-            style={
-              isOwner
-                ? {
-                    background: 'linear-gradient(90deg, #ffd700, #ff007f)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }
-                : { color: profile.rank.color || 'rgba(255,255,255,0.6)' }
-            }
-          >
+          <div className="text-[10px] font-bold leading-tight tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-400 drop-shadow-sm">
             {profile.rank.name}
           </div>
         </div>
-        <div className="text-white/30 text-xs ml-1">{expanded ? '▲' : '▼'}</div>
+        <div className="text-amber-400/60 text-xs ml-0.5">{expanded ? '▲' : '▼'}</div>
       </button>
 
       {/* Click outside backdrop */}
@@ -86,37 +80,48 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
         />
       )}
 
-      {/* Dropdown Popup Modal */}
+      {/* ── Dropdown Popup Modal (Stark Obsidian Gold Console) ── */}
       {expanded && (
         <div
-          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:translate-x-0 sm:translate-y-0 sm:mt-2.5 w-[min(92vw,340px)] sm:w-72 max-h-[92vh] sm:max-h-[85vh] overflow-y-auto rounded-2xl p-3 sm:p-4 z-50 border animate-slide-up shadow-2xl"
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:translate-x-0 sm:translate-y-0 sm:mt-2.5 w-[min(92vw,340px)] sm:w-80 max-h-[92vh] sm:max-h-[85vh] overflow-y-auto rounded-2xl p-3.5 sm:p-4 z-50 border animate-fade-in shadow-2xl select-none"
           style={{
-            background: 'linear-gradient(135deg, rgba(16, 18, 32, 0.98) 0%, rgba(8, 10, 18, 0.99) 100%)',
-            backdropFilter: 'blur(24px)',
-            borderColor: isOwner ? 'rgba(255,215,0,0.45)' : 'rgba(255,255,255,0.15)',
+            background: 'linear-gradient(165deg, rgba(16, 22, 36, 0.98) 0%, rgba(8, 11, 20, 0.99) 100%)',
+            backdropFilter: 'blur(28px)',
+            borderColor: isOwner ? 'rgba(245, 158, 11, 0.45)' : 'rgba(255, 255, 255, 0.15)',
             boxShadow: isOwner
-              ? '0 20px 45px rgba(0,0,0,0.9), 0 0 30px rgba(255,215,0,0.25)'
-              : '0 20px 45px rgba(0,0,0,0.8)',
+              ? '0 24px 50px rgba(0,0,0,0.95), 0 0 30px rgba(245,158,11,0.2)'
+              : '0 24px 50px rgba(0,0,0,0.85)',
           }}
         >
           {/* Header Profile Info + Close button */}
-          <div className="flex items-center justify-between gap-2 mb-2.5 sm:mb-3 pb-2 sm:pb-2.5 border-b border-white/10">
-            <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-white/10">
+            <div className="flex items-center gap-3 min-w-0">
+              {/* Prestige Hero Portrait with Stark Ring */}
               <div
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-xl sm:text-2xl border-2 shrink-0 overflow-hidden"
+                className="relative w-12 h-12 rounded-2xl flex items-center justify-center border-2 shrink-0 overflow-hidden bg-neutral-900 shadow-md"
                 style={{
-                  borderColor: isOwner ? '#ffd700' : profile.rank.color,
-                  background: isOwner
-                    ? 'linear-gradient(135deg, rgba(255,215,0,0.25) 0%, rgba(245,158,11,0.15) 100%)'
-                    : 'rgba(255,255,255,0.05)',
-                  boxShadow: isOwner ? '0 0 16px rgba(255,215,0,0.5)' : undefined,
+                  borderColor: isOwner ? '#f59e0b' : profile.rank.color,
+                  boxShadow: isOwner ? '0 0 16px rgba(245, 158, 11, 0.4)' : undefined,
                 }}
               >
-                {profile.rank.icon}
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-2xl bg-amber-500/15">
+                    {profile.rank.icon}
+                  </div>
+                )}
+                {/* Crown watermark badge */}
+                {isOwner && (
+                  <span className="absolute bottom-0 right-0 text-[10px] bg-black/80 px-1 py-0.2 rounded-tl-md border-t border-l border-amber-400/50 leading-none">
+                    👑
+                  </span>
+                )}
               </div>
+
               <div className="min-w-0">
-                <div className="text-white font-black text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
-                  <span className="truncate">{profile.username}</span>
+                <div className="text-white font-black text-sm sm:text-base flex items-center gap-1.5 font-display tracking-wide truncate">
+                  {profile.username}
                 </div>
                 <div className="mt-0.5">
                   <RankBadge rank={profile.rank} size="sm" />
@@ -128,53 +133,39 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
             <button
               type="button"
               onClick={() => setExpanded(false)}
-              className="text-white/40 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors text-xs sm:text-sm leading-none shrink-0 cursor-pointer"
+              className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-slate-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer shrink-0"
               title="ปิด (Close)"
             >
               ✕
             </button>
           </div>
 
-          {/* ── EXP Progress Card ── */}
-          <div
-            className="mb-2.5 sm:mb-3 p-2.5 sm:p-3 rounded-xl border relative overflow-hidden"
-            style={{
-              background: 'linear-gradient(135deg, rgba(24, 18, 40, 0.7) 0%, rgba(10, 12, 22, 0.85) 100%)',
-              borderColor: isOwner ? 'rgba(255, 215, 0, 0.35)' : 'rgba(255, 255, 255, 0.1)',
-            }}
-          >
+          {/* ── EXP Progress Card (Infinity Arc Energy Core) ── */}
+          <div className="mb-3 p-3 rounded-xl border border-amber-400/30 bg-gradient-to-br from-amber-500/[0.08] via-black/40 to-black/60 shadow-inner relative overflow-hidden">
             {/* Top row: Label + Badge */}
-            <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-1.5">
                 <span className="text-amber-400 text-xs">⚡</span>
-                <span className="text-[10.5px] sm:text-[11px] font-black text-white/90 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-200 uppercase tracking-wide font-['Prompt',sans-serif]">
                   EXP สะสม
                 </span>
               </div>
-              <span
-                className="text-[10px] sm:text-[11px] font-black px-2 py-0.2 sm:py-0.5 rounded-full border shadow-sm"
-                style={{
-                  color: isOwner ? '#ffd700' : '#38bdf8',
-                  background: isOwner ? 'rgba(255, 215, 0, 0.14)' : 'rgba(56, 189, 248, 0.12)',
-                  borderColor: isOwner ? 'rgba(255, 215, 0, 0.45)' : 'rgba(56, 189, 248, 0.3)',
-                  textShadow: isOwner ? '0 1px 4px rgba(255,215,0,0.4)' : undefined,
-                }}
-              >
+              <span className="text-xs font-bold font-num px-2.5 py-0.5 rounded-full border border-amber-400/40 bg-amber-500/15 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
                 {profile.xp.toLocaleString()} XP
               </span>
             </div>
 
             {/* Glowing Cyber Track */}
-            <div className="relative h-2 sm:h-2.5 rounded-full bg-black/70 p-0.5 border border-white/15 overflow-hidden shadow-inner">
+            <div className="relative h-2 rounded-full bg-black/80 p-0.5 border border-white/15 overflow-hidden shadow-inner my-1.5">
               <div
                 className="h-full rounded-full transition-all duration-700 relative"
                 style={{
                   width: `${xpPercent}%`,
                   background: isOwner
-                    ? 'linear-gradient(90deg, #f59e0b 0%, #ffd700 50%, #fb7185 100%)'
+                    ? 'linear-gradient(90deg, #f59e0b 0%, #ffd700 50%, #ea580c 100%)'
                     : `linear-gradient(90deg, ${profile.rank.color}, ${profile.nextRank?.color ?? '#ffd700'})`,
                   boxShadow: isOwner
-                    ? '0 0 14px rgba(255, 215, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+                    ? '0 0 12px rgba(245, 158, 11, 0.75)'
                     : `0 0 10px ${profile.rank.color}88`,
                 }}
               >
@@ -183,96 +174,74 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
             </div>
 
             {/* Next Rank Goal Info */}
-            <div className="flex items-center justify-between text-[10px] mt-1 font-bold">
+            <div className="flex items-center justify-between text-xs mt-1.5 font-medium">
               {profile.nextRank ? (
                 <>
-                  <span className="text-white/60">
-                    เป้าหมาย: <span className="text-amber-300 font-extrabold">{profile.nextRank.name}</span>
+                  <span className="text-slate-300 text-[11px]">
+                    เป้าหมาย: <span className="text-amber-300 font-bold">{profile.nextRank.name}</span>
                   </span>
-                  <span className="text-sky-300 font-black">
+                  <span className="text-amber-200 font-bold font-num text-[11px]">
                     อีก {profile.xpToNextRank?.toLocaleString()} XP
                   </span>
                 </>
               ) : (
-                <div className="w-full text-center text-amber-300 text-[10px] font-black flex items-center justify-center gap-1.5 pt-0.5">
-                  <span className="animate-pulse">✨</span>
+                <div className="w-full text-center text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 pt-0.5 drop-shadow-[0_0_8px_rgba(245,158,11,0.35)]">
+                  <span>✨</span>
                   <span>บรรลุขีดสุดพลังจักรวาลแล้ว (MAX RANK)</span>
-                  <span className="animate-pulse">✨</span>
+                  <span>✨</span>
                 </div>
               )}
             </div>
           </div>
 
-          {/* ── 3 Thematic Stat Cards (เกมที่เล่น, ชนะ, Win Rate) ── */}
-          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-2.5 sm:mb-3">
+          {/* ── 3 Thematic Stat Cards (Stark Cyber-Gold Triumvirate) ── */}
+          <div className="grid grid-cols-3 gap-2 mb-3">
             {/* Card 1: Matches Played */}
-            <div
-              className="rounded-xl p-2 sm:p-2.5 text-center border relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5"
-              style={{
-                background: 'linear-gradient(180deg, rgba(30, 58, 138, 0.3) 0%, rgba(15, 23, 42, 0.7) 100%)',
-                borderColor: 'rgba(59, 130, 246, 0.4)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.35)',
-              }}
-            >
-              <div className="text-base sm:text-lg leading-none mb-0.5 drop-shadow">🎮</div>
-              <div className="text-base sm:text-lg font-black font-num text-sky-200 tracking-tight leading-tight drop-shadow">
+            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-amber-400/40 rounded-xl p-2.5 text-center transition-all shadow-md group hover:-translate-y-0.5">
+              <div className="text-base leading-none mb-1 group-hover:scale-110 transition-transform">🎮</div>
+              <div className="text-lg font-black font-num text-white tracking-tight leading-tight drop-shadow">
                 {profile.gamesPlayed.toLocaleString()}
               </div>
-              <div className="text-[9px] sm:text-[9.5px] font-bold text-sky-400/90 uppercase tracking-wider mt-0.5">
+              <div className="text-[10px] font-medium text-slate-400 uppercase tracking-wide mt-1 font-['Prompt']">
                 เกมที่เล่น
               </div>
             </div>
 
             {/* Card 2: Victories */}
-            <div
-              className="rounded-xl p-2 sm:p-2.5 text-center border relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5"
-              style={{
-                background: 'linear-gradient(180deg, rgba(161, 98, 7, 0.3) 0%, rgba(20, 15, 5, 0.7) 100%)',
-                borderColor: 'rgba(245, 158, 11, 0.5)',
-                boxShadow: '0 4px 14px rgba(245, 158, 11, 0.2)',
-              }}
-            >
-              <div className="text-base sm:text-lg leading-none mb-0.5 drop-shadow">🏆</div>
-              <div className="text-base sm:text-lg font-black font-num text-amber-300 tracking-tight leading-tight drop-shadow-[0_1px_4px_rgba(245,158,11,0.6)]">
+            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-amber-400/40 rounded-xl p-2.5 text-center transition-all shadow-md group hover:-translate-y-0.5">
+              <div className="text-base leading-none mb-1 group-hover:scale-110 transition-transform">🏆</div>
+              <div className="text-lg font-black font-num text-amber-300 tracking-tight leading-tight drop-shadow-[0_1px_6px_rgba(245,158,11,0.5)]">
                 {profile.gamesWon.toLocaleString()}
               </div>
-              <div className="text-[9px] sm:text-[9.5px] font-black text-amber-400 uppercase tracking-wider mt-0.5">
+              <div className="text-[10px] font-bold text-amber-400/90 uppercase tracking-wide mt-1 font-['Prompt']">
                 ชนะ
               </div>
             </div>
 
             {/* Card 3: Win Rate */}
-            <div
-              className="rounded-xl p-2 sm:p-2.5 text-center border relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5"
-              style={{
-                background: 'linear-gradient(180deg, rgba(16, 185, 129, 0.25) 0%, rgba(6, 78, 59, 0.6) 100%)',
-                borderColor: 'rgba(52, 211, 153, 0.45)',
-                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.2)',
-              }}
-            >
-              <div className="text-base sm:text-lg leading-none mb-0.5 drop-shadow">📈</div>
-              <div className="text-base sm:text-lg font-black font-num text-emerald-300 tracking-tight leading-tight drop-shadow">
+            <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-amber-400/40 rounded-xl p-2.5 text-center transition-all shadow-md group hover:-translate-y-0.5">
+              <div className="text-base leading-none mb-1 group-hover:scale-110 transition-transform">📈</div>
+              <div className="text-lg font-black font-num text-emerald-400 tracking-tight leading-tight drop-shadow-[0_1px_6px_rgba(52,211,153,0.4)]">
                 {profile.winRate}%
               </div>
-              <div className="text-[9px] sm:text-[9.5px] font-bold text-emerald-400/90 uppercase tracking-wider mt-0.5">
-                Win Rate
+              <div className="text-[10px] font-bold text-emerald-400/80 uppercase tracking-wide mt-1 font-['Prompt']">
+                WIN RATE
               </div>
             </div>
           </div>
 
           {/* Resume Room Banner (If active room exists) */}
           {activeRoomId && activePlayerId && onResumeRoom && (
-            <div className="flex items-center gap-1.5 mb-2.5 sm:mb-3">
+            <div className="flex items-center gap-1.5 mb-3">
               <button
                 type="button"
                 onClick={() => {
                   onResumeRoom(activeRoomId, activePlayerId);
                   setExpanded(false);
                 }}
-                className="flex-1 py-2 sm:py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold text-black flex items-center justify-center gap-2 transition-all hover:scale-[1.02] cursor-pointer"
+                className="flex-1 py-2 px-3 rounded-xl text-xs font-bold text-slate-950 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] cursor-pointer shadow-md"
                 style={{
-                  background: 'linear-gradient(135deg, #ffd700 0%, #ea580c 100%)',
-                  boxShadow: '0 6px 16px rgba(234,179,8,0.35)',
+                  background: 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)',
                 }}
               >
                 ▶ กลับเข้าห้อง {activeRoomId}
@@ -284,7 +253,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                     e.stopPropagation();
                     onClearActiveRoom();
                   }}
-                  className="py-2 sm:py-2.5 px-3 rounded-xl text-white/50 hover:text-white hover:bg-white/10 text-xs border border-white/10 transition-all cursor-pointer"
+                  className="py-2 px-3 rounded-xl text-white/50 hover:text-white hover:bg-white/10 text-xs border border-white/10 transition-all cursor-pointer"
                   title="ยกเลิก/ล้างสถานะห้องนี้"
                 >
                   ✕
@@ -293,13 +262,16 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
             </div>
           )}
 
-          {/* Logout Button */}
+          {/* ── Logout Button (Refined Eject Protocol) ── */}
           <button
             type="button"
-            onClick={() => { onLogout(); setExpanded(false); }}
-            className="w-full py-1.5 sm:py-2 rounded-xl text-white/40 text-[11px] sm:text-xs border border-white/10 hover:text-red-400 hover:border-red-400/30 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            onClick={() => {
+              onLogout();
+              setExpanded(false);
+            }}
+            className="w-full py-2 rounded-xl text-slate-300 hover:text-red-300 text-xs font-semibold bg-white/[0.03] hover:bg-red-950/40 border border-white/10 hover:border-red-500/40 transition-all cursor-pointer flex items-center justify-center gap-2 shadow-sm active:scale-[0.98]"
           >
-            <span>🚪</span>
+            <span className="text-sm">🚪</span>
             <span>ออกจากระบบ</span>
           </button>
         </div>

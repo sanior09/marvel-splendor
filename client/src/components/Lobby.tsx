@@ -1059,6 +1059,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                 activePlayerId={userProfile.activePlayerId}
                 onResumeRoom={onResumeRoom}
                 onClearActiveRoom={onClearActiveRoom}
+                avatarUrl={avatarUrl}
               />
             )}
             {isGuest && onLogout && (
