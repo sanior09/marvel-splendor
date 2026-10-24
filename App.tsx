@@ -20,7 +20,7 @@ import type { RoomInfo } from '@shared/types/game.types';
  * ตั้งเป็น true: ปิดปรับปรุงระบบ (Systems Offline / Maintenance Mode)
  * ตั้งเป็น false: เปิดระบบให้เข้าเล่นเกม Marvel Splendor ตามคำสั่งของเจ้านาย
  */
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = true
 
 export default function App(): React.ReactElement {
   useEffect(() => {
