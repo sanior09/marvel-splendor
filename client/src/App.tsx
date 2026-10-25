@@ -33,28 +33,15 @@ export default function App(): React.ReactElement {
 
   if (MAINTENANCE_MODE) {
     return (
-      <main className="min-h-screen w-full flex items-center justify-center p-3.5 sm:p-6 bg-[#070913] relative overflow-hidden select-none font-['Prompt',sans-serif]">
-        {/* Ambient Cosmic Particle Glow */}
+      <main className="min-h-screen w-full flex items-center justify-center p-4 bg-[#080c18] relative overflow-hidden select-none font-['Prompt',sans-serif]">
+        {/* Soft Ambient Radial Lighting */}
         <div
-          className="fixed inset-0 pointer-events-none opacity-45"
+          className="fixed inset-0 pointer-events-none opacity-50"
           style={{
             backgroundImage: `
-              radial-gradient(circle at 50% 15%, rgba(245, 158, 11, 0.16) 0%, transparent 60%),
-              radial-gradient(circle at 15% 85%, rgba(239, 68, 68, 0.14) 0%, transparent 55%),
-              radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.14) 0%, transparent 55%)
+              radial-gradient(ellipse at 50% 25%, rgba(56, 189, 248, 0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 50% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 60%)
             `,
-          }}
-        />
-
-        {/* Subtle Cyber Grid Backdrop */}
-        <div
-          className="fixed inset-0 pointer-events-none opacity-10"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px)
-            `,
-            backgroundSize: '40px 40px',
           }}
         />
 
