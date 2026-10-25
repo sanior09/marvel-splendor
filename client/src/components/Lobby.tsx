@@ -63,7 +63,7 @@ const POPULAR_MARVEL_BOTS: MarvelBotPreset[] = [
   { name: 'Deadpool', personality: 'ultron', avatar: '⚔️', desc: 'คาดเดายาก กวนประสาท ป่วนกระดาน', avatarUrl: resolveMarvelAvatar('deadpool') },
   { name: 'Doctor Strange', personality: 'stark', avatar: '✨', desc: 'จอมเวทย์สูงสุด วางแผนล่วงหน้าหลายก้าว', avatarUrl: resolveMarvelAvatar('doctor_strange') },
   { name: 'Black Panther', personality: 'stark', avatar: '🐾', desc: 'กษัตริย์วากานด้า เน้นทรัพยากรหนาแน่น', avatarUrl: resolveMarvelAvatar('black_panther') },
-  { name: 'Vision (J.A.R.V.I.S.)', personality: 'friday', avatar: '🤖', desc: 'ปัญญาประดิษฐ์อัจฉริยะ เดินเกมสมดุลแม่นยำ', avatarUrl: resolveMarvelAvatar('vision') },
+  { name: 'Vision', personality: 'friday', avatar: '🤖', desc: 'ปัญญาประดิษฐ์อัจฉริยะ เดินเกมสมดุลแม่นยำ', avatarUrl: resolveMarvelAvatar('vision') },
   { name: 'Scarlet Witch', personality: 'ultron', avatar: '🔮', desc: 'บิดเบือนความเป็นจริง ชิงจังหวะการ์ดสำคัญ', avatarUrl: resolveMarvelAvatar('scarlet_witch') },
   { name: 'Captain America', personality: 'stark', avatar: '🛡️', desc: 'ผู้นำทีมอเวนเจอร์ส เล่นรอบคอบรัดกุม', avatarUrl: resolveMarvelAvatar('captain_america') },
   { name: 'Hulk', personality: 'thanos', avatar: '💚', desc: 'จอมพลังทุบแหลก บุกทะลวงแต้มตรงไปตรงมา', avatarUrl: resolveMarvelAvatar('hulk') },
@@ -1499,7 +1499,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                       {[
                         { label: 'อเวนเจอร์ส', icon: '🛡️', bots: ['Tony Stark AI', 'Captain America', 'Thor Odinson'] },
                         { label: 'วายร้าย', icon: '👑', bots: ['Doctor Doom', 'Loki', 'Thanos Bot'] },
-                        { label: 'จอมเวทย์', icon: '✨', bots: ['Doctor Strange', 'Scarlet Witch', 'Vision (J.A.R.V.I.S.)'] },
+                        { label: 'จอมเวทย์', icon: '✨', bots: ['Doctor Strange', 'Scarlet Witch', 'Vision'] },
                         { label: 'เอ็กซ์เมน', icon: '⚔️', bots: ['Wolverine', 'Deadpool', 'Spider-Man'] },
                       ].map((preset) => (
                         <button
