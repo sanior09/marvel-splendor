@@ -378,43 +378,64 @@ export const Lobby: React.FC<LobbyProps> = ({
     }, botAvatarUrl);
   };
 
-  // ── Countdown Overlay (always rendered via portal, works for solo + multiplayer) ──
+  // ── Countdown Overlay (Stark Arc Reactor Warp HUD Console) ──
   const countdownOverlay = startCountdown !== null
     ? createPortal(
         <div
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
           style={{
-            background: 'rgba(0,0,0,0.82)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
+            background: 'rgba(5, 7, 18, 0.88)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
           }}
         >
+          {/* Ambient Cosmic Particle Backlight */}
           <div
-            className="flex flex-col items-center gap-6 px-8 py-10 rounded-3xl"
+            className="fixed inset-0 pointer-events-none opacity-45"
             style={{
-              background: 'linear-gradient(135deg, #0a0a1a 0%, #0d0505 50%, #0a1a0a 100%)',
-              border: '1.5px solid rgba(251,191,36,0.35)',
-              boxShadow: '0 0 80px rgba(251,191,36,0.15), 0 20px 60px rgba(0,0,0,0.8)',
-              minWidth: '300px',
-              maxWidth: '90vw',
+              backgroundImage: `
+                radial-gradient(circle at 50% 25%, rgba(245, 158, 11, 0.22) 0%, transparent 60%),
+                radial-gradient(circle at 20% 85%, rgba(239, 68, 68, 0.18) 0%, transparent 55%),
+                radial-gradient(circle at 80% 85%, rgba(168, 85, 247, 0.16) 0%, transparent 55%)
+              `,
+            }}
+          />
+
+          <div
+            className="relative z-10 flex flex-col items-center gap-3.5 sm:gap-4.5 px-4.5 sm:px-6 py-5 sm:py-6 rounded-3xl border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.95),0_0_40px_rgba(245,158,11,0.18)] max-w-[420px] w-full text-center overflow-hidden animate-slide-up select-none my-auto"
+            style={{
+              background: 'linear-gradient(165deg, rgba(18, 24, 46, 0.98) 0%, rgba(9, 12, 24, 0.99) 100%)',
             }}
           >
-            {/* Marvel Splendor logo */}
-            <div className="flex flex-col items-center gap-1">
-              <div className="flex items-center gap-2">
-                <span className="marvel-badge px-2 py-0.5 rounded text-xs tracking-wider">MARVEL</span>
-                <span className="font-display font-black text-xl text-white tracking-widest">SPLENDOR</span>
+            {/* Top Subtle Amber Tech Glow Stripe */}
+            <div className="absolute top-0 inset-x-8 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-90" />
+
+            {/* Marvel Splendor & Mission Header */}
+            <div className="flex flex-col items-center gap-1.5 w-full border-b border-white/10 pb-2.5">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-1.5">
+                  <span className="marvel-badge px-2 py-0.5 rounded text-[11px] font-black tracking-wider">MARVEL</span>
+                  <span className="font-display font-black text-sm text-white tracking-widest">SPLENDOR</span>
+                </div>
+                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/30 text-[9.5px] font-mono uppercase text-amber-300 font-bold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                  <span>WARP INITIATED</span>
+                </div>
               </div>
-              <p className="text-white/50 text-xs tracking-widest uppercase font-semibold">กำลังเริ่มการต่อสู้...</p>
+              <p className="text-white/60 text-[11px] font-medium tracking-wide">
+                ระบบกำลังจัดเตรียมสมรภูมิและเคลื่อนพลเข้าสู่การประลอง
+              </p>
             </div>
 
-            {/* Countdown circle with Dynamic Shockwave & Energy Pulse */}
-            <div className="relative flex items-center justify-center my-1">
+            {/* Arc Reactor Central Countdown Ring */}
+            <div className="relative flex items-center justify-center my-0.5">
               {/* Outer pulsing shockwave rings on tick */}
               <div
                 key={`shockwave-${startCountdown}`}
-                className={`absolute -inset-3 rounded-full border-2 pointer-events-none animate-ping ${
-                  startCountdown === 1 ? 'border-red-500/70' : 'border-amber-400/50'
+                className={`absolute -inset-3.5 rounded-full border-2 pointer-events-none animate-ping ${
+                  startCountdown === 1 ? 'border-red-500/80' : 'border-amber-400/50'
                 }`}
                 style={{ animationDuration: '0.85s', animationIterationCount: 1 }}
               />
@@ -422,21 +443,34 @@ export const Lobby: React.FC<LobbyProps> = ({
               {/* Ambient Radiant Glow */}
               <div
                 className={`absolute -inset-5 rounded-full blur-xl pointer-events-none transition-all duration-300 ${
-                  startCountdown === 1 ? 'bg-red-500/35 scale-125' : 'bg-amber-500/20 scale-100'
+                  startCountdown === 1 ? 'bg-red-500/40 scale-125' : 'bg-amber-500/25 scale-100'
                 }`}
               />
 
-              <svg width="116" height="116" viewBox="0 0 110 110" className="relative z-10">
-                <circle cx="55" cy="55" r="48" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
+              <svg width="124" height="124" viewBox="0 0 120 120" className="relative z-10">
+                {/* Secondary outer dashed HUD orbit */}
                 <circle
-                  cx="55" cy="55" r="48"
+                  cx="60"
+                  cy="60"
+                  r="56"
+                  fill="none"
+                  stroke="rgba(245, 158, 11, 0.25)"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                  className="animate-spin-slow"
+                />
+                {/* Background track */}
+                <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
+                {/* Active progress ring */}
+                <circle
+                  cx="60" cy="60" r="48"
                   fill="none"
                   stroke="url(#countdownGrad)"
                   strokeWidth="6"
                   strokeLinecap="round"
                   strokeDasharray={`${2 * Math.PI * 48}`}
                   strokeDashoffset={`${2 * Math.PI * 48 * (1 - startCountdown / 5)}`}
-                  transform="rotate(-90 55 55)"
+                  transform="rotate(-90 60 60)"
                   style={{ transition: 'stroke-dashoffset 0.9s linear' }}
                 />
                 <defs>
@@ -452,65 +486,117 @@ export const Lobby: React.FC<LobbyProps> = ({
                   key={`countdown-num-${startCountdown}`}
                   className="font-num font-black leading-none animate-scale-pop select-none"
                   style={{
-                    fontSize: startCountdown === 1 ? '3.3rem' : '3rem',
+                    fontSize: startCountdown === 1 ? '3.5rem' : '3.1rem',
                     background: startCountdown === 1
                       ? 'linear-gradient(135deg, #fef08a, #ef4444)'
                       : 'linear-gradient(135deg, #fbbf24, #ef4444)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     filter: startCountdown === 1
-                      ? 'drop-shadow(0 0 18px rgba(239,68,68,0.95))'
-                      : 'drop-shadow(0 0 12px rgba(251,191,36,0.7))',
+                      ? 'drop-shadow(0 0 20px rgba(239,68,68,0.95))'
+                      : 'drop-shadow(0 0 14px rgba(251,191,36,0.75))',
                   }}
                 >
                   {startCountdown}
                 </span>
                 <span
                   className={`text-[10px] tracking-widest uppercase font-bold transition-colors ${
-                    startCountdown === 1 ? 'text-red-400 animate-pulse' : 'text-white/50'
+                    startCountdown === 1 ? 'text-red-400 animate-pulse' : 'text-white/60'
                   }`}
                 >
-                  {startCountdown === 1 ? '⚡ เตรียมตัว!' : 'วินาที'}
+                  {startCountdown === 1 ? '🔥 เตรียมพร้อม!' : 'วินาที (SEC)'}
                 </span>
               </div>
             </div>
 
-            {/* Players summary — Solo or Multiplayer */}
-            <div className="flex items-center gap-2 flex-wrap justify-center">
-              {soloContext ? (
-                <>
-                  {/* Human player */}
-                  <div className="flex flex-col items-center gap-1">
-                    <div
-                      className="w-10 h-10 rounded-full overflow-hidden border-2"
-                      style={{ borderColor: 'rgba(251,191,36,0.8)' }}
-                    >
-                      {soloContext.avatarUrl ? (
-                        <img src={soloContext.avatarUrl} alt={soloContext.finalName} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-amber-600 text-white font-black text-sm">
-                          {soloContext.finalName[0]?.toUpperCase()}
+            {/* Combat Squad Roster Bento Card */}
+            <div className="w-full bg-black/45 border border-white/10 rounded-2xl p-2.5 space-y-1.5 shadow-inner">
+              <div className="flex items-center justify-between text-[10px] text-white/50 px-1 font-mono uppercase">
+                <span>COMBAT SQUAD S.H.I.E.L.D.</span>
+                <span>{soloContext ? `${soloContext.botNames.length + 1} COMBATANTS` : `${currentRoom?.players.length ?? 0} PLAYERS`}</span>
+              </div>
+
+              <div className="flex items-center gap-2 justify-center flex-wrap">
+                {soloContext ? (
+                  <>
+                    {/* Human Player */}
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-amber-500/10 border border-amber-400/30">
+                      <div className="w-7 h-7 rounded-full overflow-hidden border border-amber-300 ring-1 ring-amber-400/50 shrink-0 bg-neutral-900 flex items-center justify-center">
+                        {soloContext.avatarUrl ? (
+                          <img src={soloContext.avatarUrl} alt={soloContext.finalName} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-amber-600 text-white font-black text-[11px]">
+                            {soloContext.finalName[0]?.toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-left">
+                        <div className="text-[11px] font-bold text-yellow-300 max-w-[70px] truncate leading-tight">
+                          {soloContext.finalName}
                         </div>
-                      )}
+                        <span className="text-[8.5px] text-amber-200/60 uppercase font-mono block">YOU</span>
+                      </div>
                     </div>
-                    <span className="text-[9px] text-yellow-300 font-bold max-w-[48px] truncate text-center">{soloContext.finalName}</span>
-                  </div>
-                  {/* Bots */}
-                  {soloContext.botNames.map((name, idx) => {
-                    const preset = POPULAR_MARVEL_BOTS.find((b) => b.name === name);
-                    const botSrc = resolveMarvelAvatar(name, preset?.avatarUrl);
-                    const fallbackEmoji = getMarvelFallbackEmoji(name, true);
+
+                    {/* Bot Enemies */}
+                    {soloContext.botNames.map((name, idx) => {
+                      const preset = POPULAR_MARVEL_BOTS.find((b) => b.name === name);
+                      const botSrc = resolveMarvelAvatar(name, preset?.avatarUrl);
+                      const fallbackEmoji = getMarvelFallbackEmoji(name, true);
+                      return (
+                        <div key={idx} className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-purple-500/10 border border-purple-400/30">
+                          <div className="w-7 h-7 rounded-full overflow-hidden border border-purple-400/60 shrink-0 bg-neutral-900 flex items-center justify-center text-xs">
+                            {botSrc ? (
+                              <img
+                                src={botSrc}
+                                alt={name}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  if (target.nextElementSibling) {
+                                    (target.nextElementSibling as HTMLElement).style.display = 'flex';
+                                  }
+                                }}
+                              />
+                            ) : null}
+                            <div className={`${botSrc ? 'hidden' : 'flex'} w-full h-full items-center justify-center bg-gradient-to-br from-purple-700 to-indigo-700 text-white font-black text-[10px]`}>
+                              {fallbackEmoji}
+                            </div>
+                          </div>
+                          <div className="text-left">
+                            <div className="text-[11px] font-bold text-purple-200 max-w-[70px] truncate leading-tight">
+                              {name}
+                            </div>
+                            <span className="text-[8.5px] text-purple-300/60 uppercase font-mono block">AI BOT</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                ) : (
+                  // Multiplayer mode: show currentRoom players
+                  currentRoom?.players.map((p) => {
+                    const src = resolvePlayerAvatar(p.name, p.avatarUrl);
+                    const isMe = p.id === myPlayerId;
                     return (
-                      <div key={idx} className="flex flex-col items-center gap-1">
+                      <div
+                        key={p.id}
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border ${
+                          isMe
+                            ? 'bg-amber-500/10 border-amber-400/40 ring-1 ring-amber-400/30'
+                            : 'bg-white/5 border-white/10'
+                        }`}
+                      >
                         <div
-                          className="w-10 h-10 rounded-full overflow-hidden border-2"
-                          style={{ borderColor: 'rgba(147,51,234,0.6)' }}
+                          className={`w-7 h-7 rounded-full overflow-hidden border shrink-0 bg-neutral-900 flex items-center justify-center text-xs ${
+                            isMe ? 'border-amber-300' : 'border-white/20'
+                          }`}
                         >
-                          {botSrc ? (
+                          {src ? (
                             <img
-                              src={botSrc}
-                              alt={name}
-                              className="w-full h-full object-cover"
+                              src={src}
+                              alt={p.name}
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.style.display = 'none';
@@ -518,65 +604,37 @@ export const Lobby: React.FC<LobbyProps> = ({
                                   (target.nextElementSibling as HTMLElement).style.display = 'flex';
                                 }
                               }}
+                              className="w-full h-full object-cover"
                             />
                           ) : null}
-                          <div className={`${botSrc ? 'hidden' : 'flex'} w-full h-full items-center justify-center bg-gradient-to-br from-purple-700 to-indigo-700 text-white font-black text-sm`}>
-                            {fallbackEmoji}
+                          <div className={`${src ? 'hidden' : 'flex'} w-full h-full items-center justify-center bg-gradient-to-br from-red-600 to-amber-600 text-white font-black text-[10px]`}>
+                            {getMarvelFallbackEmoji(p.name, p.isBot)}
                           </div>
                         </div>
-                        <span className="text-[9px] text-white/50 max-w-[48px] truncate text-center">{name}</span>
-                      </div>
-                    );
-                  })}
-                </>
-              ) : (
-                // Multiplayer mode: show currentRoom players
-                currentRoom?.players.map((p) => {
-                  const src = resolvePlayerAvatar(p.name, p.avatarUrl);
-                  return (
-                    <div key={p.id} className="flex flex-col items-center gap-1">
-                      <div
-                        className="w-10 h-10 rounded-full overflow-hidden border-2"
-                        style={{ borderColor: p.id === myPlayerId ? 'rgba(251,191,36,0.8)' : 'rgba(255,255,255,0.2)' }}
-                      >
-                        {src ? (
-                          <img
-                            src={src}
-                            alt={p.name}
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.style.display = 'none';
-                              if (target.nextElementSibling) {
-                                (target.nextElementSibling as HTMLElement).style.display = 'flex';
-                              }
-                            }}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : null}
-                        <div className={`${src ? 'hidden' : 'flex'} w-full h-full items-center justify-center bg-gradient-to-br from-red-600 to-amber-600 text-white font-black text-sm`}>
-                          {getMarvelFallbackEmoji(p.name, p.isBot)}
+                        <div className="text-left">
+                          <div className={`text-[11px] font-bold truncate max-w-[75px] leading-tight ${isMe ? 'text-yellow-300' : 'text-white'}`}>
+                            {p.name}
+                          </div>
+                          <span className="text-[8.5px] text-white/50 uppercase font-mono block">
+                            {isMe ? 'YOU' : p.isBot ? 'AI' : 'PLAYER'}
+                          </span>
                         </div>
                       </div>
-                      <span className="text-[9px] text-white/60 max-w-[48px] truncate text-center">{p.name}</span>
-                    </div>
-                  );
-                })
-              )}
+                    );
+                  })
+                )}
+              </div>
             </div>
 
-            {/* Cancel button */}
+            {/* Cancel / Abort Button (Tactile Mobile Friendly) */}
             <button
               type="button"
               id="cancel-start-game-btn"
               onClick={handleCancelStart}
-              className="px-6 py-2.5 rounded-xl font-bold text-sm transition-all cursor-pointer hover:scale-105"
-              style={{
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: 'rgba(255,255,255,0.65)',
-              }}
+              className="w-full py-2.5 rounded-xl font-bold font-display text-xs text-white/70 hover:text-white transition-all cursor-pointer flex items-center justify-center gap-1.5 border border-white/15 bg-white/5 hover:bg-white/10 active:scale-[0.98] touch-manipulation min-h-[42px]"
             >
-              ✕ ยกเลิก
+              <span>✕</span>
+              <span>ยกเลิกการเริ่มเกม (ABORT MISSION)</span>
             </button>
           </div>
         </div>,
@@ -584,343 +642,428 @@ export const Lobby: React.FC<LobbyProps> = ({
       )
     : null;
 
-  // ── In-Room Lobby (Waiting Room) ──────────────────────────
+  // ── In-Room Lobby (Waiting Room: Stark S.H.I.E.L.D. Command Console) ──
   if (currentRoom) {
+    const unfilledSlotsCount = Math.max(0, 4 - currentRoom.players.length);
+    const roomMap = getMarvelMap(currentRoom.mapId);
+
     return (
       <>
         {countdownOverlay}
-      <div className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start p-3 sm:p-6 relative select-none">
-        <div className="w-full max-w-md pt-2 pb-6 sm:pb-8">
-          <div className="glass-strong rounded-2xl p-3.5 sm:p-5 w-full space-y-3 sm:space-y-4 border border-white/15 shadow-2xl relative">
-            <div className="absolute top-3 left-3 z-20">
-              <button
-                type="button"
-                onClick={() => {
-                  soundManager.playButtonClick();
-                  onLeaveRoom?.();
-                }}
-                className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white/80 hover:text-white font-bold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow hover:scale-105"
-                title="ออกจากห้องแล้วกลับสู่หน้าหลัก"
-              >
-                <span>ย้อนกลับ</span>
-              </button>
-            </div>
+        <div
+          className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start p-2.5 sm:p-5 relative select-none"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+          }}
+        >
+          {/* Subtle Ambient Vignette & Lights */}
+          <div
+            className="fixed inset-0 pointer-events-none opacity-40"
+            style={{
+              backgroundImage: `
+                radial-gradient(circle at 50% 15%, rgba(245, 158, 11, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 85%, rgba(220, 38, 38, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 15% 85%, rgba(147, 51, 234, 0.12) 0%, transparent 45%)
+              `,
+            }}
+          />
 
-            <div className="absolute top-3 right-3 flex items-center gap-2 z-20">
-              <button
-                type="button"
-                onClick={() => {
-                  soundManager.playModalOpen();
-                  setShowTutorial(true);
-                }}
-                className="px-2.5 py-1 rounded-lg bg-yellow-400/15 hover:bg-yellow-400/30 border border-yellow-400/50 text-yellow-300 font-bold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow hover:scale-105"
-                title="คู่มือวิธีเล่น MARVEL SPLENDOR"
-              >
-                <span>📘</span>
-                <span>วิธีเล่น</span>
-              </button>
-            </div>
+          <div className="relative z-10 w-full max-w-[480px] pt-1 sm:pt-2 pb-8">
+            <div
+              className="rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 w-full space-y-3 sm:space-y-3.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_35px_rgba(245,158,11,0.12)] relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(165deg, rgba(16, 22, 42, 0.97) 0%, rgba(8, 11, 22, 0.99) 100%)',
+              }}
+            >
+              {/* Top Cyber Gold Stripe Accent */}
+              <div className="absolute top-0 inset-x-8 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-80" />
 
-            <div className="text-center space-y-1.5">
-              <div className="flex items-center justify-center gap-2">
-                <span className="marvel-badge px-2 py-0.5 rounded text-xs tracking-wider">MARVEL</span>
-                <span className="font-display font-black text-lg text-white tracking-widest">SPLENDOR</span>
-              </div>
-              <h2 className="font-display text-xl font-black text-white">
-                รวมพลเหล่าฮีโร่
-              </h2>
-              <div className="flex items-center justify-center gap-2 flex-wrap">
-                <span className="text-white/50 text-xs uppercase tracking-wider font-semibold">
-                  รหัสห้อง
-                </span>
-                <div className="flex items-center gap-1.5">
-                  <code
-                    className="bg-red-500/15 text-red-300 px-3 py-1 rounded-lg font-mono font-black text-xl tracking-widest border border-red-500/30"
-                    style={{ letterSpacing: '0.25em' }}
-                  >
-                    {currentRoom.roomId}
-                  </code>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigator.clipboard.writeText(currentRoom.roomId).catch(() => {});
-                      setRoomCodeCopied(true);
-                      setTimeout(() => setRoomCodeCopied(false), 2000);
-                    }}
-                    className="text-[10px] px-2 py-1 rounded-lg border transition-all cursor-pointer font-bold"
-                    style={{
-                      background: roomCodeCopied ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.06)',
-                      borderColor: roomCodeCopied ? 'rgba(16,185,129,0.5)' : 'rgba(255,255,255,0.15)',
-                      color: roomCodeCopied ? '#6ee7b7' : 'rgba(255,255,255,0.5)',
-                    }}
-                    title="คัดลอกรหัสห้อง"
-                  >
-                    {roomCodeCopied ? '✓ คัดลอกแล้ว' : 'คัดลอก'}
-                  </button>
-                </div>
-              </div>
-
-              {/* Battlefield Map & Target Score Indicators in waiting room */}
-              <div className="flex flex-wrap items-center justify-center gap-2 my-1">
-                {(() => {
-                  const roomMap = getMarvelMap(currentRoom.mapId);
-                  return (
-                    <div
-                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-white bg-white/10 border ${roomMap.accentBorder} shadow-sm`}
-                      title={`สมรภูมิรบ: ${roomMap.name} (${roomMap.nameEn}) - ล็อกตลอดทั้งเกม`}
-                    >
-                      <span className="text-sm">{roomMap.icon}</span>
-                      <span>สมรภูมิ: <span className="text-yellow-300 font-extrabold">{roomMap.name}</span></span>
-                      <span className="text-[9px] bg-red-600/80 text-white font-mono px-1.5 py-0.2 rounded-full uppercase tracking-wider">LOCKED</span>
-                    </div>
-                  );
-                })()}
-
-                <div
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-white bg-amber-950/40 border border-yellow-500/40 shadow-sm"
-                  title="แต้มเป้าหมายสำหรับชัยชนะในเกมนี้"
-                >
-                  <span>🎯 เป้าหมาย:</span>
-                  <span className="text-yellow-300 font-black font-num text-sm sm:text-base drop-shadow-sm">
-                    {currentRoom.targetScore ?? 16} แต้ม
-                  </span>
-                </div>
-              </div>
-
-              {/* Host Target Score Quick Adjust */}
-              {isHost && onSetTargetScore && (
-                <div className="flex items-center justify-center gap-1.5 mt-0.5 mb-1 text-[10px] text-white/70">
-                  <span className="font-semibold text-yellow-300/80">ปรับแต้มชนะ:</span>
-                  {[12, 16, 20, 24].map((pts) => (
-                    <button
-                      key={pts}
-                      type="button"
-                      onClick={() => {
-                        soundManager.playScorePresetSelect(pts);
-                        onSetTargetScore(pts);
-                      }}
-                      className={[
-                        'px-2.5 py-0.5 rounded-lg font-black font-num transition-all cursor-pointer border text-xs',
-                        (currentRoom.targetScore ?? 16) === pts
-                          ? 'border-yellow-400 bg-yellow-400 text-black shadow'
-                          : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white',
-                      ].join(' ')}
-                    >
-                      {pts}P
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              <p className="text-[10px] text-white/50">
-                แชร์รหัสห้องให้เพื่อน หรือเพิ่มบอท AI เข้ามาร่วมประลอง
-              </p>
-            </div>
-
-            {/* Player list */}
-            <div className="glass rounded-xl overflow-hidden border border-white/10 max-h-48 overflow-y-auto">
-              <div className="px-3.5 py-2 border-b border-white/10 flex items-center justify-between sticky top-0 bg-neutral-950/80 backdrop-blur-sm z-10">
-                <span className="text-[11px] text-white/70 font-bold uppercase tracking-wider">
-                  ผู้เล่นที่เข้าร่วม
-                </span>
-                <span className="text-[11px] text-white/70 font-semibold">
-                  ผู้เล่น <span className="font-num font-black text-yellow-300">{currentRoom.players.length}</span>/4 คน
-                </span>
-              </div>
-              <div className="divide-y divide-white/5">
-                {currentRoom.players.map((p) => (
-                  <div key={p.id} className="flex items-center gap-2.5 px-3.5 py-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-amber-600 flex items-center justify-center font-bold text-xs text-white shadow shrink-0 overflow-hidden border border-white/20">
-                      {(() => {
-                        const avatarSrc = resolvePlayerAvatar(p.name, p.avatarUrl);
-                        const fallbackEmoji = getMarvelFallbackEmoji(p.name, p.isBot);
-                        return (
-                          <>
-                            {avatarSrc ? (
-                              <img
-                                src={avatarSrc}
-                                alt={p.name}
-                                onError={(e) => {
-                                  const target = e.target as HTMLImageElement;
-                                  target.style.display = 'none';
-                                  if (target.nextElementSibling) {
-                                    (target.nextElementSibling as HTMLElement).style.display = 'block';
-                                  }
-                                }}
-                                className="w-full h-full object-cover object-center"
-                              />
-                            ) : null}
-                            <span className={avatarSrc ? 'hidden' : 'block'}>
-                              {fallbackEmoji}
-                            </span>
-                          </>
-                        );
-                      })()}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="font-bold text-white text-xs truncate">{p.name}</span>
-                        <RankBadge rank={p.rank} isBot={p.isBot} size="sm" />
-                      </div>
-                      {p.isBot && <span className="text-[8px] text-purple-300 block">AI BOT</span>}
-                    </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {p.id === currentRoom.hostId ? (
-                        <span className="text-[9px] font-bold text-yellow-400 bg-yellow-400/10 px-1.5 py-0.5 rounded-full border border-yellow-400/30">
-                          👑 หัวหน้าห้อง
-                        </span>
-                      ) : p.isBot ? (
-                        <span className="text-[9px] font-bold text-emerald-300 bg-emerald-500/20 px-1.5 py-0.5 rounded-full border border-emerald-400/30 flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                          พร้อม
-                        </span>
-                      ) : p.isReady ? (
-                        <span className="text-[9px] font-bold text-emerald-300 bg-emerald-500/20 px-1.5 py-0.5 rounded-full border border-emerald-400/30 flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                          พร้อมแล้ว
-                        </span>
-                      ) : (
-                        <span className="text-[9px] font-medium text-amber-300/80 bg-amber-500/10 px-1.5 py-0.5 rounded-full border border-amber-400/20 flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                          ยังไม่พร้อม
-                        </span>
-                      )}
-                      {p.id === myPlayerId && p.id !== currentRoom.hostId && (
-                        <span className="text-[9px] font-bold text-indigo-300 bg-indigo-500/20 px-1.5 py-0.5 rounded-full border border-indigo-400/30">
-                          คุณ
-                        </span>
-                      )}
-                      {isHost && p.isBot && (
-                        <button
-                          type="button"
-                          onClick={() => onRemoveBot(p.id)}
-                          className="text-red-400 hover:text-red-300 text-xs px-1.5 py-0.5 rounded bg-red-500/10 hover:bg-red-500/20 transition-colors cursor-pointer"
-                          title="ลบบอทออก"
-                        >
-                          ✕
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Add Bot button for host */}
-            {isHost && canAddMoreBots && (
-              <button
-                type="button"
-                onClick={() => {
-                  const used = new Set(currentRoom.players.map((p) => p.name));
-                  const available = POPULAR_MARVEL_BOTS.find((b) => !used.has(b.name));
-                  setNewBotName(available?.name ?? 'Doctor Doom');
-                  setNewBotPersonality(available?.personality ?? 'stark');
-                  setShowAddBotModal(true);
-                }}
-                className="w-full py-2 rounded-xl border border-dashed border-purple-400/40 text-purple-300 hover:bg-purple-500/15 hover:border-purple-400 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
-              >
-                <span>+ เพิ่มคู่ต่อสู้บอท AI</span>
-              </button>
-            )}
-
-            {/* Token Pool Info according to player count */}
-            {currentRoom && currentRoom.players.length >= 2 && (
-              <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-2 text-center text-[10px] text-emerald-200">
-                <div className="font-bold flex items-center justify-center gap-1">
-                  <span>⚡ กองกลางตามจำนวนผู้เล่น ({currentRoom.players.length} คน):</span>
-                </div>
-                <div className="text-white/80 mt-0.5">
-                  5 สีหลักละ{' '}
-                  <span className="font-black text-amber-300">
-                    {currentRoom.players.length === 2 ? 4 : currentRoom.players.length === 3 ? 5 : 7}
-                  </span>{' '}
-                  ก้อน • 🟢 Time Stone{' '}
-                  <span className="font-black text-emerald-300">
-                    {currentRoom.players.length}
-                  </span>{' '}
-                  ก้อน • 🛡️ S.H.I.E.L.D.{' '}
-                  <span className="font-black text-slate-200">5</span> ก้อน
-                </div>
-              </div>
-            )}
-
-            {/* Non-Host Ready Toggle Controls */}
-            {!isHost && (
-              <div className="space-y-2 pt-1">
+              {/* ── 1. Top Navigation & Action Row ── */}
+              <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
                 <button
                   type="button"
                   onClick={() => {
                     soundManager.playButtonClick();
-                    onToggleReady?.();
+                    onLeaveRoom?.();
                   }}
-                  className={[
-                    'w-full py-3.5 rounded-xl font-black font-display text-sm transition-all duration-200 uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:-translate-y-0.5',
-                    isMeReady
-                      ? 'bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white border border-amber-400/40 shadow-amber-950/40'
-                      : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border border-emerald-400/40 shadow-emerald-950/40 animate-pulse',
-                  ].join(' ')}
+                  className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/12 border border-white/15 text-white/80 hover:text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95 touch-manipulation min-h-[36px]"
+                  title="ออกจากห้องแล้วกลับสู่หน้าหลัก"
                 >
-                  {isMeReady ? (
-                    <>
-                      <span>✕</span>
-                      <span>ยกเลิกพร้อมเล่น</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-base">⚡</span>
-                      <span>ยืนยันพร้อมเล่น</span>
-                    </>
-                  )}
+                  <span className="text-sm">←</span>
+                  <span>ออกจากห้อง</span>
                 </button>
-                {isMeReady ? (
-                  <p className="text-center text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1.5">
-                    <span>✨</span> คุณพร้อมแล้ว! กำลังรอหัวหน้าห้องกดเริ่มเกม...
-                  </p>
-                ) : (
-                  <p className="text-center text-amber-300/90 text-xs flex items-center justify-center gap-1.5">
-                    <span>⚠️</span> กรุณากดปุ่มเพื่อส่งสัญญาณให้หัวหน้าห้องทราบว่าคุณพร้อม
-                  </p>
-                )}
-              </div>
-            )}
 
-            {/* Host Start Game Controls */}
-            {isHost && (
-              <div className="space-y-2 pt-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="marvel-badge px-2 py-0.5 rounded text-[10.5px] font-black tracking-wider">MARVEL</span>
+                  <span className="font-display font-black text-xs sm:text-sm text-white tracking-widest">SPLENDOR</span>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => {
-                    handleStartGame();
+                    soundManager.playModalOpen();
+                    setShowTutorial(true);
                   }}
-                  disabled={!canStart}
-                  className={[
-                    'w-full py-3 rounded-xl font-black font-display text-sm transition-all duration-200 uppercase tracking-wider',
-                    canStart
-                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg hover:-translate-y-0.5 cursor-pointer'
-                      : 'bg-white/5 text-white/40 cursor-not-allowed border border-white/5',
-                  ].join(' ')}
+                  className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/35 text-amber-300 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95 touch-manipulation min-h-[36px]"
+                  title="คู่มือวิธีเล่น MARVEL SPLENDOR"
                 >
-                  {(currentRoom?.players.length ?? 0) < 2
-                    ? `ต้องการผู้เล่นอีกอย่างน้อย ${2 - (currentRoom?.players.length ?? 0)} คน`
-                    : !allReady
-                    ? `รอผู้เล่นยืนยัน (${nonHostHumans.length - unreadyHumans.length}/${nonHostHumans.length} พร้อม)`
-                    : 'เริ่มเกม MARVEL SPLENDOR'}
+                  <span>📘</span>
+                  <span>วิธีเล่น</span>
                 </button>
-
-                {(currentRoom?.players.length ?? 0) >= 2 && !allReady && (
-                  <p className="text-center text-amber-400/90 text-xs flex items-center justify-center gap-1">
-                    <span>⏳</span>
-                    <span>รอผู้เล่น: <span className="font-bold text-amber-300">{unreadyHumans.map((p) => p.name).join(', ')}</span> กดยืนยันพร้อมเล่น</span>
-                  </p>
-                )}
-                {canStart && (
-                  <p className="text-center text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1">
-                    <span>✨</span>
-                    <span>ทุกคนพร้อมเข้าสู่สมรภูมิแล้ว! หัวหน้าห้องเริ่มเกมได้เลย</span>
-                  </p>
-                )}
               </div>
-            )}
+
+              {/* ── 2. Security Clearance Code Banner (Stark Cyber Pass) ── */}
+              <div
+                className="rounded-2xl p-3 sm:p-3.5 relative overflow-hidden border border-amber-400/35 text-center"
+                style={{
+                  background: 'linear-gradient(145deg, rgba(30, 24, 15, 0.7) 0%, rgba(13, 16, 28, 0.9) 100%)',
+                  boxShadow: 'inset 0 0 20px rgba(245, 158, 11, 0.08), 0 4px 15px rgba(0, 0, 0, 0.4)',
+                }}
+              >
+                <div className="flex items-center justify-between text-[10px] text-amber-300/80 font-mono tracking-wider uppercase mb-1">
+                  <span className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>SECURE WAR ROOM CODE</span>
+                  </span>
+                  <span>แชร์ให้เพื่อนร่วมทีม</span>
+                </div>
+
+                <div className="flex items-center justify-center gap-2.5 my-1">
+                  <div className="bg-black/75 border border-red-500/40 rounded-xl px-4 py-1.5 flex items-center shadow-inner">
+                    <span
+                      className="font-mono font-black text-2xl sm:text-3xl text-red-400 tracking-[0.28em] drop-shadow-[0_0_10px_rgba(239,68,68,0.6)] select-all"
+                    >
+                      {currentRoom.roomId}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(currentRoom.roomId).catch(() => {});
+                      soundManager.playButtonClick();
+                      setRoomCodeCopied(true);
+                      setTimeout(() => setRoomCodeCopied(false), 2000);
+                    }}
+                    className={`px-3 py-2 rounded-xl border font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95 touch-manipulation min-h-[40px] ${
+                      roomCodeCopied
+                        ? 'bg-emerald-500/25 border-emerald-400 text-emerald-200 shadow-emerald-950/50'
+                        : 'bg-white/10 hover:bg-white/20 border-white/20 text-white shadow-black/40'
+                    }`}
+                    title="คัดลอกรหัสห้อง"
+                  >
+                    <span>{roomCodeCopied ? '✓' : '📋'}</span>
+                    <span>{roomCodeCopied ? 'คัดลอกแล้ว' : 'คัดลอก'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* ── 3. Mission Parameters Bento (Map & Target Score) ── */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {/* Map Card */}
+                <div className="rounded-xl p-2.5 bg-white/[0.03] border border-white/10 flex items-center justify-between shadow-sm">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-xl shrink-0">{roomMap.icon}</span>
+                    <div className="min-w-0">
+                      <div className="text-[9px] text-white/50 uppercase font-mono tracking-wider">สมรภูมิรบ</div>
+                      <div className="text-xs font-bold text-white truncate">{roomMap.name}</div>
+                    </div>
+                  </div>
+                  <span className="text-[9px] bg-red-600/80 text-white font-mono px-1.5 py-0.5 rounded-md uppercase tracking-wider font-bold shrink-0">
+                    LOCKED
+                  </span>
+                </div>
+
+                {/* Target Score Card */}
+                <div className="rounded-xl p-2.5 bg-white/[0.03] border border-white/10 flex flex-col justify-center shadow-sm">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm">🎯</span>
+                      <span className="text-[9px] text-white/50 uppercase font-mono tracking-wider">เป้าหมายแต้มชัยชนะ</span>
+                    </div>
+                    <span className="text-xs font-black font-num text-yellow-300">
+                      {currentRoom.targetScore ?? 16} แต้ม
+                    </span>
+                  </div>
+
+                  {/* Host Quick Adjust Pills */}
+                  {isHost && onSetTargetScore ? (
+                    <div className="grid grid-cols-4 gap-1 mt-0.5">
+                      {[12, 16, 20, 24].map((pts) => (
+                        <button
+                          key={pts}
+                          type="button"
+                          onClick={() => {
+                            soundManager.playScorePresetSelect(pts);
+                            onSetTargetScore(pts);
+                          }}
+                          className={`py-1 rounded-lg font-black font-num text-[11px] transition-all cursor-pointer border active:scale-95 touch-manipulation ${
+                            (currentRoom.targetScore ?? 16) === pts
+                              ? 'border-yellow-400 bg-yellow-400 text-slate-950 shadow-[0_0_8px_rgba(250,204,21,0.4)]'
+                              : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
+                          }`}
+                        >
+                          {pts}P
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+
+              {/* ── 4. Combat Squadron Roster Bento (Player List) ── */}
+              <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/45 shadow-inner">
+                <div className="px-3.5 py-2 border-b border-white/10 bg-white/[0.02] flex items-center justify-between">
+                  <span className="text-[11px] text-white/80 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                    <span>🛡️</span>
+                    <span>สมาชิกในทีม (SQUAD ROSTER)</span>
+                  </span>
+                  <span className="text-[10px] text-amber-300 font-mono font-bold bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/25">
+                    {currentRoom.players.length} / 4 คน
+                  </span>
+                </div>
+
+                <div className="p-2 space-y-1.5">
+                  {currentRoom.players.map((p) => {
+                    const avatarSrc = resolvePlayerAvatar(p.name, p.avatarUrl);
+                    const fallbackEmoji = getMarvelFallbackEmoji(p.name, p.isBot);
+                    const isHostPlayer = p.id === currentRoom.hostId;
+                    const isMe = p.id === myPlayerId;
+
+                    return (
+                      <div
+                        key={p.id}
+                        className={`flex items-center gap-2.5 px-3 py-2 rounded-xl border transition-all ${
+                          isMe
+                            ? 'bg-amber-500/10 border-amber-400/35 ring-1 ring-amber-400/20'
+                            : isHostPlayer
+                            ? 'bg-white/[0.04] border-white/15'
+                            : 'bg-white/[0.02] border-white/8'
+                        }`}
+                      >
+                        {/* Avatar */}
+                        <div
+                          className={`w-9 h-9 rounded-full overflow-hidden border-2 shrink-0 bg-neutral-900 flex items-center justify-center text-sm shadow ${
+                            isHostPlayer
+                              ? 'border-amber-300 ring-1 ring-amber-400/40'
+                              : p.isBot
+                              ? 'border-purple-400 ring-1 ring-purple-400/30'
+                              : 'border-white/20'
+                          }`}
+                        >
+                          {avatarSrc ? (
+                            <img
+                              src={avatarSrc}
+                              alt={p.name}
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                if (target.nextElementSibling) {
+                                  (target.nextElementSibling as HTMLElement).style.display = 'block';
+                                }
+                              }}
+                              className="w-full h-full object-cover object-center"
+                            />
+                          ) : null}
+                          <span className={avatarSrc ? 'hidden' : 'block'}>
+                            {fallbackEmoji}
+                          </span>
+                        </div>
+
+                        {/* Player Details */}
+                        <div className="flex-1 min-w-0 text-left">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className={`font-bold text-xs truncate ${isMe ? 'text-yellow-300' : 'text-white'}`}>
+                              {p.name}
+                            </span>
+                            <RankBadge rank={p.rank} isBot={p.isBot} size="sm" />
+                            {isMe && (
+                              <span className="text-[8.5px] font-bold text-amber-300 bg-amber-400/20 px-1 py-0.2 rounded border border-amber-400/30">
+                                คุณ
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[9px] text-white/45 font-mono">
+                            {p.isBot ? 'MARVEL AI AGENT' : isHostPlayer ? 'MISSION HOST' : 'ALLIED OPERATIVE'}
+                          </div>
+                        </div>
+
+                        {/* Status Badges */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {isHostPlayer ? (
+                            <span className="text-[9.5px] font-bold text-yellow-300 bg-yellow-400/15 px-2 py-0.5 rounded-full border border-yellow-400/35 flex items-center gap-1">
+                              <span>👑</span>
+                              <span>หัวหน้าห้อง</span>
+                            </span>
+                          ) : p.isBot ? (
+                            <span className="text-[9.5px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-400/30 flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                              <span>พร้อม</span>
+                            </span>
+                          ) : p.isReady ? (
+                            <span className="text-[9.5px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-400/30 flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                              <span>พร้อมแล้ว</span>
+                            </span>
+                          ) : (
+                            <span className="text-[9.5px] font-medium text-amber-300/90 bg-amber-500/15 px-2 py-0.5 rounded-full border border-amber-400/25 flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                              <span>ยังไม่พร้อม</span>
+                            </span>
+                          )}
+
+                          {/* Bot Remove Button (Host only) */}
+                          {isHost && p.isBot && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                soundManager.playButtonClick();
+                                onRemoveBot(p.id);
+                              }}
+                              className="text-red-400 hover:text-red-300 w-6 h-6 rounded-lg bg-red-500/10 hover:bg-red-500/25 border border-red-500/20 flex items-center justify-center text-xs transition-all cursor-pointer active:scale-95 touch-manipulation"
+                              title="ลบบอทออก"
+                            >
+                              ✕
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {/* Empty Ghost Slots (Visual indicator for open spots) */}
+                  {Array.from({ length: unfilledSlotsCount }).map((_, idx) => (
+                    <div
+                      key={`empty-slot-${idx}`}
+                      className="flex items-center justify-between px-3.5 py-2 rounded-xl border border-dashed border-white/10 bg-white/[0.01] text-white/30 text-xs"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full border border-dashed border-white/20 flex items-center justify-center text-[10px] text-white/30">
+                          +
+                        </div>
+                        <span className="text-[11px] font-medium">รอผู้เล่นเข้าร่วม...</span>
+                      </div>
+                      <span className="text-[9px] font-mono uppercase text-white/30 tracking-wider">OPEN SLOT</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── 5. Add Bot Action (Host Only) ── */}
+              {isHost && canAddMoreBots && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const used = new Set(currentRoom.players.map((p) => p.name));
+                    const available = POPULAR_MARVEL_BOTS.find((b) => !used.has(b.name));
+                    setNewBotName(available?.name ?? 'Doctor Doom');
+                    setNewBotPersonality(available?.personality ?? 'stark');
+                    soundManager.playButtonClick();
+                    setShowAddBotModal(true);
+                  }}
+                  className="w-full py-2.5 rounded-xl border border-dashed border-purple-400/50 bg-purple-500/10 hover:bg-purple-500/20 hover:border-purple-400 text-purple-200 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm active:scale-[0.98] touch-manipulation min-h-[42px]"
+                >
+                  <span className="text-sm">🤖</span>
+                  <span>+ เพิ่มคู่ต่อสู้ MARVEL AI BOT</span>
+                </button>
+              )}
+
+              {/* ── 6. Token Pool Info Indicator ── */}
+              {currentRoom && currentRoom.players.length >= 2 && (
+                <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-xl p-2.5 text-center text-[10.5px] text-emerald-200 shadow-inner">
+                  <div className="font-bold flex items-center justify-center gap-1">
+                    <span>⚡ กองกลางตามจำนวนผู้เล่น ({currentRoom.players.length} คน):</span>
+                  </div>
+                  <div className="text-white/80 mt-0.5 flex items-center justify-center gap-1.5 flex-wrap">
+                    <span>5 สีหลักละ <strong className="text-amber-300 font-num">{currentRoom.players.length === 2 ? 4 : currentRoom.players.length === 3 ? 5 : 7}</strong> ก้อน</span>
+                    <span>•</span>
+                    <span>🟢 Time Stone <strong className="text-emerald-300 font-num">{currentRoom.players.length}</strong> ก้อน</span>
+                    <span>•</span>
+                    <span>🛡️ S.H.I.E.L.D. <strong className="text-slate-100 font-num">5</strong> ก้อน</span>
+                  </div>
+                </div>
+              )}
+
+              {/* ── 7. Primary Action Launch Deck ── */}
+              {!isHost ? (
+                <div className="space-y-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundManager.playButtonClick();
+                      onToggleReady?.();
+                    }}
+                    className={[
+                      'w-full py-3 sm:py-3.5 rounded-xl font-black font-display text-sm transition-all duration-200 uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-[0.98] touch-manipulation min-h-[46px]',
+                      isMeReady
+                        ? 'bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white border border-amber-400/40 shadow-amber-950/40'
+                        : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border border-emerald-400/40 shadow-emerald-950/40 animate-pulse',
+                    ].join(' ')}
+                  >
+                    {isMeReady ? (
+                      <>
+                        <span>✕</span>
+                        <span>ยกเลิกพร้อมเล่น (CANCEL READY)</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-base">⚡</span>
+                        <span>ยืนยันพร้อมเล่น (CONFIRM READY)</span>
+                      </>
+                    )}
+                  </button>
+                  {isMeReady ? (
+                    <p className="text-center text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1.5">
+                      <span>✨</span> คุณพร้อมแล้ว! กำลังรอหัวหน้าห้องกดเริ่มเกม...
+                    </p>
+                  ) : (
+                    <p className="text-center text-amber-300/90 text-xs flex items-center justify-center gap-1.5">
+                      <span>⚠️</span> กรุณากดปุ่มเพื่อส่งสัญญาณให้หัวหน้าห้องทราบว่าคุณพร้อม
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleStartGame();
+                    }}
+                    disabled={!canStart}
+                    className={[
+                      'w-full py-3 sm:py-3.5 rounded-xl font-black font-display text-sm transition-all duration-200 uppercase tracking-wider flex items-center justify-center gap-2 active:scale-[0.98] touch-manipulation min-h-[46px]',
+                      canStart
+                        ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white shadow-[0_8px_25px_rgba(16,185,129,0.4)] cursor-pointer hover:-translate-y-0.5'
+                        : 'bg-white/5 text-white/40 cursor-not-allowed border border-white/10',
+                    ].join(' ')}
+                  >
+                    <span className="text-base">🚀</span>
+                    <span>
+                      {(currentRoom?.players.length ?? 0) < 2
+                        ? `ต้องการผู้เล่นอีกอย่างน้อย ${2 - (currentRoom?.players.length ?? 0)} คน`
+                        : !allReady
+                        ? `รอผู้เล่นยืนยัน (${nonHostHumans.length - unreadyHumans.length}/${nonHostHumans.length} พร้อม)`
+                        : 'เริ่มเกม MARVEL SPLENDOR'}
+                    </span>
+                    {canStart && <span className="text-yellow-300">➔</span>}
+                  </button>
+
+                  {(currentRoom?.players.length ?? 0) >= 2 && !allReady && (
+                    <p className="text-center text-amber-400/90 text-xs flex items-center justify-center gap-1">
+                      <span>⏳</span>
+                      <span>รอผู้เล่น: <span className="font-bold text-amber-300">{unreadyHumans.map((p) => p.name).join(', ')}</span> กดยืนยันพร้อมเล่น</span>
+                    </p>
+                  )}
+                  {canStart && (
+                    <p className="text-center text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1">
+                      <span>✨</span>
+                      <span>ทุกคนพร้อมเข้าสู่สมรภูมิแล้ว! หัวหน้าห้องเริ่มเกมได้เลย</span>
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
 
@@ -1009,7 +1152,6 @@ export const Lobby: React.FC<LobbyProps> = ({
             {/* Tutorial Modal in Waiting Room */}
             <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
         </div>
-      </div>
       </>
     );
   }
