@@ -258,7 +258,7 @@ export const Board: React.FC<BoardProps> = ({
             <img
               src={activeMap.imageUrl}
               alt={activeMap.name}
-              className="w-full h-full object-cover object-center opacity-90 transform scale-105 filter brightness-105 contrast-105"
+              className="w-full h-full object-cover object-center opacity-85 transform scale-105 filter brightness-95 contrast-110"
               loading="eager"
             />
           </div>
@@ -268,13 +268,13 @@ export const Board: React.FC<BoardProps> = ({
         <div
           className="absolute inset-0 pointer-events-none z-0"
           style={{
-            background: 'radial-gradient(ellipse at 50% 50%, rgba(7, 10, 20, 0.35) 0%, rgba(3, 5, 12, 0.60) 100%)',
+            background: 'radial-gradient(ellipse at 50% 50%, rgba(7, 10, 20, 0.65) 0%, rgba(3, 5, 12, 0.82) 100%)',
           }}
         />
 
         {/* Ambient Map Color Glow Tint */}
         <div
-          className="absolute -top-20 -right-20 w-[500px] h-[300px] rounded-full blur-[100px] pointer-events-none opacity-30"
+          className="absolute -top-20 -right-20 w-[500px] h-[300px] rounded-full blur-[100px] pointer-events-none opacity-20"
           style={{ backgroundColor: activeMap.ambientColor }}
         />
 
@@ -302,16 +302,16 @@ export const Board: React.FC<BoardProps> = ({
 
             {/* Marvel Battlefield Location Badge */}
             <div
-              className={`hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold text-white/90 bg-white/10 border ${activeMap.accentBorder} shadow-sm`}
+              className={`hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold text-white bg-black/60 border ${activeMap.accentBorder} shadow-sm`}
               title={`สมรภูมิรบ: ${activeMap.name} (${activeMap.nameEn}) - ล็อกแผนที่แล้วตลอดทั้งเกม`}
             >
               <span className="text-xs">{activeMap.icon}</span>
               <span className="truncate max-w-[130px]">{activeMap.name}</span>
-              <span className="text-[8px] bg-black/40 text-yellow-300 font-mono px-1 rounded uppercase tracking-wider">🔒 LOCKED</span>
+              <span className="text-[8px] bg-black/80 text-yellow-300 font-mono px-1 rounded uppercase tracking-wider">🔒 LOCKED</span>
             </div>
 
-            <span className="text-[10px] text-white/70 bg-white/10 px-2 py-0.5 rounded-full font-bold border border-white/10 shadow-sm">
-              รอบที่ (Round) <span className="font-num font-black text-yellow-300">{state.turnNumber}</span>
+            <span className="text-[10px] text-white bg-black/60 px-2.5 py-0.5 rounded-full font-bold border border-white/15 shadow-sm">
+              รอบที่ <span className="font-num font-black text-yellow-300">{state.turnNumber}</span>
             </span>
 
             {/* Final Round Badge — visible during the final round */}
@@ -348,8 +348,6 @@ export const Board: React.FC<BoardProps> = ({
               <span>📖 วิธีเล่น</span>
             </button>
 
-
-
             {/* Quick Action: View My Recruited Marvel Heroes in large modal */}
             <button
               type="button"
@@ -374,7 +372,7 @@ export const Board: React.FC<BoardProps> = ({
                   <RankBadge rank={myPlayer?.rank} isBot={false} size="sm" />
                 </span>
               ) : currentPlayer?.isBot ? (
-                <span className="bg-purple-950/50 border border-purple-500/40 px-2.5 py-0.5 rounded-full text-purple-200 font-semibold inline-flex items-center gap-1.5 shadow-sm">
+                <span className="bg-purple-950/60 border border-purple-500/40 px-2.5 py-0.5 rounded-full text-purple-200 font-semibold inline-flex items-center gap-1.5 shadow-sm">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
@@ -382,8 +380,8 @@ export const Board: React.FC<BoardProps> = ({
                   <span>🤖 <strong className="text-white font-bold">{currentPlayer.name}</strong> กำลังคำนวณ...</span>
                 </span>
               ) : (
-                <span className="text-white/60 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/5 inline-flex items-center gap-1.5">
-                  <span>รอตาของ: <strong className="text-white font-bold">{currentPlayer?.name}</strong></span>
+                <span className="text-white bg-black/60 px-2.5 py-0.5 rounded-full border border-white/10 inline-flex items-center gap-1.5">
+                  <span>รอตาของ: <strong className="text-yellow-300 font-bold">{currentPlayer?.name}</strong></span>
                   <RankBadge rank={currentPlayer?.rank} isBot={currentPlayer?.isBot} size="sm" />
                 </span>
               )}
@@ -395,7 +393,7 @@ export const Board: React.FC<BoardProps> = ({
                 soundManager.playButtonClick();
                 onLeave();
               }}
-              className="text-[11px] text-white/50 hover:text-white transition-colors border border-white/10 hover:border-white/30 px-2.5 py-0.5 rounded-lg cursor-pointer"
+              className="text-[11px] text-white/70 hover:text-white transition-colors bg-white/5 border border-white/15 hover:border-white/30 px-2.5 py-0.5 rounded-lg cursor-pointer"
             >
               ออกจากห้อง
             </button>
@@ -422,7 +420,7 @@ export const Board: React.FC<BoardProps> = ({
         {/* Main layout: 3-column no-scroll setup */}
         <div className="flex flex-1 min-h-0 overflow-hidden relative z-10">
           {/* Left Column: Infinity Stones & S.H.I.E.L.D. Bank (Dedicated dock, NO vertical scroll needed) */}
-          <aside className="w-44 p-1.5 flex flex-col flex-shrink-0 border-r border-white/10 bg-black/40 min-h-0 overflow-hidden">
+          <aside className="w-44 p-1.5 flex flex-col flex-shrink-0 border-r border-white/15 bg-black/75 backdrop-blur-md min-h-0 overflow-hidden">
             <GemBank
               bank={board.crystalBank}
               isMyTurn={isMyTurn}
@@ -443,15 +441,15 @@ export const Board: React.FC<BoardProps> = ({
                   className="w-40 h-[68px] rounded-xl bg-gradient-to-br from-amber-600 via-yellow-600 to-amber-700 shadow-[0_0_12px_rgba(245,158,11,0.25)] border-2 border-yellow-300/80 flex flex-col items-center justify-between p-1 relative overflow-hidden"
                   title="Infinity Gauntlet Victory: รวมแต้ม 16+ PTS + โบนัสการ์ดครบ 5 สี + มณีกาลเวลา Time Stone"
                 >
-                  <div className="flex items-center gap-1">
-                    <span className="text-[13px] leading-none">🧤</span>
-                    <span className="text-[9.5px] leading-none uppercase font-bold text-yellow-50 tracking-normal">
+                  <div className="flex items-center gap-1 bg-black/60 px-2 py-0.2 rounded-full border border-yellow-300/40">
+                    <span className="text-[12px] leading-none">🧤</span>
+                    <span className="text-[9.5px] leading-none uppercase font-bold text-yellow-200 tracking-normal">
                       ถุงมืออินฟินิตี้ (Gauntlet)
                     </span>
                   </div>
 
                   {/* Sockets: 5 Hero Bonuses + 1 Time Stone */}
-                  <div className="flex items-center gap-0.5 bg-black/60 px-1 py-0.5 rounded-full border border-white/20">
+                  <div className="flex items-center gap-0.5 bg-black/75 px-1 py-0.5 rounded-full border border-white/20">
                     {GAUNTLET_5_BONUS_STONES.map((c) => {
                       const hasStone = (myPlayer.bonuses[c] ?? 0) > 0;
                       return (
@@ -488,10 +486,10 @@ export const Board: React.FC<BoardProps> = ({
                   </div>
 
                   <div className="text-center leading-none">
-                    <span className="font-bold text-[12px] text-white leading-none">
+                    <span className="font-extrabold text-[12px] text-white leading-none drop-shadow">
                       ชนะ (WIN): <span className="font-num font-black text-yellow-300 text-xs">{state.targetScore ?? 16}</span> PTS
                     </span>
-                    <div className="text-[9px] text-yellow-100 font-semibold tracking-normal mt-0.5">
+                    <div className="text-[9px] text-yellow-100 font-semibold tracking-normal mt-0.5 bg-black/50 px-1.5 py-0.2 rounded-full">
                       โบนัส 5 สี + 🟢 Time Stone
                     </div>
                   </div>
@@ -505,7 +503,7 @@ export const Board: React.FC<BoardProps> = ({
                     } border-2 flex flex-col items-center justify-between p-1 relative overflow-hidden`}
                   title={`Time Stone: มอบให้ผู้เล่นคนละ 1 ก้อนเมื่อเกณฑ์การ์ด Tier-3 ใบแรก (เหลือ ${board.timeStoneCount ?? (board.timeStoneAvailable ? 1 : 0)} ก้อน)`}
                 >
-                  <div className="text-[9px] leading-none uppercase font-bold text-emerald-300 tracking-normal flex items-center gap-0.5">
+                  <div className="text-[9px] leading-none uppercase font-bold text-emerald-300 tracking-normal flex items-center gap-0.5 bg-black/60 px-1.5 py-0.2 rounded-full border border-emerald-400/30">
                     <span>🟢 Time Stone</span>
                   </div>
 
@@ -527,7 +525,7 @@ export const Board: React.FC<BoardProps> = ({
                       className={`absolute -top-1 -right-2 text-[10px] font-num font-bold px-1.5 py-0.2 rounded-full border leading-tight ${
                         board.timeStoneAvailable
                           ? 'bg-emerald-400 text-slate-950 border-emerald-200 shadow-[0_0_6px_rgba(52,211,153,0.8)]'
-                          : 'bg-slate-800 text-white/50 border-slate-600'
+                          : 'bg-slate-800 text-white border-slate-600'
                       }`}
                     >
                       x{board.timeStoneCount ?? (board.timeStoneAvailable ? 1 : 0)}
@@ -536,7 +534,7 @@ export const Board: React.FC<BoardProps> = ({
 
                   <div className="text-center w-full">
                     {board.timeStoneAvailable ? (
-                      <div className="text-[9px] leading-tight bg-emerald-500/25 text-emerald-300 border border-emerald-400/50 px-1 py-0.2 rounded font-bold font-num shadow-sm">
+                      <div className="text-[9px] leading-tight bg-emerald-950/90 text-emerald-200 border border-emerald-400/60 px-1 py-0.2 rounded font-bold font-num shadow-sm">
                         เหลือ {board.timeStoneCount ?? 1} ก้อน
                       </div>
                     ) : (
@@ -555,7 +553,7 @@ export const Board: React.FC<BoardProps> = ({
                     } shadow-xl border-2 flex flex-col items-center justify-between p-1 relative overflow-hidden`}
                   title="Avengers Assemble: มอบ +3 แต้มให้ผู้ที่มีสัญลักษณ์ Avengers มากที่สุด (3 สัญลักษณ์ขึ้นไป)"
                 >
-                  <div className="text-[9px] leading-none uppercase font-semibold text-white/85 tracking-normal">
+                  <div className="text-[9px] leading-none uppercase font-bold text-white tracking-normal bg-black/60 px-1.5 py-0.2 rounded-full">
                     Avengers
                   </div>
                   <div className="bg-red-600 w-6 h-6 rounded-full flex items-center justify-center border-2 border-yellow-300 shadow-md">
@@ -566,7 +564,7 @@ export const Board: React.FC<BoardProps> = ({
                       +3 PTS
                     </span>
                     {avengersHolder && (
-                      <div className="text-[9px] leading-none text-yellow-300 font-semibold truncate max-w-[56px] mt-0.5">
+                      <div className="text-[9px] leading-none text-yellow-200 font-semibold truncate max-w-[56px] mt-0.5 bg-black/60 px-1 rounded">
                         {avengersHolder.name}
                       </div>
                     )}
@@ -583,37 +581,46 @@ export const Board: React.FC<BoardProps> = ({
 
             {/* Tier 3 Characters */}
             <div>
-              <div className="text-[10.5px] text-amber-300 tracking-wide font-bold text-center flex items-center justify-center gap-1.5 mb-0.5 leading-none">
-                <span className="w-6 h-[1px] bg-amber-400/30" />
-                <span>ระดับ 3 (Tier III) • Cosmic Entities • 4-6 PTS</span>
-                <span className="w-6 h-[1px] bg-amber-400/30" />
+              <div className="flex items-center justify-center mb-0.5">
+                <div className="bg-black/85 backdrop-blur-md px-3.5 py-0.5 rounded-full border border-amber-400/40 shadow-sm flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  <span className="text-[10.5px] text-amber-300 font-bold tracking-wide leading-none">
+                    ระดับ 3 (Tier III) • Cosmic Entities • 4-6 PTS
+                  </span>
+                </div>
               </div>
               {renderTier(board.tier3, board.tier3DeckCount, 3)}
             </div>
 
             {/* Tier 2 Characters */}
             <div>
-              <div className="text-[10.5px] text-purple-300 tracking-wide font-bold text-center flex items-center justify-center gap-1.5 mb-0.5 leading-none">
-                <span className="w-6 h-[1px] bg-purple-400/30" />
-                <span>ระดับ 2 (Tier II) • Heroes & Villains • 1-3 PTS</span>
-                <span className="w-6 h-[1px] bg-purple-400/30" />
+              <div className="flex items-center justify-center mb-0.5">
+                <div className="bg-black/85 backdrop-blur-md px-3.5 py-0.5 rounded-full border border-purple-400/40 shadow-sm flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                  <span className="text-[10.5px] text-purple-200 font-bold tracking-wide leading-none">
+                    ระดับ 2 (Tier II) • Heroes & Villains • 1-3 PTS
+                  </span>
+                </div>
               </div>
               {renderTier(board.tier2, board.tier2DeckCount, 2)}
             </div>
 
             {/* Tier 1 Characters */}
             <div>
-              <div className="text-[10.5px] text-slate-200 tracking-wide font-bold text-center flex items-center justify-center gap-1.5 mb-0.5 leading-none">
-                <span className="w-6 h-[1px] bg-slate-400/30" />
-                <span>ระดับ 1 (Tier I) • Street Allies & Recruits • 0-1 PTS</span>
-                <span className="w-6 h-[1px] bg-slate-400/30" />
+              <div className="flex items-center justify-center mb-0.5">
+                <div className="bg-black/85 backdrop-blur-md px-3.5 py-0.5 rounded-full border border-slate-400/40 shadow-sm flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                  <span className="text-[10.5px] text-slate-100 font-bold tracking-wide leading-none">
+                    ระดับ 1 (Tier I) • Street Allies & Recruits • 0-1 PTS
+                  </span>
+                </div>
               </div>
               {renderTier(board.tier1, board.tier1DeckCount, 1)}
             </div>
           </main>
 
           {/* Right sidebar */}
-          <aside className="w-68 border-l border-white/10 p-2 overflow-y-auto space-y-2 flex-shrink-0 bg-black/30 min-h-0">
+          <aside className="w-68 border-l border-white/15 p-2 overflow-y-auto space-y-2 flex-shrink-0 bg-black/75 backdrop-blur-md min-h-0">
             {/* Player scoreboard */}
             <PlayerList
               players={players}

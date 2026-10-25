@@ -60,14 +60,14 @@ export const CardDeck: React.FC<CardDeckProps> = ({
             style={{ bottom: i * 3, right: i * 2, zIndex: i }}
           />
         ))}
-        <div className="relative z-10 w-16 h-20 rounded-lg bg-black/40 backdrop-blur-sm border border-white/25 flex flex-col items-center justify-center gap-0.5 px-1 shadow-inner">
+        <div className="relative z-10 w-16 h-20 rounded-lg bg-black/65 backdrop-blur-md border border-white/30 flex flex-col items-center justify-center gap-0.5 px-1 shadow-md">
           <span className="text-2xl sm:text-3xl font-black font-num text-yellow-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] leading-none">{count}</span>
-          <span className="text-[9px] text-white/80 font-bold text-center leading-tight">{styles.label}</span>
+          <span className="text-[9.5px] text-white font-extrabold text-center leading-tight drop-shadow">{styles.label}</span>
         </div>
       </div>
 
       {canReserve && (
-        <div className="text-[9.5px] text-yellow-300 font-bold text-center animate-pulse px-1 leading-tight">
+        <div className="text-[10px] text-yellow-200 font-bold text-center bg-black/70 rounded px-1.5 py-0.2 border border-yellow-300/30 leading-tight">
           คลิกเพื่อจอง (Reserve)
         </div>
       )}

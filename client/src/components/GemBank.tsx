@@ -106,7 +106,7 @@ export const GemBank: React.FC<GemBankProps> = ({
     : `เลือกมณีเพิ่มอีก ${3 - selected.length} สี (Select ${3 - selected.length} more)`;
 
   return (
-    <div className="glass rounded-xl p-2 flex flex-col h-full justify-between border border-white/10 shadow-2xl bg-black/40 overflow-hidden">
+    <div className="rounded-xl p-2 flex flex-col h-full justify-between border border-white/15 shadow-2xl bg-black/85 backdrop-blur-md overflow-hidden">
       {/* Bank Header */}
       <div className="flex flex-col flex-1 min-h-0">
         <div className="flex items-center justify-between mb-1">
@@ -114,13 +114,13 @@ export const GemBank: React.FC<GemBankProps> = ({
             <h3 className="font-display text-[11px] font-black text-white uppercase tracking-wider flex items-center gap-1">
               <span>⚡ คลังมณี (Infinity Bank)</span>
             </h3>
-            <p className="text-[9.5px] text-white/60 font-medium">หยิบ 3 สีต่าง หรือ 2 สีเหมือน</p>
+            <p className="text-[9.5px] text-white/90 font-medium">หยิบ 3 สีต่าง หรือ 2 สีเหมือน</p>
           </div>
           <span
             className={`text-[10px] px-2 py-0.5 rounded-full font-bold border transition-colors ${
               totalInHand >= 10
-                ? 'bg-red-950/80 text-red-300 border-red-500 font-black animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]'
-                : 'bg-black/70 text-slate-200 border-white/20'
+                ? 'bg-red-950/90 text-red-300 border-red-500 font-black animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]'
+                : 'bg-black/90 text-slate-100 border-white/30'
             }`}
             title="ถือโทเคนในมือได้สูงสุดไม่เกิน 10 เหรียญเมื่อจบเทิร์น (Max 10 in hand)"
           >
@@ -143,15 +143,15 @@ export const GemBank: React.FC<GemBankProps> = ({
                 selected={selected.includes(color)}
                 disabled={!isMyTurn || (bank[color] ?? 0) === 0}
               />
-              <span className="text-[11px] text-white font-semibold text-center leading-tight">
-                {SHORT_NAMES[color].en} <span className="text-white/70 text-[9.5px]">({SHORT_NAMES[color].th})</span>
+              <span className="text-[10.5px] text-white font-bold text-center leading-tight bg-black/80 px-2 py-0.5 rounded-md border border-white/15 shadow-sm">
+                {SHORT_NAMES[color].en} <span className="text-yellow-300 text-[9.5px]">({SHORT_NAMES[color].th})</span>
               </span>
             </div>
           ))}
 
           {/* S.H.I.E.L.D. wildcard token — gained when reserving a card */}
           <div
-            className="flex flex-col items-center gap-0.5 p-0.5 rounded-lg w-full opacity-80"
+            className="flex flex-col items-center gap-0.5 p-0.5 rounded-lg w-full opacity-90"
             title="S.H.I.E.L.D. Wild Token: ได้รับอัตโนมัติ 1 เหรียญเมื่อทำการจองการ์ดฮีโร่"
           >
             <GemToken
@@ -160,8 +160,8 @@ export const GemBank: React.FC<GemBankProps> = ({
               size="lg"
               disabled
             />
-            <span className="text-[11px] text-white/75 font-semibold text-center leading-tight">
-              S.H.I.E.L.D. <span className="text-white/60 text-[9.5px]">(ชิลด์)</span>
+            <span className="text-[10.5px] text-white font-bold text-center leading-tight bg-black/80 px-2 py-0.5 rounded-md border border-white/15 shadow-sm">
+              S.H.I.E.L.D. <span className="text-slate-300 text-[9.5px]">(ชิลด์)</span>
             </span>
           </div>
         </div>
@@ -169,8 +169,8 @@ export const GemBank: React.FC<GemBankProps> = ({
 
       {/* Selection Hint & Controls */}
       <div className="text-center pt-1 border-t border-white/10 mt-auto">
-        <div className="bg-black/60 rounded-lg p-1.5 border border-white/5">
-          <p className="text-[10.5px] text-yellow-300 font-semibold leading-tight">{hint}</p>
+        <div className="bg-black/85 rounded-lg p-1.5 border border-white/15">
+          <p className="text-[10.5px] text-yellow-300 font-bold leading-tight">{hint}</p>
           {selected.length > 0 && (
             <button
               type="button"

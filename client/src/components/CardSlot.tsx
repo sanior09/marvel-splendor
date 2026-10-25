@@ -263,9 +263,9 @@ export const CardSlot: React.FC<CardSlotProps> = ({
           })}
         </div>
 
-        {/* Hero Character Name Banner (Always 100% visible and un-sunken) */}
-        <div className="bg-black/90 backdrop-blur-md rounded border border-white/20 px-1 py-0.5 text-center shadow-md w-full">
-          <span className="text-white font-extrabold text-[9.5px] tracking-wide truncate block text-shadow" title={card.name}>
+        {/* Hero Character Name Banner (Always 100% visible and razor-sharp) */}
+        <div className="bg-black/95 backdrop-blur-md rounded border border-white/30 px-1 py-0.5 text-center shadow-md w-full">
+          <span className="text-white font-bold text-[10px] tracking-wide truncate block" title={card.name}>
             {card.name}
           </span>
         </div>

@@ -59,10 +59,14 @@ export const GuardianRow: React.FC<GuardianRowProps> = ({ guardians, currentPlay
   }
 
   return (
-    <div className="space-y-0.5">
-      <div className="text-[10px] font-semibold tracking-wide text-white/80 text-center leading-none flex items-center justify-center gap-1">
-        <span>🏛️</span>
-        <span>สถานที่มาร์เวล (สะสมการ์ดฮีโร่ครบรับทันที • Marvel Locations • +3 PTS)</span>
+    <div className="space-y-1">
+      <div className="flex items-center justify-center">
+        <div className="bg-black/85 backdrop-blur-md px-3 py-0.5 rounded-full border border-white/20 shadow-sm flex items-center gap-1.5">
+          <span className="text-[11px]">🏛️</span>
+          <span className="text-[10.5px] font-bold tracking-wide text-white leading-none">
+            สถานที่มาร์เวล (สะสมการ์ดครบรับทันที • Marvel Locations • +3 PTS)
+          </span>
+        </div>
       </div>
       <div className="flex flex-wrap gap-2 justify-center">
         {guardians.map((guardian) => {
@@ -76,7 +80,7 @@ export const GuardianRow: React.FC<GuardianRowProps> = ({ guardians, currentPlay
                 'w-[96px] sm:w-[104px] h-[72px] rounded-xl flex flex-col justify-between overflow-hidden relative shadow-md transition-all duration-300 border',
                 eligible
                   ? 'ring-2 ring-yellow-400 scale-105 z-10 border-yellow-300 shadow-[0_0_12px_rgba(250,204,21,0.5)]'
-                  : 'border-white/20 hover:border-white/40',
+                  : 'border-white/25 hover:border-white/40',
               ].join(' ')}
               title={`${guardian.name} — ได้รับทันที 3 แต้มเมื่อสะสมโบนัสการ์ดฮีโร่ครบตามเงื่อนไข (+3 PTS)`}
             >
@@ -89,17 +93,17 @@ export const GuardianRow: React.FC<GuardianRowProps> = ({ guardians, currentPlay
                   e.currentTarget.style.display = 'none';
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/70 z-0" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/80 z-0" />
 
               {/* Name & Points Top Bar */}
-              <div className="relative z-10 px-1 py-0.5 flex items-center justify-between bg-black/75 backdrop-blur-sm border-b border-white/10">
+              <div className="relative z-10 px-1 py-0.5 flex items-center justify-between bg-black/90 backdrop-blur-sm border-b border-white/15">
                 <h4
-                  className="text-[10px] font-bold tracking-normal text-white leading-tight truncate flex-1 pr-1"
+                  className="text-[10.5px] font-bold tracking-normal text-white leading-tight truncate flex-1 pr-1"
                   title={guardian.name}
                 >
                   {guardian.name}
                 </h4>
-                <span className="text-yellow-300 font-black font-num text-[11px] drop-shadow leading-none bg-slate-950/90 border border-yellow-400/60 px-1.5 py-0.5 rounded flex-shrink-0 shadow-sm">
+                <span className="text-yellow-300 font-black font-num text-[11px] leading-none bg-slate-950/95 border border-yellow-400/80 px-1.5 py-0.5 rounded flex-shrink-0 shadow-sm">
                   +{guardian.points}
                 </span>
               </div>

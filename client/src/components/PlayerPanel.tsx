@@ -291,7 +291,7 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
                         'font-black font-num text-lg sm:text-xl leading-none transition-all',
                         isOwned
                           ? `${theme.textColor} drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] scale-105`
-                          : 'text-white/30',
+                          : 'text-white/50',
                       ].join(' ')}
                     >
                       {count}
@@ -301,8 +301,8 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
                   {/* Bottom: Label 'X ใบ' */}
                   <span
                     className={[
-                      'text-[7.5px] font-bold tracking-tight uppercase leading-none',
-                      isOwned ? 'text-white/90 font-black' : 'text-white/30',
+                      'text-[9px] font-bold tracking-tight uppercase leading-none',
+                      isOwned ? 'text-white font-extrabold' : 'text-white/60',
                     ].join(' ')}
                   >
                     {count} ใบ
@@ -317,7 +317,7 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
       {/* Reserved cards — compact rows (full cards are too tall for the sidebar) */}
       {player.reservedCards.length > 0 && (
         <div className="glass rounded-xl p-2 space-y-1.5 border border-white/10">
-          <h4 className="text-[11px] font-bold tracking-wide text-white/80">
+          <h4 className="text-[11px] font-bold tracking-wide text-white/90">
             ฮีโร่ที่จองไว้ (Reserved: {player.reservedCards.length}/3)
           </h4>
           <div className="space-y-1">
@@ -328,8 +328,8 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
               return (
                 <div
                   key={card.id}
-                  className={`flex items-center gap-1.5 rounded-lg border px-1.5 py-1 bg-black/40 ${
-                    theme ? theme.border : 'border-white/15'
+                  className={`flex items-center gap-1.5 rounded-lg border px-1.5 py-1 bg-black/60 ${
+                    theme ? theme.border : 'border-white/20'
                   }`}
                 >
                   <img
@@ -342,14 +342,14 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1">
-                      <span className="text-[11px] font-semibold text-white truncate">{card.name}</span>
+                      <span className="text-[11px] font-bold text-white truncate">{card.name}</span>
                       {card.points > 0 && (
-                        <span className="font-num text-[11px] font-bold text-yellow-300 shrink-0">{card.points}</span>
+                        <span className="font-num text-[11px] font-black text-yellow-300 shrink-0">{card.points}</span>
                       )}
                     </div>
                     <div className="flex items-center gap-1 flex-wrap">
                       {costs.map((c) => (
-                        <span key={c} className="flex items-center gap-0.5 text-[10px] font-num text-white/80">
+                        <span key={c} className="flex items-center gap-0.5 text-[10px] font-num text-white">
                           <img src={`/images/tokens/${c}.png`} alt={c} className="w-3 h-3 object-contain" />
                           {card.cost[c]}
                         </span>
@@ -360,7 +360,7 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
                     type="button"
                     disabled={!isMyTurn || !canAfford}
                     onClick={() => onBuyCard(card.id)}
-                    className="shrink-0 text-[10.5px] font-semibold px-2 py-1 rounded-md border transition-all bg-emerald-500/20 text-emerald-300 border-emerald-400/50 hover:bg-emerald-500/35 disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
+                    className="shrink-0 text-[10.5px] font-bold px-2 py-1 rounded-md border transition-all bg-emerald-500/25 text-emerald-200 border-emerald-400/60 hover:bg-emerald-500/40 disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
                   >
                     ซื้อ
                   </button>
@@ -374,17 +374,17 @@ export const PlayerPanel: React.FC<PlayerPanelProps> = ({
       {/* Marvel Locations Claimed */}
       {player.guardians.length > 0 && (
         <div className="glass rounded-xl p-2 space-y-1 border border-white/10">
-          <h4 className="text-[11px] font-bold tracking-wide text-white/80">
+          <h4 className="text-[11px] font-bold tracking-wide text-white/90">
             สถานที่ที่ครอบครอง (Locations Controlled)
           </h4>
           <div className="space-y-1">
             {player.guardians.map((g) => (
               <div
                 key={g.id}
-                className="bg-amber-500/10 border border-amber-400/30 rounded-md px-2 py-0.5 flex items-center justify-between"
+                className="bg-amber-500/15 border border-amber-400/40 rounded-md px-2 py-0.5 flex items-center justify-between"
               >
-                <div className="text-[11px] font-semibold text-amber-200 truncate">{g.name}</div>
-                <div className="text-[11px] font-bold text-yellow-300 shrink-0">+{g.points} PTS</div>
+                <div className="text-[11px] font-bold text-amber-100 truncate">{g.name}</div>
+                <div className="text-[11px] font-black text-yellow-300 shrink-0">+{g.points} PTS</div>
               </div>
             ))}
           </div>
@@ -408,14 +408,14 @@ const WinRequirementRow: React.FC<{
         style={{
           background: met
             ? 'radial-gradient(circle at 35% 35%, #6ee7b7, #10b981)'
-            : 'rgba(255,255,255,0.12)',
-          boxShadow: met ? '0 0 6px rgba(16,185,129,0.6)' : 'none',
+            : 'rgba(255,255,255,0.25)',
+          boxShadow: met ? '0 0 6px rgba(16,185,129,0.8)' : 'none',
         }}
       />
-      <span className={met ? 'text-emerald-300 font-semibold' : 'text-white/55'}>{label}</span>
+      <span className={met ? 'text-emerald-300 font-bold' : 'text-slate-100 font-medium'}>{label}</span>
     </div>
-    <span className={`font-num font-black text-xs ${met ? 'text-emerald-300' : 'text-white/60'}`}>
-      {Math.min(current, target)}<span className="text-white/30 font-normal">/{target}</span>
+    <span className={`font-num font-bold text-xs ${met ? 'text-emerald-300 font-black' : 'text-slate-100'}`}>
+      {Math.min(current, target)}<span className="text-white/50 font-normal">/{target}</span>
     </span>
   </div>
 );
