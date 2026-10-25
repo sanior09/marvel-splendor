@@ -20,12 +20,12 @@ import type { RoomInfo } from '@shared/types/game.types';
  * ตั้งเป็น true: ปิดปรับปรุงระบบ (Systems Offline / Maintenance Mode)
  * ตั้งเป็น false: เปิดระบบให้เข้าเล่นเกม Marvel Splendor ตามคำสั่งของเจ้านาย
  */
-const MAINTENANCE_MODE = false;
+const MAINTENANCE_MODE = true;
 
 export default function App(): React.ReactElement {
   useEffect(() => {
     if (MAINTENANCE_MODE) {
-      document.title = 'ปิดปรับปรุงระบบชั่วคราว - Marvel Splendor';
+      document.title = 'ปิดปรับปรุงระบบชั่วคราว — Marvel Splendor';
     } else {
       document.title = 'Marvel Splendor — แย่งชิงถุงมืออินฟินิตี้';
     }
@@ -33,22 +33,31 @@ export default function App(): React.ReactElement {
 
   if (MAINTENANCE_MODE) {
     return (
-      <main
-        style={{
-          backgroundColor: '#0b0f19',
-          color: '#f8fafc',
-          fontFamily: "'Outfit', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-          display: 'flex',
-          minHeight: '100vh',
-          width: '100vw',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '1.5rem',
-          boxSizing: 'border-box',
-          backgroundImage:
-            'radial-gradient(ellipse at 50% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 60%), radial-gradient(ellipse at 50% 80%, rgba(226, 54, 54, 0.06) 0%, transparent 60%)',
-        }}
-      >
+      <main className="min-h-screen w-full flex items-center justify-center p-3.5 sm:p-6 bg-[#070913] relative overflow-hidden select-none font-['Prompt',sans-serif]">
+        {/* Ambient Cosmic Particle Glow */}
+        <div
+          className="fixed inset-0 pointer-events-none opacity-45"
+          style={{
+            backgroundImage: `
+              radial-gradient(circle at 50% 15%, rgba(245, 158, 11, 0.16) 0%, transparent 60%),
+              radial-gradient(circle at 15% 85%, rgba(239, 68, 68, 0.14) 0%, transparent 55%),
+              radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.14) 0%, transparent 55%)
+            `,
+          }}
+        />
+
+        {/* Subtle Cyber Grid Backdrop */}
+        <div
+          className="fixed inset-0 pointer-events-none opacity-10"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px)
+            `,
+            backgroundSize: '40px 40px',
+          }}
+        />
+
         <MaintenanceCard />
       </main>
     );
