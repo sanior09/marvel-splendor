@@ -103,154 +103,237 @@ class SoundManager {
   // ────────────────────────────────────────────────────────────
 
   /**
-   * 1. Infinity Stone Pick — Rich glass resonator + shimmer tail per stone color
+   * 1. Infinity Stone Pick — Physical crystalline mineral acoustic resonance
+   *    Layer 1: Precision felt-tip striker transient (highpass micro-burst, 2ms)
+   *    Layer 2: Pure acoustic sine bell tuned to stone frequency (decay 380ms)
+   *    Layer 3: Inharmonic glass overtone partial (2.756x) with high damping (110ms)
+   *    Layer 4: Damped mineral body resonance (130Hz - 180Hz) providing physical weight
    */
   public playGemClick(color?: CrystalColor): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // Each stone has a unique tonal character
-    const stoneConfig: Record<string, { freq: number; hue: 'warm' | 'cold' | 'bright' }> = {
-      topaz:    { freq: 1174.66, hue: 'bright' }, // Mind — sparkling high bell D6
-      sapphire: { freq: 987.77,  hue: 'cold'  }, // Space — crystal-clear B5
-      obsidian: { freq: 740.00,  hue: 'warm'  }, // Soul — amber resonance
-      amethyst: { freq: 830.61,  hue: 'cold'  }, // Power — royal violet G#5
-      ruby:     { freq: 622.25,  hue: 'warm'  }, // Reality — punchy Eb5
-      emerald:  { freq: 1318.51, hue: 'bright' }, // Time — radiant high E6
-      gold:     { freq: 932.33,  hue: 'warm'  }, // S.H.I.E.L.D. — metallic Bb5
+    // Harmonic tuning tuned to real acoustic bells (C6 down to D5)
+    const stoneConfig: Record<string, { freq: number; bodyFreq: number }> = {
+      topaz:    { freq: 1046.50, bodyFreq: 180 }, // Mind (C6) — pure celesta
+      sapphire: { freq: 880.00,  bodyFreq: 160 }, // Space (A5) — ethereal quartz
+      obsidian: { freq: 659.25,  bodyFreq: 140 }, // Soul (E5) — warm singing bowl
+      amethyst: { freq: 783.99,  bodyFreq: 150 }, // Power (G5) — regal bell
+      ruby:     { freq: 587.33,  bodyFreq: 130 }, // Reality (D5) — punchy ruby
+      emerald:  { freq: 1174.66, bodyFreq: 190 }, // Time (D6) — radiant crystal
+      gold:     { freq: 987.77,  bodyFreq: 170 }, // S.H.I.E.L.D. (B5) — brushed titanium
     };
-    const cfg = (color && stoneConfig[color]) ? stoneConfig[color] : { freq: 880, hue: 'cold' as const };
+    const cfg = (color && stoneConfig[color]) ? stoneConfig[color] : { freq: 880, bodyFreq: 160 };
     const freq = cfg.freq;
-    const detune = (Math.random() - 0.5) * 20;
 
-    // ── Layer 1: Fundamental sine bell ──
+    // ── Layer 1: Striker Transient (Felt Mallet on Crystal) ──
+    const strike = ctx.createOscillator();
+    const strikeGain = ctx.createGain();
+    const strikeFilter = ctx.createBiquadFilter();
+    strike.type = 'triangle';
+    strike.frequency.setValueAtTime(freq * 3.4, now);
+    strike.frequency.exponentialRampToValueAtTime(freq * 1.2, now + 0.006);
+    strikeFilter.type = 'bandpass';
+    strikeFilter.frequency.setValueAtTime(3200, now);
+    strikeFilter.Q.setValueAtTime(2.5, now);
+    strikeGain.gain.setValueAtTime(0.0001, now);
+    strikeGain.gain.linearRampToValueAtTime(0.18, now + 0.001);
+    strikeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.008);
+    strike.connect(strikeFilter);
+    strikeFilter.connect(strikeGain);
+    strikeGain.connect(this.masterGain);
+    strike.start(now);
+    strike.stop(now + 0.012);
+
+    // ── Layer 2: Fundamental Crystalline Resonance ──
     const bell = ctx.createOscillator();
     const bellGain = ctx.createGain();
     bell.type = 'sine';
     bell.frequency.setValueAtTime(freq, now);
-    bell.detune.setValueAtTime(detune, now);
-    bellGain.gain.setValueAtTime(0.001, now);
-    bellGain.gain.linearRampToValueAtTime(0.38, now + 0.004);
-    bellGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55); // long ring
+    bellGain.gain.setValueAtTime(0.0001, now);
+    bellGain.gain.linearRampToValueAtTime(0.32, now + 0.003);
+    bellGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.38);
     bell.connect(bellGain);
     bellGain.connect(this.masterGain);
-    bell.start(now); bell.stop(now + 0.6);
+    bell.start(now);
+    bell.stop(now + 0.42);
 
-    // ── Layer 2: 2nd harmonic triangle (glass body) ──
+    // ── Layer 3: Inharmonic Glass Overtone (2.756x) ──
+    const glass = ctx.createOscillator();
+    const glassGain = ctx.createGain();
+    glass.type = 'sine';
+    glass.frequency.setValueAtTime(freq * 2.756, now);
+    glassGain.gain.setValueAtTime(0.0001, now);
+    glassGain.gain.linearRampToValueAtTime(0.12, now + 0.002);
+    glassGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+    glass.connect(glassGain);
+    glassGain.connect(this.masterGain);
+    glass.start(now);
+    glass.stop(now + 0.16);
+
+    // ── Layer 4: Physical Mineral Weight Body ──
     const body = ctx.createOscillator();
     const bodyGain = ctx.createGain();
-    body.type = 'triangle';
-    body.frequency.setValueAtTime(freq * 2.756, now); // inharmonic partials for glass
-    body.detune.setValueAtTime(detune + 5, now);
-    bodyGain.gain.setValueAtTime(0.001, now);
-    bodyGain.gain.linearRampToValueAtTime(0.14, now + 0.003);
-    bodyGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+    body.type = 'sine';
+    body.frequency.setValueAtTime(cfg.bodyFreq, now);
+    body.frequency.exponentialRampToValueAtTime(cfg.bodyFreq * 0.6, now + 0.04);
+    bodyGain.gain.setValueAtTime(0.0001, now);
+    bodyGain.gain.linearRampToValueAtTime(0.14, now + 0.002);
+    bodyGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
     body.connect(bodyGain);
     bodyGain.connect(this.masterGain);
-    body.start(now); body.stop(now + 0.2);
-
-    // ── Layer 3: Transient click (initial contact) ──
-    const click = ctx.createOscillator();
-    const clickGain = ctx.createGain();
-    const clickFilter = ctx.createBiquadFilter();
-    click.type = 'square';
-    click.frequency.setValueAtTime(cfg.hue === 'bright' ? 6000 : cfg.hue === 'cold' ? 4200 : 3200, now);
-    click.frequency.exponentialRampToValueAtTime(800, now + 0.012);
-    clickFilter.type = 'highpass';
-    clickFilter.frequency.setValueAtTime(2000, now);
-    clickGain.gain.setValueAtTime(0.001, now);
-    clickGain.gain.linearRampToValueAtTime(0.22, now + 0.001);
-    clickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.015);
-    click.connect(clickFilter); clickFilter.connect(clickGain); clickGain.connect(this.masterGain);
-    click.start(now); click.stop(now + 0.018);
+    body.start(now);
+    body.stop(now + 0.06);
   }
 
   /**
-   * 2. Gem Deselect — Reverse shimmer flick down
+   * 2. Gem Deselect — Gentle acoustic velvet lift & felt magnetic release
+   *    (Eliminated cartoonish slide whistle LFO; replaced with tactile felt release)
    */
   public playGemDeselect(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // Fast descending sine with slight vibrato tail
-    const osc = ctx.createOscillator();
-    const vibLFO = ctx.createOscillator();
-    const vibGain = ctx.createGain();
-    const gain = ctx.createGain();
+    // Layer 1: Soft felt body breath (160Hz -> 75Hz)
+    const felt = ctx.createOscillator();
+    const feltGain = ctx.createGain();
+    felt.type = 'sine';
+    felt.frequency.setValueAtTime(160, now);
+    felt.frequency.exponentialRampToValueAtTime(75, now + 0.05);
+    feltGain.gain.setValueAtTime(0.0001, now);
+    feltGain.gain.linearRampToValueAtTime(0.16, now + 0.002);
+    feltGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+    felt.connect(feltGain);
+    feltGain.connect(this.masterGain);
+    felt.start(now);
+    felt.stop(now + 0.07);
 
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(720, now);
-    osc.frequency.exponentialRampToValueAtTime(280, now + 0.12);
-
-    vibLFO.type = 'sine';
-    vibLFO.frequency.setValueAtTime(22, now);
-    vibGain.gain.setValueAtTime(8, now);
-    vibLFO.connect(vibGain);
-    vibGain.connect(osc.frequency);
-
-    gain.gain.setValueAtTime(0.001, now);
-    gain.gain.linearRampToValueAtTime(0.2, now + 0.003);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
-
-    osc.connect(gain); gain.connect(this.masterGain);
-    vibLFO.start(now); vibLFO.stop(now + 0.15);
-    osc.start(now); osc.stop(now + 0.15);
+    // Layer 2: Subtle magnetic separation transient (bandpass click, 1800Hz)
+    const release = ctx.createOscillator();
+    const releaseGain = ctx.createGain();
+    const releaseFilter = ctx.createBiquadFilter();
+    release.type = 'triangle';
+    release.frequency.setValueAtTime(1800, now);
+    release.frequency.exponentialRampToValueAtTime(600, now + 0.012);
+    releaseFilter.type = 'bandpass';
+    releaseFilter.frequency.setValueAtTime(1200, now);
+    releaseFilter.Q.setValueAtTime(2.0, now);
+    releaseGain.gain.setValueAtTime(0.0001, now);
+    releaseGain.gain.linearRampToValueAtTime(0.09, now + 0.001);
+    releaseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.015);
+    release.connect(releaseFilter);
+    releaseFilter.connect(releaseGain);
+    releaseGain.connect(this.masterGain);
+    release.start(now);
+    release.stop(now + 0.02);
   }
 
   /**
-   * 3. Gem Collect — Coin waterfall cascade + ascending energy sweep
+   * 3. Gem Collect — Cinematic Gemstone Tumbling Cascade & Loot Confirmation
+   *    (Multi-crystal micro-clinks + Velvety sub-bass loot drop + Celestial harmonic bloom)
    */
   public playGemCollect(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // 5-note ascending pentatonic cascade (G4 A4 B4 D5 E5 G5)
-    const notes = [392.00, 440.00, 493.88, 587.33, 659.25, 783.99];
-    notes.forEach((freq, idx) => {
+    // ── STAGE 1: Three Micro-Staggered Crystalline Impacts (Gems tumbling into hand) ──
+    const clinks = [
+      { time: now + 0.000, freq: 880.00,  vol: 0.18 }, // A5
+      { time: now + 0.032, freq: 1108.73, vol: 0.22 }, // C#6
+      { time: now + 0.065, freq: 1318.51, vol: 0.25 }, // E6
+    ];
+
+    clinks.forEach(({ time, freq, vol }) => {
       if (!ctx || !this.masterGain) return;
-      const t = now + idx * 0.038;
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, time);
+      oscGain.gain.setValueAtTime(0.0001, time);
+      oscGain.gain.linearRampToValueAtTime(vol, time + 0.003);
+      oscGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.22);
+      osc.connect(oscGain);
+      oscGain.connect(this.masterGain);
+      osc.start(time);
+      osc.stop(time + 0.25);
 
-      // Bell-like sine
-      const bell = ctx.createOscillator();
-      const bellG = ctx.createGain();
-      bell.type = 'sine';
-      bell.frequency.setValueAtTime(freq, t);
-      bellG.gain.setValueAtTime(0.001, t);
-      bellG.gain.linearRampToValueAtTime(0.28 - idx * 0.01, t + 0.004);
-      bellG.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
-      bell.connect(bellG); bellG.connect(this.masterGain);
-      bell.start(t); bell.stop(t + 0.3);
-
-      // Coin-tap transient noise burst on first 3 notes
-      if (idx < 3) {
-        const tap = ctx.createOscillator();
-        const tapG = ctx.createGain();
-        const tapF = ctx.createBiquadFilter();
-        tap.type = 'square';
-        tap.frequency.setValueAtTime(freq * 3.2, t);
-        tapF.type = 'bandpass'; tapF.frequency.setValueAtTime(freq * 2.5, t); tapF.Q.setValueAtTime(4, t);
-        tapG.gain.setValueAtTime(0.001, t);
-        tapG.gain.linearRampToValueAtTime(0.14, t + 0.001);
-        tapG.gain.exponentialRampToValueAtTime(0.0001, t + 0.025);
-        tap.connect(tapF); tapF.connect(tapG); tapG.connect(this.masterGain);
-        tap.start(t); tap.stop(t + 0.03);
-      }
+      // Micro glass overtone
+      const glass = ctx.createOscillator();
+      const glassG = ctx.createGain();
+      glass.type = 'triangle';
+      glass.frequency.setValueAtTime(freq * 2.756, time);
+      glassG.gain.setValueAtTime(0.0001, time);
+      glassG.gain.linearRampToValueAtTime(vol * 0.45, time + 0.002);
+      glassG.gain.exponentialRampToValueAtTime(0.0001, time + 0.08);
+      glass.connect(glassG);
+      glassG.connect(this.masterGain);
+      glass.start(time);
+      glass.stop(time + 0.1);
     });
 
-    // Final sparkle shimmer at top
-    const shimmer = ctx.createOscillator();
-    const shimmerG = ctx.createGain();
-    shimmer.type = 'triangle';
-    shimmer.frequency.setValueAtTime(1760, now + 0.22);
-    shimmer.frequency.exponentialRampToValueAtTime(3520, now + 0.45);
-    shimmerG.gain.setValueAtTime(0.001, now + 0.22);
-    shimmerG.gain.linearRampToValueAtTime(0.12, now + 0.26);
-    shimmerG.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
-    shimmer.connect(shimmerG); shimmerG.connect(this.masterGain);
-    shimmer.start(now + 0.22); shimmer.stop(now + 0.52);
+    // ── STAGE 2: Velvety Sub-Bass Loot Confirmation (Weighted impact) ──
+    const sub = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(110, now + 0.04);
+    sub.frequency.exponentialRampToValueAtTime(42, now + 0.26);
+    subGain.gain.setValueAtTime(0.0001, now + 0.04);
+    subGain.gain.linearRampToValueAtTime(0.35, now + 0.05);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
+    sub.connect(subGain);
+    subGain.connect(this.masterGain);
+    sub.start(now + 0.04);
+    sub.stop(now + 0.35);
+
+    // ── STAGE 3: Ascending Celestial Chord Bloom (Major Pentatonic Warmth) ──
+    const chordNotes = [739.99, 932.33, 1108.73, 1479.98]; // F#5, A#5, C#6, F#6
+    chordNotes.forEach((freq, idx) => {
+      if (!ctx || !this.masterGain) return;
+      const t = now + 0.09 + idx * 0.024;
+      const bell = ctx.createOscillator();
+      const bellGain = ctx.createGain();
+      const bellFilter = ctx.createBiquadFilter();
+
+      bell.type = 'sine';
+      bell.frequency.setValueAtTime(freq, t);
+
+      bellFilter.type = 'lowpass';
+      bellFilter.frequency.setValueAtTime(1400, t);
+      bellFilter.frequency.exponentialRampToValueAtTime(3800, t + 0.18);
+
+      bellGain.gain.setValueAtTime(0.0001, t);
+      bellGain.gain.linearRampToValueAtTime(0.18 - idx * 0.02, t + 0.008);
+      bellGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.36);
+
+      bell.connect(bellFilter);
+      bellFilter.connect(bellGain);
+      bellGain.connect(this.masterGain);
+
+      bell.start(t);
+      bell.stop(t + 0.4);
+    });
+
+    // ── STAGE 4: Crystalline Air Sparkle Shimmer Tail ──
+    const pinkBuf = this.createPinkNoiseBuffer(0.35);
+    if (pinkBuf) {
+      const sparkle = ctx.createBufferSource();
+      sparkle.buffer = pinkBuf;
+      const sparkleFilter = ctx.createBiquadFilter();
+      sparkleFilter.type = 'highpass';
+      sparkleFilter.frequency.setValueAtTime(4500, now + 0.12);
+      const sparkleGain = ctx.createGain();
+      sparkleGain.gain.setValueAtTime(0.0001, now + 0.12);
+      sparkleGain.gain.linearRampToValueAtTime(0.07, now + 0.16);
+      sparkleGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
+      sparkle.connect(sparkleFilter);
+      sparkleFilter.connect(sparkleGain);
+      sparkleGain.connect(this.masterGain);
+      sparkle.start(now + 0.12);
+      sparkle.stop(now + 0.45);
+    }
   }
 
   /**
@@ -265,475 +348,565 @@ class SoundManager {
     const now = ctx.currentTime;
 
     if (tier === 1) {
-      // ── Tier 1: Arc Reactor ping — ascending sine charge + crisp release ──
-      // Phase 1: Quick charge sweep (like capacitor charging)
-      const charge = ctx.createOscillator();
-      const chargeG = ctx.createGain();
-      charge.type = 'sine';
-      charge.frequency.setValueAtTime(180, now);
-      charge.frequency.exponentialRampToValueAtTime(1200, now + 0.18);
-      chargeG.gain.setValueAtTime(0.001, now);
-      chargeG.gain.linearRampToValueAtTime(0.2, now + 0.04);
-      chargeG.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
-      charge.connect(chargeG); chargeG.connect(this.masterGain);
-      charge.start(now); charge.stop(now + 0.2);
+      // ── Tier 1: Tactical Card Lock + Resonant Harmonic Bloom ──
+      // 1. Aerodynamic card draw whoosh (filtered noise transient)
+      const whooshBuf = this.createPinkNoiseBuffer(0.12);
+      if (whooshBuf) {
+        const whoosh = ctx.createBufferSource();
+        whoosh.buffer = whooshBuf;
+        const whooshF = ctx.createBiquadFilter();
+        whooshF.type = 'bandpass';
+        whooshF.frequency.setValueAtTime(1400, now);
+        whooshF.frequency.exponentialRampToValueAtTime(3200, now + 0.08);
+        whooshF.Q.setValueAtTime(1.8, now);
+        const whooshG = ctx.createGain();
+        whooshG.gain.setValueAtTime(0.001, now);
+        whooshG.gain.linearRampToValueAtTime(0.12, now + 0.02);
+        whooshG.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+        whoosh.connect(whooshF); whooshF.connect(whooshG); whooshG.connect(this.masterGain);
+        whoosh.start(now); whoosh.stop(now + 0.11);
+      }
 
-      // Phase 2: Power release — bright major triad (E5, G#5, B5)
-      const releaseNotes = [659.25, 830.61, 987.77];
-      releaseNotes.forEach((freq, i) => {
-        if (!ctx || !this.masterGain) return;
-        const t = now + 0.19 + i * 0.012;
+      // 2. Chassis magnetic lock transient (solid tactile snap)
+      const snap = ctx.createOscillator();
+      const snapG = ctx.createGain();
+      snap.type = 'triangle';
+      snap.frequency.setValueAtTime(220, now + 0.04);
+      snap.frequency.exponentialRampToValueAtTime(54, now + 0.16);
+      snapG.gain.setValueAtTime(0.001, now + 0.04);
+      snapG.gain.linearRampToValueAtTime(0.32, now + 0.045);
+      snapG.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+      snap.connect(snapG); snapG.connect(this.masterGain);
+      snap.start(now + 0.04); snap.stop(now + 0.24);
+
+      // 3. Crisp Eb major triad bloom (Eb5 622.25, G5 783.99, Bb5 932.33)
+      const triad = [622.25, 783.99, 932.33];
+      triad.forEach((freq, idx) => {
+        const t = now + 0.06 + idx * 0.016;
         const osc = ctx.createOscillator();
         const g = ctx.createGain();
         const f = ctx.createBiquadFilter();
-        osc.type = i === 0 ? 'sawtooth' : 'triangle';
+        osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, t);
-        f.type = 'lowpass'; f.frequency.setValueAtTime(3500, t);
+        f.type = 'lowpass';
+        f.frequency.setValueAtTime(4200, t);
         g.gain.setValueAtTime(0.001, t);
-        g.gain.linearRampToValueAtTime(0.22, t + 0.018);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
-        osc.connect(f); f.connect(g); g.connect(this.masterGain);
-        osc.start(t); osc.stop(t + 0.42);
+        g.gain.linearRampToValueAtTime(0.18 - idx * 0.02, t + 0.014);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
+        osc.connect(f); f.connect(g); g.connect(this.masterGain!);
+        osc.start(t); osc.stop(t + 0.45);
       });
 
-      // Sub-bass thump on release
-      const thump = ctx.createOscillator();
-      const thumpG = ctx.createGain();
-      thump.type = 'sine';
-      thump.frequency.setValueAtTime(140, now + 0.19);
-      thump.frequency.exponentialRampToValueAtTime(48, now + 0.38);
-      thumpG.gain.setValueAtTime(0.28, now + 0.19);
-      thumpG.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
-      thump.connect(thumpG); thumpG.connect(this.masterGain);
-      thump.start(now + 0.19); thump.stop(now + 0.44);
-
     } else if (tier === 2) {
-      // ── Tier 2: Repulsor Blast — Rising power surge + harmonic cluster ──
-      // Whirring power-up
-      const whir = ctx.createOscillator();
-      const whirG = ctx.createGain();
-      const whirF = ctx.createBiquadFilter();
-      whir.type = 'sawtooth';
-      whir.frequency.setValueAtTime(80, now);
-      whir.frequency.exponentialRampToValueAtTime(520, now + 0.22);
-      whirF.type = 'bandpass'; whirF.frequency.setValueAtTime(600, now); whirF.Q.setValueAtTime(2.5, now);
-      whirG.gain.setValueAtTime(0.001, now);
-      whirG.gain.linearRampToValueAtTime(0.28, now + 0.08);
-      whirG.gain.exponentialRampToValueAtTime(0.001, now + 0.23);
-      whir.connect(whirF); whirF.connect(whirG); whirG.connect(this.masterGain);
-      whir.start(now); whir.stop(now + 0.24);
+      // ── Tier 2: Arc Reactor Capacitor Surge + Heroic Brass Cluster ──
+      // 1. Rising capacitor whir & ionization
+      const surge = ctx.createOscillator();
+      const surgeG = ctx.createGain();
+      const surgeF = ctx.createBiquadFilter();
+      surge.type = 'sawtooth';
+      surge.frequency.setValueAtTime(95, now);
+      surge.frequency.exponentialRampToValueAtTime(680, now + 0.18);
+      surgeF.type = 'lowpass';
+      surgeF.frequency.setValueAtTime(1400, now);
+      surgeF.frequency.exponentialRampToValueAtTime(3200, now + 0.18);
+      surgeG.gain.setValueAtTime(0.001, now);
+      surgeG.gain.linearRampToValueAtTime(0.24, now + 0.06);
+      surgeG.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
+      surge.connect(surgeF); surgeF.connect(surgeG); surgeG.connect(this.masterGain);
+      surge.start(now); surge.stop(now + 0.2);
 
-      // Repulsor blast — Bm chord (B3, D4, F#4, B4, D5, F#5)
-      const blastNotes = [246.94, 293.66, 369.99, 493.88, 587.33, 739.99];
-      blastNotes.forEach((freq, i) => {
-        if (!ctx || !this.masterGain) return;
-        const t = now + 0.22 + i * 0.01;
+      // 2. Heavy Sub Punch detonation (125Hz down to 36Hz)
+      const sub = ctx.createOscillator();
+      const subG = ctx.createGain();
+      sub.type = 'sine';
+      sub.frequency.setValueAtTime(125, now + 0.14);
+      sub.frequency.exponentialRampToValueAtTime(36, now + 0.52);
+      subG.gain.setValueAtTime(0.001, now + 0.14);
+      subG.gain.linearRampToValueAtTime(0.48, now + 0.148);
+      subG.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+      sub.connect(subG); subG.connect(this.masterGain);
+      sub.start(now + 0.14); sub.stop(now + 0.58);
+
+      // 3. Heroic cinematic French horn cluster (Eb4 311.13, G4 392.00, Bb4 466.16, Eb5 622.25)
+      const hornNotes = [311.13, 392.00, 466.16, 622.25];
+      hornNotes.forEach((freq, idx) => {
+        const t = now + 0.15 + idx * 0.018;
         const osc = ctx.createOscillator();
-        const g = ctx.createGain(); const f = ctx.createBiquadFilter();
-        osc.type = i < 2 ? 'sawtooth' : 'triangle';
+        const g = ctx.createGain();
+        const f = ctx.createBiquadFilter();
+        osc.type = idx < 2 ? 'sawtooth' : 'triangle';
         osc.frequency.setValueAtTime(freq, t);
-        f.type = 'lowpass'; f.frequency.setValueAtTime(2200, t);
-        f.frequency.exponentialRampToValueAtTime(900, t + 0.6);
+        f.type = 'lowpass';
+        f.frequency.setValueAtTime(1800, t);
+        f.frequency.exponentialRampToValueAtTime(800, t + 0.6);
         g.gain.setValueAtTime(0.001, t);
-        g.gain.linearRampToValueAtTime(0.2 - i * 0.01, t + 0.025);
+        g.gain.linearRampToValueAtTime(0.18 - idx * 0.015, t + 0.03);
         g.gain.exponentialRampToValueAtTime(0.0001, t + 0.65);
-        osc.connect(f); f.connect(g); g.connect(this.masterGain);
+        osc.connect(f); f.connect(g); g.connect(this.masterGain!);
         osc.start(t); osc.stop(t + 0.7);
       });
 
-      // Deep sub punch
-      const sub = ctx.createOscillator(); const subG = ctx.createGain();
-      sub.type = 'sine';
-      sub.frequency.setValueAtTime(110, now + 0.22);
-      sub.frequency.exponentialRampToValueAtTime(38, now + 0.55);
-      subG.gain.setValueAtTime(0.45, now + 0.22);
-      subG.gain.exponentialRampToValueAtTime(0.001, now + 0.58);
-      sub.connect(subG); subG.connect(this.masterGain);
-      sub.start(now + 0.22); sub.stop(now + 0.6);
+      // 4. Pink noise air wash tail
+      const pink = this.createPinkNoiseBuffer(0.35);
+      if (pink) {
+        const pSource = ctx.createBufferSource();
+        pSource.buffer = pink;
+        const pF = ctx.createBiquadFilter();
+        pF.type = 'highpass'; pF.frequency.setValueAtTime(3500, now + 0.18);
+        const pG = ctx.createGain();
+        pG.gain.setValueAtTime(0.001, now + 0.18);
+        pG.gain.linearRampToValueAtTime(0.08, now + 0.22);
+        pG.gain.exponentialRampToValueAtTime(0.0001, now + 0.48);
+        pSource.connect(pF); pF.connect(pG); pG.connect(this.masterGain);
+        pSource.start(now + 0.18); pSource.stop(now + 0.5);
+      }
 
     } else {
-      // ── Tier 3: Infinity Stone Socketed — Cosmic impact + light-warp ──
-      // Stage 1: Stone impact BOOM
-      const boom = ctx.createOscillator(); const boomG = ctx.createGain();
-      const boomF = ctx.createBiquadFilter();
-      boom.type = 'sine';
-      boom.frequency.setValueAtTime(95, now);
-      boom.frequency.exponentialRampToValueAtTime(28, now + 0.55);
-      boomF.type = 'lowpass'; boomF.frequency.setValueAtTime(320, now);
-      boomG.gain.setValueAtTime(0.001, now);
-      boomG.gain.linearRampToValueAtTime(0.75, now + 0.018);
-      boomG.gain.exponentialRampToValueAtTime(0.001, now + 0.62);
-      boom.connect(boomF); boomF.connect(boomG); boomG.connect(this.masterGain);
-      boom.start(now); boom.stop(now + 0.65);
+      // ── Tier 3: Legendary Cosmic Infinity Assembly (Hollywood BRAAAM + Celestial Harmonics) ──
+      // 1. Hollywood Sub-Detonation BRAAAM
+      const braam1 = ctx.createOscillator();
+      const braam2 = ctx.createOscillator();
+      const braamG = ctx.createGain();
+      const braamF = ctx.createBiquadFilter();
+      braam1.type = 'sawtooth';
+      braam1.frequency.setValueAtTime(68, now);
+      braam1.frequency.exponentialRampToValueAtTime(32, now + 0.6);
+      braam2.type = 'sine';
+      braam2.frequency.setValueAtTime(136, now);
+      braam2.frequency.exponentialRampToValueAtTime(64, now + 0.6);
+      braamF.type = 'lowpass';
+      braamF.frequency.setValueAtTime(450, now);
+      braamF.frequency.exponentialRampToValueAtTime(160, now + 0.55);
+      braamF.Q.setValueAtTime(2.5, now);
+      braamG.gain.setValueAtTime(0.001, now);
+      braamG.gain.linearRampToValueAtTime(0.65, now + 0.02);
+      braamG.gain.exponentialRampToValueAtTime(0.0001, now + 0.68);
+      braam1.connect(braamF); braam2.connect(braamF);
+      braamF.connect(braamG); braamG.connect(this.masterGain);
+      braam1.start(now); braam2.start(now);
+      braam1.stop(now + 0.7); braam2.stop(now + 0.7);
 
-      // Stage 2: Mid thump
-      const mid = ctx.createOscillator(); const midG = ctx.createGain();
-      mid.type = 'square';
-      mid.frequency.setValueAtTime(185, now + 0.01);
-      mid.frequency.exponentialRampToValueAtTime(55, now + 0.22);
-      midG.gain.setValueAtTime(0.001, now + 0.01);
-      midG.gain.linearRampToValueAtTime(0.32, now + 0.025);
-      midG.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
-      mid.connect(midG); midG.connect(this.masterGain);
-      mid.start(now + 0.01); mid.stop(now + 0.3);
+      // 2. Heavy Uru plate impact transient (metallic bell body)
+      const uru = ctx.createOscillator();
+      const uruG = ctx.createGain();
+      uru.type = 'triangle';
+      uru.frequency.setValueAtTime(380, now + 0.005);
+      uru.frequency.exponentialRampToValueAtTime(110, now + 0.24);
+      uruG.gain.setValueAtTime(0.001, now + 0.005);
+      uruG.gain.linearRampToValueAtTime(0.35, now + 0.012);
+      uruG.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+      uru.connect(uruG); uruG.connect(this.masterGain);
+      uru.start(now + 0.005); uru.stop(now + 0.3);
 
-      // Stage 3: Light-warp ascending shimmer (Gauntlet activates)
-      const warpNotes = [261.63, 329.63, 415.30, 523.25, 659.25, 830.61, 1046.5, 1318.51];
-      warpNotes.forEach((freq, i) => {
-        if (!ctx || !this.masterGain) return;
-        const t = now + 0.28 + i * 0.055;
-        const osc = ctx.createOscillator(); const g = ctx.createGain();
-        osc.type = i % 2 === 0 ? 'triangle' : 'sine';
+      // 3. 6-Gem Cosmic Harmonic Ascension (Power, Space, Reality, Soul, Time, Mind)
+      const cosmicScale = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+      cosmicScale.forEach((freq, idx) => {
+        const t = now + 0.18 + idx * 0.045;
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        const f = ctx.createBiquadFilter();
+        osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
         osc.frequency.setValueAtTime(freq, t);
+        f.type = 'lowpass';
+        f.frequency.setValueAtTime(3200, t);
         g.gain.setValueAtTime(0.001, t);
-        g.gain.linearRampToValueAtTime(0.2 - i * 0.015, t + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
-        osc.connect(g); g.connect(this.masterGain);
-        osc.start(t); osc.stop(t + 0.35);
+        g.gain.linearRampToValueAtTime(0.2 - idx * 0.014, t + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+        osc.connect(f); f.connect(g); g.connect(this.masterGain!);
+        osc.start(t); osc.stop(t + 0.6);
       });
 
-      // Stage 4: High cosmic shimmer tail
-      const shimmer = ctx.createOscillator(); const shimmerG = ctx.createGain();
-      shimmer.type = 'sine';
-      shimmer.frequency.setValueAtTime(2093, now + 0.6);
-      shimmer.frequency.exponentialRampToValueAtTime(4186, now + 1.2);
-      shimmerG.gain.setValueAtTime(0.001, now + 0.6);
-      shimmerG.gain.linearRampToValueAtTime(0.18, now + 0.65);
-      shimmerG.gain.exponentialRampToValueAtTime(0.001, now + 1.3);
-      shimmer.connect(shimmerG); shimmerG.connect(this.masterGain);
-      shimmer.start(now + 0.6); shimmer.stop(now + 1.35);
+      // 4. Sparkling ethereal C7 aurora halo tail
+      const halo = ctx.createOscillator();
+      const haloG = ctx.createGain();
+      halo.type = 'sine';
+      halo.frequency.setValueAtTime(2093, now + 0.5);
+      halo.frequency.linearRampToValueAtTime(2637, now + 1.2);
+      haloG.gain.setValueAtTime(0.001, now + 0.5);
+      haloG.gain.linearRampToValueAtTime(0.14, now + 0.58);
+      haloG.gain.exponentialRampToValueAtTime(0.0001, now + 1.35);
+      halo.connect(haloG); haloG.connect(this.masterGain);
+      halo.start(now + 0.5); halo.stop(now + 1.4);
     }
   }
 
   /**
-   * 5. Card Reserve — Iron Man hologram materialize + magnetic field lock
+   * 5. Card Reserve — Holographic Vault Containment & Pneumatic Clamp Latch
    */
   public playCardReserve(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // Phase 1: Hologram flicker — fast descending square bursts
-    [0, 0.022, 0.044].forEach((offset) => {
-      if (!ctx || !this.masterGain) return;
-      const t = now + offset;
-      const flicker = ctx.createOscillator(); const flickG = ctx.createGain();
-      const flickF = ctx.createBiquadFilter();
-      flicker.type = 'square';
-      flicker.frequency.setValueAtTime(2800 - offset * 4000, t);
-      flickF.type = 'bandpass'; flickF.frequency.setValueAtTime(1800, t); flickF.Q.setValueAtTime(3, t);
-      flickG.gain.setValueAtTime(0.001, t);
-      flickG.gain.linearRampToValueAtTime(0.14, t + 0.002);
-      flickG.gain.exponentialRampToValueAtTime(0.0001, t + 0.018);
-      flicker.connect(flickF); flickF.connect(flickG); flickG.connect(this.masterGain);
-      flicker.start(t); flicker.stop(t + 0.022);
-    });
+    // 1. Holographic scanline shimmer sweep
+    const scan = ctx.createOscillator();
+    const scanG = ctx.createGain();
+    const scanF = ctx.createBiquadFilter();
+    scan.type = 'triangle';
+    scan.frequency.setValueAtTime(440, now);
+    scan.frequency.exponentialRampToValueAtTime(1760, now + 0.16);
+    scanF.type = 'bandpass';
+    scanF.frequency.setValueAtTime(1200, now);
+    scanF.frequency.exponentialRampToValueAtTime(3200, now + 0.16);
+    scanF.Q.setValueAtTime(2.5, now);
+    scanG.gain.setValueAtTime(0.001, now);
+    scanG.gain.linearRampToValueAtTime(0.18, now + 0.05);
+    scanG.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+    scan.connect(scanF); scanF.connect(scanG); scanG.connect(this.masterGain);
+    scan.start(now); scan.stop(now + 0.2);
 
-    // Phase 2: Ascending hologram sweep (materialize)
-    const beam = ctx.createOscillator(); const beamG = ctx.createGain();
-    const beamF = ctx.createBiquadFilter();
-    beam.type = 'sine';
-    beam.frequency.setValueAtTime(220, now + 0.06);
-    beam.frequency.exponentialRampToValueAtTime(1760, now + 0.22);
-    beamF.type = 'lowpass'; beamF.frequency.setValueAtTime(1200, now + 0.06);
-    beamF.frequency.exponentialRampToValueAtTime(3500, now + 0.22);
-    beamG.gain.setValueAtTime(0.001, now + 0.06);
-    beamG.gain.linearRampToValueAtTime(0.22, now + 0.1);
-    beamG.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
-    beam.connect(beamF); beamF.connect(beamG); beamG.connect(this.masterGain);
-    beam.start(now + 0.06); beam.stop(now + 0.25);
+    // 2. Heavy vault pneumatic clamp latch (hydraulic lock)
+    const clampTime = now + 0.14;
+    const clamp = ctx.createOscillator();
+    const clampG = ctx.createGain();
+    clamp.type = 'triangle';
+    clamp.frequency.setValueAtTime(280, clampTime);
+    clamp.frequency.exponentialRampToValueAtTime(65, clampTime + 0.12);
+    clampG.gain.setValueAtTime(0.001, clampTime);
+    clampG.gain.linearRampToValueAtTime(0.36, clampTime + 0.004);
+    clampG.gain.exponentialRampToValueAtTime(0.0001, clampTime + 0.16);
+    clamp.connect(clampG); clampG.connect(this.masterGain);
+    clamp.start(clampTime); clamp.stop(clampTime + 0.18);
 
-    // Phase 3: Magnetic lock CLUNK — low square transient
-    const lock = ctx.createOscillator(); const lockG = ctx.createGain();
-    lock.type = 'square';
-    lock.frequency.setValueAtTime(380, now + 0.22);
-    lock.frequency.exponentialRampToValueAtTime(95, now + 0.32);
-    lockG.gain.setValueAtTime(0.001, now + 0.22);
-    lockG.gain.linearRampToValueAtTime(0.3, now + 0.225);
-    lockG.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-    lock.connect(lockG); lockG.connect(this.masterGain);
-    lock.start(now + 0.22); lock.stop(now + 0.36);
-
-    // Confirmation ping after lock
-    const ping = ctx.createOscillator(); const pingG = ctx.createGain();
+    // 3. Security confirmation ping (C7 crystal harmonic)
+    const pingTime = now + 0.22;
+    const ping = ctx.createOscillator();
+    const pingG = ctx.createGain();
     ping.type = 'sine';
-    ping.frequency.setValueAtTime(1760, now + 0.33);
-    pingG.gain.setValueAtTime(0.001, now + 0.33);
-    pingG.gain.linearRampToValueAtTime(0.18, now + 0.336);
-    pingG.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+    ping.frequency.setValueAtTime(2093.00, pingTime); // C7
+    pingG.gain.setValueAtTime(0.001, pingTime);
+    pingG.gain.linearRampToValueAtTime(0.15, pingTime + 0.005);
+    pingG.gain.exponentialRampToValueAtTime(0.0001, pingTime + 0.42);
     ping.connect(pingG); pingG.connect(this.masterGain);
-    ping.start(now + 0.33); ping.stop(now + 0.58);
+    ping.start(pingTime); ping.stop(pingTime + 0.45);
   }
 
   /**
-   * 6. UI Button Click — Metallic micro-snap + high tick (like a precision switch)
+   * 6. UI Button Click — Swiss Precision Tactile Micro-Switch
    */
   public playButtonClick(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // Layer 1: Low thump body (like a premium keyboard switch bottom-out)
-    const body = ctx.createOscillator(); const bodyG = ctx.createGain();
-    body.type = 'sine';
-    body.frequency.setValueAtTime(420, now);
-    body.frequency.exponentialRampToValueAtTime(95, now + 0.028);
+    // Layer 1: Aluminum switch casing body resonance (130Hz -> 48Hz)
+    const body = ctx.createOscillator();
+    const bodyG = ctx.createGain();
+    body.type = 'triangle';
+    body.frequency.setValueAtTime(130, now);
+    body.frequency.exponentialRampToValueAtTime(48, now + 0.024);
     bodyG.gain.setValueAtTime(0.001, now);
-    bodyG.gain.linearRampToValueAtTime(0.28, now + 0.001);
-    bodyG.gain.exponentialRampToValueAtTime(0.0001, now + 0.032);
+    bodyG.gain.linearRampToValueAtTime(0.25, now + 0.001);
+    bodyG.gain.exponentialRampToValueAtTime(0.0001, now + 0.028);
     body.connect(bodyG); bodyG.connect(this.masterGain);
-    body.start(now); body.stop(now + 0.035);
+    body.start(now); body.stop(now + 0.03);
 
-    // Layer 2: High metallic tick (the snap)
-    const tick = ctx.createOscillator(); const tickG = ctx.createGain(); const tickF = ctx.createBiquadFilter();
-    tick.type = 'square';
-    tick.frequency.setValueAtTime(5200, now);
-    tick.frequency.exponentialRampToValueAtTime(1800, now + 0.008);
-    tickF.type = 'highpass'; tickF.frequency.setValueAtTime(3000, now);
-    tickG.gain.setValueAtTime(0.001, now);
-    tickG.gain.linearRampToValueAtTime(0.16, now + 0.0005);
-    tickG.gain.exponentialRampToValueAtTime(0.0001, now + 0.012);
-    tick.connect(tickF); tickF.connect(tickG); tickG.connect(this.masterGain);
-    tick.start(now); tick.stop(now + 0.015);
+    // Layer 2: Micro-contact ceramic snap (3400Hz crisp tactile transient)
+    const snap = ctx.createOscillator();
+    const snapG = ctx.createGain();
+    const snapF = ctx.createBiquadFilter();
+    snap.type = 'sine';
+    snap.frequency.setValueAtTime(3400, now);
+    snap.frequency.exponentialRampToValueAtTime(1200, now + 0.006);
+    snapF.type = 'highpass';
+    snapF.frequency.setValueAtTime(2200, now);
+    snapG.gain.setValueAtTime(0.001, now);
+    snapG.gain.linearRampToValueAtTime(0.14, now + 0.0005);
+    snapG.gain.exponentialRampToValueAtTime(0.0001, now + 0.009);
+    snap.connect(snapF); snapF.connect(snapG); snapG.connect(this.masterGain);
+    snap.start(now); snap.stop(now + 0.012);
   }
 
   /**
-   * 7. Turn Alert — 3-tone ascending tactical S.H.I.E.L.D. chime
-   *    (E5 → A5 → E6) with slight reverb shimmer
+   * 7. Turn Alert — S.H.I.E.L.D. Tactical Acoustic Prompt (F5 → C6 → G6)
    */
   public playTurnAlert(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // 3 ascending tones — crisp sine with triangle overtone
+    // 3 ascending pure crystalline chimes (F5, C6, G6)
     const tones = [
-      { freq: 659.25, delay: 0.00, dur: 0.22 },  // E5
-      { freq: 880.00, delay: 0.16, dur: 0.22 },  // A5
-      { freq: 1318.51, delay: 0.32, dur: 0.55 }, // E6 (apex hold)
+      { freq: 698.46, delay: 0.00, dur: 0.24, gain: 0.24 }, // F5
+      { freq: 1046.50, delay: 0.12, dur: 0.28, gain: 0.26 }, // C6
+      { freq: 1567.98, delay: 0.24, dur: 0.65, gain: 0.22 }, // G6 (Apex sustain)
     ];
 
-    tones.forEach(({ freq, delay, dur }, idx) => {
-      if (!ctx || !this.masterGain) return;
+    tones.forEach(({ freq, delay, dur, gain }) => {
       const t = now + delay;
-
-      // Main tone
-      const osc = ctx.createOscillator(); const g = ctx.createGain();
+      // 1. Fundamental chime
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, t);
       g.gain.setValueAtTime(0.001, t);
-      g.gain.linearRampToValueAtTime(0.3 - idx * 0.02, t + 0.01);
+      g.gain.linearRampToValueAtTime(gain, t + 0.008);
       g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      osc.connect(g); g.connect(this.masterGain);
-      osc.start(t); osc.stop(t + dur + 0.05);
+      osc.connect(g); g.connect(this.masterGain!);
+      osc.start(t); osc.stop(t + dur + 0.02);
 
-      // Triangle 2nd harmonic adds warmth
-      const harm = ctx.createOscillator(); const hg = ctx.createGain();
+      // 2. Warm acoustic overtone (triangle)
+      const harm = ctx.createOscillator();
+      const hg = ctx.createGain();
       harm.type = 'triangle';
       harm.frequency.setValueAtTime(freq * 2, t);
       hg.gain.setValueAtTime(0.001, t);
-      hg.gain.linearRampToValueAtTime(0.08, t + 0.008);
-      hg.gain.exponentialRampToValueAtTime(0.0001, t + dur * 0.6);
-      harm.connect(hg); hg.connect(this.masterGain);
-      harm.start(t); harm.stop(t + dur);
+      hg.gain.linearRampToValueAtTime(gain * 0.25, t + 0.006);
+      hg.gain.exponentialRampToValueAtTime(0.0001, t + dur * 0.5);
+      harm.connect(hg); hg.connect(this.masterGain!);
+      harm.start(t); harm.stop(t + dur * 0.55);
     });
 
-    // Subtle shimmer tail after apex
-    const shimmer = ctx.createOscillator(); const shimG = ctx.createGain();
+    // 3. Subtle ethereal shimmer tail
+    const shimmer = ctx.createOscillator();
+    const shimG = ctx.createGain();
     shimmer.type = 'sine';
-    shimmer.frequency.setValueAtTime(2637, now + 0.44);
-    shimmerG: {
-      shimG.gain.setValueAtTime(0.001, now + 0.44);
-      shimG.gain.linearRampToValueAtTime(0.09, now + 0.48);
-      shimG.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
-    }
+    shimmer.frequency.setValueAtTime(3135.96, now + 0.35); // G7
+    shimG.gain.setValueAtTime(0.001, now + 0.35);
+    shimG.gain.linearRampToValueAtTime(0.08, now + 0.40);
+    shimG.gain.exponentialRampToValueAtTime(0.0001, now + 0.95);
     shimmer.connect(shimG); shimG.connect(this.masterGain);
-    shimmer.start(now + 0.44); shimmer.stop(now + 0.95);
+    shimmer.start(now + 0.35); shimmer.stop(now + 1.0);
   }
 
   /**
-   * 8. Modal Open — Futuristic holographic panel whoosh + settle
+   * 8. Modal Open — Holographic HUD Expansion & Pneumatic Air Cushion
    */
   public playModalOpen(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // Ascending whoosh sweep
-    const whoosh = ctx.createOscillator(); const whooshG = ctx.createGain(); const whooshF = ctx.createBiquadFilter();
-    whoosh.type = 'sine';
-    whoosh.frequency.setValueAtTime(160, now);
-    whoosh.frequency.exponentialRampToValueAtTime(1100, now + 0.16);
-    whooshF.type = 'lowpass'; whooshF.frequency.setValueAtTime(600, now); whooshF.frequency.exponentialRampToValueAtTime(2800, now + 0.16);
-    whooshG.gain.setValueAtTime(0.001, now);
-    whooshG.gain.linearRampToValueAtTime(0.22, now + 0.05);
-    whooshG.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-    whoosh.connect(whooshF); whooshF.connect(whooshG); whooshG.connect(this.masterGain);
-    whoosh.start(now); whoosh.stop(now + 0.2);
+    // 1. Air cushion expansion whoosh
+    const airBuf = this.createPinkNoiseBuffer(0.18);
+    if (airBuf) {
+      const air = ctx.createBufferSource();
+      air.buffer = airBuf;
+      const airF = ctx.createBiquadFilter();
+      airF.type = 'bandpass';
+      airF.frequency.setValueAtTime(800, now);
+      airF.frequency.exponentialRampToValueAtTime(2800, now + 0.12);
+      airF.Q.setValueAtTime(2.0, now);
+      const airG = ctx.createGain();
+      airG.gain.setValueAtTime(0.001, now);
+      airG.gain.linearRampToValueAtTime(0.16, now + 0.03);
+      airG.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+      air.connect(airF); airF.connect(airG); airG.connect(this.masterGain);
+      air.start(now); air.stop(now + 0.17);
+    }
 
-    // Settle chime — short high ping
-    const settle = ctx.createOscillator(); const settleG = ctx.createGain();
-    settle.type = 'triangle';
-    settle.frequency.setValueAtTime(1760, now + 0.15);
-    settleG.gain.setValueAtTime(0.001, now + 0.15);
-    settleG.gain.linearRampToValueAtTime(0.16, now + 0.158);
-    settleG.gain.exponentialRampToValueAtTime(0.0001, now + 0.38);
-    settle.connect(settleG); settleG.connect(this.masterGain);
-    settle.start(now + 0.15); settle.stop(now + 0.4);
+    // 2. Glass HUD settlement chime (1480Hz -> 1760Hz)
+    const glass = ctx.createOscillator();
+    const glassG = ctx.createGain();
+    glass.type = 'sine';
+    glass.frequency.setValueAtTime(1480, now + 0.06);
+    glass.frequency.exponentialRampToValueAtTime(1760, now + 0.14);
+    glassG.gain.setValueAtTime(0.001, now + 0.06);
+    glassG.gain.linearRampToValueAtTime(0.15, now + 0.08);
+    glassG.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+    glass.connect(glassG); glassG.connect(this.masterGain);
+    glass.start(now + 0.06); glass.stop(now + 0.38);
   }
 
   /**
-   * 9. Modal Close — Descending whoosh dismiss
+   * 9. Modal Close — Tactile Pneumatic Bleed & Soft Felt Latch
    */
   public playModalClose(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // Short descending sweep
-    const swoop = ctx.createOscillator(); const swoopG = ctx.createGain(); const swoopF = ctx.createBiquadFilter();
-    swoop.type = 'sine';
-    swoop.frequency.setValueAtTime(900, now);
-    swoop.frequency.exponentialRampToValueAtTime(140, now + 0.14);
-    swoopF.type = 'lowpass'; swoopF.frequency.setValueAtTime(2200, now); swoopF.frequency.exponentialRampToValueAtTime(400, now + 0.14);
-    swoopG.gain.setValueAtTime(0.001, now);
-    swoopG.gain.linearRampToValueAtTime(0.19, now + 0.008);
-    swoopG.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
-    swoop.connect(swoopF); swoopF.connect(swoopG); swoopG.connect(this.masterGain);
-    swoop.start(now); swoop.stop(now + 0.18);
+    // 1. Air bleed dismiss
+    const airBuf = this.createPinkNoiseBuffer(0.14);
+    if (airBuf) {
+      const air = ctx.createBufferSource();
+      air.buffer = airBuf;
+      const airF = ctx.createBiquadFilter();
+      airF.type = 'lowpass';
+      airF.frequency.setValueAtTime(2400, now);
+      airF.frequency.exponentialRampToValueAtTime(450, now + 0.11);
+      const airG = ctx.createGain();
+      airG.gain.setValueAtTime(0.001, now);
+      airG.gain.linearRampToValueAtTime(0.14, now + 0.015);
+      airG.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+      air.connect(airF); airF.connect(airG); airG.connect(this.masterGain);
+      air.start(now); air.stop(now + 0.13);
+    }
 
-    // Soft sub-thud at bottom
-    const thud = ctx.createOscillator(); const thudG = ctx.createGain();
+    // 2. Soft felt dampening thud
+    const thud = ctx.createOscillator();
+    const thudG = ctx.createGain();
     thud.type = 'sine';
-    thud.frequency.setValueAtTime(92, now + 0.1);
-    thud.frequency.exponentialRampToValueAtTime(40, now + 0.2);
-    thudG.gain.setValueAtTime(0.18, now + 0.1);
-    thudG.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+    thud.frequency.setValueAtTime(95, now + 0.04);
+    thud.frequency.exponentialRampToValueAtTime(42, now + 0.14);
+    thudG.gain.setValueAtTime(0.001, now + 0.04);
+    thudG.gain.linearRampToValueAtTime(0.16, now + 0.045);
+    thudG.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
     thud.connect(thudG); thudG.connect(this.masterGain);
-    thud.start(now + 0.1); thud.stop(now + 0.24);
+    thud.start(now + 0.04); thud.stop(now + 0.18);
   }
 
   /**
-   * 10. Gauntlet Stone Socketed — Space-time portal charge + dimensional resonance
+   * 10. Gauntlet Stone Socketed — Cosmic Uru Lock & Dimensional Resonance
    */
   public playGauntletSocket(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // Stage 1: Portal opening hum (low sine builds)
-    const portalHum = ctx.createOscillator(); const portalG = ctx.createGain();
-    portalHum.type = 'sawtooth';
-    portalHum.frequency.setValueAtTime(55, now);
-    portalHum.frequency.exponentialRampToValueAtTime(220, now + 0.35);
-    portalG.gain.setValueAtTime(0.001, now);
-    portalG.gain.linearRampToValueAtTime(0.35, now + 0.1);
-    portalG.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-    portalHum.connect(portalG); portalG.connect(this.masterGain);
-    portalHum.start(now); portalHum.stop(now + 0.42);
+    // Stage 1: Gravitational sub-frequency vacuum sink (75Hz -> 28Hz)
+    const sub = ctx.createOscillator();
+    const subG = ctx.createGain();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(75, now);
+    sub.frequency.exponentialRampToValueAtTime(28, now + 0.35);
+    subG.gain.setValueAtTime(0.001, now);
+    subG.gain.linearRampToValueAtTime(0.42, now + 0.04);
+    subG.gain.exponentialRampToValueAtTime(0.0001, now + 0.38);
+    sub.connect(subG); subG.connect(this.masterGain);
+    sub.start(now); sub.stop(now + 0.4);
 
-    // Stage 2: Energy spike whip (fast ascending whistle)
-    const spike = ctx.createOscillator(); const spikeG = ctx.createGain();
-    spike.type = 'sine';
-    spike.frequency.setValueAtTime(440, now + 0.28);
-    spike.frequency.exponentialRampToValueAtTime(3520, now + 0.52);
-    spikeG.gain.setValueAtTime(0.001, now + 0.28);
-    spikeG.gain.linearRampToValueAtTime(0.28, now + 0.32);
-    spikeG.gain.exponentialRampToValueAtTime(0.0001, now + 0.56);
-    spike.connect(spikeG); spikeG.connect(this.masterGain);
-    spike.start(now + 0.28); spike.stop(now + 0.58);
+    // Stage 2: Heavy Uru metal mechanical lock clamp
+    const clampTime = now + 0.08;
+    const clamp = ctx.createOscillator();
+    const clampG = ctx.createGain();
+    const clampF = ctx.createBiquadFilter();
+    clamp.type = 'triangle';
+    clamp.frequency.setValueAtTime(340, clampTime);
+    clamp.frequency.exponentialRampToValueAtTime(88, clampTime + 0.16);
+    clampF.type = 'lowpass';
+    clampF.frequency.setValueAtTime(2200, clampTime);
+    clampG.gain.setValueAtTime(0.001, clampTime);
+    clampG.gain.linearRampToValueAtTime(0.38, clampTime + 0.006);
+    clampG.gain.exponentialRampToValueAtTime(0.0001, clampTime + 0.22);
+    clamp.connect(clampF); clampF.connect(clampG); clampG.connect(this.masterGain);
+    clamp.start(clampTime); clamp.stop(clampTime + 0.25);
 
-    // Stage 3: Lock resonance (two pure tones forming a perfect 5th)
-    [[523.25, now + 0.5], [783.99, now + 0.52]].forEach(([freq, t]) => {
-      if (!ctx || !this.masterGain) return;
-      const res = ctx.createOscillator(); const resG = ctx.createGain();
-      res.type = 'sine';
-      res.frequency.setValueAtTime(freq as number, t as number);
-      resG.gain.setValueAtTime(0.001, t as number);
-      resG.gain.linearRampToValueAtTime(0.26, (t as number) + 0.015);
-      resG.gain.exponentialRampToValueAtTime(0.0001, (t as number) + 0.7);
-      res.connect(resG); resG.connect(this.masterGain);
-      res.start(t as number); res.stop((t as number) + 0.75);
+    // Stage 3: Cosmic stone ignition chime (Perfect 5th: C5 523.25 + G5 783.99 + C7 sparkle)
+    const chimeTime = now + 0.18;
+    const chimes = [523.25, 783.99, 2093.00];
+    chimes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = idx === 2 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(freq, chimeTime);
+      g.gain.setValueAtTime(0.001, chimeTime);
+      g.gain.linearRampToValueAtTime(0.24 - idx * 0.06, chimeTime + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, chimeTime + 0.7);
+      osc.connect(g); g.connect(this.masterGain!);
+      osc.start(chimeTime); osc.stop(chimeTime + 0.75);
     });
   }
 
   /**
-   * 11. Victory / Game Over Win (Triumphant cosmic orchestral fanfare)
+   * 11. Victory / Game Over Win — Grand Hollywood Cinematic Superhero Fanfare
    */
   public playVictory(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
-    const now = this.ctx.currentTime;
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
 
-    const fanfareNotes = [
-      { freq: 440.00, delay: 0.00, dur: 0.18 }, // A4
-      { freq: 554.37, delay: 0.12, dur: 0.18 }, // C#5
-      { freq: 659.25, delay: 0.24, dur: 0.22 }, // E5
-      { freq: 880.00, delay: 0.38, dur: 0.65 }, // A5 (Apex)
-      { freq: 1108.73, delay: 0.52, dur: 0.85 }, // C#6 (Glorious resolution)
+    // Stage 1: Heroic brass progression (D major -> G major -> A major apex)
+    // Voicing chords with brass timbre (filtered sawtooth + triangle)
+    const brassChords = [
+      // Chord 1 (0.00s): D major triad (D4 293.66, F#4 369.99, A4 440.00)
+      { notes: [293.66, 369.99, 440.00], time: now, dur: 0.32, gain: 0.20 },
+      // Chord 2 (0.28s): G major triad (G4 392.00, B4 493.88, D5 587.33)
+      { notes: [392.00, 493.88, 587.33], time: now + 0.28, dur: 0.36, gain: 0.22 },
+      // Chord 3 (0.60s): Triumphant A major apex (A4 440.00, C#5 554.37, E5 659.25, A5 880.00)
+      { notes: [440.00, 554.37, 659.25, 880.00], time: now + 0.60, dur: 1.10, gain: 0.26 },
     ];
 
-    fanfareNotes.forEach(({ freq, delay, dur }) => {
-      if (!this.ctx || !this.masterGain) return;
-      const noteTime = now + delay;
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
+    brassChords.forEach(({ notes, time, dur, gain }) => {
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        const f = ctx.createBiquadFilter();
 
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, noteTime);
+        osc.type = idx % 2 === 0 ? 'sawtooth' : 'triangle';
+        osc.frequency.setValueAtTime(freq, time);
 
-      gain.gain.setValueAtTime(0.001, noteTime);
-      gain.gain.linearRampToValueAtTime(0.3, noteTime + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.0001, noteTime + dur);
+        f.type = 'lowpass';
+        f.frequency.setValueAtTime(1400, time);
+        f.frequency.exponentialRampToValueAtTime(3200, time + 0.08);
+        f.frequency.exponentialRampToValueAtTime(1600, time + dur);
+        f.Q.setValueAtTime(1.5, time);
 
-      osc.connect(gain);
-      gain.connect(this.masterGain);
+        g.gain.setValueAtTime(0.001, time);
+        g.gain.linearRampToValueAtTime(gain - idx * 0.02, time + 0.04);
+        g.gain.linearRampToValueAtTime((gain - idx * 0.02) * 0.85, time + dur * 0.5);
+        g.gain.exponentialRampToValueAtTime(0.0001, time + dur);
 
-      osc.start(noteTime);
-      osc.stop(noteTime + dur + 0.05);
+        osc.connect(f);
+        f.connect(g);
+        g.connect(this.masterGain!);
+
+        osc.start(time);
+        osc.stop(time + dur + 0.05);
+      });
     });
+
+    // Stage 2: Sub-bass triumphal resolution impact (110Hz -> 36Hz)
+    const sub = ctx.createOscillator();
+    const subG = ctx.createGain();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(110, now + 0.60);
+    sub.frequency.exponentialRampToValueAtTime(36, now + 1.3);
+    subG.gain.setValueAtTime(0.001, now + 0.60);
+    subG.gain.linearRampToValueAtTime(0.48, now + 0.63);
+    subG.gain.exponentialRampToValueAtTime(0.0001, now + 1.4);
+    sub.connect(subG); subG.connect(this.masterGain);
+    sub.start(now + 0.60); sub.stop(now + 1.45);
+
+    // Stage 3: Orchestral cymbal sparkle wash
+    const pinkBuf = this.createPinkNoiseBuffer(1.4);
+    if (pinkBuf) {
+      const cymbal = ctx.createBufferSource();
+      cymbal.buffer = pinkBuf;
+      const cymbalF = ctx.createBiquadFilter();
+      cymbalF.type = 'highpass';
+      cymbalF.frequency.setValueAtTime(4500, now + 0.60);
+      const cymbalG = ctx.createGain();
+      cymbalG.gain.setValueAtTime(0.001, now + 0.60);
+      cymbalG.gain.linearRampToValueAtTime(0.16, now + 0.68);
+      cymbalG.gain.exponentialRampToValueAtTime(0.0001, now + 1.8);
+      cymbal.connect(cymbalF); cymbalF.connect(cymbalG); cymbalG.connect(this.masterGain);
+      cymbal.start(now + 0.60); cymbal.stop(now + 1.85);
+    }
   }
 
   /**
-   * 12. Error / Invalid Action — Deep metallic rejection thud + buzz
+   * 12. Error / Invalid Action — Tactile Damped Resistance Thud (Informative & Sleek)
    */
   public playError(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // Thud 1: Heavy low-mid impact
-    const thud1 = ctx.createOscillator(); const thud1G = ctx.createGain();
-    thud1.type = 'sine';
-    thud1.frequency.setValueAtTime(200, now);
-    thud1.frequency.exponentialRampToValueAtTime(68, now + 0.08);
+    // Pulse 1: Damped felt resistance thud (160Hz -> 62Hz)
+    const thud1 = ctx.createOscillator();
+    const thud1G = ctx.createGain();
+    thud1.type = 'triangle';
+    thud1.frequency.setValueAtTime(160, now);
+    thud1.frequency.exponentialRampToValueAtTime(62, now + 0.05);
     thud1G.gain.setValueAtTime(0.001, now);
-    thud1G.gain.linearRampToValueAtTime(0.38, now + 0.003);
-    thud1G.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+    thud1G.gain.linearRampToValueAtTime(0.26, now + 0.002);
+    thud1G.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
     thud1.connect(thud1G); thud1G.connect(this.masterGain);
-    thud1.start(now); thud1.stop(now + 0.11);
+    thud1.start(now); thud1.stop(now + 0.08);
 
-    // Buzz overlay — square wave metallic overtone
-    const buzz = ctx.createOscillator(); const buzzG = ctx.createGain(); const buzzF = ctx.createBiquadFilter();
-    buzz.type = 'square';
-    buzz.frequency.setValueAtTime(185, now + 0.005);
-    buzz.frequency.exponentialRampToValueAtTime(82, now + 0.07);
-    buzzF.type = 'lowpass'; buzzF.frequency.setValueAtTime(900, now);
-    buzzG.gain.setValueAtTime(0.001, now + 0.005);
-    buzzG.gain.linearRampToValueAtTime(0.18, now + 0.01);
-    buzzG.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
-    buzz.connect(buzzF); buzzF.connect(buzzG); buzzG.connect(this.masterGain);
-    buzz.start(now + 0.005); buzz.stop(now + 0.1);
-
-    // Thud 2: Echo repeat (softer)
-    const thud2 = ctx.createOscillator(); const thud2G = ctx.createGain();
+    // Pulse 2: Soft tactile follow-up bounce (120Hz -> 48Hz)
+    const t2 = now + 0.065;
+    const thud2 = ctx.createOscillator();
+    const thud2G = ctx.createGain();
     thud2.type = 'sine';
-    thud2.frequency.setValueAtTime(160, now + 0.1);
-    thud2.frequency.exponentialRampToValueAtTime(55, now + 0.18);
-    thud2G.gain.setValueAtTime(0.001, now + 0.1);
-    thud2G.gain.linearRampToValueAtTime(0.22, now + 0.103);
-    thud2G.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+    thud2.frequency.setValueAtTime(120, t2);
+    thud2.frequency.exponentialRampToValueAtTime(48, t2 + 0.06);
+    thud2G.gain.setValueAtTime(0.001, t2);
+    thud2G.gain.linearRampToValueAtTime(0.18, t2 + 0.002);
+    thud2G.gain.exponentialRampToValueAtTime(0.0001, t2 + 0.08);
     thud2.connect(thud2G); thud2G.connect(this.masterGain);
-    thud2.start(now + 0.1); thud2.stop(now + 0.22);
+    thud2.start(t2); thud2.stop(t2 + 0.09);
   }
 
   /**
