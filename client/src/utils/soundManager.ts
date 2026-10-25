@@ -544,21 +544,21 @@ class SoundManager {
         osc.stop(t + 0.65);
       });
 
-      // Phase 4: Starlight Shimmer Tail
-      const shimmer = ctx.createOscillator();
-      const shimmerG = ctx.createGain();
-      shimmer.type = 'sine';
-      shimmer.frequency.setValueAtTime(2093, now + 0.45);
-      shimmer.frequency.exponentialRampToValueAtTime(4186, now + 1.1);
+      // Phase 4: Starlight Harmonic Ring (Warm, stable celestial chime)
+      const ring = ctx.createOscillator();
+      const ringG = ctx.createGain();
+      ring.type = 'sine';
+      ring.frequency.setValueAtTime(1318.51, now + 0.45); // E6
+      ring.frequency.exponentialRampToValueAtTime(880, now + 1.1); // Gently descends to A5
 
-      shimmerG.gain.setValueAtTime(0.001, now + 0.45);
-      shimmerG.gain.linearRampToValueAtTime(0.14, now + 0.55);
-      shimmerG.gain.exponentialRampToValueAtTime(0.0001, now + 1.25);
+      ringG.gain.setValueAtTime(0.001, now + 0.45);
+      ringG.gain.linearRampToValueAtTime(0.12, now + 0.48);
+      ringG.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
 
-      shimmer.connect(shimmerG);
-      shimmerG.connect(this.masterGain);
-      shimmer.start(now + 0.45);
-      shimmer.stop(now + 1.3);
+      ring.connect(ringG);
+      ringG.connect(this.masterGain);
+      ring.start(now + 0.45);
+      ring.stop(now + 1.15);
     }
   }
 
@@ -1247,7 +1247,7 @@ class SoundManager {
 
   /**
    * Countdown Tick — Human-Grade Precision Mechanical Stopwatch / Studio Film Slate Tick ("ติ๊ก!")
-   * Replaces synthetic arcade beeps with organic, tactile mechanical clicks.
+   * Pure downward acoustic click with zero high-pitched electronic whining.
    */
   public playCountdownTick(secondsRemaining: number): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
@@ -1257,68 +1257,68 @@ class SoundManager {
     const playSingleTick = (time: number, isAccent: boolean = false) => {
       if (!ctx || !this.masterGain) return;
 
-      // Layer 1: Razor-Sharp Mechanical Escapement Click (The crisp "T" transient)
+      // Layer 1: Warm Organic Mechanical Escapement Click (The crisp tactile "T" click)
       const clickOsc = ctx.createOscillator();
       const clickGain = ctx.createGain();
       const clickFilter = ctx.createBiquadFilter();
 
       clickOsc.type = 'triangle';
-      clickOsc.frequency.setValueAtTime(isAccent ? 3200 : 2600, time);
-      clickOsc.frequency.exponentialRampToValueAtTime(1400, time + 0.008);
+      clickOsc.frequency.setValueAtTime(isAccent ? 2200 : 1800, time);
+      clickOsc.frequency.exponentialRampToValueAtTime(900, time + 0.006);
 
       clickFilter.type = 'bandpass';
-      clickFilter.frequency.setValueAtTime(isAccent ? 2800 : 2200, time);
-      clickFilter.Q.setValueAtTime(5.0, time);
+      clickFilter.frequency.setValueAtTime(isAccent ? 2000 : 1600, time);
+      clickFilter.Q.setValueAtTime(4.0, time);
 
       clickGain.gain.setValueAtTime(0.001, time);
-      clickGain.gain.linearRampToValueAtTime(isAccent ? 0.36 : 0.28, time + 0.001);
-      clickGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.01);
+      clickGain.gain.linearRampToValueAtTime(isAccent ? 0.32 : 0.26, time + 0.001);
+      clickGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.008);
 
       clickOsc.connect(clickFilter);
       clickFilter.connect(clickGain);
       clickGain.connect(this.masterGain);
       clickOsc.start(time);
-      clickOsc.stop(time + 0.012);
+      clickOsc.stop(time + 0.01);
 
-      // Layer 2: Hollow Watch / Metronome Acoustic Body Resonance (The organic "-ick")
+      // Layer 2: Hollow Wood / Metronome Resonator Body (The organic "-ick")
       const bodyOsc = ctx.createOscillator();
       const bodyGain = ctx.createGain();
       const bodyFilter = ctx.createBiquadFilter();
 
-      const bodyFreq = isAccent ? 560 : 480;
+      const bodyFreq = isAccent ? 480 : 420;
       bodyOsc.type = 'sine';
       bodyOsc.frequency.setValueAtTime(bodyFreq, time);
-      bodyOsc.frequency.exponentialRampToValueAtTime(bodyFreq * 0.55, time + 0.022);
+      bodyOsc.frequency.exponentialRampToValueAtTime(bodyFreq * 0.55, time + 0.018);
 
       bodyFilter.type = 'lowpass';
-      bodyFilter.frequency.setValueAtTime(1200, time);
+      bodyFilter.frequency.setValueAtTime(1000, time);
 
       bodyGain.gain.setValueAtTime(0.001, time);
-      bodyGain.gain.linearRampToValueAtTime(isAccent ? 0.32 : 0.24, time + 0.0015);
-      bodyGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.026);
+      bodyGain.gain.linearRampToValueAtTime(isAccent ? 0.28 : 0.22, time + 0.0015);
+      bodyGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.022);
 
       bodyOsc.connect(bodyFilter);
       bodyFilter.connect(bodyGain);
       bodyGain.connect(this.masterGain);
       bodyOsc.start(time);
-      bodyOsc.stop(time + 0.03);
+      bodyOsc.stop(time + 0.026);
 
       // Layer 3: Tactile Mechanical Bottom-Out Thud
       const subOsc = ctx.createOscillator();
       const subGain = ctx.createGain();
 
       subOsc.type = 'sine';
-      subOsc.frequency.setValueAtTime(95, time);
-      subOsc.frequency.exponentialRampToValueAtTime(42, time + 0.02);
+      subOsc.frequency.setValueAtTime(80, time);
+      subOsc.frequency.exponentialRampToValueAtTime(38, time + 0.018);
 
       subGain.gain.setValueAtTime(0.001, time);
-      subGain.gain.linearRampToValueAtTime(0.22, time + 0.001);
-      subGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.024);
+      subGain.gain.linearRampToValueAtTime(0.2, time + 0.001);
+      subGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.022);
 
       subOsc.connect(subGain);
       subGain.connect(this.masterGain);
       subOsc.start(time);
-      subOsc.stop(time + 0.028);
+      subOsc.stop(time + 0.025);
     };
 
     if (secondsRemaining <= 1) {
@@ -1332,67 +1332,51 @@ class SoundManager {
   }
 
   /**
-   * Battle Launch — Cinematic Sub-Bass Impact & Holographic Warp Engage
-   * Clean, deep, and satisfying entry detonation (No harsh sawtooth buzzing).
+   * Battle Launch — Heavy Cinema Sub Impact & Clean Mechanical Engage
+   * Solid, deep, punchy entry into the game with zero upward pitch whining.
    */
   public playBattleLaunch(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // Stage 1: Velvet Air Whoosh / Vacuum Inrush
-    const whoosh = ctx.createOscillator();
-    const whooshGain = ctx.createGain();
-    const whooshFilter = ctx.createBiquadFilter();
+    // Stage 1: Crisp Mechanical Latch Engagement (Downward tactile pop)
+    const latch = ctx.createOscillator();
+    const latchGain = ctx.createGain();
+    const latchFilter = ctx.createBiquadFilter();
 
-    whoosh.type = 'sine';
-    whoosh.frequency.setValueAtTime(120, now);
-    whoosh.frequency.exponentialRampToValueAtTime(680, now + 0.16);
+    latch.type = 'triangle';
+    latch.frequency.setValueAtTime(850, now);
+    latch.frequency.exponentialRampToValueAtTime(220, now + 0.035);
 
-    whooshFilter.type = 'lowpass';
-    whooshFilter.frequency.setValueAtTime(900, now);
+    latchFilter.type = 'lowpass';
+    latchFilter.frequency.setValueAtTime(1400, now);
 
-    whooshGain.gain.setValueAtTime(0.001, now);
-    whooshGain.gain.linearRampToValueAtTime(0.25, now + 0.06);
-    whooshGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+    latchGain.gain.setValueAtTime(0.001, now);
+    latchGain.gain.linearRampToValueAtTime(0.38, now + 0.002);
+    latchGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
 
-    whoosh.connect(whooshFilter);
-    whooshFilter.connect(whooshGain);
-    whooshGain.connect(this.masterGain);
-    whoosh.start(now);
-    whoosh.stop(now + 0.22);
+    latch.connect(latchFilter);
+    latchFilter.connect(latchGain);
+    latchGain.connect(this.masterGain);
+    latch.start(now);
+    latch.stop(now + 0.05);
 
-    // Stage 2: Cinematic Deep Sub-Bass Detonation (Hollywood Impact)
+    // Stage 2: Heavy Hollywood Sub-Bass Drop (Pure downward cinematic thud)
     const boom = ctx.createOscillator();
     const boomGain = ctx.createGain();
     boom.type = 'sine';
-    boom.frequency.setValueAtTime(95, now + 0.08);
-    boom.frequency.exponentialRampToValueAtTime(32, now + 0.6);
+    boom.frequency.setValueAtTime(85, now);
+    boom.frequency.exponentialRampToValueAtTime(28, now + 0.45);
 
-    boomGain.gain.setValueAtTime(0.001, now + 0.08);
-    boomGain.gain.linearRampToValueAtTime(0.68, now + 0.1);
-    boomGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+    boomGain.gain.setValueAtTime(0.001, now);
+    boomGain.gain.linearRampToValueAtTime(0.72, now + 0.015);
+    boomGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
 
     boom.connect(boomGain);
     boomGain.connect(this.masterGain);
-    boom.start(now + 0.08);
-    boom.stop(now + 0.75);
-
-    // Stage 3: Starry Warp Shimmer (Clean High Glass Chime)
-    const shimmer = ctx.createOscillator();
-    const shimGain = ctx.createGain();
-    shimmer.type = 'sine';
-    shimmer.frequency.setValueAtTime(1760, now + 0.1);
-    shimmer.frequency.exponentialRampToValueAtTime(2637, now + 0.38);
-
-    shimGain.gain.setValueAtTime(0.001, now + 0.1);
-    shimGain.gain.linearRampToValueAtTime(0.18, now + 0.14);
-    shimGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
-
-    shimmer.connect(shimGain);
-    shimGain.connect(this.masterGain);
-    shimmer.start(now + 0.1);
-    shimmer.stop(now + 0.55);
+    boom.start(now);
+    boom.stop(now + 0.6);
   }
 
   /**

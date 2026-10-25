@@ -204,7 +204,7 @@ export const Lobby: React.FC<LobbyProps> = ({
       soundManager.playError();
       return;
     }
-    soundManager.playCardBuy(3);
+    soundManager.playButtonClick();
     setSoloContext(null); // multiplayer mode
     startCountdownTimer(() => onStartGame());
   };
@@ -294,7 +294,7 @@ export const Lobby: React.FC<LobbyProps> = ({
     const selectedBotNames = botNames.slice(0, botCount).map((name, idx) => {
       return name.trim() || POPULAR_MARVEL_BOTS[idx]?.name || `Marvel AI ${idx + 1}`;
     });
-    soundManager.playCardBuy(3);
+    soundManager.playButtonClick();
     setError('');
     setSoloContext({
       finalName,
