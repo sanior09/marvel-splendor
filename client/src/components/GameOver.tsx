@@ -98,7 +98,7 @@ export const GameOver: React.FC<GameOverProps> = ({
           <div className="text-5xl sm:text-7xl">{isIWon ? '🧤' : '🎖️'}</div>
           <h1
             className={[
-              'font-display text-2xl sm:text-4xl font-black uppercase tracking-wider',
+              'font-display text-2xl sm:text-4xl font-extrabold tracking-normal',
               isIWon ? 'shimmer-text' : 'text-white/90',
             ].join(' ')}
           >
@@ -126,19 +126,19 @@ export const GameOver: React.FC<GameOverProps> = ({
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <span className="text-xl">⚡</span>
-              <div className="text-white font-black text-sm uppercase tracking-wider">
+              <div className="text-white font-bold text-sm tracking-normal">
                 สรุป EXP
               </div>
             </div>
 
             {/* Glowing XP Gained Pill */}
             <div
-              className="px-3 py-1 rounded-full flex items-center gap-1.5 border font-black text-xs shadow-lg animate-pulse"
+              className="px-3 py-1 rounded-full flex items-center gap-1.5 border font-bold text-xs shadow-md animate-pulse"
               style={{
                 background: 'linear-gradient(90deg, #f59e0b, #ec4899)',
                 borderColor: '#fef08a',
                 color: '#ffffff',
-                boxShadow: '0 0 15px rgba(245, 158, 11, 0.5)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
               }}
             >
               <span>+<span className="font-num font-black">{displayXpGained}</span> EXP</span>
@@ -147,18 +147,18 @@ export const GameOver: React.FC<GameOverProps> = ({
 
           {/* XP Breakdown Details */}
           <div className="flex flex-wrap gap-1.5 mb-3 text-[11px]">
-            <span className="px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/80 flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-md bg-white/10 border border-white/15 text-white/90 flex items-center gap-1 font-medium">
               <span>🎮 เล่นจบ</span>
               <strong className="text-white font-black font-num">+{breakdown.baseXP}</strong>
             </span>
             {breakdown.winXP > 0 && (
-              <span className="px-2.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-400/30 text-amber-300 font-bold flex items-center gap-1">
+              <span className="px-2.5 py-0.5 rounded-md bg-amber-500/20 border border-amber-400/40 text-amber-200 font-medium flex items-center gap-1">
                 <span>🏆 ชนะเกม</span>
                 <strong className="font-num font-black">+{breakdown.winXP}</strong>
               </span>
             )}
             {breakdown.bonusXP > 0 && (
-              <span className="px-2.5 py-0.5 rounded-md bg-purple-500/15 border border-purple-400/30 text-purple-300 flex items-center gap-1">
+              <span className="px-2.5 py-0.5 rounded-md bg-purple-500/20 border border-purple-400/40 text-purple-200 flex items-center gap-1 font-medium">
                 <span>✨ โบนัสการ์ด/สถานที่</span>
                 <strong className="font-num font-black">+{breakdown.bonusXP}</strong>
               </span>
@@ -217,7 +217,7 @@ export const GameOver: React.FC<GameOverProps> = ({
                 </div>
               ) : (
                 <div className="py-1.5 px-3 rounded-lg bg-gradient-to-r from-amber-500/20 to-pink-500/20 border border-amber-400/40 text-center">
-                  <span className="text-xs font-black text-amber-300 flex items-center justify-center gap-1.5">
+                  <span className="text-xs font-bold text-amber-200 flex items-center justify-center gap-1.5 tracking-normal">
                     <span>👑</span>
                     <span>ท่านอยู่ในระดับสูงสุดแห่งจักรวาลแล้ว (MAX RANK)</span>
                   </span>
@@ -309,7 +309,7 @@ export const GameOver: React.FC<GameOverProps> = ({
             soundManager.playButtonClick();
             onLeave();
           }}
-          className="w-full py-3 sm:py-4 rounded-xl font-black font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
+          className="w-full py-3 sm:py-4 rounded-xl font-bold font-display text-sm sm:text-base bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white transition-all duration-200 shadow-xl hover:-translate-y-0.5 cursor-pointer tracking-normal"
         >
           กลับสู่ล็อบบี้หลัก
         </button>

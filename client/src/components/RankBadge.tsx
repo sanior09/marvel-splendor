@@ -46,10 +46,7 @@ export const RankBadge: React.FC<RankBadgeProps> = ({
       >
         <span className="text-[12px] leading-none drop-shadow">👑</span>
         <span
-          className="tracking-wider uppercase font-black text-amber-300"
-          style={{
-            textShadow: '0 1px 3px rgba(0, 0, 0, 0.95), 0 0 8px rgba(255, 215, 0, 0.4)',
-          }}
+          className="tracking-wider uppercase font-black text-amber-300 drop-shadow-sm"
         >
           {cleanName}
         </span>
