@@ -91,9 +91,15 @@ export const GameOver: React.FC<GameOverProps> = ({
     : 100;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-2 sm:p-3">
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto flex justify-center p-2 sm:p-3"
+      style={{
+        WebkitOverflowScrolling: 'touch',
+        touchAction: 'pan-y',
+      }}
+    >
       {/* ── Background: Deep Cosmic Space Backdrop with Ambient Lighting ── */}
-      <div className="fixed inset-0 bg-[#060812]/92 backdrop-blur-xl" />
+      <div className="fixed inset-0 bg-[#060812]/92 backdrop-blur-xl pointer-events-none" />
       <div
         className="fixed inset-0 pointer-events-none opacity-50"
         style={{
@@ -105,9 +111,9 @@ export const GameOver: React.FC<GameOverProps> = ({
         }}
       />
 
-      {/* ── Compact Screen-Fitted Card Container (No scroll needed) ── */}
+      {/* ── Compact Screen-Fitted Card Container (No scroll on desktop/tablets, smooth touch pan on phone) ── */}
       <div
-        className="relative rounded-2xl sm:rounded-3xl p-3 sm:p-4.5 max-w-[460px] w-full text-center space-y-2 sm:space-y-2.5 border border-white/15 shadow-[0_20px_70px_rgba(0,0,0,0.9),0_0_35px_rgba(245,158,11,0.18)] animate-slide-up select-none overflow-hidden my-auto"
+        className="relative z-10 rounded-2xl sm:rounded-3xl p-3 sm:p-4.5 max-w-[460px] w-full text-center space-y-2 sm:space-y-2.5 border border-white/15 shadow-[0_20px_70px_rgba(0,0,0,0.9),0_0_35px_rgba(245,158,11,0.18)] animate-slide-up select-none overflow-hidden my-auto"
         style={{
           background: 'linear-gradient(165deg, rgba(16, 21, 38, 0.98) 0%, rgba(8, 11, 22, 0.99) 100%)',
         }}
@@ -431,14 +437,14 @@ export const GameOver: React.FC<GameOverProps> = ({
           </div>
         </div>
 
-        {/* ── 5. Action: Return to Lobby Button ── */}
+        {/* ── 5. Action: Return to Lobby Button (Mobile Touch Optimized) ── */}
         <button
           type="button"
           onClick={() => {
             soundManager.playButtonClick();
             onLeave();
           }}
-          className="w-full py-2.5 sm:py-3 rounded-xl font-bold font-display text-sm text-white tracking-wide transition-all duration-300 shadow-[0_6px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_10px_25px_rgba(245,158,11,0.45)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer flex items-center justify-center gap-2 group relative overflow-hidden"
+          className="w-full py-2.5 sm:py-3 rounded-xl font-bold font-display text-sm text-white tracking-wide transition-all duration-200 shadow-[0_6px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_10px_25px_rgba(245,158,11,0.45)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 group relative overflow-hidden touch-manipulation select-none"
           style={{
             background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 45%, #d97706 100%)',
             border: '1px solid rgba(254, 240, 138, 0.4)',
