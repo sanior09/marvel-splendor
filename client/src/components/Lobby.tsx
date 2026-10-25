@@ -433,7 +433,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             <div className="flex flex-col items-center justify-center my-3 select-none">
               <span
                 key={`countdown-num-${startCountdown}`}
-                className="font-num font-black leading-none text-7xl sm:text-8xl select-none"
+                className="font-num font-black leading-none text-7xl sm:text-8xl select-none animate-countdown-tick"
                 style={{
                   background: startCountdown === 1
                     ? 'linear-gradient(135deg, #fef08a, #ef4444)'

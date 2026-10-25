@@ -1246,149 +1246,153 @@ class SoundManager {
   // ────────────────────────────────────────────────────────────
 
   /**
-   * Countdown Tick — Tactical Mission Radar Pulse (Pitches upward with tension)
+   * Countdown Tick — Human-Grade Precision Mechanical Stopwatch / Studio Film Slate Tick ("ติ๊ก!")
+   * Replaces synthetic arcade beeps with organic, tactile mechanical clicks.
    */
   public playCountdownTick(secondsRemaining: number): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
+    const playSingleTick = (time: number, isAccent: boolean = false) => {
+      if (!ctx || !this.masterGain) return;
+
+      // Layer 1: Razor-Sharp Mechanical Escapement Click (The crisp "T" transient)
+      const clickOsc = ctx.createOscillator();
+      const clickGain = ctx.createGain();
+      const clickFilter = ctx.createBiquadFilter();
+
+      clickOsc.type = 'triangle';
+      clickOsc.frequency.setValueAtTime(isAccent ? 3200 : 2600, time);
+      clickOsc.frequency.exponentialRampToValueAtTime(1400, time + 0.008);
+
+      clickFilter.type = 'bandpass';
+      clickFilter.frequency.setValueAtTime(isAccent ? 2800 : 2200, time);
+      clickFilter.Q.setValueAtTime(5.0, time);
+
+      clickGain.gain.setValueAtTime(0.001, time);
+      clickGain.gain.linearRampToValueAtTime(isAccent ? 0.36 : 0.28, time + 0.001);
+      clickGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.01);
+
+      clickOsc.connect(clickFilter);
+      clickFilter.connect(clickGain);
+      clickGain.connect(this.masterGain);
+      clickOsc.start(time);
+      clickOsc.stop(time + 0.012);
+
+      // Layer 2: Hollow Watch / Metronome Acoustic Body Resonance (The organic "-ick")
+      const bodyOsc = ctx.createOscillator();
+      const bodyGain = ctx.createGain();
+      const bodyFilter = ctx.createBiquadFilter();
+
+      const bodyFreq = isAccent ? 560 : 480;
+      bodyOsc.type = 'sine';
+      bodyOsc.frequency.setValueAtTime(bodyFreq, time);
+      bodyOsc.frequency.exponentialRampToValueAtTime(bodyFreq * 0.55, time + 0.022);
+
+      bodyFilter.type = 'lowpass';
+      bodyFilter.frequency.setValueAtTime(1200, time);
+
+      bodyGain.gain.setValueAtTime(0.001, time);
+      bodyGain.gain.linearRampToValueAtTime(isAccent ? 0.32 : 0.24, time + 0.0015);
+      bodyGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.026);
+
+      bodyOsc.connect(bodyFilter);
+      bodyFilter.connect(bodyGain);
+      bodyGain.connect(this.masterGain);
+      bodyOsc.start(time);
+      bodyOsc.stop(time + 0.03);
+
+      // Layer 3: Tactile Mechanical Bottom-Out Thud
+      const subOsc = ctx.createOscillator();
+      const subGain = ctx.createGain();
+
+      subOsc.type = 'sine';
+      subOsc.frequency.setValueAtTime(95, time);
+      subOsc.frequency.exponentialRampToValueAtTime(42, time + 0.02);
+
+      subGain.gain.setValueAtTime(0.001, time);
+      subGain.gain.linearRampToValueAtTime(0.22, time + 0.001);
+      subGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.024);
+
+      subOsc.connect(subGain);
+      subGain.connect(this.masterGain);
+      subOsc.start(time);
+      subOsc.stop(time + 0.028);
+    };
+
     if (secondsRemaining <= 1) {
-      // Critical final warning (Double High-Voltage Alert Pulse)
-      // Pulse 1:
-      const osc1 = ctx.createOscillator();
-      const gain1 = ctx.createGain();
-      osc1.type = 'sine';
-      osc1.frequency.setValueAtTime(1046.5, now); // C6
-      gain1.gain.setValueAtTime(0.001, now);
-      gain1.gain.linearRampToValueAtTime(0.35, now + 0.004);
-      gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.075);
-      osc1.connect(gain1);
-      gain1.connect(this.masterGain);
-      osc1.start(now);
-      osc1.stop(now + 0.08);
-
-      // Pulse 2 (Higher alert chime):
-      const t2 = now + 0.085;
-      const osc2 = ctx.createOscillator();
-      const gain2 = ctx.createGain();
-      const harm2 = ctx.createOscillator();
-      const harmGain2 = ctx.createGain();
-
-      osc2.type = 'sine';
-      osc2.frequency.setValueAtTime(1396.91, t2); // F6
-      harm2.type = 'triangle';
-      harm2.frequency.setValueAtTime(1396.91 * 2, t2);
-
-      gain2.gain.setValueAtTime(0.001, t2);
-      gain2.gain.linearRampToValueAtTime(0.42, t2 + 0.004);
-      gain2.gain.exponentialRampToValueAtTime(0.0001, t2 + 0.22);
-
-      harmGain2.gain.setValueAtTime(0.001, t2);
-      harmGain2.gain.linearRampToValueAtTime(0.12, t2 + 0.004);
-      harmGain2.gain.exponentialRampToValueAtTime(0.0001, t2 + 0.12);
-
-      osc2.connect(gain2);
-      gain2.connect(this.masterGain);
-      harm2.connect(harmGain2);
-      harmGain2.connect(this.masterGain);
-
-      osc2.start(t2);
-      osc2.stop(t2 + 0.23);
-      harm2.start(t2);
-      harm2.stop(t2 + 0.23);
+      // Final second: Crisp Double-Tick ("ติ๊ก-ติ๊ก!")
+      playSingleTick(now, false);
+      playSingleTick(now + 0.075, true);
     } else {
-      // 5, 4, 3, 2: Accelerating tension pitch
-      // 5 -> 587.33 (D5), 4 -> 659.25 (E5), 3 -> 783.99 (G5), 2 -> 987.77 (B5)
-      const pitchMap: Record<number, number> = {
-        5: 587.33,
-        4: 659.25,
-        3: 783.99,
-        2: 987.77,
-      };
-      const freq = pitchMap[secondsRemaining] ?? 660;
-
-      // Layer 1: High metallic click transient (digital ping)
-      const tick = ctx.createOscillator();
-      const tickGain = ctx.createGain();
-      const tickFilter = ctx.createBiquadFilter();
-      tick.type = 'square';
-      tick.frequency.setValueAtTime(3200, now);
-      tickFilter.type = 'highpass';
-      tickFilter.frequency.setValueAtTime(2400, now);
-      tickGain.gain.setValueAtTime(0.001, now);
-      tickGain.gain.linearRampToValueAtTime(0.12, now + 0.001);
-      tickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.018);
-      tick.connect(tickFilter);
-      tickFilter.connect(tickGain);
-      tickGain.connect(this.masterGain);
-      tick.start(now);
-      tick.stop(now + 0.02);
-
-      // Layer 2: Resonant Sine Core
-      const sine = ctx.createOscillator();
-      const sineGain = ctx.createGain();
-      sine.type = 'sine';
-      sine.frequency.setValueAtTime(freq, now);
-      sineGain.gain.setValueAtTime(0.001, now);
-      sineGain.gain.linearRampToValueAtTime(0.32, now + 0.003);
-      sineGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
-      sine.connect(sineGain);
-      sineGain.connect(this.masterGain);
-      sine.start(now);
-      sine.stop(now + 0.15);
+      // 5, 4, 3, 2: Crisp tactile precision tick
+      playSingleTick(now, false);
     }
   }
 
   /**
-   * Battle Launch — Cinematic Quantum Warp & Heroic Deployment Detonation
+   * Battle Launch — Cinematic Sub-Bass Impact & Holographic Warp Engage
+   * Clean, deep, and satisfying entry detonation (No harsh sawtooth buzzing).
    */
   public playBattleLaunch(): void {
     if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
     const ctx = this.ctx;
     const now = ctx.currentTime;
 
-    // Stage 1: Rising Arc Surge (140Hz -> 880Hz)
-    const surge = ctx.createOscillator();
-    const surgeGain = ctx.createGain();
-    surge.type = 'sawtooth';
-    surge.frequency.setValueAtTime(140, now);
-    surge.frequency.exponentialRampToValueAtTime(880, now + 0.22);
-    surgeGain.gain.setValueAtTime(0.001, now);
-    surgeGain.gain.linearRampToValueAtTime(0.28, now + 0.06);
-    surgeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.26);
-    surge.connect(surgeGain);
-    surgeGain.connect(this.masterGain);
-    surge.start(now);
-    surge.stop(now + 0.27);
+    // Stage 1: Velvet Air Whoosh / Vacuum Inrush
+    const whoosh = ctx.createOscillator();
+    const whooshGain = ctx.createGain();
+    const whooshFilter = ctx.createBiquadFilter();
 
-    // Stage 2: Heavy Sub-Bass Boom (110Hz -> 32Hz)
+    whoosh.type = 'sine';
+    whoosh.frequency.setValueAtTime(120, now);
+    whoosh.frequency.exponentialRampToValueAtTime(680, now + 0.16);
+
+    whooshFilter.type = 'lowpass';
+    whooshFilter.frequency.setValueAtTime(900, now);
+
+    whooshGain.gain.setValueAtTime(0.001, now);
+    whooshGain.gain.linearRampToValueAtTime(0.25, now + 0.06);
+    whooshGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+
+    whoosh.connect(whooshFilter);
+    whooshFilter.connect(whooshGain);
+    whooshGain.connect(this.masterGain);
+    whoosh.start(now);
+    whoosh.stop(now + 0.22);
+
+    // Stage 2: Cinematic Deep Sub-Bass Detonation (Hollywood Impact)
     const boom = ctx.createOscillator();
     const boomGain = ctx.createGain();
     boom.type = 'sine';
-    boom.frequency.setValueAtTime(110, now + 0.12);
-    boom.frequency.exponentialRampToValueAtTime(32, now + 0.55);
-    boomGain.gain.setValueAtTime(0.001, now + 0.12);
-    boomGain.gain.linearRampToValueAtTime(0.65, now + 0.14);
-    boomGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
+    boom.frequency.setValueAtTime(95, now + 0.08);
+    boom.frequency.exponentialRampToValueAtTime(32, now + 0.6);
+
+    boomGain.gain.setValueAtTime(0.001, now + 0.08);
+    boomGain.gain.linearRampToValueAtTime(0.68, now + 0.1);
+    boomGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+
     boom.connect(boomGain);
     boomGain.connect(this.masterGain);
-    boom.start(now + 0.12);
-    boom.stop(now + 0.7);
+    boom.start(now + 0.08);
+    boom.stop(now + 0.75);
 
-    // Stage 3: High Energy Warp Shimmer
+    // Stage 3: Starry Warp Shimmer (Clean High Glass Chime)
     const shimmer = ctx.createOscillator();
     const shimGain = ctx.createGain();
-    shimmer.type = 'triangle';
-    shimmer.frequency.setValueAtTime(1760, now + 0.14); // A6
-    shimmer.frequency.exponentialRampToValueAtTime(2637, now + 0.35); // E7
-    shimGain.gain.setValueAtTime(0.001, now + 0.14);
-    shimGain.gain.linearRampToValueAtTime(0.18, now + 0.18);
-    shimGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+    shimmer.type = 'sine';
+    shimmer.frequency.setValueAtTime(1760, now + 0.1);
+    shimmer.frequency.exponentialRampToValueAtTime(2637, now + 0.38);
+
+    shimGain.gain.setValueAtTime(0.001, now + 0.1);
+    shimGain.gain.linearRampToValueAtTime(0.18, now + 0.14);
+    shimGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+
     shimmer.connect(shimGain);
     shimGain.connect(this.masterGain);
-    shimmer.start(now + 0.14);
-    shimmer.stop(now + 0.5);
+    shimmer.start(now + 0.1);
+    shimmer.stop(now + 0.55);
   }
 
   /**
