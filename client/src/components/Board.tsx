@@ -432,151 +432,166 @@ export const Board: React.FC<BoardProps> = ({
 
           {/* Center: Board (Special Tiles & 3 Tiers, fully visible at a glance without scrolling) */}
           <main className="flex-1 min-h-0 px-2 pt-2 pb-3 flex flex-col justify-between overflow-hidden">
-            {/* Top Row: Special Tiles & Locations */}
-            <div className="flex items-center justify-center gap-2">
-              {/* Special Tiles (Gauntlet + Time Stone + Avengers) */}
-              <div className="flex gap-1.5">
-                {/* Infinity Gauntlet Victory Tile */}
-                <div
-                  className="w-40 h-[68px] rounded-xl bg-gradient-to-br from-amber-600 via-yellow-600 to-amber-700 shadow-[0_0_12px_rgba(245,158,11,0.25)] border-2 border-yellow-300/80 flex flex-col items-center justify-between p-1 relative overflow-hidden"
-                  title="Infinity Gauntlet Victory: รวมแต้ม 16+ PTS + โบนัสการ์ดครบ 5 สี + มณีกาลเวลา Time Stone"
-                >
-                  <div className="flex items-center gap-1 bg-black/60 px-2 py-0.2 rounded-full border border-yellow-300/40">
-                    <span className="text-[12px] leading-none">🧤</span>
-                    <span className="text-[9.5px] leading-none uppercase font-bold text-yellow-200 tracking-normal">
-                      ถุงมืออินฟินิตี้ (Gauntlet)
-                    </span>
-                  </div>
-
-                  {/* Sockets: 5 Hero Bonuses + 1 Time Stone */}
-                  <div className="flex items-center gap-0.5 bg-black/75 px-1 py-0.5 rounded-full border border-white/20">
-                    {GAUNTLET_5_BONUS_STONES.map((c) => {
-                      const hasStone = (myPlayer.bonuses[c] ?? 0) > 0;
-                      return (
-                        <div
-                          key={c}
-                          className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${hasStone
-                              ? 'ring-1 ring-yellow-300 shadow-[0_0_5px_rgba(250,204,21,0.8)] scale-110'
-                              : 'opacity-25 grayscale'
-                            }`}
-                          title={`${c}: ${hasStone ? 'โบนัสพร้อมใช้งาน (Active)' : 'ยังขาดโบนัสการ์ดสีนี้'}`}
-                        >
-                          <img
-                            src={`/images/tokens/${c}.png`}
-                            alt={c}
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
-                      );
-                    })}
-                    {/* Plus Time Stone socket */}
-                    <div
-                      className={`w-2.5 h-2.5 rounded-full ml-0.5 transition-all duration-200 ${(myPlayer.crystals.emerald ?? 0) > 0
-                          ? 'ring-1 ring-emerald-300 shadow-[0_0_5px_rgba(52,211,153,0.9)] scale-110'
-                          : 'opacity-25 grayscale'
-                        }`}
-                      title={`Time Stone: ${(myPlayer.crystals.emerald ?? 0) > 0 ? 'ครอบครองแล้ว (Possessed)' : 'ยังขาดโทเคนมณีเขียว'}`}
-                    >
-                      <img
-                        src="/images/tokens/emerald.png"
-                        alt="Time Stone"
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="text-center leading-none">
-                    <span className="font-extrabold text-[12px] text-white leading-none drop-shadow">
-                      ชนะ (WIN): <span className="font-num font-black text-yellow-300 text-xs">{state.targetScore ?? 16}</span> PTS
-                    </span>
-                    <div className="text-[9px] text-yellow-100 font-semibold tracking-normal mt-0.5 bg-black/50 px-1.5 py-0.2 rounded-full">
-                      โบนัส 5 สี + 🟢 Time Stone
-                    </div>
-                  </div>
-                </div>
-
-                {/* Time Stone Pedestal */}
-                <div
-                  className={`w-[76px] h-[68px] rounded-xl bg-gradient-to-br ${board.timeStoneAvailable
-                      ? 'from-emerald-900/90 via-teal-950 to-emerald-950 border-emerald-400/80 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
-                      : 'from-slate-900 to-black border-slate-700 opacity-90'
-                    } border-2 flex flex-col items-center justify-between p-1 relative overflow-hidden`}
-                  title={`Time Stone: มอบให้ผู้เล่นคนละ 1 ก้อนเมื่อเกณฑ์การ์ด Tier-3 ใบแรก (เหลือ ${board.timeStoneCount ?? (board.timeStoneAvailable ? 1 : 0)} ก้อน)`}
-                >
-                  <div className="text-[9px] leading-none uppercase font-bold text-emerald-300 tracking-normal flex items-center gap-0.5 bg-black/60 px-1.5 py-0.2 rounded-full border border-emerald-400/30">
-                    <span>🟢 Time Stone</span>
-                  </div>
-
-                  <div className="relative">
-                    <div
-                      className={`w-6 h-6 rounded-full transition-all duration-300 flex items-center justify-center ${board.timeStoneAvailable
-                          ? 'ring-2 ring-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse'
-                          : 'opacity-40 grayscale'
-                        }`}
-                    >
-                      <img
-                        src="/images/tokens/emerald.png"
-                        alt="Time Stone"
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                    {/* Remaining count badge */}
-                    <span
-                      className={`absolute -top-1 -right-2 text-[10px] font-num font-bold px-1.5 py-0.2 rounded-full border leading-tight ${
-                        board.timeStoneAvailable
-                          ? 'bg-emerald-400 text-slate-950 border-emerald-200 shadow-[0_0_6px_rgba(52,211,153,0.8)]'
-                          : 'bg-slate-800 text-white border-slate-600'
-                      }`}
-                    >
-                      x{board.timeStoneCount ?? (board.timeStoneAvailable ? 1 : 0)}
-                    </span>
-                  </div>
-
-                  <div className="text-center w-full">
-                    {board.timeStoneAvailable ? (
-                      <div className="text-[9px] leading-tight bg-emerald-950/90 text-emerald-200 border border-emerald-400/60 px-1 py-0.2 rounded font-bold font-num shadow-sm">
-                        เหลือ {board.timeStoneCount ?? 1} ก้อน
-                      </div>
-                    ) : (
-                      <div className="text-[9px] leading-tight bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-1 py-0.2 rounded font-semibold font-num truncate max-w-[70px] mx-auto">
-                        หมดแล้ว (0 ก้อน)
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Avengers Assemble Tile (+3 PTS) */}
-                <div
-                  className={`w-16 h-[68px] rounded-xl bg-gradient-to-br ${board.avengersAssembleHolder
-                      ? 'from-slate-800 to-slate-900 border-slate-600'
-                      : 'from-red-600 via-rose-700 to-red-800 border-red-400'
-                    } shadow-xl border-2 flex flex-col items-center justify-between p-1 relative overflow-hidden`}
-                  title="Avengers Assemble: มอบ +3 แต้มให้ผู้ที่มีสัญลักษณ์ Avengers มากที่สุด (3 สัญลักษณ์ขึ้นไป)"
-                >
-                  <div className="text-[9px] leading-none uppercase font-bold text-white tracking-normal bg-black/60 px-1.5 py-0.2 rounded-full">
-                    Avengers
-                  </div>
-                  <div className="bg-red-600 w-6 h-6 rounded-full flex items-center justify-center border-2 border-yellow-300 shadow-md">
-                    <span className="text-yellow-300 font-black text-sm leading-none">A</span>
-                  </div>
-                  <div className="text-center">
-                    <span className="text-[10px] font-bold font-num text-yellow-300 bg-slate-950/90 px-1.5 py-0.5 rounded-full border border-yellow-300/50 shadow-sm">
-                      +3 PTS
-                    </span>
-                    {avengersHolder && (
-                      <div className="text-[9px] leading-none text-yellow-200 font-semibold truncate max-w-[56px] mt-0.5 bg-black/60 px-1 rounded">
-                        {avengersHolder.name}
-                      </div>
-                    )}
-                  </div>
+            {/* Top Row: Victory Artifacts & Marvel Locations */}
+            <div>
+              <div className="flex items-center justify-center mb-1">
+                <div className="bg-black/85 backdrop-blur-md px-3.5 py-0.5 rounded-full border border-yellow-400/40 shadow-sm flex items-center gap-2">
+                  <span className="text-[12px] leading-none">🧤</span>
+                  <span className="text-[11px] font-bold text-yellow-300 tracking-wide leading-none font-sans">
+                    เงื่อนไขชัยชนะ (Infinity Gauntlet) &amp; สถานที่มาร์เวล (Marvel Locations • +3 PTS)
+                  </span>
                 </div>
               </div>
 
-              {/* Marvel Locations Row */}
-              <GuardianRow
-                guardians={board.availableGuardians}
-                currentPlayer={myPlayer}
-              />
+              <div className="flex items-center justify-center gap-2">
+                {/* Special Tiles (Gauntlet + Time Stone + Avengers) */}
+                <div className="flex gap-1.5 items-center">
+                  {/* Infinity Gauntlet Victory Tile */}
+                  <div
+                    className="w-[172px] h-[78px] rounded-xl bg-gradient-to-br from-amber-600 via-yellow-600 to-amber-700 shadow-[0_0_14px_rgba(245,158,11,0.35)] border-2 border-yellow-300 flex flex-col items-center justify-between p-1.5 relative overflow-hidden"
+                    title="Infinity Gauntlet Victory: รวมแต้มเป้าหมาย + โบนัสการ์ดครบ 5 สี + มณีกาลเวลา Time Stone"
+                  >
+                    <div className="flex items-center gap-1 bg-black/70 px-2 py-0.5 rounded-full border border-yellow-300/40">
+                      <span className="text-[12px] leading-none">🧤</span>
+                      <span className="text-[10px] leading-none uppercase font-extrabold text-yellow-200 tracking-wide font-sans">
+                        ถุงมืออินฟินิตี้ (Gauntlet)
+                      </span>
+                    </div>
+
+                    {/* Sockets: 5 Hero Bonuses + 1 Time Stone */}
+                    <div className="flex items-center gap-1 bg-black/80 px-2 py-0.5 rounded-full border border-white/20 shadow-inner">
+                      {GAUNTLET_5_BONUS_STONES.map((c) => {
+                        const hasStone = (myPlayer.bonuses[c] ?? 0) > 0;
+                        return (
+                          <div
+                            key={c}
+                            className={`w-3 h-3 rounded-full transition-all duration-200 flex items-center justify-center ${
+                              hasStone
+                                ? 'ring-1 ring-yellow-300 shadow-[0_0_6px_rgba(250,204,21,0.9)] scale-110'
+                                : 'opacity-30 grayscale'
+                            }`}
+                            title={`${c}: ${hasStone ? 'โบนัสพร้อมใช้งาน (Active)' : 'ยังขาดโบนัสการ์ดสีนี้'}`}
+                          >
+                            <img
+                              src={`/images/tokens/${c}.png`}
+                              alt={c}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        );
+                      })}
+                      <div className="w-[1px] h-3 bg-white/25 mx-0.5" />
+                      {/* Plus Time Stone socket */}
+                      <div
+                        className={`w-3 h-3 rounded-full transition-all duration-200 flex items-center justify-center ${(myPlayer.crystals.emerald ?? 0) > 0
+                            ? 'ring-1 ring-emerald-300 shadow-[0_0_6px_rgba(52,211,153,0.9)] scale-110'
+                            : 'opacity-30 grayscale'
+                          }`}
+                        title={`Time Stone: ${(myPlayer.crystals.emerald ?? 0) > 0 ? 'ครอบครองแล้ว (Possessed)' : 'ยังขาดโทเคนมณีเขียว'}`}
+                      >
+                        <img
+                          src="/images/tokens/emerald.png"
+                          alt="Time Stone"
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="w-full flex items-center justify-between px-1.5 py-0.5 bg-black/60 rounded-md border border-yellow-300/30 leading-none">
+                      <span className="font-black text-[11px] text-white leading-none drop-shadow">
+                        ชนะ: <span className="font-num font-black text-yellow-300 text-xs">{state.targetScore ?? 16}</span>P
+                      </span>
+                      <span className="text-[9px] text-yellow-100 font-bold leading-none">
+                        โบนัส 5 สี + 🟢 มณีเขียว
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Time Stone Pedestal */}
+                  <div
+                    className={`w-[82px] h-[78px] rounded-xl bg-gradient-to-br ${
+                      board.timeStoneAvailable
+                        ? 'from-emerald-900/90 via-teal-950 to-emerald-950 border-emerald-400/80 shadow-[0_0_12px_rgba(16,185,129,0.35)]'
+                        : 'from-slate-900 to-black border-slate-700 opacity-90'
+                    } border-2 flex flex-col items-center justify-between p-1.5 relative overflow-hidden`}
+                    title={`Time Stone: มอบให้ผู้เล่นคนละ 1 ก้อนเมื่อเกณฑ์การ์ด Tier-3 ใบแรก (เหลือ ${board.timeStoneCount ?? (board.timeStoneAvailable ? 1 : 0)} ก้อน)`}
+                  >
+                    <div className="text-[9px] leading-none uppercase font-bold text-emerald-300 tracking-normal flex items-center gap-0.5 bg-black/70 px-1.5 py-0.5 rounded-full border border-emerald-400/30">
+                      <span>🟢 Time Stone</span>
+                    </div>
+
+                    <div className="relative">
+                      <div
+                        className={`w-7 h-7 rounded-full transition-all duration-300 flex items-center justify-center ${
+                          board.timeStoneAvailable
+                            ? 'ring-2 ring-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.85)] animate-pulse'
+                            : 'opacity-40 grayscale'
+                        }`}
+                      >
+                        <img
+                          src="/images/tokens/emerald.png"
+                          alt="Time Stone"
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <span
+                        className={`absolute -top-1 -right-2 text-[10px] font-num font-bold px-1.5 py-0.2 rounded-full border leading-tight ${
+                          board.timeStoneAvailable
+                            ? 'bg-emerald-400 text-slate-950 border-emerald-200 shadow-[0_0_6px_rgba(52,211,153,0.8)]'
+                            : 'bg-slate-800 text-white border-slate-600'
+                        }`}
+                      >
+                        x{board.timeStoneCount ?? (board.timeStoneAvailable ? 1 : 0)}
+                      </span>
+                    </div>
+
+                    <div className="text-center w-full">
+                      {board.timeStoneAvailable ? (
+                        <div className="text-[9px] leading-tight bg-emerald-950/90 text-emerald-200 border border-emerald-400/60 px-1 py-0.5 rounded font-bold font-num shadow-sm">
+                          เหลือ {board.timeStoneCount ?? 1} ก้อน
+                        </div>
+                      ) : (
+                        <div className="text-[9px] leading-tight bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-1 py-0.5 rounded font-semibold font-num truncate max-w-[74px] mx-auto">
+                          หมดแล้ว (0 ก้อน)
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Avengers Assemble Tile (+3 PTS) */}
+                  <div
+                    className={`w-[74px] h-[78px] rounded-xl bg-gradient-to-br ${
+                      board.avengersAssembleHolder
+                        ? 'from-slate-800 to-slate-900 border-slate-600'
+                        : 'from-red-600 via-rose-700 to-red-800 border-red-400 shadow-[0_0_12px_rgba(239,68,68,0.35)]'
+                    } border-2 flex flex-col items-center justify-between p-1.5 relative overflow-hidden`}
+                    title="Avengers Assemble: มอบ +3 แต้มให้ผู้ที่มีสัญลักษณ์ Avengers มากที่สุด (3 สัญลักษณ์ขึ้นไป)"
+                  >
+                    <div className="text-[9px] leading-none uppercase font-extrabold text-white tracking-normal bg-black/70 px-1.5 py-0.5 rounded-full border border-red-400/30">
+                      Avengers
+                    </div>
+                    <div className="bg-red-600 w-6 h-6 rounded-full flex items-center justify-center border-2 border-yellow-300 shadow-md">
+                      <span className="text-yellow-300 font-black text-sm leading-none">A</span>
+                    </div>
+                    <div className="text-center w-full">
+                      <span className="text-[10px] font-bold font-num text-yellow-300 bg-slate-950/90 px-1.5 py-0.2 rounded-full border border-yellow-300/50 shadow-sm block">
+                        +3 PTS
+                      </span>
+                      {avengersHolder && (
+                        <div className="text-[8.5px] leading-none text-yellow-200 font-semibold truncate max-w-[66px] mt-0.5 bg-black/70 px-1 py-0.2 rounded mx-auto">
+                          {avengersHolder.name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Marvel Locations Row */}
+                <GuardianRow
+                  guardians={board.availableGuardians}
+                  currentPlayer={myPlayer}
+                />
+              </div>
             </div>
 
             {/* Tier 3 Characters */}
