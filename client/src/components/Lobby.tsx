@@ -176,6 +176,13 @@ export const Lobby: React.FC<LobbyProps> = ({
     targetScore: number;
   } | null>(null);
 
+  // Audio effect: play tactical countdown tick whenever startCountdown ticks down
+  useEffect(() => {
+    if (startCountdown !== null && startCountdown > 0) {
+      soundManager.playCountdownTick(startCountdown);
+    }
+  }, [startCountdown]);
+
   const startCountdownTimer = (onFinish: () => void) => {
     setStartCountdown(5);
     countdownRef.current = setInterval(() => {
@@ -183,6 +190,7 @@ export const Lobby: React.FC<LobbyProps> = ({
         if (prev === null) return null;
         if (prev <= 1) {
           clearInterval(countdownRef.current!);
+          soundManager.playBattleLaunch();
           onFinish();
           return null;
         }
@@ -400,9 +408,25 @@ export const Lobby: React.FC<LobbyProps> = ({
               <p className="text-white/50 text-xs tracking-widest uppercase font-semibold">กำลังเริ่มการต่อสู้...</p>
             </div>
 
-            {/* Countdown circle */}
-            <div className="relative flex items-center justify-center">
-              <svg width="110" height="110" viewBox="0 0 110 110">
+            {/* Countdown circle with Dynamic Shockwave & Energy Pulse */}
+            <div className="relative flex items-center justify-center my-1">
+              {/* Outer pulsing shockwave rings on tick */}
+              <div
+                key={`shockwave-${startCountdown}`}
+                className={`absolute -inset-3 rounded-full border-2 pointer-events-none animate-ping ${
+                  startCountdown === 1 ? 'border-red-500/70' : 'border-amber-400/50'
+                }`}
+                style={{ animationDuration: '0.85s', animationIterationCount: 1 }}
+              />
+
+              {/* Ambient Radiant Glow */}
+              <div
+                className={`absolute -inset-5 rounded-full blur-xl pointer-events-none transition-all duration-300 ${
+                  startCountdown === 1 ? 'bg-red-500/35 scale-125' : 'bg-amber-500/20 scale-100'
+                }`}
+              />
+
+              <svg width="116" height="116" viewBox="0 0 110 110" className="relative z-10">
                 <circle cx="55" cy="55" r="48" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
                 <circle
                   cx="55" cy="55" r="48"
@@ -417,25 +441,37 @@ export const Lobby: React.FC<LobbyProps> = ({
                 />
                 <defs>
                   <linearGradient id="countdownGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#f59e0b" />
-                    <stop offset="100%" stopColor="#ef4444" />
+                    <stop offset="0%" stopColor={startCountdown === 1 ? '#fef08a' : '#f59e0b'} />
+                    <stop offset="100%" stopColor={startCountdown === 1 ? '#dc2626' : '#ef4444'} />
                   </linearGradient>
                 </defs>
               </svg>
-              <div className="absolute flex flex-col items-center">
+
+              <div className="absolute z-20 flex flex-col items-center">
                 <span
-                  className="font-num font-black leading-none"
+                  key={`countdown-num-${startCountdown}`}
+                  className="font-num font-black leading-none animate-scale-pop select-none"
                   style={{
-                    fontSize: '3rem',
-                    background: 'linear-gradient(135deg, #fbbf24, #ef4444)',
+                    fontSize: startCountdown === 1 ? '3.3rem' : '3rem',
+                    background: startCountdown === 1
+                      ? 'linear-gradient(135deg, #fef08a, #ef4444)'
+                      : 'linear-gradient(135deg, #fbbf24, #ef4444)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    filter: 'drop-shadow(0 0 10px rgba(251,191,36,0.6))',
+                    filter: startCountdown === 1
+                      ? 'drop-shadow(0 0 18px rgba(239,68,68,0.95))'
+                      : 'drop-shadow(0 0 12px rgba(251,191,36,0.7))',
                   }}
                 >
                   {startCountdown}
                 </span>
-                <span className="text-white/40 text-[10px] tracking-widest uppercase">วินาที</span>
+                <span
+                  className={`text-[10px] tracking-widest uppercase font-bold transition-colors ${
+                    startCountdown === 1 ? 'text-red-400 animate-pulse' : 'text-white/50'
+                  }`}
+                >
+                  {startCountdown === 1 ? '⚡ เตรียมตัว!' : 'วินาที'}
+                </span>
               </div>
             </div>
 
@@ -660,7 +696,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                       key={pts}
                       type="button"
                       onClick={() => {
-                        soundManager.playButtonClick();
+                        soundManager.playScorePresetSelect(pts);
                         onSetTargetScore(pts);
                       }}
                       className={[
@@ -1587,7 +1623,10 @@ export const Lobby: React.FC<LobbyProps> = ({
                           เป้าหมายแต้มชัยชนะ
                         </label>
                       </div>
-                      <span className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-lg">
+                      <span
+                        key={`solo-top-target-${targetScore}`}
+                        className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-lg animate-score-bump select-none"
+                      >
                         {targetScore} แต้ม
                       </span>
                     </div>
@@ -1603,13 +1642,13 @@ export const Lobby: React.FC<LobbyProps> = ({
                           key={item.pts}
                           type="button"
                           onClick={() => {
-                            soundManager.playButtonClick();
+                            soundManager.playScorePresetSelect(item.pts);
                             setTargetScore(item.pts);
                           }}
                           className={[
-                            'py-1 px-1.5 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[38px]',
+                            'py-1 px-1.5 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[38px] active:scale-95',
                             targetScore === item.pts
-                              ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow'
+                              ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow-[0_0_12px_rgba(250,204,21,0.35)]'
                               : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white font-semibold',
                           ].join(' ')}
                         >
@@ -1621,18 +1660,28 @@ export const Lobby: React.FC<LobbyProps> = ({
                       ))}
                     </div>
 
-                    <div className="flex items-center gap-2 bg-black/35 px-2.5 py-1 rounded-xl border border-white/10 text-xs">
-                      <span className="text-slate-400 text-[9.5px] font-semibold whitespace-nowrap">ปรับละเอียด (10–50):</span>
+                    <div className="flex items-center gap-2 bg-black/45 px-2.5 py-1.5 rounded-xl border border-white/10 text-xs shadow-inner">
+                      <span className="text-slate-400 text-[9.5px] font-semibold whitespace-nowrap flex items-center gap-1 select-none">
+                        <span>🎯</span>
+                        <span>ปรับละเอียด (10–50):</span>
+                      </span>
                       <input
                         type="range"
                         min={10}
                         max={50}
                         step={1}
                         value={targetScore}
-                        onChange={(e) => setTargetScore(Number(e.target.value))}
-                        className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
+                        onChange={(e) => {
+                          const val = Number(e.target.value);
+                          soundManager.playScoreSliderTick(val, 10, 50);
+                          setTargetScore(val);
+                        }}
+                        className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/15 rounded-lg hover:brightness-110 active:brightness-125"
                       />
-                      <span className="font-num font-black text-yellow-300 text-xs lg:text-sm w-6 text-right">
+                      <span
+                        key={`solo-target-${targetScore}`}
+                        className="font-num font-black text-yellow-300 text-xs lg:text-sm w-7 text-right animate-score-bump select-none"
+                      >
                         {targetScore}
                       </span>
                     </div>
@@ -1672,7 +1721,10 @@ export const Lobby: React.FC<LobbyProps> = ({
                           เป้าหมายแต้มชัยชนะ
                         </label>
                       </div>
-                      <span className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-lg">
+                      <span
+                        key={`mp-top-target-${targetScore}`}
+                        className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-lg animate-score-bump select-none"
+                      >
                         {targetScore} แต้ม
                       </span>
                     </div>
@@ -1683,13 +1735,13 @@ export const Lobby: React.FC<LobbyProps> = ({
                           key={pts}
                           type="button"
                           onClick={() => {
-                            soundManager.playButtonClick();
+                            soundManager.playScorePresetSelect(pts);
                             setTargetScore(pts);
                           }}
                           className={[
-                            'py-1 px-1.5 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[38px]',
+                            'py-1 px-1.5 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[38px] active:scale-95',
                             targetScore === pts
-                              ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow'
+                              ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow-[0_0_12px_rgba(250,204,21,0.35)]'
                               : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white font-semibold',
                           ].join(' ')}
                         >
@@ -1701,18 +1753,28 @@ export const Lobby: React.FC<LobbyProps> = ({
                       ))}
                     </div>
 
-                    <div className="flex items-center gap-2 bg-black/35 px-2.5 py-1 rounded-xl border border-white/10 text-xs">
-                      <span className="text-slate-400 text-[9.5px] font-semibold whitespace-nowrap">ปรับละเอียด (10–50):</span>
+                    <div className="flex items-center gap-2 bg-black/45 px-2.5 py-1.5 rounded-xl border border-white/10 text-xs shadow-inner">
+                      <span className="text-slate-400 text-[9.5px] font-semibold whitespace-nowrap flex items-center gap-1 select-none">
+                        <span>🎯</span>
+                        <span>ปรับละเอียด (10–50):</span>
+                      </span>
                       <input
                         type="range"
                         min={10}
                         max={50}
                         step={1}
                         value={targetScore}
-                        onChange={(e) => setTargetScore(Number(e.target.value))}
-                        className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
+                        onChange={(e) => {
+                          const val = Number(e.target.value);
+                          soundManager.playScoreSliderTick(val, 10, 50);
+                          setTargetScore(val);
+                        }}
+                        className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/15 rounded-lg hover:brightness-110 active:brightness-125"
                       />
-                      <span className="font-num font-black text-yellow-300 text-xs lg:text-sm w-6 text-right">
+                      <span
+                        key={`mp-target-${targetScore}`}
+                        className="font-num font-black text-yellow-300 text-xs lg:text-sm w-7 text-right animate-score-bump select-none"
+                      >
                         {targetScore}
                       </span>
                     </div>

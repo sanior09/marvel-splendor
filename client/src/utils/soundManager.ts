@@ -13,6 +13,8 @@ class SoundManager {
   private muted: boolean = false;
   private volume: number = 0.75;
   private listeners: Set<(muted: boolean) => void> = new Set();
+  private lastSliderTickTime: number = 0;
+  private lastSliderScore: number = -1;
 
   constructor() {
     // Load persisted mute preference
@@ -931,6 +933,260 @@ class SoundManager {
       b6 = white * 0.115926;
     }
     return buffer;
+  }
+
+  // ────────────────────────────────────────────────────────────
+  //  Battle Launch, Countdown & Score Adjustment SFX
+  // ────────────────────────────────────────────────────────────
+
+  /**
+   * Countdown Tick — Tactical Mission Radar Pulse (Pitches upward with tension)
+   */
+  public playCountdownTick(secondsRemaining: number): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+
+    if (secondsRemaining <= 1) {
+      // Critical final warning (Double High-Voltage Alert Pulse)
+      // Pulse 1:
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(1046.5, now); // C6
+      gain1.gain.setValueAtTime(0.001, now);
+      gain1.gain.linearRampToValueAtTime(0.35, now + 0.004);
+      gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.075);
+      osc1.connect(gain1);
+      gain1.connect(this.masterGain);
+      osc1.start(now);
+      osc1.stop(now + 0.08);
+
+      // Pulse 2 (Higher alert chime):
+      const t2 = now + 0.085;
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      const harm2 = ctx.createOscillator();
+      const harmGain2 = ctx.createGain();
+
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(1396.91, t2); // F6
+      harm2.type = 'triangle';
+      harm2.frequency.setValueAtTime(1396.91 * 2, t2);
+
+      gain2.gain.setValueAtTime(0.001, t2);
+      gain2.gain.linearRampToValueAtTime(0.42, t2 + 0.004);
+      gain2.gain.exponentialRampToValueAtTime(0.0001, t2 + 0.22);
+
+      harmGain2.gain.setValueAtTime(0.001, t2);
+      harmGain2.gain.linearRampToValueAtTime(0.12, t2 + 0.004);
+      harmGain2.gain.exponentialRampToValueAtTime(0.0001, t2 + 0.12);
+
+      osc2.connect(gain2);
+      gain2.connect(this.masterGain);
+      harm2.connect(harmGain2);
+      harmGain2.connect(this.masterGain);
+
+      osc2.start(t2);
+      osc2.stop(t2 + 0.23);
+      harm2.start(t2);
+      harm2.stop(t2 + 0.23);
+    } else {
+      // 5, 4, 3, 2: Accelerating tension pitch
+      // 5 -> 587.33 (D5), 4 -> 659.25 (E5), 3 -> 783.99 (G5), 2 -> 987.77 (B5)
+      const pitchMap: Record<number, number> = {
+        5: 587.33,
+        4: 659.25,
+        3: 783.99,
+        2: 987.77,
+      };
+      const freq = pitchMap[secondsRemaining] ?? 660;
+
+      // Layer 1: High metallic click transient (digital ping)
+      const tick = ctx.createOscillator();
+      const tickGain = ctx.createGain();
+      const tickFilter = ctx.createBiquadFilter();
+      tick.type = 'square';
+      tick.frequency.setValueAtTime(3200, now);
+      tickFilter.type = 'highpass';
+      tickFilter.frequency.setValueAtTime(2400, now);
+      tickGain.gain.setValueAtTime(0.001, now);
+      tickGain.gain.linearRampToValueAtTime(0.12, now + 0.001);
+      tickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.018);
+      tick.connect(tickFilter);
+      tickFilter.connect(tickGain);
+      tickGain.connect(this.masterGain);
+      tick.start(now);
+      tick.stop(now + 0.02);
+
+      // Layer 2: Resonant Sine Core
+      const sine = ctx.createOscillator();
+      const sineGain = ctx.createGain();
+      sine.type = 'sine';
+      sine.frequency.setValueAtTime(freq, now);
+      sineGain.gain.setValueAtTime(0.001, now);
+      sineGain.gain.linearRampToValueAtTime(0.32, now + 0.003);
+      sineGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+      sine.connect(sineGain);
+      sineGain.connect(this.masterGain);
+      sine.start(now);
+      sine.stop(now + 0.15);
+    }
+  }
+
+  /**
+   * Battle Launch — Cinematic Quantum Warp & Heroic Deployment Detonation
+   */
+  public playBattleLaunch(): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+
+    // Stage 1: Rising Arc Surge (140Hz -> 880Hz)
+    const surge = ctx.createOscillator();
+    const surgeGain = ctx.createGain();
+    surge.type = 'sawtooth';
+    surge.frequency.setValueAtTime(140, now);
+    surge.frequency.exponentialRampToValueAtTime(880, now + 0.22);
+    surgeGain.gain.setValueAtTime(0.001, now);
+    surgeGain.gain.linearRampToValueAtTime(0.28, now + 0.06);
+    surgeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.26);
+    surge.connect(surgeGain);
+    surgeGain.connect(this.masterGain);
+    surge.start(now);
+    surge.stop(now + 0.27);
+
+    // Stage 2: Heavy Sub-Bass Boom (110Hz -> 32Hz)
+    const boom = ctx.createOscillator();
+    const boomGain = ctx.createGain();
+    boom.type = 'sine';
+    boom.frequency.setValueAtTime(110, now + 0.12);
+    boom.frequency.exponentialRampToValueAtTime(32, now + 0.55);
+    boomGain.gain.setValueAtTime(0.001, now + 0.12);
+    boomGain.gain.linearRampToValueAtTime(0.65, now + 0.14);
+    boomGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
+    boom.connect(boomGain);
+    boomGain.connect(this.masterGain);
+    boom.start(now + 0.12);
+    boom.stop(now + 0.7);
+
+    // Stage 3: High Energy Warp Shimmer
+    const shimmer = ctx.createOscillator();
+    const shimGain = ctx.createGain();
+    shimmer.type = 'triangle';
+    shimmer.frequency.setValueAtTime(1760, now + 0.14); // A6
+    shimmer.frequency.exponentialRampToValueAtTime(2637, now + 0.35); // E7
+    shimGain.gain.setValueAtTime(0.001, now + 0.14);
+    shimGain.gain.linearRampToValueAtTime(0.18, now + 0.18);
+    shimGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+    shimmer.connect(shimGain);
+    shimGain.connect(this.masterGain);
+    shimmer.start(now + 0.14);
+    shimmer.stop(now + 0.5);
+  }
+
+  /**
+   * Score Slider Tick — Tactile Quantum Rotary Encoder (Different from click/countdown!)
+   * Simulates a precision ratchet dial whose pitch subtly scales with target score.
+   */
+  public playScoreSliderTick(score: number, min: number = 10, max: number = 50): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+
+    // Throttle to 32ms so fast scrubbing creates a buttery smooth mechanical purr
+    if (now - this.lastSliderTickTime < 0.032 && score === this.lastSliderScore) {
+      return;
+    }
+    this.lastSliderTickTime = now;
+    this.lastSliderScore = score;
+
+    const ratio = Math.max(0, Math.min(1, (score - min) / (max - min)));
+    // Frequency scales from 480Hz (deep mechanical detent) to 1080Hz (bright precision detent)
+    const freq = 480 + ratio * 600;
+
+    // Dual-component micro-ratchet:
+    // 1. Ultra-short downward pitch blip (16ms)
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq * 1.35, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.75, now + 0.016);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.24, now + 0.0015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.018);
+
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start(now);
+    osc.stop(now + 0.02);
+
+    // 2. High friction tooth tick (subtle wood/carbon snap)
+    const tooth = ctx.createOscillator();
+    const toothGain = ctx.createGain();
+    const toothFilter = ctx.createBiquadFilter();
+    tooth.type = 'square';
+    tooth.frequency.setValueAtTime(freq * 2.8, now);
+    toothFilter.type = 'bandpass';
+    toothFilter.frequency.setValueAtTime(freq * 2.5, now);
+    toothFilter.Q.setValueAtTime(4.0, now);
+
+    toothGain.gain.setValueAtTime(0.001, now);
+    toothGain.gain.linearRampToValueAtTime(0.08, now + 0.001);
+    toothGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.012);
+
+    tooth.connect(toothFilter);
+    toothFilter.connect(toothGain);
+    toothGain.connect(this.masterGain);
+    tooth.start(now);
+    tooth.stop(now + 0.015);
+  }
+
+  /**
+   * Score Preset Select — Heavy Cyber Cell / Magnetic Power Lock Snap
+   */
+  public playScorePresetSelect(pts: number): void {
+    if (this.muted || !this.initContext() || !this.ctx || !this.masterGain) return;
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+
+    // Layer 1: Magnetic Solenoid Thud (200Hz -> 60Hz)
+    const thud = ctx.createOscillator();
+    const thudGain = ctx.createGain();
+    thud.type = 'sine';
+    thud.frequency.setValueAtTime(200, now);
+    thud.frequency.exponentialRampToValueAtTime(58, now + 0.038);
+    thudGain.gain.setValueAtTime(0.001, now);
+    thudGain.gain.linearRampToValueAtTime(0.32, now + 0.002);
+    thudGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
+    thud.connect(thudGain);
+    thudGain.connect(this.masterGain);
+    thud.start(now);
+    thud.stop(now + 0.05);
+
+    // Layer 2: Dual Metallic Lock Ring modulated by preset target points
+    const freqMult = pts ? Math.max(0.85, Math.min(1.35, 0.85 + (pts - 12) * 0.03)) : 1.0;
+    const lock1 = ctx.createOscillator();
+    const lock2 = ctx.createOscillator();
+    const lockGain = ctx.createGain();
+    lock1.type = 'triangle';
+    lock2.type = 'sine';
+    lock1.frequency.setValueAtTime(659.25 * freqMult, now + 0.006); // E5 tuned
+    lock2.frequency.setValueAtTime(987.77 * freqMult, now + 0.006); // B5 tuned
+
+    lockGain.gain.setValueAtTime(0.001, now + 0.006);
+    lockGain.gain.linearRampToValueAtTime(0.26, now + 0.01);
+    lockGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+
+    lock1.connect(lockGain);
+    lock2.connect(lockGain);
+    lockGain.connect(this.masterGain);
+
+    lock1.start(now + 0.006);
+    lock2.start(now + 0.006);
+    lock1.stop(now + 0.18);
+    lock2.stop(now + 0.18);
   }
 
   // ────────────────────────────────────────────────────────────
