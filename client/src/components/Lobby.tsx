@@ -429,84 +429,31 @@ export const Lobby: React.FC<LobbyProps> = ({
               </p>
             </div>
 
-            {/* Arc Reactor Central Countdown Ring */}
-            <div className="relative flex items-center justify-center my-0.5">
-              {/* Outer pulsing shockwave rings on tick */}
-              <div
-                key={`shockwave-${startCountdown}`}
-                className={`absolute -inset-3.5 rounded-full border-2 pointer-events-none animate-ping ${
-                  startCountdown === 1 ? 'border-red-500/80' : 'border-amber-400/50'
+            {/* Clean, Modern Countdown Timer (No Circular HUD / No Shockwave Pulse) */}
+            <div className="flex flex-col items-center justify-center my-3 select-none">
+              <span
+                key={`countdown-num-${startCountdown}`}
+                className="font-num font-black leading-none text-7xl sm:text-8xl select-none"
+                style={{
+                  background: startCountdown === 1
+                    ? 'linear-gradient(135deg, #fef08a, #ef4444)'
+                    : 'linear-gradient(135deg, #fde047, #f59e0b)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  filter: startCountdown === 1
+                    ? 'drop-shadow(0 0 24px rgba(239,68,68,0.85))'
+                    : 'drop-shadow(0 0 18px rgba(245,158,11,0.65))',
+                }}
+              >
+                {startCountdown}
+              </span>
+              <span
+                className={`text-xs tracking-widest uppercase font-bold mt-2 ${
+                  startCountdown === 1 ? 'text-red-400 animate-pulse font-extrabold' : 'text-white/60'
                 }`}
-                style={{ animationDuration: '0.85s', animationIterationCount: 1 }}
-              />
-
-              {/* Ambient Radiant Glow */}
-              <div
-                className={`absolute -inset-5 rounded-full blur-xl pointer-events-none transition-all duration-300 ${
-                  startCountdown === 1 ? 'bg-red-500/40 scale-125' : 'bg-amber-500/25 scale-100'
-                }`}
-              />
-
-              <svg width="124" height="124" viewBox="0 0 120 120" className="relative z-10">
-                {/* Secondary outer dashed HUD orbit */}
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="56"
-                  fill="none"
-                  stroke="rgba(245, 158, 11, 0.25)"
-                  strokeWidth="1.5"
-                  strokeDasharray="4 4"
-                  className="animate-spin-slow"
-                />
-                {/* Background track */}
-                <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
-                {/* Active progress ring */}
-                <circle
-                  cx="60" cy="60" r="48"
-                  fill="none"
-                  stroke="url(#countdownGrad)"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                  strokeDasharray={`${2 * Math.PI * 48}`}
-                  strokeDashoffset={`${2 * Math.PI * 48 * (1 - startCountdown / 5)}`}
-                  transform="rotate(-90 60 60)"
-                  style={{ transition: 'stroke-dashoffset 0.9s linear' }}
-                />
-                <defs>
-                  <linearGradient id="countdownGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor={startCountdown === 1 ? '#fef08a' : '#f59e0b'} />
-                    <stop offset="100%" stopColor={startCountdown === 1 ? '#dc2626' : '#ef4444'} />
-                  </linearGradient>
-                </defs>
-              </svg>
-
-              <div className="absolute z-20 flex flex-col items-center">
-                <span
-                  key={`countdown-num-${startCountdown}`}
-                  className="font-num font-black leading-none animate-scale-pop select-none"
-                  style={{
-                    fontSize: startCountdown === 1 ? '3.5rem' : '3.1rem',
-                    background: startCountdown === 1
-                      ? 'linear-gradient(135deg, #fef08a, #ef4444)'
-                      : 'linear-gradient(135deg, #fbbf24, #ef4444)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    filter: startCountdown === 1
-                      ? 'drop-shadow(0 0 20px rgba(239,68,68,0.95))'
-                      : 'drop-shadow(0 0 14px rgba(251,191,36,0.75))',
-                  }}
-                >
-                  {startCountdown}
-                </span>
-                <span
-                  className={`text-[10px] tracking-widest uppercase font-bold transition-colors ${
-                    startCountdown === 1 ? 'text-red-400 animate-pulse' : 'text-white/60'
-                  }`}
-                >
-                  {startCountdown === 1 ? '🔥 เตรียมพร้อม!' : 'วินาที (SEC)'}
-                </span>
-              </div>
+              >
+                {startCountdown === 1 ? '🔥 เตรียมพร้อม!' : 'วินาที (SECONDS)'}
+              </span>
             </div>
 
             {/* Combat Squad Roster Bento Card */}
