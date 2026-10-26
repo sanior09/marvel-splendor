@@ -10,3 +10,4 @@ Thumbs.db
 *.timestamp-*.mjs
 __pycache__/
 *.pyc
+*.bat
