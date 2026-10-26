@@ -185,11 +185,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
             </div>
           </div>
 
-          {/* Nachapol Industries Telemetry Footer — Desktop Only */}
-          <div className="hidden lg:flex items-center gap-2 pt-4 text-[11px] text-slate-400 font-mono tracking-widest uppercase">
-            <span>NACHAPOL INDUSTRIES</span>
-            <span>//</span>
-            <span>NACHAPOL PROTOCOL VERIFIED</span>
+          {/* Footer — Desktop Only */}
+          <div className="hidden lg:flex items-center gap-2 pt-4 text-[11px] text-slate-400 font-mono tracking-wider">
+            <span>© 2026 Marvel Splendor</span>
+            <span>•</span>
+            <span>Fan-Made Project by sanior09</span>
           </div>
         </div>
 
@@ -467,11 +467,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
             </div>
           </div>
 
-          {/* Nachapol Industries Telemetry Footer on Mobile */}
-          <div className="flex lg:hidden items-center justify-center gap-2 pt-4 text-[10px] text-slate-400 font-mono tracking-widest uppercase">
-            <span>NACHAPOL INDUSTRIES</span>
-            <span>//</span>
-            <span>NACHAPOL PROTOCOL VERIFIED</span>
+          {/* Footer on Mobile */}
+          <div className="flex lg:hidden items-center justify-center gap-2 pt-4 text-[10px] text-slate-400 font-mono tracking-wider">
+            <span>© 2026 Marvel Splendor</span>
+            <span>•</span>
+            <span>Fan-Made Project by sanior09</span>
           </div>
         </div>
 

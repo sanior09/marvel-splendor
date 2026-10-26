@@ -2187,8 +2187,8 @@ export const Lobby: React.FC<LobbyProps> = ({
               มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น
             </span>
           </p>
-          <p className="text-[8px] sm:text-[8.5px] text-slate-500 font-sans tracking-wider uppercase opacity-70">
-            NACHAPOL PROTOCOL • MARVEL SPLENDOR FAN EXPERIENCE
+          <p className="text-[8.5px] sm:text-[9.5px] text-slate-400 font-mono tracking-wider">
+            © 2026 Marvel Splendor • Fan-Made Project by sanior09
           </p>
         </footer>
 
