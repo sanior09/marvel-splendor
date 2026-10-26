@@ -225,5 +225,5 @@ marvel-splendor/
 * **Marvel Intellectual Property Disclaimer:** ชื่อตัวละคร, การ์ตูน, สถานที่, สัญลักษณ์ และทรัพย์สินทางปัญญาที่เกี่ยวข้อง เป็นเครื่องหมายการค้าและลิขสิทธิ์ของ **MARVEL Entertainment / Marvel Characters, Inc.** และ Space Cowboys / Asmodee โปรเจกต์นี้สร้างขึ้นเพื่อการศึกษาและการวิจัยเทคโนโลยีเว็บแอปพลิเคชัน (Non-commercial fan-made project strictly for educational and personal research purposes)
 
 <p align="center">
-  Developed with ❤️ by <a href="https://github.com/sanior09">Nachapol</a>
+  Developed with ❤️ by <a href="https://github.com/sanior09">sanior09</a>
 </p>
