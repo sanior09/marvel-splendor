@@ -290,16 +290,6 @@ export const Board: React.FC<BoardProps> = ({
               </span>
             </div>
 
-            {/* Nachapol Industries Logo */}
-            <div className="h-4 w-px bg-white/20 mx-0.5" />
-            <div className="flex items-center select-none" title="Nachapol Industries">
-              <img
-                src="/images/nachapol_industries.png"
-                alt="Nachapol Industries"
-                className="h-4 sm:h-5 object-contain opacity-90 hover:opacity-100 transition-opacity drop-shadow-sm"
-              />
-            </div>
-
             {/* Marvel Battlefield Location Badge */}
             <div
               className={`hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold text-white bg-black/60 border ${activeMap.accentBorder} shadow-sm`}
