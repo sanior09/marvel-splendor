@@ -90,13 +90,13 @@
 │               THE INFINITY GAUNTLET VICTORY CRITERIA                   │
 ├────────────────────────────────────────────────────────────────────────┤
 │  [✓] 1. มีคะแนนชัยชนะ (Victory Points) ครบตามเป้าหมาย (ค่าเริ่มต้น 16 แต้ม) │
-│  [✓] 2. มีโบนัสอัญมณีครบทั้ง 6 สี (เกณฑ์ฮีโร่ลดต้นทุนครบทั้ง 6 สี)        │
-│  [✓] 3. ครอบครองการ์ดฮีโร่ Tier 3 อย่างน้อย 1 ใบ (ถือครอง Time Stone)   │
+│  [✓] 2. มีโบนัสอัญมณีจากการ์ดครบทั้ง 5 สี (เกณฑ์ฮีโร่ลดต้นทุนครบ 5 สี)   │
+│  [✓] 3. ถือครองโทเค็น Time Stone สีเขียว 1 ชิ้น (ได้จากการเกณฑ์การ์ด Tier 3) │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
 * **Avengers Assemble (+3 VP):** ผู้เล่นคนแรกที่สะสมสัญลักษณ์ทีมอเวนเจอร์ (`A`) บนการ์ดครบ 3 สัญลักษณ์ จะได้รับแผ่นป้าย Avengers Assemble (+3 แต้ม) แต่หากมีผู้เล่นอื่นสะสมได้มากกว่า แผ่นป้ายจะถูกแย่งไปทันที
-* **การตัดสินกรณีเสมอ (Tie-Breaker):** หากมีผู้บรรลุเงื่อนไขมากกว่าหนึ่งคนเมื่อสิ้นสุดรอบ ผู้เล่นที่ใช้จำนวนการ์ดฮีโร่น้อยที่สุดจะเป็นผู้ชนะสูงสุด
+* **การตัดสินกรณีเสมอ (Tie-Breaker):** หากมีผู้บรรลุเงื่อนไขมากกว่าหนึ่งคนเมื่อสิ้นสุดรอบ ผู้เล่นที่ครอบครองการ์ด Tier 3 มากกว่าจะเป็นผู้ชนะ หากยังเท่ากันอีกจึงตัดสินด้วยจำนวนการ์ดรวมที่น้อยกว่า
 
 ---
 
@@ -195,7 +195,7 @@ npm run dev
 
 ```text
 marvel-splendor/
-├── client/                     # Frontend Application (React + Vite)
+├── client/                     # Frontend Web Application (React 18 + Vite)
 │   ├── src/
 │   │   ├── components/         # UI Components (Board, Lobby, Login, Modals)
 │   │   ├── data/               # Marvel Cards (Tier 1-3), Locations, Maps
@@ -204,15 +204,20 @@ marvel-splendor/
 │   │   └── App.tsx             # Root Router & Maintenance Guard
 │   ├── index.html              # Main HTML entry point
 │   └── vite.config.ts          # Vite configuration
-├── src/                        # Backend Server (Node.js + Express)
-│   ├── server/
+├── src/                        # Core Engine & Backend Server (TypeScript)
+│   ├── engine/                 # Pure Game Rules & AI Simulation
 │   │   ├── GameLogic.ts        # Turn execution, token bank, validation
-│   │   ├── RoomManager.ts      # Multiplayer lobby and room coordination
-│   │   ├── BotLogic.ts         # Marvel AI heuristics and strategy
+│   │   ├── BotLogic.ts         # Marvel AI heuristics and decision trees
+│   │   ├── CardData.ts         # 90 Marvel Hero cards & Location tiles
+│   │   └── WinConditions.ts    # Infinity Gauntlet & Avengers Assemble checks
+│   ├── server/                 # Network & Session Server (Express + Socket.io)
+│   │   ├── RoomManager.ts      # Multiplayer lobby & bot orchestration
+│   │   ├── UserManager.ts      # MongoDB Atlas persistence & JWT auth
 │   │   └── index.ts            # Server entry point & WebSocket handlers
-├── shared/                     # Shared TypeScript types between Client & Server
-├── docs/                       # Documentation and infographic image assets
-└── package.json                # Project scripts and dependencies
+│   └── types/                  # Shared TypeScript types (@shared/*)
+│       └── game.types.ts       # Global schemas, event contracts, entities
+├── docs/                       # High-resolution infographics and documentation
+└── package.json                # Project dependencies and unified scripts
 ```
 
 ---
