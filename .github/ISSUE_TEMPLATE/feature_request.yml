@@ -1,0 +1,23 @@
+name: 💡 Feature Request
+description: Suggest an idea or new game feature for Marvel Splendor
+title: "[FEATURE]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea for a new Marvel hero card, AI strategy, sound design, or game mode? Let us know!
+  - type: textarea
+    id: feature
+    attributes:
+      label: Feature Description
+      description: What is your proposed feature?
+      placeholder: Describe the feature you would like to see...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution or UX Flow
+      description: How should this feature work in the game?
+      placeholder: Walk us through the player experience...

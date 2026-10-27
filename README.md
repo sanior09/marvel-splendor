@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/sanior09/marvel-splendor/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/sanior09/marvel-splendor/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=CI" alt="CI Status"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.3-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"></a>
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18.2-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React 18"></a>
   <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-5.4-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite"></a>
@@ -17,6 +18,7 @@
   <a href="https://socket.io/"><img src="https://img.shields.io/badge/Socket.io-4.7-010101?style=flat-square&logo=socketdotio&logoColor=white" alt="Socket.io"></a>
   <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?style=flat-square&logo=tailwindcss&logoColor=white" alt="TailwindCSS"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="MIT License"></a>
+  <a href="https://github.com/sanior09/marvel-splendor/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome"></a>
 </p>
 
 <p align="center">
@@ -151,6 +153,13 @@ flowchart TD
 * **Backend:** Node.js, Express, TypeScript, Socket.io
 * **Security & Auth:** JSON Web Tokens (JWT), bcrypt.js, LocalStorage persistence
 
+### 🔊 Procedural Web Audio Engine Architecture
+ระบบเสียงถูกสังเคราะห์สดแบบเรียลไทม์ (Zero-latency Procedural Synthesis) ผ่าน Web Audio API 100% โดยไม่ต้องโหลดไฟล์เสียงภายนอก (.mp3 / .wav):
+* **Inharmonic Crystal Resonance:** จำลองความถี่เรโซแนนซ์ของผลึกวงกลม (1, 2.296, 3.60) เพื่อให้เสียงหยิบ Infinity Stones มีมิติกังวานสมจริง
+* **Hardware Tactile Haptics:** เสียงคลิกกลไกความถี่ลดลงอย่างนุ่มนวล (820Hz → 240Hz Exponential Decay) เลียนแบบสวิตช์เครื่องมือพรีเมียม
+* **Organic Mechanical Clockwork:** เสียงนับถอยหลังจังหวะเข็มนาฬิกากลไกจริง ตัดเสียงสังเคราะห์แหลมที่รบกวนหูออกทั้งหมด
+* **Master Studio Limiter:** ควบคุม Dynamic Range ด้วย `DynamicsCompressorNode` ป้องกันเสียงแตกพร่า (Clipping) และรักษาความคมชัดในทุกลำโพง
+
 ---
 
 ## 🚀 การติดตั้งและเริ่มเล่น (Getting Started)
@@ -174,7 +183,7 @@ cd client && npm install && cd ..
 
 ### 3. รันโปรเจกต์ (Development Mode)
 ```bash
-# รันทั้ง Backend Server (:3000) และ Frontend Client (:5173) พร้อมกันในคำสั่งเดียว
+# รันทั้ง Backend Server (:3001) และ Frontend Client (:5173) พร้อมกันในคำสั่งเดียว
 npm run dev
 ```
 
