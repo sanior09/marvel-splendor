@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import type { UserProfile } from '../hooks/useAuth';
 import { RankBadge } from './RankBadge';
 import { GAME_RANKS, XP_GAIN_RULES } from '../data/ranks';
+import { soundManager } from '../utils/soundManager';
 
 interface ProfileBadgeProps {
   profile: UserProfile;
@@ -43,7 +44,14 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
       {/* ── Badge Button Trigger (Stark Gold Cyber Header) ── */}
       <button
         type="button"
-        onClick={() => setExpanded(!expanded)}
+        onClick={() => {
+          if (!expanded) {
+            soundManager.playModalOpen();
+          } else {
+            soundManager.playModalClose();
+          }
+          setExpanded(!expanded);
+        }}
         className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all cursor-pointer backdrop-blur-md ${
           isOwner
             ? 'border-amber-400/60 bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/20 hover:from-amber-500/25 hover:to-amber-600/30 shadow-[0_0_16px_rgba(245,158,11,0.25)] hover:shadow-[0_0_22px_rgba(245,158,11,0.4)] hover:scale-105 active:scale-95'
@@ -146,8 +154,11 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
             {/* Quick Close Button */}
             <button
               type="button"
-              onClick={() => setExpanded(false)}
-              className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-slate-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer shrink-0"
+              onClick={() => {
+                soundManager.playModalClose();
+                setExpanded(false);
+              }}
+              className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-slate-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer shrink-0 active:scale-95"
               title="ปิด (Close)"
             >
               ✕
@@ -196,8 +207,11 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                   </span>
                   <button
                     type="button"
-                    onClick={() => setViewMode('roadmap')}
-                    className="text-amber-200 hover:text-amber-100 font-bold font-num text-[11px] underline decoration-amber-400/50 hover:decoration-amber-300 cursor-pointer"
+                    onClick={() => {
+                      soundManager.playButtonClick();
+                      setViewMode('roadmap');
+                    }}
+                    className="text-amber-200 hover:text-amber-100 font-bold font-num text-[11px] underline decoration-amber-400/50 hover:decoration-amber-300 cursor-pointer active:scale-95"
                     title="คลิกเพื่อดูตารางยศทั้งหมด"
                   >
                     อีก {profile.xpToNextRank?.toLocaleString()} XP ▾
@@ -217,11 +231,14 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
           <div className="grid grid-cols-2 p-1 bg-black/50 border border-white/10 rounded-xl mb-3 gap-1 shadow-inner">
             <button
               type="button"
-              onClick={() => setViewMode('stats')}
-              className={`py-1.5 px-2 rounded-lg text-xs font-bold font-['Prompt',sans-serif] transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none ${
+              onClick={() => {
+                soundManager.playButtonClick();
+                setViewMode('stats');
+              }}
+              className={`py-1.5 px-2 rounded-lg text-xs font-['Prompt',sans-serif] transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none active:scale-95 ${
                 viewMode === 'stats'
-                  ? 'bg-gradient-to-r from-amber-500/25 to-yellow-500/20 border border-amber-400/50 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+                  ? 'bg-amber-400 text-slate-950 font-black shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] font-medium'
               }`}
             >
               <span>📊</span>
@@ -229,11 +246,14 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
             </button>
             <button
               type="button"
-              onClick={() => setViewMode('roadmap')}
-              className={`py-1.5 px-2 rounded-lg text-xs font-bold font-['Prompt',sans-serif] transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none ${
+              onClick={() => {
+                soundManager.playButtonClick();
+                setViewMode('roadmap');
+              }}
+              className={`py-1.5 px-2 rounded-lg text-xs font-['Prompt',sans-serif] transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none active:scale-95 ${
                 viewMode === 'roadmap'
-                  ? 'bg-gradient-to-r from-amber-500/25 to-yellow-500/20 border border-amber-400/50 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+                  ? 'bg-amber-400 text-slate-950 font-black shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] font-medium'
               }`}
             >
               <span>🏆</span>
