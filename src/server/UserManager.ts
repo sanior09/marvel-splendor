@@ -105,7 +105,7 @@ const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User',
 
 // ─── JWT secret (use env var on production) ───────────────────
 
-const JWT_SECRET = process.env.JWT_SECRET || 'marvel-splendor-jarvis-secret-2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'marvel-splendor-jarvis-secret-v2-2026';
 const JWT_EXPIRY = '30d';
 
 // ─── Auth Result types ────────────────────────────────────────

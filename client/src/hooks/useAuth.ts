@@ -40,7 +40,8 @@ export interface AuthState {
   error: string | null;
 }
 
-const STORAGE_KEY_TOKEN = 'marvel_splendor_auth_token';
+const STORAGE_KEY_TOKEN = 'marvel_splendor_auth_token_v2';
+const LEGACY_STORAGE_KEY = 'marvel_splendor_auth_token';
 
 const API_BASE =
   (import.meta as any).env?.VITE_SERVER_URL ||
@@ -80,6 +81,9 @@ export function useAuth(): UseAuthReturn {
 
   // Auto-verify stored token on mount
   useEffect(() => {
+    // Clear legacy pre-revamp session to ensure players see the new Login Screen
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+
     const storedToken = localStorage.getItem(STORAGE_KEY_TOKEN);
     if (!storedToken) {
       setIsLoading(false);
