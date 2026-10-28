@@ -299,7 +299,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                       }`}
                     >
                       {/* Left: Icon & Names */}
-                      <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
                         <div
                           className="w-7 h-7 rounded-lg flex items-center justify-center text-sm shrink-0 border shadow-xs"
                           style={{
@@ -310,20 +310,18 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                           {r.icon}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-1.5 truncate">
                             <span
-                              className="text-xs font-bold leading-tight tracking-wide font-['Prompt',sans-serif] whitespace-nowrap"
+                              className="text-xs font-bold leading-tight tracking-wide font-['Prompt',sans-serif] truncate"
                               style={{ color: isCurrent ? '#fef08a' : r.color }}
                             >
                               {r.name}
                             </span>
                           </div>
-                          <div className="text-[10.5px] text-slate-300 whitespace-nowrap font-['Prompt',sans-serif]">
-                            {r.nameEn} • {r.isOwner && !isCurrent ? (
-                              <span className="text-amber-400 font-bold">เอกสิทธิ์เฉพาะผู้สร้าง</span>
-                            ) : (
-                              <span className="font-num text-slate-200 font-bold">{r.minXP.toLocaleString()} XP</span>
-                            )}
+                          <div className="text-[10.5px] text-slate-300 font-['Prompt',sans-serif] truncate">
+                            <span>{r.nameEn}</span>
+                            <span className="mx-1 text-slate-500">•</span>
+                            <span className="font-num text-slate-200 font-semibold">{r.minXP.toLocaleString()} XP</span>
                           </div>
                         </div>
                       </div>
@@ -338,7 +336,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                         ) : r.isOwner ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-600/20 border border-amber-400/40 text-amber-300 shadow-xs whitespace-nowrap">
                             <span>👑</span>
-                            <span>เฉพาะผู้สร้างเกม</span>
+                            <span>เฉพาะผู้สร้าง</span>
                           </span>
                         ) : isPassed ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 whitespace-nowrap">
