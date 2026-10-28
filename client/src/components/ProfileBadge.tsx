@@ -320,8 +320,12 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                           </div>
                           <div className="text-[10.5px] text-slate-300 font-['Prompt',sans-serif] truncate">
                             <span>{r.nameEn}</span>
-                            <span className="mx-1 text-slate-500">•</span>
-                            <span className="font-num text-slate-200 font-semibold">{r.minXP.toLocaleString()} XP</span>
+                            {!r.isOwner && (
+                              <>
+                                <span className="mx-1 text-slate-500">•</span>
+                                <span className="font-num text-slate-200 font-semibold">{r.minXP.toLocaleString()} XP</span>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>
