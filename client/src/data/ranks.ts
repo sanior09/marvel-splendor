@@ -83,6 +83,6 @@ export const GAME_RANKS: RankDef[] = [
 export const XP_GAIN_RULES = [
   { label: 'เล่นจบเกม', xp: '+50 EXP', icon: '🎮' },
   { label: 'ชนะอันดับที่ 1', xp: '+150 EXP', icon: '🏆' },
-  { label: 'ซื้อการ์ด Tier 3', xp: '+15 EXP', icon: '⭐' },
-  { label: 'ยึดสถานที่สำคัญ', xp: '+25 EXP', icon: '🏛️' },
+  { label: 'การ์ด Tier 3', xp: '+15 / ใบ', icon: '⭐' },
+  { label: 'ยึดสถานที่', xp: '+25 / แห่ง', icon: '🏛️' },
 ];

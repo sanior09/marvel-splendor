@@ -366,11 +366,17 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
                   <span>⚡</span>
                   <span>วิธีเก็บ EXP ในการเล่น:</span>
                 </div>
-                <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                <div className="grid grid-cols-2 gap-1.5 text-[10.5px]">
                   {XP_GAIN_RULES.map((rule) => (
-                    <div key={rule.label} className="flex items-center justify-between px-2 py-1 rounded-lg bg-white/[0.04] border border-white/5">
-                      <span className="text-slate-200">{rule.icon} {rule.label}</span>
-                      <span className="font-bold text-amber-300 font-num">{rule.xp}</span>
+                    <div
+                      key={rule.label}
+                      className="flex items-center justify-between px-2 py-1.5 rounded-lg bg-white/[0.04] border border-white/5 whitespace-nowrap overflow-hidden"
+                    >
+                      <span className="text-slate-200 font-medium truncate flex items-center gap-1">
+                        <span className="shrink-0">{rule.icon}</span>
+                        <span className="truncate">{rule.label}</span>
+                      </span>
+                      <span className="font-bold text-amber-300 font-num shrink-0 pl-1">{rule.xp}</span>
                     </div>
                   ))}
                 </div>
