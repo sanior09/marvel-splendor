@@ -25,7 +25,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
   activePlayerId,
   onResumeRoom,
   onClearActiveRoom,
-  avatarUrl,
+  avatarUrl: _avatarUrl,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [viewMode, setViewMode] = useState<'stats' | 'roadmap'>('stats');
@@ -50,13 +50,22 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
             : 'border-white/15 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/30 hover:scale-105 active:scale-95'
         }`}
       >
-        {/* Tiny Hero Portrait or Crown Icon */}
-        <div className="relative w-6 h-6 rounded-full overflow-hidden border border-amber-400/80 shrink-0 bg-neutral-900 shadow-sm flex items-center justify-center">
-          {avatarUrl ? (
-            <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+        {/* Prestige Rank/Crown Emblem (Dedicated Account Badge) */}
+        <div
+          className={`relative w-6 h-6 rounded-full shrink-0 flex items-center justify-center shadow-sm border ${
+            isOwner
+              ? 'border-amber-400 bg-gradient-to-br from-amber-400/30 to-yellow-500/20 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.5)]'
+              : 'bg-white/10 text-white'
+          }`}
+          style={{ borderColor: isOwner ? '#fbbf24' : profile.rank.color }}
+        >
+          {isOwner ? (
+            <span className="leading-none select-none text-[13px] drop-shadow-[0_0_4px_rgba(251,191,36,0.8)]">
+              👑
+            </span>
           ) : (
-            <span className={`text-xs leading-none ${isOwner ? 'animate-bounce' : ''}`}>
-              {profile.rank.icon}
+            <span className="leading-none select-none text-[12px]">
+              {profile.rank.icon || '🛡️'}
             </span>
           )}
         </div>
@@ -98,22 +107,25 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
           {/* Header Profile Info + Close button */}
           <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-white/10">
             <div className="flex items-center gap-3 min-w-0">
-              {/* Prestige Hero Portrait with Stark Ring */}
+              {/* Prestige Account Rank Emblem */}
               <div
-                className="relative w-12 h-12 rounded-2xl flex items-center justify-center border-2 shrink-0 overflow-hidden bg-neutral-900 shadow-md"
+                className="relative w-12 h-12 rounded-2xl flex items-center justify-center border-2 shrink-0 overflow-hidden shadow-md"
                 style={{
                   borderColor: isOwner ? '#f59e0b' : profile.rank.color,
-                  boxShadow: isOwner ? '0 0 16px rgba(245, 158, 11, 0.4)' : undefined,
+                  boxShadow: isOwner
+                    ? '0 0 20px rgba(245, 158, 11, 0.45)'
+                    : `0 0 14px ${profile.rank.color}40`,
+                  background: isOwner
+                    ? 'radial-gradient(circle, rgba(245,158,11,0.3) 0%, rgba(16,22,36,0.98) 100%)'
+                    : `radial-gradient(circle, ${profile.rank.color}25 0%, rgba(16,22,36,0.98) 100%)`,
                 }}
               >
-                {avatarUrl ? (
-                  <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                {isOwner ? (
+                  <span className="text-2xl drop-shadow-[0_0_8px_rgba(251,191,36,0.9)] select-none">👑</span>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-2xl bg-amber-500/15">
-                    {profile.rank.icon}
-                  </div>
+                  <span className="text-2xl select-none">{profile.rank.icon || '🛡️'}</span>
                 )}
-                {/* Crown watermark badge */}
+                {/* Crown watermark badge for Owner */}
                 {isOwner && (
                   <span className="absolute bottom-0 right-0 text-[10px] bg-black/80 px-1 py-0.2 rounded-tl-md border-t border-l border-amber-400/50 leading-none">
                     👑
