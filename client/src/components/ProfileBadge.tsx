@@ -227,7 +227,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
               }}
               className={`py-1.5 px-2 rounded-lg text-xs font-['Prompt',sans-serif] transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none active:scale-95 ${
                 viewMode === 'stats'
-                  ? 'bg-amber-400 text-slate-950 font-black shadow-sm'
+                  ? 'bg-amber-500/25 border border-amber-400/50 text-white font-bold shadow-xs'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] font-medium'
               }`}
             >
@@ -242,7 +242,7 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
               }}
               className={`py-1.5 px-2 rounded-lg text-xs font-['Prompt',sans-serif] transition-all flex items-center justify-center gap-1.5 cursor-pointer select-none active:scale-95 ${
                 viewMode === 'roadmap'
-                  ? 'bg-amber-400 text-slate-950 font-black shadow-sm'
+                  ? 'bg-amber-500/25 border border-amber-400/50 text-white font-bold shadow-xs'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] font-medium'
               }`}
             >
