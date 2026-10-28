@@ -44,18 +44,11 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
       {/* ── Badge Button Trigger (Stark Gold Cyber Header) ── */}
       <button
         type="button"
-        onClick={() => {
-          if (!expanded) {
-            soundManager.playModalOpen();
-          } else {
-            soundManager.playModalClose();
-          }
-          setExpanded(!expanded);
-        }}
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all cursor-pointer backdrop-blur-md ${
+        onClick={() => setExpanded(!expanded)}
+        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-colors cursor-pointer backdrop-blur-md select-none ${
           isOwner
-            ? 'border-amber-400/60 bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/20 hover:from-amber-500/25 hover:to-amber-600/30 shadow-[0_0_16px_rgba(245,158,11,0.25)] hover:shadow-[0_0_22px_rgba(245,158,11,0.4)] hover:scale-105 active:scale-95'
-            : 'border-white/15 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/30 hover:scale-105 active:scale-95'
+            ? 'border-amber-400/60 bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-600/20 hover:from-amber-500/25 hover:to-amber-600/30 shadow-[0_0_16px_rgba(245,158,11,0.25)]'
+            : 'border-white/15 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/30'
         }`}
       >
         {/* Prestige Rank/Crown Emblem (Dedicated Account Badge) */}
@@ -154,11 +147,8 @@ export const ProfileBadge: React.FC<ProfileBadgeProps> = ({
             {/* Quick Close Button */}
             <button
               type="button"
-              onClick={() => {
-                soundManager.playModalClose();
-                setExpanded(false);
-              }}
-              className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-slate-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer shrink-0 active:scale-95"
+              onClick={() => setExpanded(false)}
+              className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-slate-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer shrink-0"
               title="ปิด (Close)"
             >
               ✕
