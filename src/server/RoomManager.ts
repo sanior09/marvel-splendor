@@ -272,7 +272,7 @@ export class RoomManager {
     if (room?.countdownTimer) {
       clearInterval(room.countdownTimer);
       room.countdownTimer = null;
-      this.io.to(roomId).emit('room:countdownCancel');
+      this.broadcastCountdownCancel(room);
     }
     // Clear user active room if leaving
     const leavingSession = room.sessions.find((s) => s.id === playerId || s.socketId === socket.id);
@@ -412,12 +412,12 @@ export class RoomManager {
     }
 
     let remaining = 5;
-    this.io.to(roomId).emit('room:countdown', { seconds: remaining });
+    this.broadcastCountdown(room, remaining);
 
     room.countdownTimer = setInterval(() => {
       remaining -= 1;
       if (remaining > 0) {
-        this.io.to(roomId).emit('room:countdown', { seconds: remaining });
+        this.broadcastCountdown(room, remaining);
       } else {
         if (room.countdownTimer) {
           clearInterval(room.countdownTimer);
@@ -428,6 +428,24 @@ export class RoomManager {
     }, 1000);
 
     return { success: true };
+  }
+
+  private broadcastCountdown(room: Room, seconds: number): void {
+    this.io.to(room.roomId).emit('room:countdown', { seconds });
+    for (const session of room.sessions) {
+      if (!session.isBot && session.socketId) {
+        this.io.to(session.socketId).emit('room:countdown', { seconds });
+      }
+    }
+  }
+
+  private broadcastCountdownCancel(room: Room): void {
+    this.io.to(room.roomId).emit('room:countdownCancel');
+    for (const session of room.sessions) {
+      if (!session.isBot && session.socketId) {
+        this.io.to(session.socketId).emit('room:countdownCancel');
+      }
+    }
   }
 
   cancelCountdown(socket: Socket): { success: boolean; error?: string } {
@@ -443,7 +461,7 @@ export class RoomManager {
       clearInterval(room.countdownTimer);
       room.countdownTimer = null;
     }
-    this.io.to(roomId).emit('room:countdownCancel');
+    this.broadcastCountdownCancel(room);
     return { success: true };
   }
 
