@@ -68,7 +68,7 @@ export const GuardianRow: React.FC<GuardianRowProps> = ({ guardians, currentPlay
           <div
             key={guardian.id}
             className={[
-              'w-[104px] sm:w-[110px] h-[78px] rounded-xl flex flex-col justify-between overflow-hidden relative shadow-md transition-all duration-300 border flex-shrink-0',
+              'w-[98px] sm:w-[104px] h-[78px] rounded-xl flex flex-col justify-between overflow-hidden relative shadow-md transition-all duration-300 border flex-shrink-0',
               eligible
                 ? 'ring-2 ring-yellow-400 scale-105 z-10 border-yellow-300 shadow-[0_0_14px_rgba(250,204,21,0.6)]'
                 : 'border-white/25 hover:border-white/40',

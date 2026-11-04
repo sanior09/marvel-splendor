@@ -435,16 +435,16 @@ export const Board: React.FC<BoardProps> = ({
 
               <div className="flex items-center justify-center gap-2">
                 {/* Special Tiles (Gauntlet + Time Stone + Avengers) */}
-                <div className="flex gap-1.5 items-center">
+                <div className="flex gap-1.5 items-center flex-shrink-0">
                   {/* Infinity Gauntlet Victory Tile */}
                   <div
-                    className="w-[172px] h-[78px] rounded-xl bg-gradient-to-br from-amber-600 via-yellow-600 to-amber-700 shadow-[0_0_14px_rgba(245,158,11,0.35)] border-2 border-yellow-300 flex flex-col items-center justify-between p-1.5 relative overflow-hidden"
+                    className="w-[180px] h-[78px] rounded-xl bg-gradient-to-br from-amber-600 via-yellow-600 to-amber-700 shadow-[0_0_14px_rgba(245,158,11,0.35)] border-2 border-yellow-300 flex flex-col items-center justify-between p-1 px-1.5 relative overflow-hidden flex-shrink-0"
                     title="Infinity Gauntlet Victory: รวมแต้มเป้าหมาย + โบนัสการ์ดครบ 5 สี + มณีกาลเวลา Time Stone"
                   >
-                    <div className="flex items-center gap-1 bg-black/70 px-2 py-0.5 rounded-full border border-yellow-300/40">
-                      <span className="text-[12px] leading-none">🧤</span>
-                      <span className="text-[10px] leading-none uppercase font-extrabold text-yellow-200 tracking-wide font-sans">
-                        ถุงมืออินฟินิตี้ (Gauntlet)
+                    <div className="flex items-center gap-1 bg-black/75 px-2 py-0.5 rounded-full border border-yellow-300/40 whitespace-nowrap shadow-xs">
+                      <span className="text-[11px] leading-none">🧤</span>
+                      <span className="text-[9.5px] leading-none font-black text-yellow-200 tracking-wide font-sans whitespace-nowrap">
+                        ถุงมืออินฟินิตี้
                       </span>
                     </div>
 
@@ -487,19 +487,26 @@ export const Board: React.FC<BoardProps> = ({
                       </div>
                     </div>
 
-                    <div className="w-full flex items-center justify-between px-1.5 py-0.5 bg-black/60 rounded-md border border-yellow-300/30 leading-none">
-                      <span className="font-black text-[11px] text-white leading-none drop-shadow">
-                        ชนะ: <span className="font-num font-black text-yellow-300 text-xs">{state.targetScore ?? 16}</span>P
+                    <div className="w-full flex items-center justify-between px-1.5 py-0.5 bg-black/75 rounded-md border border-yellow-300/30 leading-none whitespace-nowrap shadow-inner">
+                      <span className="font-black text-[10px] text-white leading-none drop-shadow whitespace-nowrap flex items-center gap-0.5">
+                        <span>ชนะ</span>
+                        <span className="font-num font-black text-yellow-300 text-[11px]">{state.targetScore ?? 16}</span>
+                        <span>P</span>
                       </span>
-                      <span className="text-[9px] text-yellow-100 font-bold leading-none">
-                        โบนัส 5 สี + 🟢 มณีเขียว
+                      <span className="text-[9px] text-yellow-100 font-bold leading-none whitespace-nowrap flex items-center gap-1">
+                        <span>โบนัส 5 สี</span>
+                        <span className="text-yellow-400/80">+</span>
+                        <span className="flex items-center gap-0.5">
+                          <span className="text-[10px] leading-none">🟢</span>
+                          <span>มณีเขียว</span>
+                        </span>
                       </span>
                     </div>
                   </div>
 
                   {/* Time Stone Pedestal */}
                   <div
-                    className={`w-[82px] h-[78px] rounded-xl bg-gradient-to-br ${
+                    className={`w-[80px] h-[78px] rounded-xl bg-gradient-to-br ${
                       board.timeStoneAvailable
                         ? 'from-emerald-900/90 via-teal-950 to-emerald-950 border-emerald-400/80 shadow-[0_0_12px_rgba(16,185,129,0.35)]'
                         : 'from-slate-900 to-black border-slate-700 opacity-90'
@@ -550,7 +557,7 @@ export const Board: React.FC<BoardProps> = ({
 
                   {/* Avengers Assemble Tile (+3 PTS) */}
                   <div
-                    className={`w-[74px] h-[78px] rounded-xl bg-gradient-to-br ${
+                    className={`w-[72px] h-[78px] rounded-xl bg-gradient-to-br ${
                       board.avengersAssembleHolder
                         ? 'from-slate-800 to-slate-900 border-slate-600'
                         : 'from-red-600 via-rose-700 to-red-800 border-red-400 shadow-[0_0_12px_rgba(239,68,68,0.35)]'
