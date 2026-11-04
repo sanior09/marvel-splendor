@@ -253,6 +253,20 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('game:startCountdown', () => {
+    const result = roomManager.startCountdown(socket);
+    if (!result.success) {
+      socket.emit('game:error', { message: result.error ?? 'Cannot start countdown' });
+    }
+  });
+
+  socket.on('game:cancelCountdown', () => {
+    const result = roomManager.cancelCountdown(socket);
+    if (!result.success) {
+      socket.emit('game:error', { message: result.error ?? 'Cannot cancel countdown' });
+    }
+  });
+
   socket.on('game:action', (action) => {
     roomManager.handleAction(socket, action);
   });

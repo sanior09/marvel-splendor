@@ -26,6 +26,9 @@ interface LobbyProps {
   onJoinRoom: (roomId: string, playerName: string, callback: (success: boolean, err?: string) => void, avatarUrl?: string) => void;
   onLeaveRoom?: () => void;
   onStartGame: () => void;
+  countdown?: number | null;
+  onStartCountdown?: () => void;
+  onCancelCountdown?: () => void;
   onToggleReady?: () => void;
   onAddBot: (botName?: string, personality?: string, callback?: (success: boolean) => void, avatarUrl?: string) => void;
   onRemoveBot: (botId: string) => void;
@@ -127,6 +130,9 @@ export const Lobby: React.FC<LobbyProps> = ({
   onJoinRoom,
   onLeaveRoom,
   onStartGame,
+  countdown,
+  onStartCountdown,
+  onCancelCountdown,
   onToggleReady,
   onAddBot,
   onRemoveBot,
@@ -163,9 +169,9 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
   const [roomCodeCopied, setRoomCodeCopied] = useState(false);
 
-  // Countdown loading state (host start game + solo)
-  const [startCountdown, setStartCountdown] = useState<number | null>(null);
-  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Solo mode local countdown state
+  const [soloCountdown, setSoloCountdown] = useState<number | null>(null);
+  const soloCountdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // For solo mode: hold the args to pass to onCreateSolo when countdown finishes
   const [soloContext, setSoloContext] = useState<{
     finalName: string;
@@ -176,20 +182,23 @@ export const Lobby: React.FC<LobbyProps> = ({
     targetScore: number;
   } | null>(null);
 
-  // Audio effect: play tactical countdown tick whenever startCountdown ticks down
-  useEffect(() => {
-    if (startCountdown !== null && startCountdown > 0) {
-      soundManager.playCountdownTick(startCountdown);
-    }
-  }, [startCountdown]);
+  // Active countdown: either solo mode local timer or multiplayer server room countdown
+  const activeCountdown = soloCountdown !== null ? soloCountdown : (countdown ?? null);
 
-  const startCountdownTimer = (onFinish: () => void) => {
-    setStartCountdown(5);
-    countdownRef.current = setInterval(() => {
-      setStartCountdown((prev) => {
+  // Audio effect: play tactical countdown tick whenever activeCountdown ticks down
+  useEffect(() => {
+    if (activeCountdown !== null && activeCountdown > 0) {
+      soundManager.playCountdownTick(activeCountdown);
+    }
+  }, [activeCountdown]);
+
+  const startSoloCountdownTimer = (onFinish: () => void) => {
+    setSoloCountdown(5);
+    soloCountdownRef.current = setInterval(() => {
+      setSoloCountdown((prev) => {
         if (prev === null) return null;
         if (prev <= 1) {
-          clearInterval(countdownRef.current!);
+          clearInterval(soloCountdownRef.current!);
           soundManager.playBattleLaunch();
           onFinish();
           return null;
@@ -206,19 +215,26 @@ export const Lobby: React.FC<LobbyProps> = ({
     }
     soundManager.playButtonClick();
     setSoloContext(null); // multiplayer mode
-    startCountdownTimer(() => onStartGame());
+    if (onStartCountdown) {
+      onStartCountdown();
+    } else {
+      onStartGame();
+    }
   };
 
   const handleCancelStart = () => {
-    if (countdownRef.current) clearInterval(countdownRef.current);
-    setStartCountdown(null);
+    if (soloCountdownRef.current) clearInterval(soloCountdownRef.current);
+    setSoloCountdown(null);
     setSoloContext(null);
+    if (onCancelCountdown) {
+      onCancelCountdown();
+    }
     soundManager.playButtonClick();
   };
 
   // Cleanup on unmount
   useEffect(() => {
-    return () => { if (countdownRef.current) clearInterval(countdownRef.current); };
+    return () => { if (soloCountdownRef.current) clearInterval(soloCountdownRef.current); };
   }, []);
 
   // Avatar / Profile picture state (Default to Iron Man so avatar is never null)
@@ -304,7 +320,7 @@ export const Lobby: React.FC<LobbyProps> = ({
       avatarUrl: avatarUrl || undefined,
       targetScore,
     });
-    startCountdownTimer(() => {
+    startSoloCountdownTimer(() => {
       setIsLoading(true);
       onCreateSolo(finalName, botCount, selectedBotNames, selectedMapId, avatarUrl || undefined, targetScore);
     });
@@ -379,7 +395,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   };
 
   // ── Countdown Overlay (Stark Arc Reactor Warp HUD Console) ──
-  const countdownOverlay = startCountdown !== null
+  const countdownOverlay = activeCountdown !== null
     ? createPortal(
         <div
           className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
@@ -432,27 +448,27 @@ export const Lobby: React.FC<LobbyProps> = ({
             {/* Clean, Modern Countdown Timer (No Circular HUD / No Shockwave Pulse) */}
             <div className="flex flex-col items-center justify-center my-3 select-none">
               <span
-                key={`countdown-num-${startCountdown}`}
+                key={`countdown-num-${activeCountdown}`}
                 className="font-num font-black leading-none text-7xl sm:text-8xl select-none animate-countdown-tick"
                 style={{
-                  background: startCountdown === 1
+                  background: activeCountdown === 1
                     ? 'linear-gradient(135deg, #fef08a, #ef4444)'
                     : 'linear-gradient(135deg, #fde047, #f59e0b)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  filter: startCountdown === 1
+                  filter: activeCountdown === 1
                     ? 'drop-shadow(0 0 24px rgba(239,68,68,0.85))'
                     : 'drop-shadow(0 0 18px rgba(245,158,11,0.65))',
                 }}
               >
-                {startCountdown}
+                {activeCountdown}
               </span>
               <span
                 className={`text-xs tracking-widest uppercase font-bold mt-2 ${
-                  startCountdown === 1 ? 'text-red-400 animate-pulse font-extrabold' : 'text-white/60'
+                  activeCountdown === 1 ? 'text-red-400 animate-pulse font-extrabold' : 'text-white/60'
                 }`}
               >
-                {startCountdown === 1 ? '🔥 เตรียมพร้อม!' : 'วินาที (SECONDS)'}
+                {activeCountdown === 1 ? '🔥 เตรียมพร้อม!' : 'วินาที (SECONDS)'}
               </span>
             </div>
 
@@ -574,15 +590,22 @@ export const Lobby: React.FC<LobbyProps> = ({
             </div>
 
             {/* Cancel / Abort Button (Tactile Mobile Friendly) */}
-            <button
-              type="button"
-              id="cancel-start-game-btn"
-              onClick={handleCancelStart}
-              className="w-full py-2.5 rounded-xl font-bold font-display text-xs text-white/70 hover:text-white transition-all cursor-pointer flex items-center justify-center gap-1.5 border border-white/15 bg-white/5 hover:bg-white/10 active:scale-[0.98] touch-manipulation min-h-[42px]"
-            >
-              <span>✕</span>
-              <span>ยกเลิกการเริ่มเกม (ABORT MISSION)</span>
-            </button>
+            {isHost || soloContext ? (
+              <button
+                type="button"
+                id="cancel-start-game-btn"
+                onClick={handleCancelStart}
+                className="w-full py-2.5 rounded-xl font-bold font-display text-xs text-white/70 hover:text-white transition-all cursor-pointer flex items-center justify-center gap-1.5 border border-white/15 bg-white/5 hover:bg-white/10 active:scale-[0.98] touch-manipulation min-h-[42px]"
+              >
+                <span>✕</span>
+                <span>ยกเลิกการเริ่มเกม (ABORT MISSION)</span>
+              </button>
+            ) : (
+              <div className="w-full py-2.5 px-3 rounded-xl font-bold font-display text-xs text-amber-300 border border-amber-400/30 bg-amber-500/10 flex items-center justify-center gap-2 select-none min-h-[42px]">
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                <span>รอ HOST นำทัพเข้าสู่สมรภูมิ...</span>
+              </div>
+            )}
           </div>
         </div>,
         document.body,

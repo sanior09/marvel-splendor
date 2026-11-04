@@ -15,6 +15,7 @@ export interface UseGameStateReturn {
   connectionStatus: ConnectionStatus;
   error: string | null;
   gameOverData: { winners: string[]; xpData?: Record<string, any> } | null;
+  countdown: number | null;
   // Actions
   createRoom: (playerName: string, callback: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string, targetScore?: number, accountId?: string) => void;
   createSolo: (playerName: string, botCount: number, botNames?: string[], callback?: (room: RoomInfo) => void, mapId?: string, avatarUrl?: string, targetScore?: number, accountId?: string) => void;
@@ -23,6 +24,8 @@ export interface UseGameStateReturn {
   leaveRoom: (payload?: { roomId?: string; playerId?: string }) => void;
   afkTimeout: (roomId: string, playerId: string) => void;
   startGame: () => void;
+  startCountdown: () => void;
+  cancelCountdown: () => void;
   toggleReady: () => void;
   addBot: (botName?: string, personality?: string, callback?: (success: boolean) => void, avatarUrl?: string) => void;
   removeBot: (botId: string, callback?: (success: boolean) => void) => void;
@@ -38,13 +41,16 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
   const [gameOverData, setGameOverData] = useState<{ winners: string[]; xpData?: Record<string, any> } | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('connecting');
   const [error, setError] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState<number | null>(null);
 
   useEffect(() => {
     const onConnect = (): void => setConnectionStatus('connected');
     const onDisconnect = (): void => setConnectionStatus('disconnected');
     const onConnectError = (): void => setConnectionStatus('error');
 
-    const onStateUpdate = (state: GameState): void => setGameState(state);
+    const onCountdown = ({ seconds }: { seconds: number }): void => setCountdown(seconds);
+    const onCountdownCancel = (): void => setCountdown(null);
+    const onStateUpdate = (state: GameState): void => { setGameState(state); setCountdown(null); };
     const onRoomUpdated = (room: RoomInfo): void => setRoomInfo(room);
     const onGameError = ({ message }: { message: string }): void => setError(message);
     const onGameOver = (payload: { winners: string[]; xpData?: Record<string, any> }): void => {
@@ -54,11 +60,14 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
       setGameState(null);
       setRoomInfo(null);
       setGameOverData(null);
+      setCountdown(null);
     };
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('connect_error', onConnectError);
+    socket.on('room:countdown', onCountdown);
+    socket.on('room:countdownCancel', onCountdownCancel);
     socket.on('game:stateUpdate', onStateUpdate);
     socket.on('room:updated', onRoomUpdated);
     socket.on('game:error', onGameError);
@@ -71,6 +80,8 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('connect_error', onConnectError);
+      socket.off('room:countdown', onCountdown);
+      socket.off('room:countdownCancel', onCountdownCancel);
       socket.off('game:stateUpdate', onStateUpdate);
       socket.off('room:updated', onRoomUpdated);
       socket.off('game:error', onGameError);
@@ -152,6 +163,7 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
       socket.emit('room:leave', payload);
       setGameState(null);
       setRoomInfo(null);
+      setCountdown(null);
     },
     [socket],
   );
@@ -167,6 +179,14 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
 
   const startGame = useCallback(() => {
     socket.emit('game:start');
+  }, [socket]);
+
+  const startCountdown = useCallback(() => {
+    socket.emit('game:startCountdown');
+  }, [socket]);
+
+  const cancelCountdown = useCallback(() => {
+    socket.emit('game:cancelCountdown');
   }, [socket]);
 
   const toggleReady = useCallback(() => {
@@ -237,7 +257,10 @@ export function useGameState(myPlayerId: string | null): UseGameStateReturn {
     joinRoom,
     leaveRoom,
     afkTimeout,
+    countdown,
     startGame,
+    startCountdown,
+    cancelCountdown,
     toggleReady,
     addBot,
     removeBot,

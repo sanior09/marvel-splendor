@@ -139,7 +139,10 @@ function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactEl
     joinRoom,
     leaveRoom,
     afkTimeout,
+    countdown,
     startGame,
+    startCountdown,
+    cancelCountdown,
     toggleReady,
     addBot,
     removeBot,
@@ -276,6 +279,9 @@ function GameRouter({ auth, isGuest, onLogout }: GameRouterProps): React.ReactEl
               onCreateSolo={handleCreateSolo}
               onJoinRoom={handleJoinRoom}
               onLeaveRoom={handleLeave}
+              countdown={countdown}
+              onStartCountdown={startCountdown}
+              onCancelCountdown={cancelCountdown}
               onStartGame={startGame}
               onToggleReady={toggleReady}
               onAddBot={addBot}

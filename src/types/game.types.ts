@@ -246,6 +246,8 @@ export interface RoomInfo {
 
 export interface ServerToClientEvents {
   'room:updated': (room: RoomInfo) => void;
+  'room:countdown': (payload: { seconds: number }) => void;
+  'room:countdownCancel': () => void;
   'game:stateUpdate': (state: GameState) => void;
   'game:error': (payload: { message: string }) => void;
   'game:over': (payload: { winners: string[]; xpData?: Record<string, any> }) => void;
@@ -264,6 +266,8 @@ export interface ClientToServerEvents {
   'room:createSolo': (payload: { playerName: string; avatarUrl?: string; botCount: number; botNames?: string[]; mapId?: string; targetScore?: number }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'room:setTargetScore': (payload: { targetScore: number }, callback: (result: { success: boolean; room?: RoomInfo; error?: string }) => void) => void;
   'game:start': () => void;
+  'game:startCountdown': () => void;
+  'game:cancelCountdown': () => void;
   'game:action': (action: GameAction) => void;
   'room:listAll': (callback: (rooms: RoomInfo[]) => void) => void;
 }

@@ -57,6 +57,7 @@ interface Room {
   };
   lastActivity: number;
   lastTurnTime?: number;
+  countdownTimer?: NodeJS.Timeout | null;
 }
 
 
@@ -117,6 +118,7 @@ export class RoomManager {
             }
           }
         }
+        if (room.countdownTimer) clearInterval(room.countdownTimer);
         this.rooms.delete(roomId);
       }
     }
@@ -267,6 +269,11 @@ export class RoomManager {
 
     if (!roomId || !playerId) return;
     const room = this.rooms.get(roomId);
+    if (room?.countdownTimer) {
+      clearInterval(room.countdownTimer);
+      room.countdownTimer = null;
+      this.io.to(roomId).emit('room:countdownCancel');
+    }
     // Clear user active room if leaving
     const leavingSession = room.sessions.find((s) => s.id === playerId || s.socketId === socket.id);
     if (leavingSession?.accountId) {
@@ -377,7 +384,68 @@ export class RoomManager {
     return true;
   }
 
-  // ─── Start Game ─────────────────────────────────────────────
+  // ─── Start Game & Countdown ──────────────────────────────────
+
+  startCountdown(socket: Socket): { success: boolean; error?: string } {
+    const roomId = this.socketToRoom.get(socket.id);
+    const playerId = this.socketToPlayer.get(socket.id);
+
+    if (!roomId || !playerId) return { success: false, error: 'Not in a room' };
+
+    const room = this.rooms.get(roomId);
+    if (!room) return { success: false, error: 'Room not found' };
+    if (room.hostId !== playerId) return { success: false, error: 'Only the host can start the game' };
+    if (room.sessions.length < 2) return { success: false, error: 'Need at least 2 players' };
+    if (room.status !== 'waiting') return { success: false, error: 'Game already started' };
+
+    // Check if all non-host human players are ready
+    const unreadyPlayers = room.sessions.filter(
+      (s) => s.id !== room.hostId && !s.isBot && !s.isReady
+    );
+    if (unreadyPlayers.length > 0) {
+      const names = unreadyPlayers.map((p) => p.name).join(', ');
+      return { success: false, error: `ยังเริ่มเกมไม่ได้ เนื่องจากรอผู้เล่นกดพร้อม: ${names}` };
+    }
+
+    if (room.countdownTimer) {
+      return { success: true };
+    }
+
+    let remaining = 5;
+    this.io.to(roomId).emit('room:countdown', { seconds: remaining });
+
+    room.countdownTimer = setInterval(() => {
+      remaining -= 1;
+      if (remaining > 0) {
+        this.io.to(roomId).emit('room:countdown', { seconds: remaining });
+      } else {
+        if (room.countdownTimer) {
+          clearInterval(room.countdownTimer);
+          room.countdownTimer = null;
+        }
+        this.launchGame(room);
+      }
+    }, 1000);
+
+    return { success: true };
+  }
+
+  cancelCountdown(socket: Socket): { success: boolean; error?: string } {
+    const roomId = this.socketToRoom.get(socket.id);
+    const playerId = this.socketToPlayer.get(socket.id);
+
+    if (!roomId || !playerId) return { success: false, error: 'Not in a room' };
+    const room = this.rooms.get(roomId);
+    if (!room) return { success: false, error: 'Room not found' };
+    if (room.hostId !== playerId) return { success: false, error: 'Only the host can cancel countdown' };
+
+    if (room.countdownTimer) {
+      clearInterval(room.countdownTimer);
+      room.countdownTimer = null;
+    }
+    this.io.to(roomId).emit('room:countdownCancel');
+    return { success: true };
+  }
 
   startGame(socket: Socket): { success: boolean; error?: string } {
     const roomId = this.socketToRoom.get(socket.id);
@@ -400,6 +468,16 @@ export class RoomManager {
       return { success: false, error: `ยังเริ่มเกมไม่ได้ เนื่องจากรอผู้เล่นกดพร้อม: ${names}` };
     }
 
+    if (room.countdownTimer) {
+      clearInterval(room.countdownTimer);
+      room.countdownTimer = null;
+    }
+
+    return this.launchGame(room);
+  }
+
+  private launchGame(room: Room): { success: boolean; error?: string } {
+    const roomId = room.roomId;
     const playerIds = room.sessions.map((s) => s.id);
     const playerNames = room.sessions.map((s) => s.name);
     const botInfo = room.sessions.map((s) => ({
