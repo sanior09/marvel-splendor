@@ -59,10 +59,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
   const displayError = localError || auth.error;
 
   return (
-    <div className="relative min-h-screen w-full h-full overflow-y-auto overflow-x-hidden flex items-center justify-center bg-[#05070d] text-slate-100 select-none py-6 sm:py-12">
+    <div
+      className="relative w-full h-full min-h-0 overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start lg:justify-center bg-[#05070d] text-slate-100 select-none pt-6 sm:pt-12 pb-12 sm:pb-12"
+      style={{
+        WebkitOverflowScrolling: 'touch',
+        touchAction: 'pan-y',
+      }}
+    >
       {/* ── Background: Cinematic Battlefield Artwork with Deep Scrim ────────────────── */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 transform scale-105 pointer-events-none"
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 transform scale-105 pointer-events-none"
         style={{
           backgroundImage: "url('/images/maps/avengers_tower.jpg'), url('/images/maps/sanctum.jpg')",
           filter: 'brightness(0.38) saturate(1.15) contrast(1.1)',
@@ -71,7 +77,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
 
       {/* Atmospheric Vignette Gradients (Dark edge falloff, no cheap glow blobs) */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="fixed inset-0 pointer-events-none"
         style={{
           background:
             'radial-gradient(circle at 65% 50%, rgba(5,7,13,0.72) 0%, rgba(5,7,13,0.94) 75%, #05070d 100%), linear-gradient(180deg, rgba(5,7,13,0.7) 0%, rgba(5,7,13,0.92) 100%)',
@@ -80,7 +86,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
 
       {/* Subtle Structural Technical Grid Lines */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.035]"
+        className="fixed inset-0 pointer-events-none opacity-[0.035]"
         style={{
           backgroundImage:
             'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)',
@@ -89,7 +95,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ auth, onContinueAsGues
       />
 
       {/* ── Main Stage Container (Asymmetrical Split Architecture) ───────────────── */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-16">
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-16 my-auto">
         
         {/* ── Left Hero Side: Marvel Identity & Game Features ─────────────────────── */}
         <div className="w-full lg:w-7/12 flex flex-col items-center lg:items-start text-center lg:text-left space-y-4 sm:space-y-6">
