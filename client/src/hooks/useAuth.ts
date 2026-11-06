@@ -43,9 +43,20 @@ export interface AuthState {
 const STORAGE_KEY_TOKEN = 'marvel_splendor_auth_token_v2';
 const LEGACY_STORAGE_KEY = 'marvel_splendor_auth_token';
 
-const API_BASE =
-  (import.meta as any).env?.VITE_SERVER_URL ||
-  (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3001');
+const getBackendUrl = (): string => {
+  const envUrl = (import.meta as any).env?.VITE_SERVER_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim()) return envUrl.trim();
+  if (typeof window !== 'undefined') {
+    // If running on Vercel or custom domain, route backend calls to Render backend
+    if (window.location.hostname.includes('vercel.app') || (window.location.hostname !== 'localhost' && !window.location.hostname.includes('onrender.com'))) {
+      return 'https://marvel-splendor-2.onrender.com';
+    }
+    return window.location.origin;
+  }
+  return 'http://localhost:3001';
+};
+
+const API_BASE = getBackendUrl();
 
 // ─── Helper ───────────────────────────────────────────────────
 
