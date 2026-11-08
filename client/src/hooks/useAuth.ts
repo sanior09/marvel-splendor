@@ -37,6 +37,7 @@ export interface AuthState {
   profile: UserProfile | null;
   token: string | null;
   isLoading: boolean;
+  isVerifyingToken: boolean;
   error: string | null;
 }
 
@@ -84,6 +85,7 @@ export interface UseAuthReturn {
   profile: UserProfile | null;
   token: string | null;
   isLoading: boolean;
+  isVerifyingToken: boolean;
   error: string | null;
   login: (username: string, password: string) => Promise<boolean>;
   register: (username: string, password: string) => Promise<boolean>;
@@ -96,7 +98,8 @@ export interface UseAuthReturn {
 export function useAuth(): UseAuthReturn {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isVerifyingToken, setIsVerifyingToken] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Auto-verify stored token on mount (with strict 3.0s fail-safe timeout against Render cold-sleep)
@@ -105,7 +108,7 @@ export function useAuth(): UseAuthReturn {
 
     const storedToken = localStorage.getItem(STORAGE_KEY_TOKEN);
     if (!storedToken) {
-      setIsLoading(false);
+      setIsVerifyingToken(false);
       return;
     }
 
@@ -115,7 +118,7 @@ export function useAuth(): UseAuthReturn {
     const safetyTimer = setTimeout(() => {
       if (active) {
         console.warn('[useAuth] Render server asleep / verify timed out. Falling back to login gate.');
-        setIsLoading(false);
+        setIsVerifyingToken(false);
       }
     }, 3000);
 
@@ -136,7 +139,7 @@ export function useAuth(): UseAuthReturn {
     }).finally(() => {
       if (active) {
         clearTimeout(safetyTimer);
-        setIsLoading(false);
+        setIsVerifyingToken(false);
       }
     });
 
@@ -235,5 +238,5 @@ export function useAuth(): UseAuthReturn {
     }
   }, []);
 
-  return { profile, token, isLoading, error, login, register, logout, clearError, refreshProfile, clearActiveRoom };
+  return { profile, token, isLoading, isVerifyingToken, error, login, register, logout, clearError, refreshProfile, clearActiveRoom };
 }
