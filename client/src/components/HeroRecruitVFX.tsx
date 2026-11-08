@@ -432,17 +432,6 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
         ))}
       </div>
 
-      {/* 7. Precision Laser Scanline Sweep */}
-      <div
-        className="absolute left-0 right-0 pointer-events-none z-10"
-        style={{
-          height: '3px',
-          background: `linear-gradient(to right, transparent, ${accent}88, #ffffff, ${accent}88, transparent)`,
-          boxShadow: `0 0 20px ${glow}, 0 0 40px #ffffff`,
-          animation: 'scan-down 2.4s ease-in-out infinite',
-        }}
-      />
-
       {/* 8. Central Hero Card Container (Cinematic Slam Entrance) */}
       <div
         className="hero-vfx-wrapper relative z-20 flex flex-col items-center max-w-xs w-full mx-4"
@@ -597,13 +586,6 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
 
       {/* Keyframe Animations & Responsive Engine */}
       <style>{`
-        @keyframes scan-down {
-          0%   { top: -4px; opacity: 0; }
-          15%  { opacity: 1; }
-          85%  { opacity: 1; }
-          100% { top: 100%; opacity: 0; }
-        }
-
         @keyframes hero-impact-flash {
           0%   { opacity: 0.95; }
           100% { opacity: 0; }
