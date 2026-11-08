@@ -15,6 +15,7 @@ class SoundManager {
   private listeners: Set<(muted: boolean) => void> = new Set();
   private lastSliderTickTime: number = 0;
   private lastSliderScore: number = -1;
+  private heroAudioCache: Map<string, HTMLAudioElement> = new Map();
 
   constructor() {
     // Load persisted mute preference
@@ -37,6 +38,7 @@ class SoundManager {
         if (this.ctx && this.ctx.state === 'suspended') {
           this.ctx.resume().catch(() => {});
         }
+        this.preloadHeroSounds();
         window.removeEventListener('pointerdown', unlockAudio);
         window.removeEventListener('keydown', unlockAudio);
         window.removeEventListener('touchstart', unlockAudio);
@@ -2810,6 +2812,50 @@ class SoundManager {
     subGain.connect(this.masterGain);
     sub.start(surgeTime);
     sub.stop(surgeTime + 0.55);
+  }
+
+  /**
+   * Preload all 22 hero audio files into browser cache for zero-latency playback
+   */
+  public preloadHeroSounds(): void {
+    if (typeof window === 'undefined') return;
+    const heroIds = [
+      'thor', 'storm', 'iron_man', 'captain_america', 'hulk',
+      'doctor_strange', 'spider_man', 'black_panther', 'thanos',
+      'scarlet_witch', 'captain_marvel', 'hawkeye', 'loki',
+      'deadpool', 'black_widow', 'wolverine', 'she_hulk',
+      'magneto', 'groot', 'star_lord', 'jean_grey', 'nick_fury'
+    ];
+    heroIds.forEach((id) => {
+      if (!this.heroAudioCache.has(id)) {
+        try {
+          const audio = new Audio('/sounds/heroes/' + id + '.wav');
+          audio.preload = 'auto';
+          this.heroAudioCache.set(id, audio);
+        } catch {}
+      }
+    });
+  }
+
+  /**
+   * Play authentic real hero sound effect file (/sounds/heroes/{heroId}.wav)
+   */
+  public playHeroAudio(heroId: string): void {
+    if (this.muted) return;
+    try {
+      let audio = this.heroAudioCache.get(heroId);
+      if (!audio) {
+        audio = new Audio('/sounds/heroes/' + heroId + '.wav');
+        audio.preload = 'auto';
+        this.heroAudioCache.set(heroId, audio);
+      }
+      audio.currentTime = 0;
+      audio.volume = Math.min(1, Math.max(0, this.volume * 1.15));
+      const p = audio.play();
+      if (p !== undefined) {
+        p.catch(() => {});
+      }
+    } catch {}
   }
 }
 

@@ -371,57 +371,7 @@ export function getHeroSignature(cardName?: string | null): HeroSignature | null
 }
 
 export function playHeroSignatureSound(sig: HeroSignature): void {
-  switch (sig.soundKey) {
-    case 'thunder':
-      soundManager.playHeroThunder();
-      break;
-    case 'repulsor':
-      soundManager.playHeroRepulsor();
-      break;
-    case 'shield':
-      soundManager.playHeroShieldClang();
-      break;
-    case 'smash':
-      soundManager.playHeroSmash();
-      break;
-    case 'mystic':
-      soundManager.playHeroMystic();
-      break;
-    case 'web':
-      soundManager.playHeroWeb();
-      break;
-    case 'vibranium':
-      soundManager.playHeroVibranium();
-      break;
-    case 'snap':
-      soundManager.playHeroSnap();
-      break;
-    case 'chaos':
-      soundManager.playHeroChaos();
-      break;
-    case 'photon':
-      soundManager.playHeroPhoton();
-      break;
-    case 'arrow':
-      soundManager.playHeroArrow();
-      break;
-    case 'loki':
-      soundManager.playHeroLoki();
-      break;
-    case 'deadpool':
-      soundManager.playHeroDeadpool();
-      break;
-    case 'widow':
-      soundManager.playHeroWidow();
-      break;
-    case 'claw':
-      soundManager.playHeroClaw();
-      break;
-    case 'magnetic':
-      soundManager.playHeroMagnetic();
-      break;
-    case 'groot':
-      soundManager.playHeroGroot();
-      break;
-  }
+  if (!sig || !sig.id) return;
+  // Play authentic studio hero sound effect file
+  soundManager.playHeroAudio(sig.id);
 }
