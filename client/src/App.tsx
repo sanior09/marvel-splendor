@@ -59,6 +59,12 @@ function AuthGate(): React.ReactElement {
   const auth = useAuth();
   // isGuest: user explicitly skipped login
   const [isGuest, setIsGuest] = useState(false);
+  const [isSlow, setIsSlow] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setIsSlow(true), 2000);
+    return () => clearTimeout(t);
+  }, []);
 
   // Auto-skip login screen once token verified
   const isAuthenticated = Boolean(auth.profile && auth.token);
@@ -70,7 +76,7 @@ function AuthGate(): React.ReactElement {
         className="fixed inset-0 flex items-center justify-center page-enter"
         style={{ background: '#06070f', fontFamily: "'Outfit', sans-serif" }}
       >
-        <div className="text-center">
+        <div className="text-center px-4 max-w-sm">
           <div
             className="text-3xl font-black tracking-widest mb-3"
             style={{
@@ -84,7 +90,34 @@ function AuthGate(): React.ReactElement {
           >
             MARVEL SPLENDOR
           </div>
-          <div className="text-white/30 text-sm animate-pulse">กำลังตรวจสอบระบบ...</div>
+          <div className="text-white/30 text-sm animate-pulse mb-3">กำลังตรวจสอบระบบ...</div>
+
+          {isSlow && (
+            <div className="mt-4 p-3 rounded-xl bg-black/60 border border-white/10 backdrop-blur-md animate-fade-in">
+              <div className="text-amber-400 text-xs font-medium mb-2.5">
+                ⚡ คลาวด์เซิร์ฟเวอร์กำลังสตาร์ตระบบ (Cold Start)...
+              </div>
+              <div className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsGuest(true)}
+                  className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs tracking-wider uppercase transition shadow-lg"
+                >
+                  เข้าเล่นเป็นผู้เยี่ยมชมทันที
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.removeItem('marvel_splendor_auth_token_v2');
+                    window.location.reload();
+                  }}
+                  className="w-full py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-medium text-[11px] transition"
+                >
+                  ล้างเซสชันเก่า (Reset Session)
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );

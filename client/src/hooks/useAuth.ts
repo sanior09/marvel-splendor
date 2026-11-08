@@ -60,13 +60,22 @@ const API_BASE = getBackendUrl();
 
 // ─── Helper ───────────────────────────────────────────────────
 
-async function apiPost<T>(path: string, body: object): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  return res.json() as Promise<T>;
+async function apiPost<T>(path: string, body: object, timeoutMs = 8000): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+    return res.json() as Promise<T>;
+  } catch (err) {
+    clearTimeout(timer);
+    throw err;
+  }
 }
 
 // ─── Hook ─────────────────────────────────────────────────────
@@ -90,9 +99,8 @@ export function useAuth(): UseAuthReturn {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Auto-verify stored token on mount
+  // Auto-verify stored token on mount (with strict 3.0s fail-safe timeout against Render cold-sleep)
   useEffect(() => {
-    // Clear legacy pre-revamp session to ensure players see the new Login Screen
     localStorage.removeItem(LEGACY_STORAGE_KEY);
 
     const storedToken = localStorage.getItem(STORAGE_KEY_TOKEN);
@@ -100,10 +108,23 @@ export function useAuth(): UseAuthReturn {
       setIsLoading(false);
       return;
     }
+
+    let active = true;
+
+    // Fail-safe: Never block user screen for more than 3.0 seconds if Render backend is sleeping
+    const safetyTimer = setTimeout(() => {
+      if (active) {
+        console.warn('[useAuth] Render server asleep / verify timed out. Falling back to login gate.');
+        setIsLoading(false);
+      }
+    }, 3000);
+
     apiPost<{ success: boolean; profile?: UserProfile; error?: string }>(
       '/api/auth/verify',
-      { token: storedToken }
+      { token: storedToken },
+      3500
     ).then((result) => {
+      if (!active) return;
       if (result.success && result.profile) {
         setToken(storedToken);
         setProfile(result.profile);
@@ -111,10 +132,18 @@ export function useAuth(): UseAuthReturn {
         localStorage.removeItem(STORAGE_KEY_TOKEN);
       }
     }).catch(() => {
-      // Network error — keep token, try later
+      // Network error or timeout — allow user to continue
     }).finally(() => {
-      setIsLoading(false);
+      if (active) {
+        clearTimeout(safetyTimer);
+        setIsLoading(false);
+      }
     });
+
+    return () => {
+      active = false;
+      clearTimeout(safetyTimer);
+    };
   }, []);
 
   const login = useCallback(async (username: string, password: string): Promise<boolean> => {
