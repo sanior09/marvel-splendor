@@ -20,7 +20,6 @@ import { soundManager } from '../utils/soundManager';
 import { getMarvelMap } from '../data/marvelMaps';
 import { HeroRecruitVFX } from './HeroRecruitVFX';
 import { TutorialModal } from './TutorialModal';
-import { HeroVFXTestModal } from './HeroVFXTestModal';
 import { getHeroSignature, playHeroSignatureSound, type HeroSignature } from '../data/heroSignatures';
 import type { Card } from '@shared/types/game.types';
 import { FinalRoundModal } from './FinalRoundModal';
@@ -75,7 +74,6 @@ export const Board: React.FC<BoardProps> = ({
   } | null>(null);
 
   const [showTutorial, setShowTutorial] = useState(false);
-  const [showVFXLab, setShowVFXLab] = useState(false);
   const lastLocallyBoughtCardIdRef = useRef<string | null>(null);
 
   // Final Round alert modal state
@@ -327,20 +325,6 @@ export const Board: React.FC<BoardProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            {/* 🎬 Hero VFX Test Lab Button */}
-            <button
-              type="button"
-              onClick={() => {
-                soundManager.playModalOpen();
-                setShowVFXLab(true);
-              }}
-              className="px-2 py-1 rounded-lg bg-gradient-to-r from-purple-600/35 via-pink-600/35 to-amber-600/35 hover:from-purple-600/55 hover:to-amber-600/55 border border-purple-400/60 text-purple-200 hover:text-white font-extrabold text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-[0_0_12px_rgba(168,85,247,0.35)] hover:scale-105"
-              title="ห้องทดสอบเอฟเฟกต์การซื้อฮีโร่และเสียงจริง (22 ตัวละคร)"
-            >
-              <span>🎬</span>
-              <span>เอฟเฟกต์</span>
-            </button>
-
             {/* Interactive Tutorial Guide */}
             <button
               type="button"
@@ -713,7 +697,6 @@ export const Board: React.FC<BoardProps> = ({
 
         {/* Interactive Roblox-Style Tutorial Modal */}
         <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
-        <HeroVFXTestModal isOpen={showVFXLab} onClose={() => setShowVFXLab(false)} playerName={myPlayer.name || 'SANIOR'} />
 
         {/* Final Round Alert Modal — pops on every screen when winTriggeredBy first set */}
         {showFinalRoundModal && state.winTriggeredBy !== null && (() => {

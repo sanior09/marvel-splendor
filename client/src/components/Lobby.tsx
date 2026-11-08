@@ -10,7 +10,6 @@ import type { UserProfile } from '../hooks/useAuth';
 import { soundManager } from '../utils/soundManager';
 import { MARVEL_MAPS, getMarvelMap } from '../data/marvelMaps';
 import { TutorialModal } from './TutorialModal';
-import { HeroVFXTestModal } from './HeroVFXTestModal';
 import { AboutDisclaimerModal } from './AboutDisclaimerModal';
 import { AvatarPicker, MARVEL_AVATARS } from './AvatarPicker';
 import { ProfileBadge } from './ProfileBadge';
@@ -167,7 +166,6 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [selectedMapId, setSelectedMapId] = useState<string>('asgard');
   const [targetScore, setTargetScore] = useState<number>(16);
   const [showTutorial, setShowTutorial] = useState(false);
-  const [showVFXLab, setShowVFXLab] = useState(false);
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
   const [roomCodeCopied, setRoomCodeCopied] = useState(false);
 
@@ -1123,7 +1121,6 @@ export const Lobby: React.FC<LobbyProps> = ({
             )}
             {/* Tutorial Modal in Waiting Room */}
             <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
-        <HeroVFXTestModal isOpen={showVFXLab} onClose={() => setShowVFXLab(false)} playerName={userProfile?.username || playerName || 'SANIOR'} />
         </div>
       </>
     );
@@ -1189,20 +1186,6 @@ export const Lobby: React.FC<LobbyProps> = ({
 
           {/* Top-Right Control Bar: Tutorial Guide + Profile Badge */}
           <div className="flex items-center gap-2">
-            {/* 🎬 Hero VFX Test Lab Button */}
-            <button
-              type="button"
-              onClick={() => {
-                soundManager.playModalOpen();
-                setShowVFXLab(true);
-              }}
-              className="px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-xl bg-gradient-to-r from-purple-600/40 via-pink-600/40 to-amber-600/40 hover:from-purple-600/60 hover:to-amber-600/60 border border-purple-400/70 text-purple-200 hover:text-white font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-[0_0_18px_rgba(168,85,247,0.45)] hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md animate-pulse"
-              title="ห้องทดสอบเอฟเฟกต์การซื้อฮีโร่และเสียงจริง (22 ตัวละคร)"
-            >
-              <span>🎬</span>
-              <span>ทดสอบเอฟเฟกต์</span>
-            </button>
-
             <button
               type="button"
               onClick={() => {
@@ -2234,7 +2217,6 @@ export const Lobby: React.FC<LobbyProps> = ({
 
         {/* Interactive Modals */}
         <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
-        <HeroVFXTestModal isOpen={showVFXLab} onClose={() => setShowVFXLab(false)} playerName={userProfile?.username || playerName || 'SANIOR'} />
         <AboutDisclaimerModal
           isOpen={showDisclaimerModal}
           onClose={() => setShowDisclaimerModal(false)}
