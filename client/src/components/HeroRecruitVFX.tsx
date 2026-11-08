@@ -488,6 +488,9 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
           <div className="hero-vfx-portrait relative rounded-xl overflow-hidden border border-white/25 shadow-2xl bg-black/80 shrink-0">
             <img
               src={`/images/cards/${card.id}.jpg`}
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = `/images/avatars/${signature.id}.jpg`;
+              }}
               alt={card.name}
               className="w-full h-full object-cover object-center"
               style={{

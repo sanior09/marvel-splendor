@@ -20,6 +20,7 @@ import { soundManager } from '../utils/soundManager';
 import { getMarvelMap } from '../data/marvelMaps';
 import { HeroRecruitVFX } from './HeroRecruitVFX';
 import { TutorialModal } from './TutorialModal';
+import { HeroVFXTestModal } from './HeroVFXTestModal';
 import { getHeroSignature, playHeroSignatureSound, type HeroSignature } from '../data/heroSignatures';
 import type { Card } from '@shared/types/game.types';
 import { FinalRoundModal } from './FinalRoundModal';
@@ -74,6 +75,7 @@ export const Board: React.FC<BoardProps> = ({
   } | null>(null);
 
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showVFXLab, setShowVFXLab] = useState(false);
   const lastLocallyBoughtCardIdRef = useRef<string | null>(null);
 
   // Final Round alert modal state
@@ -697,6 +699,7 @@ export const Board: React.FC<BoardProps> = ({
 
         {/* Interactive Roblox-Style Tutorial Modal */}
         <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
+        <HeroVFXTestModal isOpen={showVFXLab} onClose={() => setShowVFXLab(false)} playerName={myPlayer.name || 'SANIOR'} />
 
         {/* Final Round Alert Modal — pops on every screen when winTriggeredBy first set */}
         {showFinalRoundModal && state.winTriggeredBy !== null && (() => {

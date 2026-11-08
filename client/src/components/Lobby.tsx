@@ -10,6 +10,7 @@ import type { UserProfile } from '../hooks/useAuth';
 import { soundManager } from '../utils/soundManager';
 import { MARVEL_MAPS, getMarvelMap } from '../data/marvelMaps';
 import { TutorialModal } from './TutorialModal';
+import { HeroVFXTestModal } from './HeroVFXTestModal';
 import { AboutDisclaimerModal } from './AboutDisclaimerModal';
 import { AvatarPicker, MARVEL_AVATARS } from './AvatarPicker';
 import { ProfileBadge } from './ProfileBadge';
@@ -166,6 +167,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   const [selectedMapId, setSelectedMapId] = useState<string>('asgard');
   const [targetScore, setTargetScore] = useState<number>(16);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showVFXLab, setShowVFXLab] = useState(false);
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
   const [roomCodeCopied, setRoomCodeCopied] = useState(false);
 
@@ -1121,6 +1123,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             )}
             {/* Tutorial Modal in Waiting Room */}
             <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
+        <HeroVFXTestModal isOpen={showVFXLab} onClose={() => setShowVFXLab(false)} playerName={userProfile?.username || playerName || 'SANIOR'} />
         </div>
       </>
     );
