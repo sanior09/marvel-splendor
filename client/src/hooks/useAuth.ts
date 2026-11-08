@@ -49,7 +49,7 @@ const getBackendUrl = (): string => {
   if (typeof window !== 'undefined') {
     // If running on Vercel or custom domain, route backend calls to Render backend
     if (window.location.hostname.includes('vercel.app') || (window.location.hostname !== 'localhost' && !window.location.hostname.includes('onrender.com'))) {
-      return 'https://marvel-splendor-2.onrender.com';
+      return 'https://marvel-splendor-1.onrender.com';
     }
     return window.location.origin;
   }
