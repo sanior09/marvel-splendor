@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 //  HeroRecruitVFX.tsx -- Cinematic Hero Recruit Visual Effect
 // ============================================================
 
@@ -68,7 +68,7 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
 
       {/* 2. Cinematic letterbox bars */}
       <div
-        className="absolute top-0 left-0 right-0 pointer-events-none"
+        className="hero-vfx-letterbox absolute top-0 left-0 right-0 pointer-events-none"
         style={{
           height: '9vh',
           background: 'linear-gradient(to bottom, rgba(0,0,0,0.97), transparent)',
@@ -77,7 +77,7 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
         }}
       />
       <div
-        className="absolute bottom-0 left-0 right-0 pointer-events-none"
+        className="hero-vfx-letterbox absolute bottom-0 left-0 right-0 pointer-events-none"
         style={{
           height: '9vh',
           background: 'linear-gradient(to top, rgba(0,0,0,0.97), transparent)',
@@ -221,7 +221,7 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
 
       {/* 7. Central hero card with cinematic entrance */}
       <div
-        className="relative z-10 flex flex-col items-center max-w-xs w-full mx-4"
+        className="hero-vfx-wrapper relative z-10 flex flex-col items-center max-w-xs w-full mx-4"
         style={{
           transform: isEnter ? 'scale(0.55) translateY(36px)' : 'scale(1) translateY(0)',
           opacity: isEnter ? 0 : 1,
@@ -229,11 +229,11 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
           transitionDelay: isEnter ? '0.05s' : '0s',
         }}
       >
-        {/* Recruiter tag */}
+        {/* Recruiter tag (shown on top in standard/portrait mode) */}
         <div
-          className="mb-3 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase flex items-center gap-2 shadow-2xl"
+          className="hero-vfx-top-tag mb-2.5 sm:mb-3 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-black tracking-widest uppercase flex items-center gap-2 shadow-2xl shrink-0"
           style={{
-            background: 'rgba(0,0,0,0.80)',
+            background: 'rgba(0,0,0,0.85)',
             border: `1.5px solid ${accent}`,
             color: accent,
             boxShadow: `0 0 22px ${glow}`,
@@ -246,7 +246,7 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
 
         {/* Glowing card frame */}
         <div
-          className="relative p-3 rounded-2xl backdrop-blur-xl shadow-2xl"
+          className="hero-vfx-card relative p-2.5 sm:p-3 rounded-2xl backdrop-blur-xl shadow-2xl flex flex-col items-center"
           style={{
             background: 'linear-gradient(145deg, rgba(8,8,18,0.97), rgba(4,4,12,0.99))',
             border: `2px solid ${accent}`,
@@ -257,7 +257,7 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
           <div className="absolute inset-0 rounded-2xl pointer-events-none animate-pulse" style={{ background: `linear-gradient(135deg, ${accent}28 0%, transparent 40%, transparent 60%, ${accent}28 100%)` }} />
 
           {/* Portrait */}
-          <div className="relative w-44 h-60 sm:w-52 sm:h-72 rounded-xl overflow-hidden border border-white/20 shadow-inner bg-black/70">
+          <div className="hero-vfx-portrait relative rounded-xl overflow-hidden border border-white/20 shadow-inner bg-black/70 shrink-0">
             <img
               src={`/images/cards/${card.id}.jpg`}
               alt={card.name}
@@ -274,9 +274,9 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
                 : card.avengersSymbol ? 1 : 0;
               if (count <= 0) return null;
               return (
-                <div className="absolute top-2 right-2 flex items-center -space-x-2">
+                <div className="absolute top-1.5 right-1.5 flex items-center -space-x-1.5 sm:-space-x-2">
                   {Array.from({ length: count }).map((_, idx) => (
-                    <div key={idx} className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 via-red-700 to-red-950 border-2 border-yellow-300 flex items-center justify-center font-black text-yellow-300 shadow-xl text-base">A</div>
+                    <div key={idx} className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-red-600 via-red-700 to-red-950 border-2 border-yellow-300 flex items-center justify-center font-black text-yellow-300 shadow-xl text-xs sm:text-base">A</div>
                   ))}
                 </div>
               );
@@ -284,42 +284,123 @@ export const HeroRecruitVFX: React.FC<HeroRecruitVFXProps> = ({
 
             {/* VP badge */}
             {card.points > 0 && (
-              <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/80 border border-yellow-400/50 font-black text-yellow-300 text-sm shadow">
+              <div className="absolute top-1.5 left-1.5 px-1.5 sm:px-2 py-0.5 rounded-md bg-black/85 border border-yellow-400/50 font-black text-yellow-300 text-xs sm:text-sm shadow">
                 {card.points} PTS
               </div>
             )}
           </div>
 
           {/* Hero identity block */}
-          <div className="mt-3 text-center px-2">
+          <div className="hero-vfx-info mt-2.5 sm:mt-3 text-center px-1 sm:px-2">
+            {/* Side recruiter tag (visible only in compact landscape) */}
             <div
-              className="font-black text-xl sm:text-2xl tracking-widest uppercase flex items-center justify-center gap-2 animate-pulse"
+              className="hero-vfx-side-tag hidden mb-2 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase items-center gap-1.5 shadow-xl shrink-0"
+              style={{
+                background: 'rgba(0,0,0,0.85)',
+                border: `1.5px solid ${accent}`,
+                color: accent,
+                boxShadow: `0 0 16px ${glow}`,
+              }}
+            >
+              <span>{isMyPlayer ? '\u2605' : '\u25BA'}</span>
+              <span>{isMyPlayer ? 'YOU ASSEMBLED' : playerName + ' ASSEMBLED'}</span>
+            </div>
+
+            <div
+              className="hero-vfx-title font-black text-lg sm:text-2xl tracking-widest uppercase flex items-center justify-center gap-2 animate-pulse leading-tight"
               style={{ color: accent, textShadow: `0 0 20px ${glow}, 0 0 40px ${glow}` }}
             >
-              <span className="text-2xl">{signature.icon}</span>
-              <span>{signature.titleEn}</span>
+              <span className="text-xl sm:text-2xl shrink-0">{signature.icon}</span>
+              <span className="break-words">{signature.titleEn}</span>
             </div>
-            <div className="text-white/85 text-xs font-semibold mt-1 tracking-wider">{signature.titleTh}</div>
+            <div className="hero-vfx-th text-white/85 text-[11px] sm:text-xs font-semibold mt-1 tracking-wider">{signature.titleTh}</div>
             <div
-              className="mt-2 px-3 py-1 rounded-lg text-xs font-medium italic"
+              className="hero-vfx-tagline mt-1.5 sm:mt-2 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-lg text-[10px] sm:text-xs font-medium italic"
               style={{ background: `${accent}18`, border: `1px solid ${accent}44`, color: 'rgba(255,255,220,0.9)' }}
             >
               {signature.tagline}
             </div>
+
+            {/* In compact landscape, dismiss hint is placed right here */}
+            <div className="hero-vfx-side-dismiss hidden mt-2 text-[10px] text-white/40 tracking-widest">
+              (แตะที่ใดก็ได้เพื่อปิด / Click to dismiss)
+            </div>
           </div>
         </div>
 
-        {/* Dismiss hint */}
-        <div className="mt-3 text-xs text-white/35 tracking-widest">
+        {/* Dismiss hint (shown below in vertical mode) */}
+        <div className="hero-vfx-bottom-dismiss mt-2.5 sm:mt-3 text-[11px] sm:text-xs text-white/35 tracking-widest">
           (แตะที่ใดก็ได้เพื่อปิด / Click to dismiss)
         </div>
       </div>
 
-      {/* Scan-down keyframe */}
+      {/* Scan-down keyframe & Responsive Styles */}
       <style>{`
         @keyframes scan-down {
           0%   { top: -3px; }
           100% { top: 100%; }
+        }
+
+        .hero-vfx-portrait {
+          width: 11rem;
+          height: 15rem;
+        }
+
+        @media (min-width: 640px) and (min-height: 561px) {
+          .hero-vfx-portrait {
+            width: 13rem;
+            height: 18rem;
+          }
+        }
+
+        /* ── Compact Landscape Mode (Mobile Screen Rotated Horizontally) ── */
+        @media (max-height: 560px) {
+          .hero-vfx-letterbox {
+            height: 3.5vh !important;
+          }
+          .hero-vfx-wrapper {
+            max-width: min(94vw, 560px) !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+          }
+          .hero-vfx-top-tag {
+            display: none !important;
+          }
+          .hero-vfx-bottom-dismiss {
+            display: none !important;
+          }
+          .hero-vfx-side-tag {
+            display: inline-flex !important;
+          }
+          .hero-vfx-side-dismiss {
+            display: block !important;
+          }
+          .hero-vfx-card {
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 1.1rem !important;
+            padding: 0.65rem 1.1rem !important;
+            width: 100% !important;
+          }
+          .hero-vfx-portrait {
+            width: auto !important;
+            height: min(68vh, 215px) !important;
+            aspect-ratio: 3 / 4.1 !important;
+          }
+          .hero-vfx-info {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            text-align: left !important;
+            margin-top: 0 !important;
+            flex: 1 1 0% !important;
+            min-width: 0 !important;
+          }
+          .hero-vfx-title {
+            justify-content: flex-start !important;
+            text-align: left !important;
+            font-size: clamp(0.95rem, 3.4vw, 1.25rem) !important;
+          }
         }
       `}</style>
     </div>
