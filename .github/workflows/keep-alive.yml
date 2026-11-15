@@ -1,0 +1,25 @@
+name: Keep Render Server Alive
+
+on:
+  schedule:
+    # Ping every 10 minutes (offset from :00/:10 to avoid GitHub Actions queue spikes)
+    - cron: '4,14,24,34,44,54 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: keep-alive-ping
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    name: Health Check Ping
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Ping Render /health endpoint
+        run: |
+          curl -fsSL --retry 2 --retry-delay 5 --max-time 60 "https://marvel-splendor-1.onrender.com/health"
+          echo ""
