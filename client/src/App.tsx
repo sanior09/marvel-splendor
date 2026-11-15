@@ -69,8 +69,8 @@ function AuthGate(): React.ReactElement {
   // Auto-skip login screen once token verified
   const isAuthenticated = Boolean(auth.profile && auth.token);
 
-  // While verifying stored token on INITIAL PAGE LOAD, show loading
-  if (auth.isVerifyingToken) {
+  // While verifying stored token on INITIAL PAGE LOAD, show loading (unless user chose guest bypass)
+  if (auth.isVerifyingToken && !isGuest) {
     return (
       <div
         className="fixed inset-0 flex items-center justify-center page-enter"

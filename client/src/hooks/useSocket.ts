@@ -35,8 +35,10 @@ function getSocket(): GameSocket {
       transports: ['websocket', 'polling'],
       autoConnect: true,
       reconnection: true,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: 20,
       reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000,
     }) as GameSocket;
   }
   return socketInstance;
