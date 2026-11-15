@@ -42,6 +42,7 @@ export interface AuthState {
 }
 
 const STORAGE_KEY_TOKEN = 'marvel_splendor_auth_token_v2';
+const STORAGE_KEY_PROFILE = 'marvel_splendor_auth_profile_v2';
 const LEGACY_STORAGE_KEY = 'marvel_splendor_auth_token';
 
 const getBackendUrl = (): string => {
@@ -96,13 +97,43 @@ export interface UseAuthReturn {
 }
 
 export function useAuth(): UseAuthReturn {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [isVerifyingToken, setIsVerifyingToken] = useState(true);
+  // Synchronous restoration from localStorage for instantaneous 0ms session recovery
+  const [profile, setProfile] = useState<UserProfile | null>(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const storedToken = localStorage.getItem(STORAGE_KEY_TOKEN);
+      const storedProfile = localStorage.getItem(STORAGE_KEY_PROFILE);
+      if (storedToken && storedProfile) {
+        return JSON.parse(storedProfile);
+      }
+    } catch {}
+    return null;
+  });
+
+  const [token, setToken] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      return localStorage.getItem(STORAGE_KEY_TOKEN);
+    } catch {}
+    return null;
+  });
+
+  // If both token and profile are in cache, enter game IMMEDIATELY in 0ms!
+  const [isVerifyingToken, setIsVerifyingToken] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      const storedToken = localStorage.getItem(STORAGE_KEY_TOKEN);
+      const storedProfile = localStorage.getItem(STORAGE_KEY_PROFILE);
+      if (storedToken && storedProfile) return false; // Instant bypass!
+      if (storedToken) return true; // Only verify if no cached profile
+    } catch {}
+    return false;
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Auto-verify stored token on mount (with strict 3.0s fail-safe timeout against Render cold-sleep)
+  // Background token verification (Stale-While-Revalidate pattern)
   useEffect(() => {
     localStorage.removeItem(LEGACY_STORAGE_KEY);
 
@@ -114,38 +145,34 @@ export function useAuth(): UseAuthReturn {
 
     let active = true;
 
-    // Fail-safe: Never block user screen for more than 3.0 seconds if Render backend is sleeping
-    const safetyTimer = setTimeout(() => {
-      if (active) {
-        console.warn('[useAuth] Render server asleep / verify timed out. Falling back to login gate.');
-        setIsVerifyingToken(false);
-      }
-    }, 3000);
-
+    // Verify token with backend in background without prematurely kicking user out
     apiPost<{ success: boolean; profile?: UserProfile; error?: string }>(
       '/api/auth/verify',
       { token: storedToken },
-      3500
+      30000 // Allow up to 30s for Render cold start
     ).then((result) => {
       if (!active) return;
       if (result.success && result.profile) {
         setToken(storedToken);
         setProfile(result.profile);
+        localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(result.profile));
       } else {
+        // Token is genuinely invalid or expired on server
         localStorage.removeItem(STORAGE_KEY_TOKEN);
+        localStorage.removeItem(STORAGE_KEY_PROFILE);
+        setToken(null);
+        setProfile(null);
       }
     }).catch(() => {
-      // Network error or timeout — allow user to continue
+      // Network error or timeout (server asleep) — keep cached session!
     }).finally(() => {
       if (active) {
-        clearTimeout(safetyTimer);
         setIsVerifyingToken(false);
       }
     });
 
     return () => {
       active = false;
-      clearTimeout(safetyTimer);
     };
   }, []);
 
@@ -159,6 +186,7 @@ export function useAuth(): UseAuthReturn {
       );
       if (result.success && result.token && result.profile) {
         localStorage.setItem(STORAGE_KEY_TOKEN, result.token);
+        localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(result.profile));
         setToken(result.token);
         setProfile(result.profile);
         return true;
@@ -184,6 +212,7 @@ export function useAuth(): UseAuthReturn {
       );
       if (result.success && result.token && result.profile) {
         localStorage.setItem(STORAGE_KEY_TOKEN, result.token);
+        localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(result.profile));
         setToken(result.token);
         setProfile(result.profile);
         return true;
@@ -201,6 +230,7 @@ export function useAuth(): UseAuthReturn {
 
   const logout = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY_TOKEN);
+    localStorage.removeItem(STORAGE_KEY_PROFILE);
     setToken(null);
     setProfile(null);
     setError(null);
@@ -216,7 +246,10 @@ export function useAuth(): UseAuthReturn {
         '/api/auth/verify',
         { token: storedToken }
       );
-      if (result.success && result.profile) setProfile(result.profile);
+      if (result.success && result.profile) {
+        localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(result.profile));
+        setProfile(result.profile);
+      }
     } catch { /* ignore */ }
   }, []);
 

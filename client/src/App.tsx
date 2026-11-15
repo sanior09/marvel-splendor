@@ -109,6 +109,7 @@ function AuthGate(): React.ReactElement {
                   type="button"
                   onClick={() => {
                     localStorage.removeItem('marvel_splendor_auth_token_v2');
+                    localStorage.removeItem('marvel_splendor_auth_profile_v2');
                     window.location.reload();
                   }}
                   className="w-full py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-medium text-[11px] transition"
