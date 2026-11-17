@@ -4,6 +4,44 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  Bot,
+  Brain,
+  Building2,
+  Check,
+  Clock,
+  Compass,
+  Copy,
+  Cpu,
+  Crown,
+  Flame,
+  Globe,
+  KeyRound,
+  Map as MapIcon,
+  Package,
+  Pencil,
+  Play,
+  Plus,
+  Radio,
+  RefreshCw,
+  Rocket,
+  RotateCcw,
+  Search,
+  Shield,
+  Shuffle,
+  SlidersHorizontal,
+  Swords,
+  Target,
+  Trophy,
+  UserPlus,
+  Users,
+  X,
+  Zap,
+} from 'lucide-react';
 import type { RoomInfo } from '@shared/types/game.types';
 import type { UserProfile } from '../hooks/useAuth';
 
@@ -14,7 +52,7 @@ import { AboutDisclaimerModal } from './AboutDisclaimerModal';
 import { AvatarPicker, MARVEL_AVATARS } from './AvatarPicker';
 import { ProfileBadge } from './ProfileBadge';
 import { RankBadge } from './RankBadge';
-import { resolveMarvelAvatar, getMarvelFallbackEmoji } from '../utils/avatarUtils';
+import { resolveMarvelAvatar } from '../utils/avatarUtils';
 
 const resolvePlayerAvatar = (name: string, avatarUrl?: string): string | undefined => {
   return resolveMarvelAvatar(name, avatarUrl);
@@ -108,16 +146,42 @@ export const getBotPersonalityInfo = (personality?: string) => {
   return AI_PERSONALITY_META[p] || AI_PERSONALITY_META['stark'];
 };
 
-// ── QuickAvatarThumb: tiny avatar with error fallback ─────────
-const QUICK_EMOJI: Record<string, string> = {
-  iron_man: '🦾', thor: '⚡', captain_america: '🛡️', hulk: '💚',
-  spider_man: '🕷️', black_panther: '🐾', doctor_strange: '✨', thanos: '🧤',
-};
-const QuickAvatarThumb: React.FC<{ src: string; fallbackEmoji: string }> = ({ src, fallbackEmoji }) => {
+function getBotPersonalityIcon(personality?: string) {
+  switch (personality?.toLowerCase()) {
+    case 'ultron':
+      return Zap;
+    case 'thanos':
+      return Flame;
+    case 'friday':
+      return Cpu;
+    default:
+      return Brain;
+  }
+}
+
+function getMapLucideIcon(mapId?: string) {
+  switch (mapId) {
+    case 'avengers_tower':
+      return Building2;
+    case 'wakanda':
+      return Shield;
+    case 'sanctum':
+      return Compass;
+    case 'knowhere':
+      return Globe;
+    case 'vormir':
+      return Rocket;
+    default:
+      return Zap;
+  }
+}
+
+// ── QuickAvatarThumb: tiny avatar with clean fallback ─────────
+const QuickAvatarThumb: React.FC<{ src: string; fallbackLabel?: string }> = ({ src, fallbackLabel }) => {
   const [failed, setFailed] = React.useState(false);
   return failed ? (
-    <div className="w-full h-full bg-gradient-to-br from-red-700 to-purple-700 flex items-center justify-center text-xs select-none">
-      {QUICK_EMOJI[fallbackEmoji] ?? '🦸'}
+    <div className="w-full h-full bg-[#1a1e28] flex items-center justify-center text-[11px] font-medium text-[#a3a9b8] select-none">
+      {fallbackLabel?.slice(0, 2).toUpperCase() || 'MV'}
     </div>
   ) : (
     <img src={src} alt="" loading="lazy" onError={() => setFailed(true)} className="w-full h-full object-cover object-center" />
@@ -394,121 +458,90 @@ export const Lobby: React.FC<LobbyProps> = ({
     }, botAvatarUrl);
   };
 
-  // ── Countdown Overlay (Stark Arc Reactor Warp HUD Console) ──
+  // ── Countdown Overlay ──
   const countdownOverlay = activeCountdown !== null
     ? createPortal(
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto bg-black/80"
           style={{
-            background: 'rgba(5, 7, 18, 0.88)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
             WebkitOverflowScrolling: 'touch',
             touchAction: 'pan-y',
           }}
         >
-          {/* Ambient Cosmic Particle Backlight */}
-          <div
-            className="fixed inset-0 pointer-events-none opacity-45"
-            style={{
-              backgroundImage: `
-                radial-gradient(circle at 50% 25%, rgba(245, 158, 11, 0.22) 0%, transparent 60%),
-                radial-gradient(circle at 20% 85%, rgba(239, 68, 68, 0.18) 0%, transparent 55%),
-                radial-gradient(circle at 80% 85%, rgba(168, 85, 247, 0.16) 0%, transparent 55%)
-              `,
-            }}
-          />
-
-          <div
-            className="relative z-10 flex flex-col items-center gap-3.5 sm:gap-4.5 px-4.5 sm:px-6 py-5 sm:py-6 rounded-3xl border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.95),0_0_40px_rgba(245,158,11,0.18)] max-w-[420px] w-full text-center overflow-hidden animate-slide-up select-none my-auto"
-            style={{
-              background: 'linear-gradient(165deg, rgba(18, 24, 46, 0.98) 0%, rgba(9, 12, 24, 0.99) 100%)',
-            }}
-          >
-            {/* Top Subtle Amber Tech Glow Stripe */}
-            <div className="absolute top-0 inset-x-8 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-90" />
-
-            {/* Marvel Splendor & Mission Header */}
-            <div className="flex flex-col items-center gap-1.5 w-full border-b border-white/10 pb-2.5">
+          <div className="relative z-10 flex flex-col items-center gap-4 px-6 py-6 rounded-2xl bg-[#11141c] border border-white/[0.1] shadow-2xl max-w-[420px] w-full text-center animate-slide-up select-none my-auto">
+            {/* Header */}
+            <div className="flex flex-col items-center gap-2 w-full border-b border-white/[0.08] pb-3">
               <div className="flex items-center justify-between w-full">
-                <div className="flex items-center gap-1.5">
-                  <span className="marvel-badge px-2 py-0.5 rounded text-[11px] font-black tracking-wider">MARVEL</span>
-                  <span className="font-display font-black text-sm text-white tracking-widest">SPLENDOR</span>
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 bg-[#c51d24] text-white font-marvel text-base tracking-wider rounded leading-none">
+                    MARVEL
+                  </span>
+                  <span className="font-display font-medium text-sm text-[#eef0f5] tracking-wide">
+                    SPLENDOR
+                  </span>
                 </div>
-                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/30 text-[9.5px] font-mono uppercase text-amber-300 font-bold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                  <span>WARP INITIATED</span>
-                </div>
+                <span className="text-xs text-amber-300 font-medium">กำลังเริ่มเกม</span>
               </div>
-              <p className="text-white/60 text-[11px] font-medium tracking-wide">
-                ระบบกำลังจัดเตรียมสมรภูมิและเคลื่อนพลเข้าสู่การประลอง
+              <p className="text-[#a3a9b8] text-xs">
+                กำลังจัดเตรียมกระดานและเข้าสู่สมรภูมิ
               </p>
             </div>
 
-            {/* Clean, Modern Countdown Timer (No Circular HUD / No Shockwave Pulse) */}
+            {/* Countdown Timer */}
             <div className="flex flex-col items-center justify-center my-3 select-none">
               <span
                 key={`countdown-num-${activeCountdown}`}
-                className="font-num font-black leading-none text-7xl sm:text-8xl select-none animate-countdown-tick"
-                style={{
-                  background: activeCountdown === 1
-                    ? 'linear-gradient(135deg, #fef08a, #ef4444)'
-                    : 'linear-gradient(135deg, #fde047, #f59e0b)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  filter: activeCountdown === 1
-                    ? 'drop-shadow(0 0 24px rgba(239,68,68,0.85))'
-                    : 'drop-shadow(0 0 18px rgba(245,158,11,0.65))',
-                }}
+                className={`font-num font-medium leading-none text-7xl sm:text-8xl animate-countdown-tick ${
+                  activeCountdown === 1 ? 'text-[#e5484d]' : 'text-amber-400'
+                }`}
               >
                 {activeCountdown}
               </span>
               <span
-                className={`text-xs tracking-widest uppercase font-bold mt-2 ${
-                  activeCountdown === 1 ? 'text-red-400 animate-pulse font-extrabold' : 'text-white/60'
+                className={`text-xs font-medium mt-2 ${
+                  activeCountdown === 1 ? 'text-[#e5484d]' : 'text-[#a3a9b8]'
                 }`}
               >
-                {activeCountdown === 1 ? '🔥 เตรียมพร้อม!' : 'วินาที (SECONDS)'}
+                {activeCountdown === 1 ? 'เตรียมพร้อม' : 'วินาที'}
               </span>
             </div>
 
-            {/* Combat Squad Roster Bento Card */}
-            <div className="w-full bg-black/45 border border-white/10 rounded-2xl p-2.5 space-y-1.5 shadow-inner">
-              <div className="flex items-center justify-between text-[10px] text-white/50 px-1 font-mono uppercase">
-                <span>COMBAT SQUAD S.H.I.E.L.D.</span>
-                <span>{soloContext ? `${soloContext.botNames.length + 1} COMBATANTS` : `${currentRoom?.players.length ?? 0} PLAYERS`}</span>
+            {/* Squad Roster */}
+            <div className="w-full bg-[#07080d] border border-white/[0.08] rounded-xl p-3 space-y-2.5">
+              <div className="flex items-center justify-between text-xs text-[#7a8296] px-1">
+                <span>รายชื่อผู้ร่วมเล่น</span>
+                <span className="font-num">
+                  {soloContext ? `${soloContext.botNames.length + 1} คน` : `${currentRoom?.players.length ?? 0} คน`}
+                </span>
               </div>
 
               <div className="flex items-center gap-2 justify-center flex-wrap">
                 {soloContext ? (
                   <>
-                    {/* Human Player */}
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-amber-500/10 border border-amber-400/30">
-                      <div className="w-7 h-7 rounded-full overflow-hidden border border-amber-300 ring-1 ring-amber-400/50 shrink-0 bg-neutral-900 flex items-center justify-center">
+                    <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#1a1e28] border border-amber-400/40">
+                      <div className="w-7 h-7 rounded-full overflow-hidden border border-amber-400/60 shrink-0 bg-[#11141c] flex items-center justify-center">
                         {soloContext.avatarUrl ? (
                           <img src={soloContext.avatarUrl} alt={soloContext.finalName} className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-amber-600 text-white font-black text-[11px]">
+                          <span className="text-[#eef0f5] font-medium text-xs">
                             {soloContext.finalName[0]?.toUpperCase()}
-                          </div>
+                          </span>
                         )}
                       </div>
                       <div className="text-left">
-                        <div className="text-[11px] font-bold text-yellow-300 max-w-[70px] truncate leading-tight">
+                        <div className="text-xs font-medium text-[#eef0f5] max-w-[76px] truncate leading-tight">
                           {soloContext.finalName}
                         </div>
-                        <span className="text-[8.5px] text-amber-200/60 uppercase font-mono block">YOU</span>
+                        <span className="text-[11px] text-amber-300 block">คุณ</span>
                       </div>
                     </div>
 
-                    {/* Bot Enemies */}
                     {soloContext.botNames.map((name, idx) => {
                       const preset = POPULAR_MARVEL_BOTS.find((b) => b.name === name);
                       const botSrc = resolveMarvelAvatar(name, preset?.avatarUrl);
-                      const fallbackEmoji = getMarvelFallbackEmoji(name, true);
                       return (
-                        <div key={idx} className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-purple-500/10 border border-purple-400/30">
-                          <div className="w-7 h-7 rounded-full overflow-hidden border border-purple-400/60 shrink-0 bg-neutral-900 flex items-center justify-center text-xs">
+                        <div key={idx} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#11141c] border border-white/[0.08]">
+                          <div className="w-7 h-7 rounded-full overflow-hidden border border-white/[0.12] shrink-0 bg-[#1a1e28] flex items-center justify-center">
                             {botSrc ? (
                               <img
                                 src={botSrc}
@@ -523,39 +556,34 @@ export const Lobby: React.FC<LobbyProps> = ({
                                 }}
                               />
                             ) : null}
-                            <div className={`${botSrc ? 'hidden' : 'flex'} w-full h-full items-center justify-center bg-gradient-to-br from-purple-700 to-indigo-700 text-white font-black text-[10px]`}>
-                              {fallbackEmoji}
+                            <div className={`${botSrc ? 'hidden' : 'flex'} w-full h-full items-center justify-center text-[#a3a9b8]`}>
+                              <Bot className="w-3.5 h-3.5" strokeWidth={1.5} />
                             </div>
                           </div>
                           <div className="text-left">
-                            <div className="text-[11px] font-bold text-purple-200 max-w-[70px] truncate leading-tight">
+                            <div className="text-xs font-medium text-[#eef0f5] max-w-[76px] truncate leading-tight">
                               {name}
                             </div>
-                            <span className="text-[8.5px] text-purple-300/60 uppercase font-mono block">AI BOT</span>
+                            <span className="text-[11px] text-[#7a8296] block">บอท</span>
                           </div>
                         </div>
                       );
                     })}
                   </>
                 ) : (
-                  // Multiplayer mode: show currentRoom players
                   currentRoom?.players.map((p) => {
                     const src = resolvePlayerAvatar(p.name, p.avatarUrl);
                     const isMe = p.id === myPlayerId;
                     return (
                       <div
                         key={p.id}
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border ${
+                        className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border ${
                           isMe
-                            ? 'bg-amber-500/10 border-amber-400/40 ring-1 ring-amber-400/30'
-                            : 'bg-white/5 border-white/10'
+                            ? 'bg-[#1a1e28] border-amber-400/40'
+                            : 'bg-[#11141c] border-white/[0.08]'
                         }`}
                       >
-                        <div
-                          className={`w-7 h-7 rounded-full overflow-hidden border shrink-0 bg-neutral-900 flex items-center justify-center text-xs ${
-                            isMe ? 'border-amber-300' : 'border-white/20'
-                          }`}
-                        >
+                        <div className="w-7 h-7 rounded-full overflow-hidden border border-white/[0.12] shrink-0 bg-[#1a1e28] flex items-center justify-center">
                           {src ? (
                             <img
                               src={src}
@@ -570,16 +598,16 @@ export const Lobby: React.FC<LobbyProps> = ({
                               className="w-full h-full object-cover"
                             />
                           ) : null}
-                          <div className={`${src ? 'hidden' : 'flex'} w-full h-full items-center justify-center bg-gradient-to-br from-red-600 to-amber-600 text-white font-black text-[10px]`}>
-                            {getMarvelFallbackEmoji(p.name, p.isBot)}
+                          <div className={`${src ? 'hidden' : 'flex'} w-full h-full items-center justify-center text-[#a3a9b8] text-xs font-medium`}>
+                            {p.isBot ? <Bot className="w-3.5 h-3.5" strokeWidth={1.5} /> : p.name[0]?.toUpperCase()}
                           </div>
                         </div>
                         <div className="text-left">
-                          <div className={`text-[11px] font-bold truncate max-w-[75px] leading-tight ${isMe ? 'text-yellow-300' : 'text-white'}`}>
+                          <div className="text-xs font-medium truncate max-w-[76px] leading-tight text-[#eef0f5]">
                             {p.name}
                           </div>
-                          <span className="text-[8.5px] text-white/50 uppercase font-mono block">
-                            {isMe ? 'YOU' : p.isBot ? 'AI' : 'PLAYER'}
+                          <span className={`text-[11px] block ${isMe ? 'text-amber-300' : 'text-[#7a8296]'}`}>
+                            {isMe ? 'คุณ' : p.isBot ? 'บอท' : 'ผู้เล่น'}
                           </span>
                         </div>
                       </div>
@@ -589,21 +617,20 @@ export const Lobby: React.FC<LobbyProps> = ({
               </div>
             </div>
 
-            {/* Cancel / Abort Button (Tactile Mobile Friendly) */}
             {isHost || soloContext ? (
               <button
                 type="button"
                 id="cancel-start-game-btn"
                 onClick={handleCancelStart}
-                className="w-full py-2.5 rounded-xl font-bold font-display text-xs text-white/70 hover:text-white transition-all cursor-pointer flex items-center justify-center gap-1.5 border border-white/15 bg-white/5 hover:bg-white/10 active:scale-[0.98] touch-manipulation min-h-[42px]"
+                className="w-full h-10 rounded-lg font-medium text-xs text-[#a3a9b8] hover:text-[#eef0f5] transition-colors cursor-pointer flex items-center justify-center gap-1.5 border border-white/[0.08] bg-[#1a1e28] hover:bg-white/[0.08] active:scale-[0.98]"
               >
-                <span>✕</span>
-                <span>ยกเลิกการเริ่มเกม (ABORT MISSION)</span>
+                <X className="w-4 h-4" strokeWidth={1.5} />
+                <span>ยกเลิกการเริ่มเกม</span>
               </button>
             ) : (
-              <div className="w-full py-2.5 px-3 rounded-xl font-bold font-display text-xs text-amber-300 border border-amber-400/30 bg-amber-500/10 flex items-center justify-center gap-2 select-none min-h-[42px]">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                <span>รอ HOST นำทัพเข้าสู่สมรภูมิ...</span>
+              <div className="w-full h-10 px-3 rounded-lg font-medium text-xs text-amber-300 border border-white/[0.08] bg-[#1a1e28] flex items-center justify-center gap-2 select-none">
+                <Clock className="w-4 h-4" strokeWidth={1.5} />
+                <span>กำลังรอหัวหน้าห้องเริ่มเกม</span>
               </div>
             )}
           </div>
@@ -612,61 +639,45 @@ export const Lobby: React.FC<LobbyProps> = ({
       )
     : null;
 
-  // ── In-Room Lobby (Waiting Room: Stark S.H.I.E.L.D. Command Console) ──
+  // ── In-Room Lobby ──
   if (currentRoom) {
     const unfilledSlotsCount = Math.max(0, 4 - currentRoom.players.length);
     const roomMap = getMarvelMap(currentRoom.mapId);
+    const RoomMapIcon = getMapLucideIcon(roomMap.id);
 
     return (
       <>
         {countdownOverlay}
         <div
-          className="w-full h-full overflow-y-auto overflow-x-hidden board-bg flex flex-col items-center justify-start p-2.5 sm:p-5 relative select-none"
+          className="w-full h-full overflow-y-auto overflow-x-hidden bg-[#0b0d14] text-[#eef0f5] flex flex-col items-center justify-start p-4 sm:p-6 relative select-none"
           style={{
             WebkitOverflowScrolling: 'touch',
             touchAction: 'pan-y',
           }}
         >
-          {/* Subtle Ambient Vignette & Lights */}
-          <div
-            className="fixed inset-0 pointer-events-none opacity-40"
-            style={{
-              backgroundImage: `
-                radial-gradient(circle at 50% 15%, rgba(245, 158, 11, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 85% 85%, rgba(220, 38, 38, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 15% 85%, rgba(147, 51, 234, 0.12) 0%, transparent 45%)
-              `,
-            }}
-          />
-
-          <div className="relative z-10 w-full max-w-[480px] pt-1 sm:pt-2 pb-8">
-            <div
-              className="rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 w-full space-y-3 sm:space-y-3.5 border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_35px_rgba(245,158,11,0.12)] relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(165deg, rgba(16, 22, 42, 0.97) 0%, rgba(8, 11, 22, 0.99) 100%)',
-              }}
-            >
-              {/* Top Cyber Gold Stripe Accent */}
-              <div className="absolute top-0 inset-x-8 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-80" />
-
-              {/* ── 1. Top Navigation & Action Row ── */}
-              <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+          <div className="relative z-10 w-full max-w-[480px] py-2 pb-8">
+            <div className="rounded-2xl p-4 sm:p-5 w-full space-y-4 bg-[#11141c] border border-white/[0.08] shadow-xl">
+              {/* Top Navigation */}
+              <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
                 <button
                   type="button"
                   onClick={() => {
                     soundManager.playButtonClick();
                     onLeaveRoom?.();
                   }}
-                  className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/12 border border-white/15 text-white/80 hover:text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95 touch-manipulation min-h-[36px]"
-                  title="ออกจากห้องแล้วกลับสู่หน้าหลัก"
+                  className="h-9 px-3 rounded-lg bg-[#1a1e28] hover:bg-white/[0.08] border border-white/[0.08] text-[#a3a9b8] hover:text-[#eef0f5] font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer active:scale-[0.98]"
                 >
-                  <span className="text-sm">←</span>
+                  <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
                   <span>ออกจากห้อง</span>
                 </button>
 
-                <div className="flex items-center gap-1.5">
-                  <span className="marvel-badge px-2 py-0.5 rounded text-[10.5px] font-black tracking-wider">MARVEL</span>
-                  <span className="font-display font-black text-xs sm:text-sm text-white tracking-widest">SPLENDOR</span>
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 bg-[#c51d24] text-white font-marvel text-base tracking-wider rounded leading-none">
+                    MARVEL
+                  </span>
+                  <span className="font-display font-medium text-sm text-[#eef0f5] tracking-wide">
+                    SPLENDOR
+                  </span>
                 </div>
 
                 <button
@@ -675,38 +686,24 @@ export const Lobby: React.FC<LobbyProps> = ({
                     soundManager.playModalOpen();
                     setShowTutorial(true);
                   }}
-                  className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/35 text-amber-300 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95 touch-manipulation min-h-[36px]"
-                  title="คู่มือวิธีเล่น MARVEL SPLENDOR"
+                  className="h-9 px-3 rounded-lg bg-[#1a1e28] hover:bg-white/[0.08] border border-white/[0.08] text-[#eef0f5] font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer active:scale-[0.98]"
                 >
-                  <span>📘</span>
+                  <BookOpen className="w-4 h-4 text-[#a3a9b8]" strokeWidth={1.5} />
                   <span>วิธีเล่น</span>
                 </button>
               </div>
 
-              {/* ── 2. Security Clearance Code Banner (Stark Cyber Pass) ── */}
-              <div
-                className="rounded-2xl p-3 sm:p-3.5 relative overflow-hidden border border-amber-400/35 text-center"
-                style={{
-                  background: 'linear-gradient(145deg, rgba(30, 24, 15, 0.7) 0%, rgba(13, 16, 28, 0.9) 100%)',
-                  boxShadow: 'inset 0 0 20px rgba(245, 158, 11, 0.08), 0 4px 15px rgba(0, 0, 0, 0.4)',
-                }}
-              >
-                <div className="flex items-center justify-between text-[10px] text-amber-300/80 font-mono tracking-wider uppercase mb-1">
-                  <span className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>SECURE WAR ROOM CODE</span>
-                  </span>
-                  <span>แชร์ให้เพื่อนร่วมทีม</span>
+              {/* Room Code Banner */}
+              <div className="rounded-xl p-4 bg-[#07080d] border border-white/[0.08]">
+                <div className="flex items-center justify-between text-xs text-[#7a8296] mb-2">
+                  <span>รหัสเข้าร่วมห้อง</span>
+                  <span>ส่งให้เพื่อนเพื่อเข้าห้องนี้</span>
                 </div>
 
-                <div className="flex items-center justify-center gap-2.5 my-1">
-                  <div className="bg-black/75 border border-red-500/40 rounded-xl px-4 py-1.5 flex items-center shadow-inner">
-                    <span
-                      className="font-mono font-black text-2xl sm:text-3xl text-red-400 tracking-[0.28em] drop-shadow-[0_0_10px_rgba(239,68,68,0.6)] select-all"
-                    >
-                      {currentRoom.roomId}
-                    </span>
-                  </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-mono font-semibold text-2xl sm:text-3xl text-[#eef0f5] tracking-[0.22em] select-all">
+                    {currentRoom.roomId}
+                  </span>
 
                   <button
                     type="button"
@@ -716,50 +713,49 @@ export const Lobby: React.FC<LobbyProps> = ({
                       setRoomCodeCopied(true);
                       setTimeout(() => setRoomCodeCopied(false), 2000);
                     }}
-                    className={`px-3 py-2 rounded-xl border font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95 touch-manipulation min-h-[40px] ${
+                    className={`h-9 px-3 rounded-lg border font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer active:scale-[0.98] ${
                       roomCodeCopied
-                        ? 'bg-emerald-500/25 border-emerald-400 text-emerald-200 shadow-emerald-950/50'
-                        : 'bg-white/10 hover:bg-white/20 border-white/20 text-white shadow-black/40'
+                        ? 'bg-emerald-500/15 border-emerald-500/35 text-emerald-300'
+                        : 'bg-[#1a1e28] hover:bg-white/[0.08] border-white/[0.08] text-[#eef0f5]'
                     }`}
-                    title="คัดลอกรหัสห้อง"
                   >
-                    <span>{roomCodeCopied ? '✓' : '📋'}</span>
+                    {roomCodeCopied ? (
+                      <Check className="w-3.5 h-3.5" strokeWidth={1.75} />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5 text-[#a3a9b8]" strokeWidth={1.5} />
+                    )}
                     <span>{roomCodeCopied ? 'คัดลอกแล้ว' : 'คัดลอก'}</span>
                   </button>
                 </div>
               </div>
 
-              {/* ── 3. Mission Parameters Bento (Map & Target Score) ── */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {/* Map Card */}
-                <div className="rounded-xl p-2.5 bg-white/[0.03] border border-white/10 flex items-center justify-between shadow-sm">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-xl shrink-0">{roomMap.icon}</span>
+              {/* Map & Target Score */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="rounded-xl p-3 bg-[#1a1e28] border border-white/[0.08] flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-lg bg-[#11141c] border border-white/[0.08] flex items-center justify-center shrink-0">
+                      <RoomMapIcon className="w-4 h-4 text-[#a3a9b8]" strokeWidth={1.5} />
+                    </div>
                     <div className="min-w-0">
-                      <div className="text-[9px] text-white/50 uppercase font-mono tracking-wider">สมรภูมิรบ</div>
-                      <div className="text-xs font-bold text-white truncate">{roomMap.name}</div>
+                      <div className="text-[11px] text-[#7a8296]">สมรภูมิรบ</div>
+                      <div className="text-xs font-medium text-[#eef0f5] truncate">{roomMap.name}</div>
                     </div>
                   </div>
-                  <span className="text-[9px] bg-red-600/80 text-white font-mono px-1.5 py-0.5 rounded-md uppercase tracking-wider font-bold shrink-0">
-                    LOCKED
-                  </span>
                 </div>
 
-                {/* Target Score Card */}
-                <div className="rounded-xl p-2.5 bg-white/[0.03] border border-white/10 flex flex-col justify-center shadow-sm">
-                  <div className="flex items-center justify-between mb-1">
+                <div className="rounded-xl p-3 bg-[#1a1e28] border border-white/[0.08] flex flex-col justify-center">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-sm">🎯</span>
-                      <span className="text-[9px] text-white/50 uppercase font-mono tracking-wider">เป้าหมายแต้มชัยชนะ</span>
+                      <Target className="w-3.5 h-3.5 text-[#7a8296]" strokeWidth={1.5} />
+                      <span className="text-xs text-[#a3a9b8]">เป้าหมาย</span>
                     </div>
-                    <span className="text-xs font-black font-num text-yellow-300">
+                    <span className="text-xs font-medium font-num text-amber-300">
                       {currentRoom.targetScore ?? 16} แต้ม
                     </span>
                   </div>
 
-                  {/* Host Quick Adjust Pills */}
                   {isHost && onSetTargetScore ? (
-                    <div className="grid grid-cols-4 gap-1 mt-0.5">
+                    <div className="grid grid-cols-4 gap-1 mt-2">
                       {[12, 16, 20, 24].map((pts) => (
                         <button
                           key={pts}
@@ -768,13 +764,13 @@ export const Lobby: React.FC<LobbyProps> = ({
                             soundManager.playScorePresetSelect(pts);
                             onSetTargetScore(pts);
                           }}
-                          className={`py-1 rounded-lg font-black font-num text-[11px] transition-all cursor-pointer border active:scale-95 touch-manipulation ${
+                          className={`h-7 rounded-md font-medium font-num text-xs transition-colors cursor-pointer border ${
                             (currentRoom.targetScore ?? 16) === pts
-                              ? 'border-yellow-400 bg-yellow-400 text-slate-950 shadow-[0_0_8px_rgba(250,204,21,0.4)]'
-                              : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
+                              ? 'border-amber-400/70 bg-amber-400 text-[#07080d]'
+                              : 'border-white/[0.08] bg-[#11141c] text-[#a3a9b8] hover:text-[#eef0f5]'
                           }`}
                         >
-                          {pts}P
+                          {pts}
                         </button>
                       ))}
                     </div>
@@ -782,46 +778,34 @@ export const Lobby: React.FC<LobbyProps> = ({
                 </div>
               </div>
 
-              {/* ── 4. Combat Squadron Roster Bento (Player List) ── */}
-              <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/45 shadow-inner">
-                <div className="px-3.5 py-2 border-b border-white/10 bg-white/[0.02] flex items-center justify-between">
-                  <span className="text-[11px] text-white/80 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                    <span>🛡️</span>
-                    <span>สมาชิกในทีม (SQUAD ROSTER)</span>
+              {/* Player Roster */}
+              <div className="rounded-xl overflow-hidden border border-white/[0.08] bg-[#07080d]">
+                <div className="px-4 py-2.5 border-b border-white/[0.08] bg-[#11141c] flex items-center justify-between">
+                  <span className="text-xs text-[#eef0f5] font-medium flex items-center gap-2">
+                    <Users className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+                    <span>ผู้เล่นในห้อง</span>
                   </span>
-                  <span className="text-[10px] text-amber-300 font-mono font-bold bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/25">
+                  <span className="text-xs text-[#a3a9b8] font-num">
                     {currentRoom.players.length} / 4 คน
                   </span>
                 </div>
 
-                <div className="p-2 space-y-1.5">
+                <div className="p-2.5 space-y-2">
                   {currentRoom.players.map((p) => {
                     const avatarSrc = resolvePlayerAvatar(p.name, p.avatarUrl);
-                    const fallbackEmoji = getMarvelFallbackEmoji(p.name, p.isBot);
                     const isHostPlayer = p.id === currentRoom.hostId;
                     const isMe = p.id === myPlayerId;
 
                     return (
                       <div
                         key={p.id}
-                        className={`flex items-center gap-2.5 px-3 py-2 rounded-xl border transition-all ${
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-colors ${
                           isMe
-                            ? 'bg-amber-500/10 border-amber-400/35 ring-1 ring-amber-400/20'
-                            : isHostPlayer
-                            ? 'bg-white/[0.04] border-white/15'
-                            : 'bg-white/[0.02] border-white/8'
+                            ? 'bg-[#1a1e28] border-amber-400/40'
+                            : 'bg-[#11141c] border-white/[0.08]'
                         }`}
                       >
-                        {/* Avatar */}
-                        <div
-                          className={`w-9 h-9 rounded-full overflow-hidden border-2 shrink-0 bg-neutral-900 flex items-center justify-center text-sm shadow ${
-                            isHostPlayer
-                              ? 'border-amber-300 ring-1 ring-amber-400/40'
-                              : p.isBot
-                              ? 'border-purple-400 ring-1 ring-purple-400/30'
-                              : 'border-white/20'
-                          }`}
-                        >
+                        <div className="w-9 h-9 rounded-full overflow-hidden border border-white/[0.12] shrink-0 bg-[#1a1e28] flex items-center justify-center text-xs font-medium text-[#a3a9b8]">
                           {avatarSrc ? (
                             <img
                               src={avatarSrc}
@@ -830,60 +814,49 @@ export const Lobby: React.FC<LobbyProps> = ({
                                 const target = e.target as HTMLImageElement;
                                 target.style.display = 'none';
                                 if (target.nextElementSibling) {
-                                  (target.nextElementSibling as HTMLElement).style.display = 'block';
+                                  (target.nextElementSibling as HTMLElement).style.display = 'flex';
                                 }
                               }}
                               className="w-full h-full object-cover object-center"
                             />
                           ) : null}
-                          <span className={avatarSrc ? 'hidden' : 'block'}>
-                            {fallbackEmoji}
+                          <span className={avatarSrc ? 'hidden' : 'flex items-center justify-center'}>
+                            {p.isBot ? <Bot className="w-4 h-4" strokeWidth={1.5} /> : p.name[0]?.toUpperCase()}
                           </span>
                         </div>
 
-                        {/* Player Details */}
                         <div className="flex-1 min-w-0 text-left">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className={`font-bold text-xs truncate ${isMe ? 'text-yellow-300' : 'text-white'}`}>
+                            <span className="font-medium text-xs truncate text-[#eef0f5]">
                               {p.name}
                             </span>
                             <RankBadge rank={p.rank} isBot={p.isBot} size="sm" />
                             {isMe && (
-                              <span className="text-[8.5px] font-bold text-amber-300 bg-amber-400/20 px-1 py-0.2 rounded border border-amber-400/30">
+                              <span className="text-[11px] font-medium text-amber-300">
                                 คุณ
                               </span>
                             )}
                           </div>
-                          <div className="text-[9px] text-white/45 font-mono">
-                            {p.isBot ? 'MARVEL AI AGENT' : isHostPlayer ? 'MISSION HOST' : 'ALLIED OPERATIVE'}
+                          <div className="text-[11px] text-[#7a8296]">
+                            {p.isBot ? 'บอท AI' : isHostPlayer ? 'หัวหน้าห้อง' : 'ผู้เล่น'}
                           </div>
                         </div>
 
-                        {/* Status Badges */}
-                        <div className="flex items-center gap-1.5 shrink-0">
+                        <div className="flex items-center gap-2 shrink-0">
                           {isHostPlayer ? (
-                            <span className="text-[9.5px] font-bold text-yellow-300 bg-yellow-400/15 px-2 py-0.5 rounded-full border border-yellow-400/35 flex items-center gap-1">
-                              <span>👑</span>
+                            <span className="text-[11px] font-medium text-amber-300 bg-[#1a1e28] px-2 py-0.5 rounded-md border border-white/[0.08] flex items-center gap-1">
+                              <Crown className="w-3 h-3" strokeWidth={1.5} />
                               <span>หัวหน้าห้อง</span>
                             </span>
-                          ) : p.isBot ? (
-                            <span className="text-[9.5px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-400/30 flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          ) : p.isBot || p.isReady ? (
+                            <span className="text-[11px] font-medium text-[#4cc38a] flex items-center gap-1">
+                              <Check className="w-3.5 h-3.5" strokeWidth={1.75} />
                               <span>พร้อม</span>
                             </span>
-                          ) : p.isReady ? (
-                            <span className="text-[9.5px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-400/30 flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                              <span>พร้อมแล้ว</span>
-                            </span>
                           ) : (
-                            <span className="text-[9.5px] font-medium text-amber-300/90 bg-amber-500/15 px-2 py-0.5 rounded-full border border-amber-400/25 flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                              <span>ยังไม่พร้อม</span>
-                            </span>
+                            <span className="text-[11px] text-[#a3a9b8]">รอพร้อม</span>
                           )}
 
-                          {/* Bot Remove Button (Host only) */}
                           {isHost && p.isBot && (
                             <button
                               type="button"
@@ -891,10 +864,10 @@ export const Lobby: React.FC<LobbyProps> = ({
                                 soundManager.playButtonClick();
                                 onRemoveBot(p.id);
                               }}
-                              className="text-red-400 hover:text-red-300 w-6 h-6 rounded-lg bg-red-500/10 hover:bg-red-500/25 border border-red-500/20 flex items-center justify-center text-xs transition-all cursor-pointer active:scale-95 touch-manipulation"
-                              title="ลบบอทออก"
+                              className="text-[#7a8296] hover:text-[#e5484d] w-7 h-7 rounded-md bg-[#1a1e28] hover:bg-red-950/40 border border-white/[0.08] flex items-center justify-center transition-colors cursor-pointer"
+                              aria-label="ลบบอทออก"
                             >
-                              ✕
+                              <X className="w-3.5 h-3.5" strokeWidth={1.5} />
                             </button>
                           )}
                         </div>
@@ -902,25 +875,23 @@ export const Lobby: React.FC<LobbyProps> = ({
                     );
                   })}
 
-                  {/* Empty Ghost Slots (Visual indicator for open spots) */}
                   {Array.from({ length: unfilledSlotsCount }).map((_, idx) => (
                     <div
                       key={`empty-slot-${idx}`}
-                      className="flex items-center justify-between px-3.5 py-2 rounded-xl border border-dashed border-white/10 bg-white/[0.01] text-white/30 text-xs"
+                      className="flex items-center justify-between px-3 py-2.5 rounded-lg border border-dashed border-white/[0.08] bg-[#11141c]/50 text-[#7a8296] text-xs"
                     >
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full border border-dashed border-white/20 flex items-center justify-center text-[10px] text-white/30">
-                          +
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-full border border-dashed border-white/[0.12] flex items-center justify-center">
+                          <UserPlus className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
                         </div>
-                        <span className="text-[11px] font-medium">รอผู้เล่นเข้าร่วม...</span>
+                        <span>รอผู้เล่นเข้าร่วม</span>
                       </div>
-                      <span className="text-[9px] font-mono uppercase text-white/30 tracking-wider">OPEN SLOT</span>
+                      <span className="text-[11px] font-num">ที่ว่าง</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* ── 5. Add Bot Action (Host Only) ── */}
               {isHost && canAddMoreBots && (
                 <button
                   type="button"
@@ -932,30 +903,26 @@ export const Lobby: React.FC<LobbyProps> = ({
                     soundManager.playButtonClick();
                     setShowAddBotModal(true);
                   }}
-                  className="w-full py-2.5 rounded-xl border border-dashed border-purple-400/50 bg-purple-500/10 hover:bg-purple-500/20 hover:border-purple-400 text-purple-200 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm active:scale-[0.98] touch-manipulation min-h-[42px]"
+                  className="w-full h-10 rounded-lg border border-dashed border-white/[0.14] bg-[#1a1e28]/60 hover:bg-[#1a1e28] hover:border-white/[0.25] text-[#eef0f5] font-medium text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer active:scale-[0.98]"
                 >
-                  <span className="text-sm">🤖</span>
-                  <span>+ เพิ่มคู่ต่อสู้ MARVEL AI BOT</span>
+                  <Bot className="w-4 h-4 text-[#a3a9b8]" strokeWidth={1.5} />
+                  <span>เพิ่มบอท AI เข้าห้อง</span>
                 </button>
               )}
 
-              {/* ── 6. Token Pool Info Indicator ── */}
               {currentRoom && currentRoom.players.length >= 2 && (
-                <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-xl p-2.5 text-center text-[10.5px] text-emerald-200 shadow-inner">
-                  <div className="font-bold flex items-center justify-center gap-1">
-                    <span>⚡ กองกลางตามจำนวนผู้เล่น ({currentRoom.players.length} คน):</span>
-                  </div>
-                  <div className="text-white/80 mt-0.5 flex items-center justify-center gap-1.5 flex-wrap">
-                    <span>5 สีหลักละ <strong className="text-amber-300 font-num">{currentRoom.players.length === 2 ? 4 : currentRoom.players.length === 3 ? 5 : 7}</strong> ก้อน</span>
-                    <span>•</span>
-                    <span>🟢 Time Stone <strong className="text-emerald-300 font-num">{currentRoom.players.length}</strong> ก้อน</span>
-                    <span>•</span>
-                    <span>🛡️ S.H.I.E.L.D. <strong className="text-slate-100 font-num">5</strong> ก้อน</span>
+                <div className="bg-[#07080d] border border-white/[0.08] rounded-xl p-3 text-center text-xs text-[#a3a9b8]">
+                  <div>กองกลางสำหรับ {currentRoom.players.length} ผู้เล่น</div>
+                  <div className="text-[#eef0f5] mt-1 flex items-center justify-center gap-2 flex-wrap font-num">
+                    <span>สีหลักละ {currentRoom.players.length === 2 ? 4 : currentRoom.players.length === 3 ? 5 : 7}</span>
+                    <span className="text-[#7a8296]">•</span>
+                    <span className="text-[#4cc38a]">Time {currentRoom.players.length}</span>
+                    <span className="text-[#7a8296]">•</span>
+                    <span>S.H.I.E.L.D. 5</span>
                   </div>
                 </div>
               )}
 
-              {/* ── 7. Primary Action Launch Deck ── */}
               {!isHost ? (
                 <div className="space-y-2 pt-1">
                   <button
@@ -964,71 +931,53 @@ export const Lobby: React.FC<LobbyProps> = ({
                       soundManager.playButtonClick();
                       onToggleReady?.();
                     }}
-                    className={[
-                      'w-full py-3 sm:py-3.5 rounded-xl font-black font-display text-sm transition-all duration-200 uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-[0.98] touch-manipulation min-h-[46px]',
+                    className={`w-full h-11 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] ${
                       isMeReady
-                        ? 'bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white border border-amber-400/40 shadow-amber-950/40'
-                        : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border border-emerald-400/40 shadow-emerald-950/40 animate-pulse',
-                    ].join(' ')}
+                        ? 'bg-[#1a1e28] hover:bg-white/[0.08] text-[#eef0f5] border border-white/[0.1]'
+                        : 'bg-amber-400 hover:bg-amber-300 text-[#07080d]'
+                    }`}
                   >
                     {isMeReady ? (
                       <>
-                        <span>✕</span>
-                        <span>ยกเลิกพร้อมเล่น (CANCEL READY)</span>
+                        <X className="w-4 h-4" strokeWidth={1.5} />
+                        <span>ยกเลิกพร้อมเล่น</span>
                       </>
                     ) : (
                       <>
-                        <span className="text-base">⚡</span>
-                        <span>ยืนยันพร้อมเล่น (CONFIRM READY)</span>
+                        <Check className="w-4 h-4" strokeWidth={1.75} />
+                        <span>พร้อมเล่นแล้ว</span>
                       </>
                     )}
                   </button>
-                  {isMeReady ? (
-                    <p className="text-center text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1.5">
-                      <span>✨</span> คุณพร้อมแล้ว! กำลังรอหัวหน้าห้องกดเริ่มเกม...
-                    </p>
-                  ) : (
-                    <p className="text-center text-amber-300/90 text-xs flex items-center justify-center gap-1.5">
-                      <span>⚠️</span> กรุณากดปุ่มเพื่อส่งสัญญาณให้หัวหน้าห้องทราบว่าคุณพร้อม
-                    </p>
-                  )}
+                  <p className="text-center text-xs text-[#a3a9b8]">
+                    {isMeReady ? 'คุณพร้อมแล้ว กำลังรอหัวหน้าห้องเริ่มเกม' : 'กดยืนยันความพร้อมเพื่อเริ่มเกม'}
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-2 pt-1">
                   <button
                     type="button"
-                    onClick={() => {
-                      handleStartGame();
-                    }}
+                    onClick={handleStartGame}
                     disabled={!canStart}
-                    className={[
-                      'w-full py-3 sm:py-3.5 rounded-xl font-black font-display text-sm transition-all duration-200 uppercase tracking-wider flex items-center justify-center gap-2 active:scale-[0.98] touch-manipulation min-h-[46px]',
+                    className={`w-full h-11 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 active:scale-[0.98] ${
                       canStart
-                        ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white shadow-[0_8px_25px_rgba(16,185,129,0.4)] cursor-pointer hover:-translate-y-0.5'
-                        : 'bg-white/5 text-white/40 cursor-not-allowed border border-white/10',
-                    ].join(' ')}
+                        ? 'bg-amber-400 hover:bg-amber-300 text-[#07080d] cursor-pointer'
+                        : 'bg-[#1a1e28] text-[#7a8296] cursor-not-allowed border border-white/[0.08]'
+                    }`}
                   >
-                    <span className="text-base">🚀</span>
+                    <Play className="w-4 h-4" strokeWidth={1.75} />
                     <span>
                       {(currentRoom?.players.length ?? 0) < 2
-                        ? `ต้องการผู้เล่นอีกอย่างน้อย ${2 - (currentRoom?.players.length ?? 0)} คน`
+                        ? `ต้องการผู้เล่นอีก ${2 - (currentRoom?.players.length ?? 0)} คน`
                         : !allReady
-                        ? `รอผู้เล่นยืนยัน (${nonHostHumans.length - unreadyHumans.length}/${nonHostHumans.length} พร้อม)`
-                        : 'เริ่มเกม MARVEL SPLENDOR'}
+                        ? `รอผู้เล่นพร้อม (${nonHostHumans.length - unreadyHumans.length}/${nonHostHumans.length})`
+                        : 'เริ่มเกม'}
                     </span>
-                    {canStart && <span className="text-yellow-300">➔</span>}
                   </button>
 
                   {(currentRoom?.players.length ?? 0) >= 2 && !allReady && (
-                    <p className="text-center text-amber-400/90 text-xs flex items-center justify-center gap-1">
-                      <span>⏳</span>
-                      <span>รอผู้เล่น: <span className="font-bold text-amber-300">{unreadyHumans.map((p) => p.name).join(', ')}</span> กดยืนยันพร้อมเล่น</span>
-                    </p>
-                  )}
-                  {canStart && (
-                    <p className="text-center text-emerald-300 text-xs font-semibold flex items-center justify-center gap-1">
-                      <span>✨</span>
-                      <span>ทุกคนพร้อมเข้าสู่สมรภูมิแล้ว! หัวหน้าห้องเริ่มเกมได้เลย</span>
+                    <p className="text-center text-xs text-[#a3a9b8]">
+                      รอผู้เล่น: <span className="text-[#eef0f5] font-medium">{unreadyHumans.map((p) => p.name).join(', ')}</span> กดพร้อม
                     </p>
                   )}
                 </div>
@@ -1036,45 +985,45 @@ export const Lobby: React.FC<LobbyProps> = ({
             </div>
           </div>
 
-
-
           {/* Add Bot Modal */}
           {showAddBotModal &&
             createPortal(
-              <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-                <div className="glass-strong rounded-3xl p-6 max-w-sm w-full space-y-4 border border-purple-500/40 shadow-2xl">
-                  <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                    <h3 className="font-bold text-base text-white flex items-center gap-1.5">
-                      <span>🤖</span> เพิ่มคู่ต่อสู้บอท AI
+              <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/75 animate-fade-in">
+                <div className="bg-[#11141c] rounded-2xl p-5 max-w-sm w-full space-y-4 border border-white/[0.1] shadow-2xl">
+                  <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+                    <h3 className="font-medium text-sm text-[#eef0f5] flex items-center gap-2">
+                      <Bot className="w-4 h-4 text-[#a3a9b8]" strokeWidth={1.5} />
+                      <span>เพิ่มคู่ต่อสู้บอท AI</span>
                     </h3>
                     <button
                       type="button"
                       onClick={() => setShowAddBotModal(false)}
-                      className="text-white/40 hover:text-white text-lg leading-none cursor-pointer"
+                      className="w-7 h-7 rounded-md bg-[#1a1e28] hover:bg-white/[0.1] text-[#a3a9b8] hover:text-[#eef0f5] flex items-center justify-center cursor-pointer"
+                      aria-label="ปิด"
                     >
-                      ✕
+                      <X className="w-4 h-4" strokeWidth={1.5} />
                     </button>
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-bold text-white/70 uppercase tracking-wider block mb-1.5">
-                      ชื่อบอท AI (เลือกด่วนหรือพิมพ์เอง)
+                    <label className="text-xs font-medium text-[#a3a9b8] block mb-1.5">
+                      ชื่อบอท AI
                     </label>
                     <input
                       type="text"
                       value={newBotName}
                       onChange={(e) => setNewBotName(e.target.value)}
-                      placeholder="ระบุชื่อบอท (เช่น Doctor Doom)..."
+                      placeholder="ระบุชื่อบอท เช่น Doctor Doom"
                       maxLength={20}
-                      className="w-full bg-white/5 border border-white/15 rounded-xl px-3.5 py-2.5 text-white placeholder-white/30 focus:outline-none focus:border-purple-400 font-semibold text-sm"
+                      className="w-full h-10 bg-[#07080d] border border-white/[0.08] rounded-lg px-3 text-[#eef0f5] placeholder-[#7a8296] focus:outline-none focus:border-amber-400/70 text-sm"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-bold text-white/50 uppercase tracking-wider block mb-1">
+                    <label className="text-xs font-medium text-[#a3a9b8] block mb-1.5">
                       เลือกตัวละครด่วน
                     </label>
-                    <div className="grid grid-cols-2 gap-1.5 max-h-40 overflow-y-auto pr-1">
+                    <div className="grid grid-cols-2 gap-1.5 max-h-44 overflow-y-auto pr-1">
                       {POPULAR_MARVEL_BOTS.map((bot) => (
                         <button
                           key={bot.name}
@@ -1084,25 +1033,24 @@ export const Lobby: React.FC<LobbyProps> = ({
                             setNewBotName(bot.name);
                             setNewBotPersonality(bot.personality);
                           }}
-                          className={[
-                            'text-left p-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer',
+                          className={`text-left px-2.5 py-2 rounded-lg border text-xs font-medium flex items-center gap-2 transition-colors cursor-pointer ${
                             newBotName === bot.name
-                              ? 'border-purple-400 bg-purple-500/30 text-white shadow'
-                              : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white',
-                          ].join(' ')}
+                              ? 'border-amber-400/60 bg-[#1a1e28] text-[#eef0f5]'
+                              : 'border-white/[0.08] bg-[#07080d] text-[#a3a9b8] hover:text-[#eef0f5]'
+                          }`}
                         >
-                          <span>{bot.avatar}</span>
+                          <Bot className="w-3.5 h-3.5 text-[#7a8296] shrink-0" strokeWidth={1.5} />
                           <span className="truncate">{bot.name}</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  <div className="flex gap-2 pt-2">
+                  <div className="flex gap-2 pt-1">
                     <button
                       type="button"
                       onClick={() => setShowAddBotModal(false)}
-                      className="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition-colors cursor-pointer"
+                      className="flex-1 h-9 rounded-lg bg-[#1a1e28] hover:bg-white/[0.08] border border-white/[0.08] text-[#a3a9b8] hover:text-[#eef0f5] font-medium text-xs transition-colors cursor-pointer"
                     >
                       ยกเลิก
                     </button>
@@ -1110,81 +1058,59 @@ export const Lobby: React.FC<LobbyProps> = ({
                       type="button"
                       onClick={handleConfirmAddBot}
                       disabled={!newBotName.trim()}
-                      className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg transition-all cursor-pointer"
+                      className="flex-1 h-9 rounded-lg bg-amber-400 hover:bg-amber-300 text-[#07080d] font-medium text-xs transition-colors cursor-pointer disabled:opacity-40"
                     >
-                      + เพิ่มบอท
+                      เพิ่มบอท
                     </button>
                   </div>
                 </div>
               </div>,
               document.body,
             )}
-            {/* Tutorial Modal in Waiting Room */}
-            <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
+          <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
         </div>
       </>
     );
   }
 
-  // ── Main Lobby Screen ───────────────────────────────
-  // ── Main Lobby Screen (Tactical War Room Command Center) ──
+  // ── Main Lobby Screen ──
+  const currentMap = getMarvelMap(selectedMapId);
+  const CurrentMapIcon = getMapLucideIcon(currentMap.id);
+
   return (
     <>
       {countdownOverlay}
 
-      {/* ── Dynamic Battlefield Realm Wallpaper with Cinematic Scrim ── */}
+      {/* Dimmed Battlefield Art blended cleanly into Ink #0b0d14 */}
       <div
-        className="fixed inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 transform scale-105 pointer-events-none -z-10"
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat pointer-events-none -z-10 opacity-15"
         style={{
-          backgroundImage: `url('${getMarvelMap(selectedMapId).imageUrl}'), url('/images/maps/asgard.jpg')`,
-          filter: 'brightness(0.24) saturate(1.2) contrast(1.15)',
+          backgroundImage: `url('${currentMap.imageUrl}'), url('/images/maps/asgard.jpg')`,
         }}
       />
-      {/* Dark Ambient Scrim */}
       <div
         className="fixed inset-0 pointer-events-none -z-10"
         style={{
           background:
-            'radial-gradient(circle at 50% 25%, rgba(6,9,19,0.72) 0%, rgba(5,7,14,0.94) 70%, #05070e 100%)',
-        }}
-      />
-      {/* Structural Technical Gridlines */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.035] -z-10"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
+            'radial-gradient(circle at 50% 25%, rgba(11,13,20,0.72) 0%, rgba(11,13,20,0.96) 70%, #0b0d14 100%)',
         }}
       />
 
       <div
-        className="w-full h-full overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start px-3 sm:px-6 py-1.5 lg:py-2.5 relative select-none touch-pan-y"
+        className="w-full h-full overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start px-4 sm:px-6 py-4 relative select-none touch-pan-y text-[#eef0f5]"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
-        
-        {/* Top Command Telemetry Bar */}
-        <div className="w-full max-w-6xl mx-auto flex items-center justify-between gap-3 pt-0.5 pb-1 lg:pb-1.5">
-          {/* Telemetry watermark on left */}
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
-            <span className="text-white/40 uppercase tracking-wider font-['Prompt',sans-serif] text-[10px] hidden sm:inline-block">
-              MARVEL SPLENDOR ONLINE
-            </span>
-            <span className="text-white/20 hidden sm:inline-block">•</span>
+        {/* Top Bar */}
+        <div className="w-full max-w-6xl mx-auto flex items-center justify-between gap-4 pb-4">
+          <div className="flex items-center gap-2 text-xs text-[#a3a9b8]">
             <span
-              className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border"
-              style={{
-                background: connectionStatus === 'connected' ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)',
-                borderColor: connectionStatus === 'connected' ? 'rgba(16,185,129,0.35)' : 'rgba(239,68,68,0.35)',
-                color: connectionStatus === 'connected' ? '#6ee7b7' : '#fca5a5',
-              }}
-            >
-              {connectionStatus === 'connected' ? '● ONLINE' : connectionStatus}
-            </span>
+              className={`w-2 h-2 rounded-full ${
+                connectionStatus === 'connected' ? 'bg-[#4cc38a]' : 'bg-[#e5484d]'
+              }`}
+            />
+            <span>{connectionStatus === 'connected' ? 'ออนไลน์' : connectionStatus}</span>
           </div>
 
-          {/* Top-Right Control Bar: Tutorial Guide + Profile Badge */}
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -1192,10 +1118,9 @@ export const Lobby: React.FC<LobbyProps> = ({
                 soundManager.playModalOpen();
                 setShowTutorial(true);
               }}
-              className="px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-xl bg-gradient-to-r from-amber-500/25 via-yellow-500/20 to-amber-600/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-yellow-400/50 text-yellow-300 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
-              title="คู่มือวิธีเล่น MARVEL SPLENDOR"
+              className="h-9 px-3 rounded-lg bg-[#11141c] hover:bg-[#1a1e28] border border-white/[0.08] text-[#eef0f5] font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer active:scale-[0.98]"
             >
-              <span>📘</span>
+              <BookOpen className="w-4 h-4 text-[#a3a9b8]" strokeWidth={1.5} />
               <span className="hidden sm:inline">วิธีเล่น</span>
             </button>
 
@@ -1214,8 +1139,7 @@ export const Lobby: React.FC<LobbyProps> = ({
               <button
                 type="button"
                 onClick={onLogout}
-                className="px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-xl border border-white/15 bg-white/[0.04] text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer"
-                title="เข้าสู่ระบบเพื่อสะสมแต้มและบันทึกประวัติ"
+                className="h-9 px-3 rounded-lg border border-white/[0.08] bg-[#11141c] hover:bg-[#1a1e28] text-[#eef0f5] text-xs font-medium transition-colors cursor-pointer"
               >
                 เข้าสู่ระบบ
               </button>
@@ -1223,111 +1147,91 @@ export const Lobby: React.FC<LobbyProps> = ({
           </div>
         </div>
 
-        {/* Hero Header Title */}
-        <div className="w-full text-center space-y-1 my-1 lg:my-1.5">
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-            <span className="px-3 py-0.5 bg-[#e23636] text-white font-black text-xl lg:text-2xl tracking-[0.06em] rounded shadow-[0_0_24px_rgba(226,54,54,0.45)] uppercase border border-red-400/30 font-['Bebas_Neue',sans-serif]">
+        {/* Brand Header */}
+        <div className="w-full max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-5">
+          <div className="flex items-center gap-2.5">
+            <span className="px-2.5 py-0.5 bg-[#c51d24] text-white font-marvel text-2xl tracking-wider rounded leading-none">
               MARVEL
             </span>
-            <span className="text-xl lg:text-3xl font-black tracking-wider uppercase font-['Montserrat',sans-serif] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 drop-shadow-[0_2px_12px_rgba(234,179,8,0.3)]">
+            <h1 className="font-display font-semibold text-2xl tracking-wide text-[#eef0f5] leading-none">
               SPLENDOR
-            </span>
+            </h1>
           </div>
-          <div className="flex items-center justify-center gap-2 text-[10.5px] lg:text-xs font-medium text-slate-300 font-['Prompt',sans-serif]">
-            <span className="text-amber-400 font-bold">ศูนย์บัญชาการยุทธวิธี</span>
-            <span className="text-white/30">•</span>
-            <span>เลือกโหมดการเล่น ปรับแต่งทีมฮีโร่ และเข้าสู่สมรภูมิรบ</span>
-          </div>
+          <p className="text-xs sm:text-sm text-[#a3a9b8]">
+            เลือกโหมดการเล่น จัดทีมคู่ต่อสู้ และกำหนดสมรภูมิรบ
+          </p>
         </div>
 
-        {/* AFK / Inactivity notification banner */}
+        {/* AFK Notification */}
         {afkNotice && (
-          <div className="max-w-6xl w-full mb-2 p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs flex items-center justify-between gap-3 shadow-lg animate-slide-up">
+          <div className="max-w-6xl w-full mb-4 p-3 rounded-xl bg-[#11141c] border border-amber-400/35 text-amber-200 text-xs flex items-center justify-between gap-3 animate-slide-up">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-lg shrink-0">⏳</span>
-              <span className="font-medium">{afkNotice}</span>
+              <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" strokeWidth={1.5} />
+              <span>{afkNotice}</span>
             </div>
             {onClearAfkNotice && (
               <button
                 type="button"
                 onClick={onClearAfkNotice}
-                className="text-amber-300 hover:text-white text-base leading-none px-1 cursor-pointer shrink-0"
+                className="text-[#a3a9b8] hover:text-[#eef0f5] p-1 cursor-pointer shrink-0"
+                aria-label="ปิดการแจ้งเตือน"
               >
-                ×
+                <X className="w-4 h-4" strokeWidth={1.5} />
               </button>
             )}
           </div>
         )}
 
-        {/* ── Main Bento Command Center Grid (Responsive 2-Col Bento on Desktop) ── */}
-        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-3.5 pb-2 items-start">
-          
-          {/* Card 1: Operative Identification (Order 1 on Mobile, Left Column Row 1 on Desktop) */}
-          <div
-            className="order-1 lg:order-1 lg:col-span-5 rounded-2xl lg:rounded-3xl border border-white/[0.12] p-3 lg:p-3.5 space-y-2 lg:space-y-2.5 transition-all self-start"
-            style={{
-              background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
-              backdropFilter: 'blur(28px)',
-              boxShadow: '0 16px 40px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
-            }}
-          >
-            <div className="flex items-center justify-between pb-1.5 border-b border-white/[0.08]">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_10px_#f59e0b]" />
-                <span className="font-['Prompt',sans-serif] font-bold tracking-wide text-xs lg:text-sm text-white block">
-                  ข้อมูลฮีโร่ของคุณ
-                </span>
-              </div>
-              {userProfile?.username ? (
-                <span className="text-[9px] lg:text-[10px] font-mono text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
-                  ● SYNCED
-                </span>
-              ) : (
-                <span className="text-[9px] lg:text-[10px] font-['Prompt',sans-serif] text-slate-400/90 tracking-wider bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">
-                  โหมดผู้มาเยือน
-                </span>
-              )}
+        {/* Main 2-Column Layout */}
+        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 pb-6 items-start">
+          {/* Card 1: Player Profile & Avatar */}
+          <div className="order-1 lg:order-1 lg:col-span-5 rounded-2xl bg-[#11141c] border border-white/[0.08] p-4 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+              <span className="font-medium text-sm text-[#eef0f5]">ข้อมูลผู้เล่น</span>
+              <span
+                className={`text-xs ${
+                  userProfile?.username ? 'text-[#4cc38a]' : 'text-[#7a8296]'
+                }`}
+              >
+                {userProfile?.username ? 'ซิงก์บัญชีแล้ว' : 'ผู้เยี่ยมชม'}
+              </span>
             </div>
 
-            {/* Avatar + Callsign input */}
-            <div className="flex items-center gap-3 pt-0.5">
-              {/* Tactile Avatar Badge with quick hover indicator */}
+            <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => {
                   soundManager.playButtonClick();
                   setShowAvatarPicker(true);
                 }}
-                title="เปลี่ยนรูปโปรไฟล์มาร์เวล"
-                className="relative shrink-0 w-12 h-12 lg:w-13 lg:h-13 rounded-xl overflow-hidden border-2 border-amber-400/70 shadow-[0_0_16px_rgba(245,158,11,0.25)] hover:border-amber-300 hover:scale-105 transition-all cursor-pointer group active:scale-95"
+                title="เปลี่ยนรูปโปรไฟล์"
+                className="relative shrink-0 w-12 h-12 rounded-xl overflow-hidden border border-white/[0.14] hover:border-amber-400/70 transition-colors cursor-pointer group active:scale-[0.98]"
               >
                 {avatarUrl ? (
                   <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover object-center" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center font-black text-white text-lg">
+                  <div className="w-full h-full bg-[#1a1e28] flex items-center justify-center font-medium text-[#eef0f5] text-base">
                     {avatarInitial}
                   </div>
                 )}
-                <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-xs">✏️</span>
-                  <span className="text-[8px] text-white font-bold tracking-tight">เปลี่ยน</span>
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Pencil className="w-4 h-4 text-[#eef0f5]" strokeWidth={1.5} />
                 </div>
               </button>
 
-              {/* Hero Name Input */}
               <div className="flex-1 min-w-0 space-y-1">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="player-name" className="text-[11px] lg:text-xs font-bold text-slate-200 font-['Prompt',sans-serif]">
+                  <label htmlFor="player-name" className="text-xs font-medium text-[#a3a9b8]">
                     ชื่อฮีโร่ของคุณ
                   </label>
                   {userProfile?.username && playerName.trim() !== userProfile.username && (
                     <button
                       type="button"
                       onClick={() => setPlayerName(userProfile.username)}
-                      className="text-[9px] text-amber-300 hover:text-amber-200 underline cursor-pointer"
-                      title="กดเพื่อรีเซ็ตกลับเป็นชื่อบัญชี"
+                      className="text-xs text-amber-300 hover:text-amber-200 flex items-center gap-1 cursor-pointer"
                     >
-                      ↺ คืนค่า
+                      <RotateCcw className="w-3 h-3" strokeWidth={1.5} />
+                      <span>คืนค่า</span>
                     </button>
                   )}
                 </div>
@@ -1344,35 +1248,32 @@ export const Lobby: React.FC<LobbyProps> = ({
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck={false}
-                  placeholder={userProfile?.username ? userProfile.username : 'ระบุชื่อฮีโร่ของคุณ...'}
-                  className={`w-full px-3 py-1.5 lg:py-2 rounded-xl bg-black/45 border text-sm text-white placeholder-slate-500 focus:outline-none transition-all font-['Prompt',sans-serif] ${
+                  placeholder={userProfile?.username ? userProfile.username : 'ระบุชื่อฮีโร่ของคุณ'}
+                  className={`w-full h-10 px-3 rounded-lg bg-[#07080d] border text-sm text-[#eef0f5] placeholder-[#7a8296] focus:outline-none transition-colors ${
                     error
-                      ? 'border-red-500 ring-2 ring-red-500/40 bg-red-950/25'
-                      : 'border-white/10 focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20'
+                      ? 'border-[#e5484d]'
+                      : 'border-white/[0.08] focus:border-amber-400/70'
                   }`}
                 />
               </div>
             </div>
 
-            {/* Quick Marvel Avatars Reel */}
-            <div className="space-y-1 pt-1 border-t border-white/[0.06]">
-              <div className="flex items-center justify-between">
-                <span className="text-[9.5px] font-mono text-slate-400 tracking-wider">
-                  เลือกอวตารด่วน:
-                </span>
+            <div className="space-y-2 pt-3 border-t border-white/[0.08]">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#7a8296]">เลือกอวตารด่วน</span>
                 <button
                   type="button"
                   onClick={() => {
                     soundManager.playButtonClick();
                     setShowAvatarPicker(true);
                   }}
-                  className="text-[9.5px] text-amber-400 hover:text-amber-300 font-bold cursor-pointer transition-colors"
+                  className="text-amber-300 hover:text-amber-200 font-medium cursor-pointer"
                 >
-                  ดูทั้งหมด ＋
+                  ดูทั้งหมด
                 </button>
               </div>
               <div
-                className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none touch-pan-x"
+                className="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-none touch-pan-x"
                 style={{ WebkitOverflowScrolling: 'touch' }}
               >
                 {MARVEL_AVATARS.slice(0, 8).map((av) => (
@@ -1384,14 +1285,13 @@ export const Lobby: React.FC<LobbyProps> = ({
                       soundManager.playButtonClick();
                     }}
                     title={av.name}
-                    className={[
-                      'shrink-0 w-7 h-7 sm:w-7 sm:h-7 rounded-lg overflow-hidden border transition-all cursor-pointer hover:scale-110 active:scale-95',
+                    className={`shrink-0 w-8 h-8 rounded-lg overflow-hidden border transition-opacity cursor-pointer ${
                       avatarId === av.id
-                        ? 'border-amber-400 ring-2 ring-amber-400/40 shadow-lg scale-105'
-                        : 'border-white/10 opacity-70 hover:opacity-100',
-                    ].join(' ')}
+                        ? 'border-amber-400 opacity-100'
+                        : 'border-white/[0.08] opacity-65 hover:opacity-100'
+                    }`}
                   >
-                    <QuickAvatarThumb src={av.src} fallbackEmoji={av.id} />
+                    <QuickAvatarThumb src={av.src} fallbackLabel={av.name} />
                   </button>
                 ))}
                 <button
@@ -1400,35 +1300,28 @@ export const Lobby: React.FC<LobbyProps> = ({
                     soundManager.playButtonClick();
                     setShowAvatarPicker(true);
                   }}
-                  className="shrink-0 w-7 h-7 sm:w-7 sm:h-7 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-[10px] text-white/70 hover:text-white transition-all cursor-pointer hover:scale-105"
+                  className="shrink-0 w-8 h-8 rounded-lg bg-[#1a1e28] hover:bg-white/[0.08] border border-white/[0.08] flex items-center justify-center text-[#a3a9b8] hover:text-[#eef0f5] transition-colors cursor-pointer"
                   title="ดูฮีโร่ทั้งหมด"
                 >
-                  ＋
+                  <Plus className="w-4 h-4" strokeWidth={1.5} />
                 </button>
               </div>
             </div>
           </div>
 
-          {/* ── Right Column: Mission Deployment Console (Order 2 on Mobile, Right Column Spanning 3 Rows on Desktop) ───────── */}
-          <div className="order-2 lg:order-2 lg:col-span-7 lg:row-span-3 flex flex-col gap-3">
-            
-            <div
-              className="rounded-2xl lg:rounded-3xl border border-white/[0.12] p-3.5 lg:p-4 space-y-3 lg:space-y-3.5 transition-all"
-              style={{
-                background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
-                backdropFilter: 'blur(28px)',
-                boxShadow: '0 20px 50px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
-              }}
-            >
-              {/* Segmented Mode Switcher Tab Bar */}
-              <div className="p-0.5 rounded-xl bg-black/45 border border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-1">
+          {/* Right Column: Game Mode & Match Setup */}
+          <div className="order-2 lg:order-2 lg:col-span-7 lg:row-span-3 flex flex-col gap-4">
+            <div className="rounded-2xl bg-[#11141c] border border-white/[0.08] p-4 sm:p-5 space-y-5">
+              {/* Segmented Mode Tabs */}
+              <div className="p-1 rounded-xl bg-[#07080d] border border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-1">
                 {(['solo', 'create', 'join', 'browse'] as const).map((tab) => {
                   const tabConfig = {
-                    solo:   { label: 'เล่นกับ AI', icon: '🤖', sub: 'สู้กับบอท' },
-                    create: { label: 'สร้างห้อง',  icon: '⚔️', sub: 'เล่นกับเพื่อน' },
-                    join:   { label: 'เข้ารหัสห้อง', icon: '🔑', sub: 'ใส่รหัส PIN' },
-                    browse: { label: 'ค้นหาห้อง',  icon: '🔍', sub: 'ห้องเปิดอยู่' },
+                    solo: { label: 'เล่นกับ AI', Icon: Bot },
+                    create: { label: 'สร้างห้อง', Icon: Swords },
+                    join: { label: 'เข้าด้วยรหัส', Icon: KeyRound },
+                    browse: { label: 'ค้นหาห้อง', Icon: Search },
                   };
+                  const TabIcon = tabConfig[tab].Icon;
                   const isActive = activeTab === tab;
                   return (
                     <button
@@ -1438,41 +1331,44 @@ export const Lobby: React.FC<LobbyProps> = ({
                         soundManager.playButtonClick();
                         setActiveTab(tab);
                       }}
-                      className={`py-1.5 px-1 rounded-lg text-center transition-all duration-200 cursor-pointer flex flex-col items-center justify-center min-h-[38px] ${
+                      className={`h-10 px-2 rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2 text-xs font-medium ${
                         isActive
-                          ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold shadow-md scale-[1.01]'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
+                          ? 'bg-[#1a1e28] text-[#eef0f5] border border-white/[0.1]'
+                          : 'text-[#7a8296] hover:text-[#a3a9b8]'
                       }`}
                     >
-                      <span className="text-xs">{tabConfig[tab].icon}</span>
-                      <span className="text-[11px] tracking-tight font-bold">{tabConfig[tab].label}</span>
+                      <TabIcon
+                        className={`w-4 h-4 shrink-0 ${isActive ? 'text-amber-400' : 'text-[#7a8296]'}`}
+                        strokeWidth={1.5}
+                      />
+                      <span>{tabConfig[tab].label}</span>
                     </button>
                   );
                 })}
               </div>
 
-              {/* ── Tab 1: Solo AI Skirmish (Marvel Character Roster Console) ──────── */}
+              {/* Tab 1: Solo AI */}
               {activeTab === 'solo' && (
-                <div className="space-y-2.5 lg:space-y-3 pt-0.5 animate-fadeIn">
-                  
-                  {/* Bot Opponents Count Selector */}
-                  <div className="space-y-1.5">
+                <div className="space-y-5 animate-fade-in">
+                  {/* Bot Count Selector */}
+                  <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-sm">👥</span>
-                        <label className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+                        <span className="text-xs sm:text-sm font-medium text-[#eef0f5]">
                           จำนวนคู่ต่อสู้ AI
-                        </label>
+                        </span>
                       </div>
-                      <span className="text-[9.5px] font-['Prompt',sans-serif] text-amber-400/90 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full font-bold">
-                        {botCount === 1 ? 'ดวล 1v1' : botCount === 2 ? 'แข่ง 3 คน' : 'เต็มสนาม 4 คน'}
+                      <span className="text-xs text-[#a3a9b8] font-num">
+                        {botCount === 1 ? 'ดวล 1v1' : botCount === 2 ? 'เล่น 3 คน' : 'เล่น 4 คน'}
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 gap-1.5">
+
+                    <div className="grid grid-cols-3 gap-2">
                       {[
-                        { num: 1, title: '1 บอท', sub: 'ดวลเดี่ยว 1v1', icon: '⚔️' },
-                        { num: 2, title: '2 บอท', sub: 'ไตรภาคี 3 คน', icon: '⚡' },
-                        { num: 3, title: '3 บอท', sub: 'สังเวียนเต็ม 4 คน', icon: '👑' },
+                        { num: 1, title: '1 บอท', sub: 'ดวลเดี่ยว' },
+                        { num: 2, title: '2 บอท', sub: '3 ผู้เล่น' },
+                        { num: 3, title: '3 บอท', sub: '4 ผู้เล่น' },
                       ].map((item) => (
                         <button
                           key={item.num}
@@ -1481,49 +1377,42 @@ export const Lobby: React.FC<LobbyProps> = ({
                             soundManager.playButtonClick();
                             setBotCount(item.num);
                           }}
-                          className={[
-                            'p-1.5 lg:p-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[42px] relative overflow-hidden group',
+                          className={`p-2.5 rounded-xl border text-center transition-colors cursor-pointer flex flex-col items-center justify-center ${
                             botCount === item.num
-                              ? 'border-amber-400 bg-gradient-to-b from-amber-500/25 to-amber-600/10 text-yellow-300 ring-1 ring-amber-400 shadow-[0_0_16px_rgba(245,158,11,0.25)] font-black scale-[1.01]'
-                              : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white font-medium hover:border-white/20',
-                          ].join(' ')}
+                              ? 'border-amber-400/60 bg-[#1a1e28] text-[#eef0f5]'
+                              : 'border-white/[0.08] bg-[#07080d] text-[#a3a9b8] hover:text-[#eef0f5] hover:border-white/[0.14]'
+                          }`}
                         >
-                          <span className="text-xs font-black font-num flex items-center gap-1">
-                            <span>{item.icon}</span> {item.title}
-                          </span>
-                          <span className="text-[9px] opacity-75 pt-0.5">
-                            {item.sub}
-                          </span>
+                          <span className="text-xs font-medium font-num">{item.title}</span>
+                          <span className="text-[11px] text-[#7a8296] mt-0.5">{item.sub}</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* Bot Combatants Roster Cards */}
-                  <div className="space-y-1.5 pt-0.5">
-                    <div className="flex items-center justify-between pb-0.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-sm">🦸</span>
-                        <label className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
+                  {/* Bot Roster */}
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Bot className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+                        <span className="text-xs sm:text-sm font-medium text-[#eef0f5]">
                           จัดทัพคู่ต่อสู้ AI
-                        </label>
+                        </span>
                       </div>
-                      <span className="text-[9.5px] font-['Prompt',sans-serif] text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">
-                        {botCount} บอท AI
-                      </span>
+                      <span className="text-xs text-[#7a8296] font-num">{botCount} ตัว</span>
                     </div>
 
-                    {/* Quick Team Formation Presets Bar */}
+                    {/* Team Presets Bar */}
                     <div
-                      className="flex items-center gap-1 overflow-x-auto pb-0.5 scrollbar-none touch-pan-x"
+                      className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none touch-pan-x"
                       style={{ WebkitOverflowScrolling: 'touch' }}
                     >
-                      <span className="text-[9.5px] font-mono text-slate-400 shrink-0">จัดทีมด่วน:</span>
+                      <span className="text-xs text-[#7a8296] shrink-0 mr-1">ทีมสำเร็จรูป</span>
                       {[
-                        { label: 'อเวนเจอร์ส', icon: '🛡️', bots: ['Tony Stark AI', 'Captain America', 'Thor Odinson'] },
-                        { label: 'วายร้าย', icon: '👑', bots: ['Doctor Doom', 'Loki', 'Thanos Bot'] },
-                        { label: 'จอมเวทย์', icon: '✨', bots: ['Doctor Strange', 'Scarlet Witch', 'Vision'] },
-                        { label: 'เอ็กซ์เมน', icon: '⚔️', bots: ['Wolverine', 'Deadpool', 'Spider-Man'] },
+                        { label: 'อเวนเจอร์ส', bots: ['Tony Stark AI', 'Captain America', 'Thor Odinson'] },
+                        { label: 'วายร้าย', bots: ['Doctor Doom', 'Loki', 'Thanos Bot'] },
+                        { label: 'จอมเวทย์', bots: ['Doctor Strange', 'Scarlet Witch', 'Vision'] },
+                        { label: 'เอ็กซ์เมน', bots: ['Wolverine', 'Deadpool', 'Spider-Man'] },
                       ].map((preset) => (
                         <button
                           key={preset.label}
@@ -1534,51 +1423,108 @@ export const Lobby: React.FC<LobbyProps> = ({
                             const newNames = preset.bots.slice(0, count);
                             setBotNames((prev) => {
                               const next = [...prev];
-                              newNames.forEach((n, i) => { next[i] = n; });
+                              newNames.forEach((n, i) => {
+                                next[i] = n;
+                              });
                               return next;
                             });
                             setCustomBotSlots({});
                           }}
-                          className="px-2 py-0.5 rounded-lg bg-white/[0.04] hover:bg-amber-500/20 border border-white/10 hover:border-amber-400/40 text-[10px] text-slate-300 hover:text-amber-200 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 shrink-0 active:scale-95"
+                          className="h-7 px-2.5 rounded-md bg-[#1a1e28] hover:bg-white/[0.08] border border-white/[0.08] text-xs text-[#a3a9b8] hover:text-[#eef0f5] transition-colors cursor-pointer whitespace-nowrap shrink-0"
                         >
-                          <span>{preset.icon}</span>
-                          <span className="font-['Prompt'] font-medium">{preset.label}</span>
+                          {preset.label}
                         </button>
                       ))}
                       <button
                         type="button"
                         onClick={handleRandomizeAllBots}
                         title="สุ่มคู่ต่อสู้ใหม่ทั้งทีม"
-                        className="px-2 py-0.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/25 border border-amber-400/30 text-[10px] text-amber-300 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 shrink-0 ml-auto active:scale-95"
+                        className="h-7 px-2.5 rounded-md bg-[#1a1e28] hover:bg-white/[0.08] border border-white/[0.08] text-xs text-amber-300 transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1.5 shrink-0 ml-auto"
                       >
-                        <span>🎲</span>
-                        <span className="font-['Prompt'] font-bold">สุ่มทั้งทีม</span>
+                        <Shuffle className="w-3.5 h-3.5" strokeWidth={1.5} />
+                        <span>สุ่มทั้งทีม</span>
                       </button>
                     </div>
 
-                    {/* Character Cards List */}
-                    <div className="space-y-1.5">
+                    {/* Bot Slot Cards */}
+                    <div className="space-y-2">
                       {Array.from({ length: botCount }).map((_, idx) => {
                         const currentName = botNames[idx] ?? '';
                         const isCustom = Boolean(customBotSlots[idx]);
                         const matchedPreset = POPULAR_MARVEL_BOTS.find((b) => b.name === currentName);
                         const botAvatarSrc = resolveMarvelAvatar(currentName, matchedPreset?.avatarUrl);
-                        const fallbackEmoji = getMarvelFallbackEmoji(currentName, true);
-                        const tacticDesc = matchedPreset?.desc ?? 'Custom Marvel AI';
+                        const tacticDesc = matchedPreset?.desc ?? 'บอทตั้งชื่อเอง';
+                        const PersonalityIcon = getBotPersonalityIcon(matchedPreset?.personality);
 
                         return (
                           <div
                             key={idx}
-                            className="bg-gradient-to-r from-black/60 to-black/35 hover:from-amber-500/[0.07] hover:to-transparent p-2 lg:p-2.5 rounded-xl border border-white/10 hover:border-amber-400/40 transition-all shadow-sm flex items-center justify-between gap-2.5 group"
+                            className="bg-[#1a1e28]/70 hover:bg-[#1a1e28] p-3 rounded-xl border border-white/[0.08] transition-colors flex items-center justify-between gap-3"
                           >
                             {isCustom ? (
-                              /* Custom Bot Name Mode */
-                              <div className="flex items-center gap-2 w-full">
-                                <div className="flex items-center gap-1.5 shrink-0">
-                                  <span className="text-[11px] font-mono font-bold text-amber-400">
+                              <div className="flex items-center gap-2.5 w-full">
+                                <span className="text-xs font-num text-[#7a8296] w-5 text-center shrink-0">
+                                  #{idx + 1}
+                                </span>
+                                <div className="w-9 h-9 rounded-lg overflow-hidden border border-white/[0.12] bg-[#07080d] flex items-center justify-center shrink-0">
+                                  {botAvatarSrc ? (
+                                    <img
+                                      src={botAvatarSrc}
+                                      alt={currentName}
+                                      className="w-full h-full object-cover"
+                                      onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.style.display = 'none';
+                                        if (target.nextElementSibling) {
+                                          (target.nextElementSibling as HTMLElement).style.display = 'flex';
+                                        }
+                                      }}
+                                    />
+                                  ) : null}
+                                  <span className={`${botAvatarSrc ? 'hidden' : 'flex'} items-center justify-center text-[#7a8296]`}>
+                                    <Bot className="w-4 h-4" strokeWidth={1.5} />
+                                  </span>
+                                </div>
+                                <input
+                                  type="text"
+                                  value={botNames[idx] ?? ''}
+                                  onChange={(e) => updateBotName(idx, e.target.value)}
+                                  placeholder="พิมพ์ชื่อบอท เช่น Magneto"
+                                  maxLength={20}
+                                  autoFocus
+                                  autoCapitalize="none"
+                                  autoCorrect="off"
+                                  spellCheck={false}
+                                  className="flex-1 min-w-0 h-9 bg-[#07080d] border border-amber-400/50 rounded-lg px-3 text-xs text-[#eef0f5] placeholder-[#7a8296] focus:outline-none"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    soundManager.playButtonClick();
+                                    setCustomBotSlots((prev) => ({ ...prev, [idx]: false }));
+                                    const fallbackPreset = POPULAR_MARVEL_BOTS[idx % POPULAR_MARVEL_BOTS.length];
+                                    updateBotName(idx, fallbackPreset.name);
+                                  }}
+                                  className="shrink-0 h-9 px-2.5 rounded-lg bg-[#11141c] hover:bg-white/[0.08] border border-white/[0.08] text-xs text-[#a3a9b8] hover:text-[#eef0f5] transition-colors cursor-pointer flex items-center gap-1.5"
+                                >
+                                  <RotateCcw className="w-3.5 h-3.5" strokeWidth={1.5} />
+                                  <span className="hidden sm:inline">พรีเซ็ต</span>
+                                </button>
+                              </div>
+                            ) : (
+                              <>
+                                <div
+                                  onClick={() => {
+                                    soundManager.playButtonClick();
+                                    setSelectingBotSlot(idx);
+                                  }}
+                                  className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"
+                                >
+                                  <span className="text-xs font-num text-[#7a8296] w-5 text-center shrink-0">
                                     #{idx + 1}
                                   </span>
-                                  <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-lg overflow-hidden border border-amber-400/50 bg-neutral-900 flex items-center justify-center shrink-0 shadow">
+
+                                  <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/[0.12] bg-[#07080d] shrink-0">
                                     {botAvatarSrc ? (
                                       <img
                                         src={botAvatarSrc}
@@ -1588,123 +1534,46 @@ export const Lobby: React.FC<LobbyProps> = ({
                                           const target = e.target as HTMLImageElement;
                                           target.style.display = 'none';
                                           if (target.nextElementSibling) {
-                                            (target.nextElementSibling as HTMLElement).style.display = 'block';
+                                            (target.nextElementSibling as HTMLElement).style.display = 'flex';
                                           }
                                         }}
                                       />
                                     ) : null}
-                                    <span className={botAvatarSrc ? 'hidden text-sm' : 'block text-sm'}>
-                                      {fallbackEmoji}
-                                    </span>
-                                  </div>
-                                </div>
-
-                                <div className="flex-1 min-w-0">
-                                  <input
-                                    type="text"
-                                    value={botNames[idx] ?? ''}
-                                    onChange={(e) => updateBotName(idx, e.target.value)}
-                                    placeholder="พิมพ์ชื่อบอท เช่น Magneto, Ultron..."
-                                    maxLength={20}
-                                    autoFocus
-                                    autoCapitalize="none"
-                                    autoCorrect="off"
-                                    spellCheck={false}
-                                    className="w-full bg-neutral-900/90 border border-amber-400/60 rounded-lg px-2.5 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400/30 font-semibold"
-                                  />
-                                </div>
-
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    soundManager.playButtonClick();
-                                    setCustomBotSlots((prev) => ({ ...prev, [idx]: false }));
-                                    const fallbackPreset = POPULAR_MARVEL_BOTS[idx % POPULAR_MARVEL_BOTS.length];
-                                    updateBotName(idx, fallbackPreset.name);
-                                  }}
-                                  className="shrink-0 px-2 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] text-amber-300 hover:text-amber-200 transition-all cursor-pointer flex items-center gap-1 active:scale-95"
-                                  title="กลับไปเลือกจากรายชื่อฮีโร่สำเร็จรูป"
-                                >
-                                  <span>↺</span>
-                                  <span className="hidden sm:inline">พรีเซ็ต</span>
-                                </button>
-                              </div>
-                            ) : (
-                              /* AAA Game Character Roster Tile */
-                              <>
-                                <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                                  {/* Slot Index */}
-                                  <div className="flex flex-col items-center shrink-0 w-5 text-center">
-                                    <span className="text-[8px] font-mono font-bold text-amber-400/70">SLOT</span>
-                                    <span className="text-[11px] font-num font-black text-amber-300">#{idx + 1}</span>
-                                  </div>
-
-                                  {/* Character Avatar with Stark Ring */}
-                                  <div
-                                    onClick={() => {
-                                      soundManager.playButtonClick();
-                                      setSelectingBotSlot(idx);
-                                    }}
-                                    className="relative w-9 h-9 lg:w-10 lg:h-10 rounded-lg overflow-hidden border border-white/20 bg-neutral-900 shrink-0 shadow cursor-pointer group-hover:border-amber-400 transition-all"
-                                    title="คลิกเพื่อเลือกตัวละครนี้"
-                                  >
-                                    {botAvatarSrc ? (
-                                      <img
-                                        src={botAvatarSrc}
-                                        alt={currentName}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                        onError={(e) => {
-                                          const target = e.target as HTMLImageElement;
-                                          target.style.display = 'none';
-                                          if (target.nextElementSibling) {
-                                            (target.nextElementSibling as HTMLElement).style.display = 'block';
-                                          }
-                                        }}
-                                      />
-                                    ) : null}
-                                    <span className={botAvatarSrc ? 'hidden text-sm' : 'flex items-center justify-center w-full h-full text-sm'}>
-                                      {fallbackEmoji}
+                                    <span className={`${botAvatarSrc ? 'hidden' : 'flex'} items-center justify-center w-full h-full text-[#7a8296]`}>
+                                      <Bot className="w-4 h-4" strokeWidth={1.5} />
                                     </span>
                                   </div>
 
-                                  {/* Character Info */}
-                                  <div
-                                    onClick={() => {
-                                      soundManager.playButtonClick();
-                                      setSelectingBotSlot(idx);
-                                    }}
-                                    className="min-w-0 flex-1 cursor-pointer"
-                                  >
-                                    <div className="flex items-center gap-1.5">
-                                      <h4 className="text-xs lg:text-sm font-bold text-white group-hover:text-amber-200 transition-colors truncate font-display">
+                                  <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2">
+                                      <h4 className="text-sm font-medium text-[#eef0f5] truncate">
                                         {currentName}
                                       </h4>
                                       {matchedPreset && (() => {
                                         const pInfo = getBotPersonalityInfo(matchedPreset.personality);
                                         return (
-                                          <span className={`inline-flex items-center gap-1 text-[9px] px-1.5 py-0.2 rounded-full ${pInfo.bg} border ${pInfo.border} ${pInfo.text} font-['Prompt',sans-serif] font-semibold shrink-0 shadow-sm`}>
-                                            <span>{pInfo.icon}</span>
+                                          <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-[#11141c] border border-white/[0.08] text-[#a3a9b8] shrink-0">
+                                            <PersonalityIcon className="w-3 h-3 text-[#7a8296]" strokeWidth={1.5} />
                                             <span>{pInfo.label}</span>
                                           </span>
                                         );
                                       })()}
                                     </div>
-                                    <p className="text-[10px] text-slate-400 truncate leading-tight pt-0.5 font-['Prompt']">
+                                    <p className="text-xs text-[#a3a9b8] truncate mt-0.5">
                                       {tacticDesc}
                                     </p>
                                   </div>
                                 </div>
 
-                                {/* Right Side Actions */}
-                                <div className="flex items-center gap-1 shrink-0">
+                                <div className="flex items-center gap-1.5 shrink-0">
                                   <button
                                     type="button"
                                     onClick={() => handleShuffleBot(idx)}
-                                    title="สุ่มเปลี่ยนตัวละครนี้ (Random Roll)"
-                                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-slate-300 hover:text-white transition-all cursor-pointer hover:scale-105 active:scale-95 text-xs flex items-center gap-1"
+                                    title="สุ่มตัวละครนี้"
+                                    className="h-8 px-2.5 rounded-lg bg-[#11141c] hover:bg-white/[0.08] border border-white/[0.08] text-[#a3a9b8] hover:text-[#eef0f5] transition-colors cursor-pointer text-xs flex items-center gap-1.5"
                                   >
-                                    <span>🎲</span>
-                                    <span className="hidden lg:inline text-[9.5px]">สุ่ม</span>
+                                    <Shuffle className="w-3.5 h-3.5" strokeWidth={1.5} />
+                                    <span className="hidden sm:inline">สุ่ม</span>
                                   </button>
                                   <button
                                     type="button"
@@ -1712,9 +1581,9 @@ export const Lobby: React.FC<LobbyProps> = ({
                                       soundManager.playButtonClick();
                                       setSelectingBotSlot(idx);
                                     }}
-                                    className="px-2.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/40 hover:border-amber-400 text-amber-300 font-bold text-xs transition-all cursor-pointer hover:scale-105 active:scale-95 flex items-center gap-1 shadow"
+                                    className="h-8 px-3 rounded-lg bg-[#11141c] hover:bg-white/[0.08] border border-white/[0.08] text-[#eef0f5] font-medium text-xs transition-colors cursor-pointer flex items-center gap-1.5"
                                   >
-                                    <span>🔄</span>
+                                    <RefreshCw className="w-3.5 h-3.5 text-[#a3a9b8]" strokeWidth={1.5} />
                                     <span>เลือกตัว</span>
                                   </button>
                                 </div>
@@ -1726,24 +1595,24 @@ export const Lobby: React.FC<LobbyProps> = ({
                     </div>
                   </div>
 
-                  {/* Target Winning Points Selector */}
-                  <div className="space-y-1.5 pt-1.5 border-t border-white/[0.08]">
+                  {/* Target Score Selector */}
+                  <div className="space-y-2.5 pt-3 border-t border-white/[0.08]">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-sm">🏆</span>
-                        <label className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
+                      <div className="flex items-center gap-2">
+                        <Trophy className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+                        <span className="text-xs sm:text-sm font-medium text-[#eef0f5]">
                           เป้าหมายแต้มชัยชนะ
-                        </label>
+                        </span>
                       </div>
                       <span
                         key={`solo-top-target-${targetScore}`}
-                        className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-lg animate-score-bump select-none"
+                        className="text-xs font-num font-medium text-amber-300 animate-score-bump select-none"
                       >
                         {targetScore} แต้ม
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-1">
+                    <div className="grid grid-cols-4 gap-2">
                       {[
                         { pts: 12, label: 'จบไว' },
                         { pts: 16, label: 'มาตรฐาน' },
@@ -1757,25 +1626,22 @@ export const Lobby: React.FC<LobbyProps> = ({
                             soundManager.playScorePresetSelect(item.pts);
                             setTargetScore(item.pts);
                           }}
-                          className={[
-                            'py-1 px-1.5 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[38px] active:scale-95',
+                          className={`py-2 px-2 rounded-lg border text-center transition-colors cursor-pointer flex flex-col items-center justify-center ${
                             targetScore === item.pts
-                              ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow-[0_0_12px_rgba(250,204,21,0.35)]'
-                              : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white font-semibold',
-                          ].join(' ')}
+                              ? 'border-amber-400/60 bg-[#1a1e28] text-[#eef0f5]'
+                              : 'border-white/[0.08] bg-[#07080d] text-[#a3a9b8] hover:text-[#eef0f5]'
+                          }`}
                         >
-                          <span className="text-xs lg:text-sm font-black font-num">{item.pts} แต้ม</span>
-                          <span className="text-[7.5px] lg:text-[8px] opacity-70">
-                            {item.label}
-                          </span>
+                          <span className="text-xs sm:text-sm font-medium font-num">{item.pts} แต้ม</span>
+                          <span className="text-[11px] text-[#7a8296] mt-0.5">{item.label}</span>
                         </button>
                       ))}
                     </div>
 
-                    <div className="flex items-center gap-2 bg-black/45 px-2.5 py-1.5 rounded-xl border border-white/10 text-xs shadow-inner">
-                      <span className="text-slate-400 text-[9.5px] font-semibold whitespace-nowrap flex items-center gap-1 select-none">
-                        <span>🎯</span>
-                        <span>ปรับละเอียด (10–50):</span>
+                    <div className="flex items-center gap-3 bg-[#07080d] px-3 py-2 rounded-lg border border-white/[0.08] text-xs">
+                      <span className="text-[#a3a9b8] whitespace-nowrap flex items-center gap-1.5 select-none">
+                        <SlidersHorizontal className="w-3.5 h-3.5 text-[#7a8296]" strokeWidth={1.5} />
+                        <span>ปรับละเอียด (10–50)</span>
                       </span>
                       <input
                         type="range"
@@ -1788,60 +1654,53 @@ export const Lobby: React.FC<LobbyProps> = ({
                           soundManager.playScoreSliderTick(val, 10, 50);
                           setTargetScore(val);
                         }}
-                        className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/15 rounded-lg hover:brightness-110 active:brightness-125"
+                        className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/15 rounded-lg"
                       />
                       <span
                         key={`solo-target-${targetScore}`}
-                        className="font-num font-black text-yellow-300 text-xs lg:text-sm w-7 text-right animate-score-bump select-none"
+                        className="font-num font-medium text-amber-300 text-sm w-7 text-right animate-score-bump select-none"
                       >
                         {targetScore}
                       </span>
                     </div>
                   </div>
 
-                  {/* Primary Launch Action Button (Arc Reactor Theme) */}
+                  {/* Primary CTA */}
                   <button
                     type="button"
                     onClick={handleSolo}
                     disabled={isLoading}
-                    className="relative group w-full py-2.5 lg:py-3 px-5 rounded-xl lg:rounded-2xl font-display font-black text-sm lg:text-base tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer active:scale-[0.98] shadow-2xl overflow-hidden mt-1.5 min-h-[44px]"
+                    className="w-full h-11 px-5 rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] disabled:opacity-50 bg-amber-400 hover:bg-amber-300 text-[#07080d]"
                     style={{
-                      background: isLoading
-                        ? 'rgba(255, 255, 255, 0.1)'
-                        : 'linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #b45309 100%)',
-                      color: isLoading ? 'rgba(255, 255, 255, 0.4)' : '#05070d',
-                      boxShadow: isLoading ? 'none' : '0 10px 30px -4px rgba(234, 88, 12, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                      boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.28)',
                     }}
                   >
-                    <span className="text-lg group-hover:scale-125 transition-transform duration-300">⚡</span>
-                    <span>เข้าสู่สมรภูมิเดี่ยว</span>
-                    <span className="text-lg group-hover:translate-x-1 transition-transform duration-300">➔</span>
+                    <span>เริ่มเล่นกับบอท AI</span>
+                    <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
                   </button>
                 </div>
               )}
 
-              {/* ── Tab 2: Create Multiplayer Room ────────────────────────────────── */}
+              {/* Tab 2: Create Multiplayer Room */}
               {activeTab === 'create' && (
-                <div className="space-y-3 pt-0.5 animate-fadeIn">
-                  
-                  {/* Target Winning Points Selector */}
-                  <div className="space-y-1.5">
+                <div className="space-y-5 animate-fade-in">
+                  <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-sm">🏆</span>
-                        <label className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
+                      <div className="flex items-center gap-2">
+                        <Trophy className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+                        <span className="text-xs sm:text-sm font-medium text-[#eef0f5]">
                           เป้าหมายแต้มชัยชนะ
-                        </label>
+                        </span>
                       </div>
                       <span
                         key={`mp-top-target-${targetScore}`}
-                        className="text-xs font-num font-black text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-lg animate-score-bump select-none"
+                        className="text-xs font-num font-medium text-amber-300 animate-score-bump select-none"
                       >
                         {targetScore} แต้ม
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-1">
+                    <div className="grid grid-cols-4 gap-2">
                       {[12, 16, 20, 24].map((pts) => (
                         <button
                           key={pts}
@@ -1850,25 +1709,24 @@ export const Lobby: React.FC<LobbyProps> = ({
                             soundManager.playScorePresetSelect(pts);
                             setTargetScore(pts);
                           }}
-                          className={[
-                            'py-1 px-1.5 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center min-h-[38px] active:scale-95',
+                          className={`py-2 px-2 rounded-lg border text-center transition-colors cursor-pointer flex flex-col items-center justify-center ${
                             targetScore === pts
-                              ? 'border-yellow-400 bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-400 font-black shadow-[0_0_12px_rgba(250,204,21,0.35)]'
-                              : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.08] hover:text-white font-semibold',
-                          ].join(' ')}
+                              ? 'border-amber-400/60 bg-[#1a1e28] text-[#eef0f5]'
+                              : 'border-white/[0.08] bg-[#07080d] text-[#a3a9b8] hover:text-[#eef0f5]'
+                          }`}
                         >
-                          <span className="text-xs lg:text-sm font-black font-num">{pts} แต้ม</span>
-                          <span className="text-[7.5px] lg:text-[8px] opacity-70">
+                          <span className="text-xs sm:text-sm font-medium font-num">{pts} แต้ม</span>
+                          <span className="text-[11px] text-[#7a8296] mt-0.5">
                             {pts === 12 ? 'จบไว' : pts === 16 ? 'มาตรฐาน' : pts === 20 ? 'ท้าทาย' : 'ศึกใหญ่'}
                           </span>
                         </button>
                       ))}
                     </div>
 
-                    <div className="flex items-center gap-2 bg-black/45 px-2.5 py-1.5 rounded-xl border border-white/10 text-xs shadow-inner">
-                      <span className="text-slate-400 text-[9.5px] font-semibold whitespace-nowrap flex items-center gap-1 select-none">
-                        <span>🎯</span>
-                        <span>ปรับละเอียด (10–50):</span>
+                    <div className="flex items-center gap-3 bg-[#07080d] px-3 py-2 rounded-lg border border-white/[0.08] text-xs">
+                      <span className="text-[#a3a9b8] whitespace-nowrap flex items-center gap-1.5 select-none">
+                        <SlidersHorizontal className="w-3.5 h-3.5 text-[#7a8296]" strokeWidth={1.5} />
+                        <span>ปรับละเอียด (10–50)</span>
                       </span>
                       <input
                         type="range"
@@ -1881,56 +1739,53 @@ export const Lobby: React.FC<LobbyProps> = ({
                           soundManager.playScoreSliderTick(val, 10, 50);
                           setTargetScore(val);
                         }}
-                        className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/15 rounded-lg hover:brightness-110 active:brightness-125"
+                        className="flex-1 accent-amber-400 cursor-pointer h-1.5 bg-white/15 rounded-lg"
                       />
                       <span
                         key={`mp-target-${targetScore}`}
-                        className="font-num font-black text-yellow-300 text-xs lg:text-sm w-7 text-right animate-score-bump select-none"
+                        className="font-num font-medium text-amber-300 text-sm w-7 text-right animate-score-bump select-none"
                       >
                         {targetScore}
                       </span>
                     </div>
                   </div>
 
-                  {/* Room Deployment Note */}
-                  <div className="bg-white/[0.03] border border-white/10 rounded-xl p-2.5 space-y-1 text-xs text-slate-300">
-                    <p className="font-bold text-amber-300 flex items-center gap-1.5 text-xs font-['Prompt',sans-serif]">
-                      <span>🛡️</span> ศูนย์ควบคุมห้องออนไลน์
-                    </p>
-                    <p className="text-[10.5px] text-slate-400 leading-relaxed">
-                      เมื่อสร้างห้องเสร็จ ระบบจะสร้างรหัสห้อง 6 ตัวอักษร คุณสามารถชวนเพื่อนมาร่วมประลอง หรือเพิ่มบอท Marvel AI เข้ามาร่วมเล่นจนครบ 4 คนได้ในห้องรอ
+                  <div className="bg-[#07080d] border border-white/[0.08] rounded-xl p-4 space-y-1.5 text-xs">
+                    <div className="font-medium text-[#eef0f5] flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+                      <span>วิธีใช้งานห้องออนไลน์</span>
+                    </div>
+                    <p className="text-[#a3a9b8] leading-relaxed">
+                      เมื่อสร้างห้องเสร็จจะได้รหัสห้อง 6 ตัวอักษร สามารถส่งให้เพื่อนเข้าร่วมหรือเพิ่มบอท AI ร่วมเล่นได้สูงสุด 4 คน
                     </p>
                   </div>
 
-                  {/* Primary Create Action Button */}
                   <button
                     type="button"
                     onClick={handleCreate}
                     disabled={isLoading}
-                    className="w-full py-2.5 lg:py-3 px-5 rounded-xl lg:rounded-2xl font-extrabold text-sm lg:text-base tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] shadow-xl min-h-[44px]"
+                    className="w-full h-11 px-5 rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] disabled:opacity-50 bg-amber-400 hover:bg-amber-300 text-[#07080d]"
                     style={{
-                      background: isLoading
-                        ? 'rgba(255, 255, 255, 0.1)'
-                        : 'linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%)',
-                      color: isLoading ? 'rgba(255, 255, 255, 0.4)' : '#05070d',
-                      boxShadow: isLoading ? 'none' : '0 10px 30px -4px rgba(245, 158, 11, 0.5)',
+                      boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.28)',
                     }}
                   >
-                    <span>⚔️ เปิดห้องต่อสู้ออนไลน์</span>
+                    <Swords className="w-4 h-4" strokeWidth={1.75} />
+                    <span>สร้างห้องเล่นออนไลน์</span>
                   </button>
                 </div>
               )}
 
-              {/* ── Tab 3: Join Room with Code ────────────────────────────────────── */}
+              {/* Tab 3: Join with Code */}
               {activeTab === 'join' && (
-                <div className="space-y-3 pt-0.5 animate-fadeIn">
-                  <div className="space-y-1.5 text-center">
-                    <div className="flex items-center justify-center gap-1.5">
-                      <span className="text-sm">🔑</span>
-                      <label htmlFor="room-code" className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
-                        กรอกรหัสห้อง 6 หลัก (PIN)
-                      </label>
-                    </div>
+                <div className="space-y-4 animate-fade-in">
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="room-code"
+                      className="flex items-center gap-2 text-xs sm:text-sm font-medium text-[#eef0f5]"
+                    >
+                      <KeyRound className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+                      <span>กรอกรหัสห้อง 6 หลัก</span>
+                    </label>
                     <input
                       id="room-code"
                       type="text"
@@ -1942,7 +1797,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                       autoCapitalize="characters"
                       autoCorrect="off"
                       spellCheck={false}
-                      className="w-full bg-black/45 border border-white/15 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all font-mono tracking-[0.25em] text-center text-xl uppercase font-black"
+                      className="w-full h-12 bg-[#07080d] border border-white/[0.1] rounded-xl px-4 text-[#eef0f5] placeholder-[#7a8296] focus:outline-none focus:border-amber-400/70 transition-colors font-mono tracking-[0.25em] text-center text-lg font-medium"
                     />
                   </div>
 
@@ -1950,41 +1805,38 @@ export const Lobby: React.FC<LobbyProps> = ({
                     type="button"
                     onClick={() => handleJoin()}
                     disabled={isLoading || !joinCode.trim()}
-                    className="w-full py-2.5 lg:py-3 px-5 rounded-xl lg:rounded-2xl font-extrabold text-sm lg:text-base tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] shadow-xl min-h-[44px]"
+                    className="w-full h-11 px-5 rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed bg-amber-400 hover:bg-amber-300 text-[#07080d]"
                     style={{
-                      background: isLoading || !joinCode.trim()
-                        ? 'rgba(255, 255, 255, 0.1)'
-                        : 'linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%)',
-                      color: isLoading || !joinCode.trim() ? 'rgba(255, 255, 255, 0.4)' : '#05070d',
-                      boxShadow: isLoading || !joinCode.trim() ? 'none' : '0 10px 30px -4px rgba(245, 158, 11, 0.5)',
+                      boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.28)',
                     }}
                   >
-                    <span>🔑 เข้าร่วมห้องทันที</span>
+                    <span>เข้าร่วมห้อง</span>
+                    <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
                   </button>
                 </div>
               )}
 
-              {/* ── Tab 4: Browse Open Rooms ──────────────────────────────────────── */}
+              {/* Tab 4: Browse Open Rooms */}
               {activeTab === 'browse' && (
-                <div className="space-y-2.5 pt-0.5 animate-fadeIn">
+                <div className="space-y-3 animate-fade-in">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-sm">📡</span>
-                      <span className="text-xs lg:text-sm font-bold text-white font-['Prompt',sans-serif]">
+                    <div className="flex items-center gap-2">
+                      <Radio className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+                      <span className="text-xs sm:text-sm font-medium text-[#eef0f5]">
                         ห้องที่กำลังรอผู้เล่น
                       </span>
                     </div>
-                    <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
+                    <span className="text-xs font-num text-[#a3a9b8]">
                       {openRooms.length} ห้องเปิดอยู่
                     </span>
                   </div>
 
-                  <div className="space-y-1.5 max-h-52 overflow-y-auto pr-1">
+                  <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                     {openRooms.length === 0 ? (
-                      <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center space-y-1.5">
-                        <span className="text-xl block animate-pulse">📡</span>
-                        <p className="text-xs text-slate-400">
-                          ขณะนี้ยังไม่มีห้องเปิดอยู่ สร้างห้องใหม่เพื่อเริ่มเล่นได้ทันที
+                      <div className="p-6 rounded-xl bg-[#07080d] border border-white/[0.08] text-center space-y-2">
+                        <Radio className="w-5 h-5 text-[#7a8296] mx-auto" strokeWidth={1.5} />
+                        <p className="text-xs text-[#a3a9b8]">
+                          ขณะนี้ยังไม่มีห้องเปิดอยู่ สามารถสร้างห้องใหม่เพื่อเริ่มเล่นได้
                         </p>
                       </div>
                     ) : (
@@ -1993,26 +1845,26 @@ export const Lobby: React.FC<LobbyProps> = ({
                         return (
                           <div
                             key={room.roomId}
-                            className="flex items-center justify-between p-2.5 rounded-xl bg-black/40 border border-white/10 hover:border-amber-400/50 transition-all"
+                            className="flex items-center justify-between p-3 rounded-xl bg-[#1a1e28]/70 border border-white/[0.08] hover:border-white/[0.16] transition-colors"
                           >
-                            <div className="space-y-0.5">
-                              <div className="flex items-center gap-1.5">
-                                <code className="text-amber-300 font-mono font-bold text-xs tracking-wider">
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <code className="text-amber-300 font-mono font-medium text-xs tracking-wider">
                                   {room.roomId}
                                 </code>
-                                <span className="text-[9.5px] text-white/50 bg-white/5 px-1.5 py-0.2 rounded-full border border-white/10">
-                                  {roomMap.icon} {roomMap.name.split(' ')[0]}
+                                <span className="text-[11px] text-[#a3a9b8]">
+                                  {roomMap.name.split(' ')[0]}
                                 </span>
                               </div>
-                              <p className="text-[9.5px] text-slate-400">
-                                ผู้เล่น <span className="font-num font-black text-amber-300">{room.players.length}</span>/<span className="font-num font-bold text-white/80">{room.maxPlayers}</span> คน • เป้าหมาย {room.targetScore ?? 16}P
+                              <p className="text-xs text-[#7a8296] font-num">
+                                ผู้เล่น {room.players.length}/{room.maxPlayers} คน • เป้าหมาย {room.targetScore ?? 16} แต้ม
                               </p>
                             </div>
                             <button
                               type="button"
                               onClick={() => handleJoin(room.roomId)}
                               disabled={isLoading}
-                              className="px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition-all cursor-pointer shadow active:scale-95"
+                              className="h-8 px-3 rounded-lg bg-amber-400 hover:bg-amber-300 text-[#07080d] font-medium text-xs transition-colors cursor-pointer"
                             >
                               เข้าร่วม
                             </button>
@@ -2024,72 +1876,47 @@ export const Lobby: React.FC<LobbyProps> = ({
                 </div>
               )}
 
-              {/* Error Message Notification */}
               {error && (
-                <div className="p-2.5 rounded-xl bg-red-950/60 border border-red-500/30 text-red-200 text-xs flex items-start gap-2 animate-fadeIn">
-                  <svg className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="leading-relaxed font-medium text-xs">{error}</span>
+                <div className="p-3 rounded-xl bg-red-950/50 border border-red-500/30 text-red-200 text-xs flex items-start gap-2 animate-fade-in">
+                  <AlertCircle className="w-4 h-4 text-[#e5484d] shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <span className="leading-relaxed">{error}</span>
                 </div>
               )}
-
             </div>
-
           </div>
 
-          {/* Card 2: Battlefield Holo-Deck Preview (Order 3 on Mobile, Left Column middle on Desktop) */}
-          <div
-            className="order-3 lg:order-3 lg:col-span-5 rounded-2xl lg:rounded-3xl border border-white/[0.12] p-3 lg:p-3.5 space-y-2 lg:space-y-2.5 transition-all self-start"
-            style={{
-              background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
-              backdropFilter: 'blur(28px)',
-              boxShadow: '0 16px 40px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
-            }}
-          >
-            <div className="flex items-center justify-between pb-1.5 border-b border-white/[0.08]">
+          {/* Card 2: Battlefield Selection (Moment 1) */}
+          <div className="order-3 lg:order-3 lg:col-span-5 rounded-2xl bg-[#11141c] border border-white/[0.08] p-4 space-y-3">
+            <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.08]">
               <div className="flex items-center gap-2">
-                <span className="text-sm">🗺️</span>
-                <span className="font-sans font-bold tracking-wide text-xs lg:text-sm text-white block">
-                  สมรภูมิรบที่เลือก
-                </span>
+                <MapIcon className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+                <span className="font-medium text-sm text-[#eef0f5]">สมรภูมิรบที่เลือก</span>
               </div>
-              <span className="text-[9px] lg:text-[10px] font-sans text-amber-400/90 tracking-wider bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full font-bold">
-                แผนที่ปัจจุบัน
-              </span>
+              <span className="text-xs text-[#7a8296]">{currentMap.realm}</span>
             </div>
 
-            {/* Selected Battlefield Visual Hero Card */}
-            {(() => {
-              const currentMap = getMarvelMap(selectedMapId);
-              return (
-                <div className="relative rounded-xl overflow-hidden border border-white/15 h-24 lg:h-26 group shadow-md">
-                  <img
-                    key={currentMap.id}
-                    src={currentMap.imageUrl}
-                    alt={currentMap.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 animate-fadeIn"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent flex flex-col justify-end p-2.5">
-                    <div className="flex items-center gap-1.5 text-[8.5px] font-mono font-bold tracking-wider text-amber-300 uppercase">
-                      <span>{currentMap.icon}</span>
-                      <span>{currentMap.realm}</span>
-                    </div>
-                    <h4 className="font-sans font-bold text-sm lg:text-base text-white leading-tight">
-                      {currentMap.name}
-                    </h4>
-                    <p className="text-[10px] text-slate-300/80 truncate leading-tight pt-0.5 font-sans">
-                      {currentMap.subtitle} — {currentMap.description}
-                    </p>
-                  </div>
+            <div className="relative rounded-xl overflow-hidden border border-white/[0.08] h-28">
+              <img
+                key={currentMap.id}
+                src={currentMap.imageUrl}
+                alt={currentMap.name}
+                className="w-full h-full object-cover animate-fade-in"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-3">
+                <div className="flex items-center gap-1.5 text-[11px] font-medium text-amber-300">
+                  <CurrentMapIcon className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  <span>{currentMap.subtitle}</span>
                 </div>
-              );
-            })()}
+                <h4 className="font-medium text-sm sm:text-base text-[#eef0f5] leading-snug">
+                  {currentMap.name}
+                </h4>
+              </div>
+            </div>
 
-            {/* Quick Interactive Map Switcher Chips */}
-            <div className="grid grid-cols-3 gap-1 pt-0.5">
+            <div className="grid grid-cols-3 gap-1.5">
               {MARVEL_MAPS.map((map) => {
                 const isSelected = selectedMapId === map.id;
+                const MapItemIcon = getMapLucideIcon(map.id);
                 return (
                   <button
                     key={map.id}
@@ -2098,65 +1925,51 @@ export const Lobby: React.FC<LobbyProps> = ({
                       soundManager.playButtonClick();
                       setSelectedMapId(map.id);
                     }}
-                    className={[
-                      'py-1 px-1.5 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-1 min-w-0',
+                    className={`h-8 px-2 rounded-lg border text-left transition-colors cursor-pointer flex items-center gap-1.5 min-w-0 ${
                       isSelected
-                        ? 'bg-amber-500/20 border-amber-400 text-white shadow-[0_0_12px_rgba(245,158,11,0.25)] font-bold'
-                        : 'bg-white/[0.03] border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.06]',
-                    ].join(' ')}
+                        ? 'bg-[#1a1e28] border-amber-400/60 text-[#eef0f5]'
+                        : 'bg-[#07080d] border-white/[0.08] text-[#a3a9b8] hover:text-[#eef0f5]'
+                    }`}
                   >
-                    <span className="text-xs shrink-0">{map.icon}</span>
-                    <span className="text-[10px] font-sans truncate leading-tight">
-                      {map.name.split(' ')[0]}
-                    </span>
+                    <MapItemIcon
+                      className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-amber-400' : 'text-[#7a8296]'}`}
+                      strokeWidth={1.5}
+                    />
+                    <span className="text-xs truncate">{map.name.split(' ')[0]}</span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Card 3: Infinity Stones Power Matrix & Rules Guide (Order 4 on Mobile, Left Column bottom on Desktop) */}
-          <div
-            className="order-4 lg:order-4 lg:col-span-5 rounded-2xl lg:rounded-3xl border border-white/[0.12] p-3 lg:p-3.5 space-y-2 transition-all self-start"
-            style={{
-              background: 'linear-gradient(165deg, rgba(17, 24, 39, 0.88) 0%, rgba(9, 13, 22, 0.96) 100%)',
-              backdropFilter: 'blur(28px)',
-              boxShadow: '0 16px 40px -10px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.12)',
-            }}
-          >
-            <div className="flex items-center justify-between pb-1.5 border-b border-white/[0.08]">
-              <div className="flex items-center gap-2">
-                <span className="text-sm">🧤</span>
-                <span className="font-['Prompt',sans-serif] font-bold tracking-wide text-xs lg:text-sm text-white block">
-                  คลังอัญมณีอินฟินิตี้
-                </span>
-              </div>
-              <span className="text-[9px] lg:text-[10px] font-['Prompt',sans-serif] text-emerald-400/90 tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
-                {botCount + 1} ผู้เล่นในเกม
+          {/* Card 3: Infinity Stones Matrix (Moment 2) */}
+          <div className="order-4 lg:order-4 lg:col-span-5 rounded-2xl bg-[#11141c] border border-white/[0.08] p-4 space-y-3">
+            <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.08]">
+              <span className="font-medium text-sm text-[#eef0f5]">คลังอัญมณีอินฟินิตี้</span>
+              <span className="text-xs text-[#a3a9b8] font-num">
+                {botCount + 1} ผู้เล่น
               </span>
             </div>
 
-            {/* 6 Infinity Stones Interactive Power Grid */}
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="grid grid-cols-3 gap-2">
               {[
-                { id: 'ruby', name: 'Reality', th: 'ความจริง', color: 'from-red-600/25 via-red-950/40 to-black/60', border: 'border-red-500/40 hover:border-red-400', glow: 'text-red-400', shadow: 'rgba(239,68,68,0.35)' },
-                { id: 'sapphire', name: 'Space', th: 'อวกาศ', color: 'from-blue-600/25 via-blue-950/40 to-black/60', border: 'border-blue-500/40 hover:border-blue-400', glow: 'text-blue-400', shadow: 'rgba(59,130,246,0.35)' },
-                { id: 'obsidian', name: 'Soul', th: 'วิญญาณ', color: 'from-amber-600/25 via-amber-950/40 to-black/60', border: 'border-amber-500/40 hover:border-amber-400', glow: 'text-amber-400', shadow: 'rgba(245,158,11,0.35)' },
-                { id: 'topaz', name: 'Mind', th: 'จิตใจ', color: 'from-yellow-500/25 via-yellow-950/40 to-black/60', border: 'border-yellow-500/40 hover:border-yellow-400', glow: 'text-yellow-400', shadow: 'rgba(234,179,8,0.35)' },
-                { id: 'amethyst', name: 'Power', th: 'พลัง', color: 'from-purple-600/25 via-purple-950/40 to-black/60', border: 'border-purple-500/40 hover:border-purple-400', glow: 'text-purple-400', shadow: 'rgba(168,85,247,0.35)' },
-                { id: 'emerald', name: 'Time', th: 'เวลา (+1)', color: 'from-emerald-600/25 via-emerald-950/40 to-black/60', border: 'border-emerald-500/40 hover:border-emerald-400', glow: 'text-emerald-400', shadow: 'rgba(16,185,129,0.35)' },
+                { id: 'ruby', name: 'Reality', th: 'ความจริง' },
+                { id: 'sapphire', name: 'Space', th: 'อวกาศ' },
+                { id: 'obsidian', name: 'Soul', th: 'วิญญาณ' },
+                { id: 'topaz', name: 'Mind', th: 'จิตใจ' },
+                { id: 'amethyst', name: 'Power', th: 'พลัง' },
+                { id: 'emerald', name: 'Time', th: 'เวลา' },
               ].map((st) => (
                 <div
                   key={st.id}
-                  className={`p-1.5 lg:p-2 rounded-xl bg-gradient-to-b ${st.color} border ${st.border} flex items-center gap-1.5 shadow-sm transition-all hover:scale-105 cursor-default group`}
-                  style={{ boxShadow: `0 4px 12px -2px ${st.shadow}` }}
+                  className="p-2.5 rounded-xl bg-[#1a1e28] border border-white/[0.08] flex items-center gap-2.5"
                 >
-                  <div className={`w-3.5 h-3.5 rounded-full crystal-${st.id} shrink-0 ring-1.5 ring-white/60 shadow-[0_0_8px_currentColor] group-hover:scale-110 transition-transform`} />
+                  <div className={`w-3.5 h-3.5 rounded-full crystal-${st.id} shrink-0`} />
                   <div className="min-w-0">
-                    <div className="text-[10px] font-bold text-white truncate leading-tight font-['Montserrat',sans-serif]">
+                    <div className="text-xs font-medium text-[#eef0f5] truncate leading-tight">
                       {st.name}
                     </div>
-                    <div className={`text-[8.5px] ${st.glow} truncate leading-tight font-['Prompt'] font-medium`}>
+                    <div className="text-[11px] text-[#a3a9b8] truncate leading-tight mt-0.5">
                       {st.th}
                     </div>
                   </div>
@@ -2164,58 +1977,39 @@ export const Lobby: React.FC<LobbyProps> = ({
               ))}
             </div>
 
-            {/* Match Rules & Inventory Quick Status Pill */}
-            <div className="bg-black/50 border border-white/10 rounded-xl p-2 text-[10px] text-slate-300 flex items-center justify-between gap-1.5 flex-wrap">
-              <span className="text-slate-400 flex items-center gap-1 font-mono text-[9.5px]">
-                <span>📦</span> สต็อกรอบนี้:
+            <div className="bg-[#07080d] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-[#a3a9b8] flex items-center justify-between gap-2 flex-wrap">
+              <span className="flex items-center gap-1.5 text-[#7a8296]">
+                <Package className="w-3.5 h-3.5" strokeWidth={1.5} />
+                <span>สต็อกรอบนี้</span>
               </span>
-              <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold">
-                <span className="text-white bg-white/10 px-1.5 py-0.5 rounded border border-white/10">
-                  สีละ {botCount === 1 ? 4 : botCount === 2 ? 5 : 7}
-                </span>
-                <span className="text-emerald-300 bg-emerald-500/15 px-1.5 py-0.5 rounded border border-emerald-500/25">
-                  เวลา {botCount + 1}
-                </span>
-                <span className="text-amber-300 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/25">
-                  ทอง 5
-                </span>
+              <div className="flex items-center gap-3 font-num text-[#eef0f5]">
+                <span>สีละ {botCount === 1 ? 4 : botCount === 2 ? 5 : 7}</span>
+                <span className="text-[#4cc38a]">เวลา {botCount + 1}</span>
+                <span className="text-amber-300">ทอง 5</span>
               </div>
             </div>
           </div>
-
         </div>
 
-        {/* ── Developer Credits & Non-Commercial Disclaimer Footer ────────── */}
-        <footer className="w-full max-w-6xl mx-auto mt-1 pt-1.5 border-t border-white/[0.06] flex flex-col items-center text-center space-y-0.5">
-          <div className="flex items-center justify-center gap-1.5 flex-wrap text-[10px] sm:text-[10.5px]">
-            <span className="text-slate-300 font-medium">🛠️ พัฒนาโดย:</span>
-            <span className="font-bold text-amber-200 bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/20 border border-amber-400/40 px-2 py-0.2 rounded-full text-[10px] sm:text-[10.5px] tracking-wider shadow-[0_0_10px_rgba(245,158,11,0.2)]">
-              sanior09
-            </span>
+        {/* Footer */}
+        <footer className="w-full max-w-6xl mx-auto pt-4 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#7a8296]">
+          <div className="flex items-center gap-2">
+            <span>พัฒนาโดย sanior09</span>
+            <span>•</span>
             <button
               type="button"
               onClick={() => {
                 soundManager.playModalOpen();
                 setShowDisclaimerModal(true);
               }}
-              className="text-amber-400/90 hover:text-amber-200 underline underline-offset-2 transition-colors cursor-pointer ml-0.5 font-semibold drop-shadow-[0_0_8px_rgba(245,158,11,0.3)]"
-              title="อ่านข้อกำหนดทางลิขสิทธิ์และวัตถุประสงค์โครงการ"
+              className="text-[#a3a9b8] hover:text-[#eef0f5] underline underline-offset-2 transition-colors cursor-pointer"
             >
-              (ข้อกำหนดและลิขสิทธิ์)
+              ข้อกำหนดและลิขสิทธิ์
             </button>
           </div>
-          <p className="text-[9px] sm:text-[9.5px] text-slate-400/90 max-w-md leading-tight px-2 font-sans">
-            จัดทำขึ้นเพื่อการศึกษา ความบันเทิงส่วนบุคคล และเป็น Fan-Made Project เท่านั้น <br className="hidden sm:inline" />
-            <span className="text-amber-300/90 font-medium">
-              มิได้จัดทำขึ้นเพื่อใช้ในเชิงพาณิชย์ หรือเพื่อการแสวงหาผลกำไร/หารายได้ใดๆ ทั้งสิ้น
-            </span>
-          </p>
-          <p className="text-[8.5px] sm:text-[9.5px] text-slate-400 font-mono tracking-wider">
-            © 2026 Marvel Splendor • Fan-Made Project by sanior09
-          </p>
+          <span>จัดทำเพื่อการศึกษาและแฟนบอร์ดเกม ไม่แสวงหาผลกำไร</span>
         </footer>
 
-        {/* Interactive Modals */}
         <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
         <AboutDisclaimerModal
           isOpen={showDisclaimerModal}
@@ -2228,47 +2022,47 @@ export const Lobby: React.FC<LobbyProps> = ({
           onClose={() => setShowAvatarPicker(false)}
         />
 
-        {/* ── Marvel Combatant Selector Modal for Solo AI Slots ───────────── */}
+        {/* Bot Character Selector Modal */}
         {selectingBotSlot !== null && (
           <div
-            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-3 sm:p-4 animate-fadeIn"
+            className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4 animate-fade-in"
             onClick={() => setSelectingBotSlot(null)}
           >
             <div
-              className="w-full max-w-2xl bg-gradient-to-b from-[#111827] via-[#0d121c] to-[#080b12] border border-amber-400/40 rounded-3xl p-4 sm:p-6 shadow-[0_0_50px_rgba(245,158,11,0.25)] space-y-4 max-h-[85vh] overflow-y-auto overscroll-contain touch-pan-y"
+              className="w-full max-w-2xl bg-[#11141c] border border-white/[0.1] rounded-2xl p-5 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto overscroll-contain touch-pan-y"
               style={{ WebkitOverflowScrolling: 'touch' }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
                 <div className="flex items-center gap-3">
-                  <span className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-lg shadow">
-                    ⚡
-                  </span>
+                  <div className="w-9 h-9 rounded-lg bg-[#1a1e28] border border-white/[0.08] flex items-center justify-center">
+                    <Bot className="w-4 h-4 text-amber-400" strokeWidth={1.5} />
+                  </div>
                   <div>
-                    <h3 className="text-base sm:text-lg font-['Prompt',sans-serif] font-bold text-white">
+                    <h3 className="text-sm sm:text-base font-medium text-[#eef0f5]">
                       เลือกคู่ต่อสู้ AI สำหรับช่อง #{selectingBotSlot + 1}
                     </h3>
-                    <p className="text-xs text-amber-300/90 font-medium font-['Prompt',sans-serif]">
-                      เลือกฮีโร่หรือวายร้ายที่คุณต้องการประลองฝีมือ
+                    <p className="text-xs text-[#a3a9b8]">
+                      เลือกตัวละครหรือตั้งชื่อคู่ต่อสู้เอง
                     </p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setSelectingBotSlot(null)}
-                  className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-slate-300 hover:text-white flex items-center justify-center text-sm cursor-pointer transition-all"
+                  className="w-8 h-8 rounded-lg bg-[#1a1e28] hover:bg-white/[0.1] border border-white/[0.08] text-[#a3a9b8] hover:text-[#eef0f5] flex items-center justify-center cursor-pointer transition-colors"
+                  aria-label="ปิด"
                 >
-                  ✕
+                  <X className="w-4 h-4" strokeWidth={1.5} />
                 </button>
               </div>
 
-              {/* Grid of Characters */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {POPULAR_MARVEL_BOTS.map((bot) => {
                   const isSelected = botNames[selectingBotSlot] === bot.name && !customBotSlots[selectingBotSlot];
                   const botAvatarSrc = resolveMarvelAvatar(bot.name, bot.avatarUrl);
-                  const fallbackEmoji = getMarvelFallbackEmoji(bot.name, true);
+                  const pInfo = getBotPersonalityInfo(bot.personality);
+                  const PIcon = getBotPersonalityIcon(bot.personality);
 
                   return (
                     <button
@@ -2280,49 +2074,39 @@ export const Lobby: React.FC<LobbyProps> = ({
                         setCustomBotSlots((prev) => ({ ...prev, [selectingBotSlot]: false }));
                         setSelectingBotSlot(null);
                       }}
-                      className={[
-                        'group p-2.5 sm:p-3 rounded-2xl border text-left transition-all cursor-pointer flex items-center gap-3',
+                      className={`p-3 rounded-xl border text-left transition-colors cursor-pointer flex items-center gap-3 ${
                         isSelected
-                          ? 'border-amber-400 bg-amber-500/20 shadow-[0_0_20px_rgba(245,158,11,0.25)] ring-1 ring-amber-400'
-                          : 'border-white/10 bg-white/[0.03] hover:bg-white/[0.08] hover:border-white/20',
-                      ].join(' ')}
+                          ? 'border-amber-400/60 bg-[#1a1e28]'
+                          : 'border-white/[0.08] bg-[#07080d] hover:bg-[#1a1e28]/70'
+                      }`}
                     >
-                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/20 bg-neutral-900 shrink-0 shadow group-hover:scale-105 transition-transform">
+                      <div className="w-11 h-11 rounded-lg overflow-hidden border border-white/[0.12] bg-[#11141c] shrink-0">
                         {botAvatarSrc ? (
                           <img src={botAvatarSrc} alt={bot.name} className="w-full h-full object-cover" />
                         ) : (
-                          <span className="w-full h-full flex items-center justify-center text-lg">{fallbackEmoji}</span>
+                          <span className="w-full h-full flex items-center justify-center text-[#7a8296]">
+                            <Bot className="w-4 h-4" strokeWidth={1.5} />
+                          </span>
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-sm font-bold text-white group-hover:text-amber-300 truncate">
-                            {bot.name}
-                          </span>
-                          <span className="text-xs shrink-0">{bot.avatar}</span>
+                        <div className="text-sm font-medium text-[#eef0f5] truncate">
+                          {bot.name}
                         </div>
-                        <p className="text-[10px] text-slate-400 truncate leading-tight pt-0.5 font-['Prompt']">
-                          {bot.desc}
-                        </p>
-                        {(() => {
-                          const pInfo = getBotPersonalityInfo(bot.personality);
-                          return (
-                            <span className={`inline-flex items-center gap-1 text-[10px] font-['Prompt',sans-serif] ${pInfo.text} font-medium pt-0.5`}>
-                              <span>{pInfo.icon}</span>
-                              <span>{pInfo.label}</span>
-                            </span>
-                          );
-                        })()}
+                        <p className="text-xs text-[#a3a9b8] truncate mt-0.5">{bot.desc}</p>
+                        <span className="inline-flex items-center gap-1 text-[11px] text-[#7a8296] mt-1">
+                          <PIcon className="w-3 h-3" strokeWidth={1.5} />
+                          <span>{pInfo.label}</span>
+                        </span>
                       </div>
                     </button>
                   );
                 })}
               </div>
 
-              {/* Or Custom Name Field */}
-              <div className="p-3.5 rounded-2xl bg-black/40 border border-white/10 space-y-2">
-                <label className="text-[11px] font-mono text-amber-300 font-bold uppercase tracking-wider block">
-                  ✍️ หรือกำหนดชื่อบอทเอง (Custom AI Identity)
+              <div className="p-3.5 rounded-xl bg-[#07080d] border border-white/[0.08] space-y-2">
+                <label className="text-xs font-medium text-[#a3a9b8] block">
+                  หรือกำหนดชื่อบอทเอง
                 </label>
                 <div className="flex items-center gap-2">
                   <input
@@ -2332,9 +2116,9 @@ export const Lobby: React.FC<LobbyProps> = ({
                       updateBotName(selectingBotSlot, e.target.value);
                       setCustomBotSlots((prev) => ({ ...prev, [selectingBotSlot]: true }));
                     }}
-                    placeholder="พิมพ์ชื่อฮีโร่หรือวายร้ายที่ต้องการ..."
+                    placeholder="พิมพ์ชื่อตัวละครที่ต้องการ"
                     maxLength={20}
-                    className="flex-1 bg-neutral-900 border border-white/15 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                    className="flex-1 h-9 bg-[#11141c] border border-white/[0.08] rounded-lg px-3 text-xs text-[#eef0f5] placeholder-[#7a8296] focus:outline-none focus:border-amber-400/70"
                   />
                   <button
                     type="button"
@@ -2345,7 +2129,7 @@ export const Lobby: React.FC<LobbyProps> = ({
                         setSelectingBotSlot(null);
                       }
                     }}
-                    className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs cursor-pointer transition-all shadow"
+                    className="h-9 px-4 rounded-lg bg-amber-400 hover:bg-amber-300 text-[#07080d] font-medium text-xs cursor-pointer transition-colors"
                   >
                     ยืนยัน
                   </button>

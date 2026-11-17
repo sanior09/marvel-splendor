@@ -1,4 +1,5 @@
 import React from 'react';
+import { Award, Crown, Flame, Gem, Medal, Shield, Sparkles, Star } from 'lucide-react';
 import type { PlayerRankInfo } from '@shared/types/game.types';
 
 interface RankBadgeProps {
@@ -8,13 +9,34 @@ interface RankBadgeProps {
   className?: string;
 }
 
+export function getRankLucideIcon(nameEn?: string, isOwner?: boolean) {
+  if (isOwner) return Crown;
+  switch (nameEn) {
+    case 'Recruit':
+      return Medal;
+    case 'S.H.I.E.L.D. Agent':
+      return Award;
+    case 'Super Soldier':
+      return Shield;
+    case 'Avenger':
+      return Star;
+    case 'Guardian':
+      return Gem;
+    case 'Sorcerer Supreme':
+      return Sparkles;
+    case 'Infinity Wielder':
+      return Flame;
+    default:
+      return Shield;
+  }
+}
+
 export const RankBadge: React.FC<RankBadgeProps> = ({
   rank,
   isBot,
   size = 'sm',
   className = '',
 }) => {
-  // Bots do NOT have ranks as requested
   if (isBot || !rank) return null;
 
   const isOwner = Boolean(
@@ -23,58 +45,32 @@ export const RankBadge: React.FC<RankBadgeProps> = ({
     rank.name.includes('THE ONE ABOVE ALL')
   );
 
-  // Strip any leading emoji from rank name to prevent duplicate icons (e.g. "👑 THE ONE ABOVE ALL" -> "THE ONE ABOVE ALL")
   const cleanName = rank.name.replace(/^[\p{Emoji}\s]+/u, '').trim() || rank.name;
-
-  if (isOwner) {
-    const sizeClasses =
-      size === 'lg'
-        ? 'text-xs sm:text-sm px-2.5 py-1 gap-1.5'
-        : size === 'md'
-        ? 'text-[11px] px-2 py-0.5 gap-1.5'
-        : 'text-[10px] sm:text-[11px] px-2 py-0.5 gap-1.5';
-
-    return (
-      <span
-        className={`rank-badge font-black inline-flex items-center rounded-md border select-none transition-all duration-200 ${sizeClasses} ${className}`}
-        style={{
-          background: 'linear-gradient(135deg, rgba(20, 14, 4, 0.96) 0%, rgba(38, 25, 6, 0.96) 100%)',
-          borderColor: '#ffd700',
-          boxShadow: '0 0 10px rgba(255, 215, 0, 0.45), inset 0 0 5px rgba(255, 215, 0, 0.15)',
-        }}
-        title={`ยศสูงสุดแห่งจักรวาล: ${cleanName}`}
-      >
-        <span className="text-[12px] leading-none drop-shadow">👑</span>
-        <span
-          className="tracking-wider uppercase font-black text-amber-300 drop-shadow-sm"
-        >
-          {cleanName}
-        </span>
-      </span>
-    );
-  }
+  const Icon = getRankLucideIcon(rank.nameEn, isOwner);
 
   const sizeClasses =
     size === 'lg'
-      ? 'text-xs sm:text-sm px-2.5 py-1 gap-1.5'
+      ? 'text-xs px-2.5 py-1 gap-1.5'
       : size === 'md'
-      ? 'text-[11px] px-2 py-0.5 gap-1'
-      : 'text-[10px] px-1.5 py-0.5 gap-1';
+      ? 'text-[11px] px-2 py-0.5 gap-1.5'
+      : 'text-[11px] px-2 py-0.5 gap-1';
 
   return (
     <span
-      className={`rank-badge font-extrabold inline-flex items-center rounded-md border select-none transition-all duration-200 ${sizeClasses} ${className}`}
+      className={`rank-badge font-medium inline-flex items-center rounded-md border select-none transition-colors ${sizeClasses} ${className}`}
       style={{
-        background: 'rgba(12, 16, 26, 0.92)',
-        borderColor: `${rank.color}99`,
-        color: rank.color,
-        boxShadow: `0 0 8px ${rank.color}33`,
-        textShadow: '0 1px 2px rgba(0, 0, 0, 0.9)',
+        backgroundColor: isOwner ? '#1b160b' : '#11141c',
+        borderColor: isOwner ? 'rgba(245, 158, 11, 0.35)' : 'rgba(238, 240, 245, 0.1)',
+        color: isOwner ? '#fbbf24' : '#a3a9b8',
       }}
-      title={`ยศ: ${cleanName}`}
+      title={isOwner ? cleanName : `ยศ: ${cleanName}`}
     >
-      <span className="text-[11px] leading-none">{rank.icon}</span>
-      <span className="tracking-wide">{cleanName}</span>
+      <Icon
+        className="w-3 h-3 shrink-0"
+        strokeWidth={1.5}
+        style={{ color: isOwner ? '#fbbf24' : rank.color }}
+      />
+      <span>{cleanName}</span>
     </span>
   );
 };

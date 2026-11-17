@@ -3,6 +3,7 @@
 // ============================================================
 
 import React, { useState, useCallback, useEffect } from 'react';
+import { Loader2, Server } from 'lucide-react';
 import { MaintenanceCard } from './components/MaintenanceCard';
 import { LoginScreen } from './components/LoginScreen';
 import { Lobby } from './components/Lobby';
@@ -72,38 +73,37 @@ function AuthGate(): React.ReactElement {
   // While verifying stored token on INITIAL PAGE LOAD, show loading (unless user chose guest bypass)
   if (auth.isVerifyingToken && !isGuest) {
     return (
-      <div
-        className="fixed inset-0 flex items-center justify-center page-enter"
-        style={{ background: '#06070f', fontFamily: "'Outfit', sans-serif" }}
-      >
-        <div className="text-center px-4 max-w-sm">
-          <div
-            className="text-3xl font-black tracking-widest mb-3"
-            style={{
-              background: 'linear-gradient(90deg, #ffd700, #e040fb, #4895ef, #ffd700)',
-              backgroundSize: '200% auto',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              animation: 'shimmer 3s linear infinite',
-            }}
-          >
-            MARVEL SPLENDOR
+      <div className="fixed inset-0 flex items-center justify-center bg-[#0b0d14] text-[#eef0f5] page-enter">
+        <div className="w-full max-w-sm px-6 text-center">
+          <div className="inline-flex items-center justify-center gap-2.5 mb-3">
+            <span className="px-2.5 py-0.5 bg-[#c51d24] text-white font-marvel text-2xl tracking-wider rounded leading-none">
+              MARVEL
+            </span>
+            <span className="font-display font-semibold text-2xl tracking-wide text-[#eef0f5]">
+              SPLENDOR
+            </span>
           </div>
-          <div className="text-white/30 text-sm animate-pulse mb-3">กำลังตรวจสอบระบบ...</div>
+
+          <div className="flex items-center justify-center gap-2 text-sm text-[#a3a9b8]">
+            <Loader2 className="w-4 h-4 animate-spin text-[#7a8296]" strokeWidth={1.5} />
+            <span>กำลังเชื่อมต่อข้อมูลบัญชี</span>
+          </div>
 
           {isSlow && (
-            <div className="mt-4 p-3 rounded-xl bg-black/60 border border-white/10 backdrop-blur-md animate-fade-in">
-              <div className="text-amber-400 text-xs font-medium mb-2.5">
-                ⚡ คลาวด์เซิร์ฟเวอร์กำลังสตาร์ตระบบ (Cold Start)...
+            <div className="mt-6 p-4 rounded-xl bg-[#11141c] border border-white/[0.08] text-left animate-fade-in">
+              <div className="flex items-start gap-2.5 mb-4">
+                <Server className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" strokeWidth={1.5} />
+                <p className="text-xs text-[#a3a9b8] leading-relaxed">
+                  เซิร์ฟเวอร์กำลังเริ่มทำงาน รอสักครู่หรือเข้าเล่นแบบผู้เยี่ยมชมได้ทันที
+                </p>
               </div>
               <div className="flex flex-col gap-2">
                 <button
                   type="button"
                   onClick={() => setIsGuest(true)}
-                  className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-xs tracking-wider uppercase transition shadow-lg"
+                  className="w-full h-10 px-4 rounded-lg bg-[#eef0f5] hover:bg-white text-[#07080d] font-medium text-xs transition-colors cursor-pointer active:scale-[0.98]"
                 >
-                  เข้าเล่นเป็นผู้เยี่ยมชมทันที
+                  เข้าเล่นเป็นผู้เยี่ยมชม
                 </button>
                 <button
                   type="button"
@@ -112,9 +112,9 @@ function AuthGate(): React.ReactElement {
                     localStorage.removeItem('marvel_splendor_auth_profile_v2');
                     window.location.reload();
                   }}
-                  className="w-full py-1.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 font-medium text-[11px] transition"
+                  className="w-full h-9 px-4 rounded-lg bg-[#1a1e28] hover:bg-white/[0.08] border border-white/[0.08] text-[#a3a9b8] hover:text-[#eef0f5] font-normal text-xs transition-colors cursor-pointer"
                 >
-                  ล้างเซสชันเก่า (Reset Session)
+                  ล้างเซสชันแล้วเข้าสู่ระบบใหม่
                 </button>
               </div>
             </div>
